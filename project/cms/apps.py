@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+from catalog.apps import CustomCatalogBaseConfig
 
-from django.apps import AppConfig
 
-class CmsAppConfig(AppConfig):
-    name='project.cms'
+class CmsAppConfig(CustomCatalogBaseConfig):
+    name = 'project.cms'

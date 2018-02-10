@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'project.cms',
+    'catalog',
+    'project.cms',
 ]
 
 MIDDLEWARE = [
@@ -85,3 +86,11 @@ DATABASES = {
 
 SESSION_COOKIE_AGE = 4 * 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
+
+# Настройки cms
+
+CATALOG_MODELS=(
+    'cms.Course',
+    'cms.Topic',
+    'cms.Task',
+)
