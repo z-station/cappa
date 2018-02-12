@@ -6,6 +6,7 @@ from django.contrib import admin
 
 class CourseAdmin(CatalogItemBaseAdmin):
     model = Course
+    prepopulated_fields = {'slug': ('title',)}
 
 
 admin.site.register(Course, CourseAdmin)
@@ -13,6 +14,7 @@ admin.site.register(Course, CourseAdmin)
 
 class TopicAdmin(CatalogItemBaseAdmin):
     model = Topic
+    prepopulated_fields = {'slug': ('title',)}
 
 
 admin.site.register(Topic, TopicAdmin)
@@ -20,6 +22,7 @@ admin.site.register(Topic, TopicAdmin)
 
 class TaskAdmin(CatalogItemBaseAdmin):
     model = Task
+    prepopulated_fields = {'slug': ('title',)}
 
 
 admin.site.register(Task, TaskAdmin)

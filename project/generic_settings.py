@@ -30,7 +30,7 @@ STATICFILES_FINDERS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJECT_ROOT, 'templates'), ],
+        'DIRS': [os.path.join(PROJECT_ROOT, 'project', 'templates'), ],
         'APP_DIRS': False,
         'OPTIONS': {
             'debug': DEBUG,
@@ -89,8 +89,12 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 # Настройки cms
 
-CATALOG_MODELS=(
+CATALOG_MODELS = (
     'cms.Course',
     'cms.Topic',
     'cms.Task',
 )
+
+
+CATALOG_APP_NAME = 'cms'
+
