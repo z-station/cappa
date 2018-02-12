@@ -8,19 +8,19 @@ class CourseAdmin(CatalogItemBaseAdmin):
     model = Course
 
 
-admin.register(Course, CourseAdmin)
+admin.site.register(Course, CourseAdmin)
 
 
 class TopicAdmin(CatalogItemBaseAdmin):
     model = Topic
 
 
-admin.register(Topic, TopicAdmin)
+admin.site.register(Topic, TopicAdmin)
 
 
 class TaskAdmin(CatalogItemBaseAdmin):
     model = Task
 
 
-admin.register(Task, TaskAdmin)
+admin.site.register(Task, TaskAdmin)
 

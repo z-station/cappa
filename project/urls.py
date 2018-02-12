@@ -18,6 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cms/',  include('project.cms.urls')),
+    url(r'^cms/',  include('catalog.urls')),
 
 ]
