@@ -2,6 +2,7 @@ from .generic_settings import *
 
 DEBUG = True
 TEMPALTE_DEBUG = DEBUG
+LANGUAGE_CODE = 'ru-ru'
 
 EMAIL_PORT = 1025
 EMAIL_HOST = 'localhost'

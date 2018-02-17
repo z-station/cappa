@@ -5,6 +5,10 @@ from catalog.models import CatalogBase
 
 class Course(CatalogBase):
     """модель курса в БД"""
+    class Meta:
+            verbose_name = "Курс"
+            verbose_name_plural = "Курсы"
+
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
@@ -13,6 +17,9 @@ class Course(CatalogBase):
 
 class Topic(CatalogBase):
     """модель темы в БД"""
+    class Meta:
+            verbose_name = "Тема"
+            verbose_name_plural = "Темы"
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
@@ -21,6 +28,9 @@ class Topic(CatalogBase):
 
 class Task(CatalogBase):
     """модель задач в БД"""
+    class Meta:
+            verbose_name = "Задание"
+            verbose_name_plural = "Задачи"
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)

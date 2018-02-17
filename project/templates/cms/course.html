@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ course.title }}</title>
-</head>
-<body>
-{{ course.short_desc }}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} {% endblock %}
+
+{% block content  %}
+    {{ course.long_title}}
+    {{ course.short_desc }}
+{% endblock %}
+
+

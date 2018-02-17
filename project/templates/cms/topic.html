@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ topic.title }}</title>
-</head>
-<body>
-{{ topic.short_desc }}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }}{% endblock %}
+
+{% block content  %}
+    {{ topic.short_desc }}
+{% endblock %}
+
+
