@@ -64,8 +64,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
+    'tinymce',
     'project.executors',
     'project.cms',
+
 ]
 
 MIDDLEWARE = [
@@ -98,4 +100,14 @@ CATALOG_MODELS = (
 
 
 CATALOG_APP_NAME = 'cms'
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': 'spellchecker',
+    'width': 820,
+    'height': 600,
+    'theme_advanced_resizing': 'True',
+}
+
+# tinymce
+# TINYMCE_SPELLCHECKER
+# TINYMCE_FILEBROWSER
 
