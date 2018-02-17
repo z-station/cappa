@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'tinymce',
     'project.executors',
     'project.cms',
-
 ]
 
 MIDDLEWARE = [
@@ -98,16 +97,17 @@ CATALOG_MODELS = (
     'cms.Task',
 )
 
+CATALOG_TEMPLATES_FOLDER_NAME = 'cms'
+CATALOG_APP_VERBOSE_NAME = "Курсы"
+CATALOG_TREEITEM_VERBOSE_NAME = "Структура курсов"
+CATALOG_TREEITEM_VERBOSE_NAME_PLURAL = "Структура курсов"
+CATALOG_TREEITEM_ROOT_ELEMENT_NAME = "Курсы"
 
-CATALOG_APP_NAME = 'cms'
+# Настройки tinymce
+
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': 'spellchecker',
     'width': 820,
     'height': 600,
     'theme_advanced_resizing': 'True',
 }
-
-# tinymce
-# TINYMCE_SPELLCHECKER
-# TINYMCE_FILEBROWSER
-

@@ -1,4 +1,4 @@
 Django==1.11
 django-mptt==0.9.0
-git push server_name branch_name   git push server_name branch_name
+git+git://github.com/oldroute/django-catalog-tree@up_python36
 django-tinymce==2.7.0
