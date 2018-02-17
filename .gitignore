@@ -25,6 +25,7 @@ dvery/production.py
 search/*
 /liderdveri/settings.py
 venv/
+venv27/
 *.sql
 *.sqlite3
 node_modules/
