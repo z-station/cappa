@@ -3,9 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-{% block content  %}{% endblock %}
+    <header>
+        <div class="container border-bottom mt-4 pb-1">
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-8">
+                    <h1>{% block content_title %}{% endblock %}</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container border-bottom mb-3 pt-4">
+            <div class="row" >
+                <div class="col-lg-3" >
+                    {% block sidebar %}{% endblock %}
+                </div>
+                <div class="col-lg-8" >
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="row" >
+                <div class="col-lg-12 mb-3 text-center" >
+                    CSU Math 2018
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
 
