@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'tinymce',
     'project.executors',
     'project.cms',
+    'admin_reorder',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 DATABASES = {
@@ -111,3 +113,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'height': 600,
     'theme_advanced_resizing': 'True',
 }
+
+# Настройки admin_reorder
+ADMIN_REORDER = (
+    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+    {'app': 'cms', 'models': ('catalog.TreeItem', 'cms.Course', 'cms.Topic', 'cms.Task')},
+    {'app': 'executors', 'models': ('executor.Executor',)},
+)

@@ -3,7 +3,7 @@ from catalog.apps import CustomCatalogBaseConfig
 
 
 class CmsAppConfig(CustomCatalogBaseConfig):
-    verbose_name = "Rock ’n’ roll"
+    verbose_name = "Курсы"
     name = 'project.cms'
 
 
