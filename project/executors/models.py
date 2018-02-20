@@ -14,7 +14,6 @@ class Executor(models.Model):
     )
     name = models.IntegerField(
         verbose_name="Наименование",
-        max_length=255,
         unique=True,
         choices=AVAILABLE_EXECUTORS,
     )

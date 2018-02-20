@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from catalog.models import CatalogBase
-# TODO  СДЕЛАТЬ в админке название моделей русскими  //гугли джанго админ
 from django.db import models
 from tinymce.models import HTMLField
+from project.executors.models import Executor
 
 
 class Course(CatalogBase):
@@ -15,7 +15,11 @@ class Course(CatalogBase):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
-    short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
+    # short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
+    executors = models.ManyToManyField(Executor)
+
+    def __str__(self):
+        return self.title
 
 
 class Topic(CatalogBase):
@@ -26,8 +30,11 @@ class Topic(CatalogBase):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
-    short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
+    # short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
     content = HTMLField(verbose_name="Теория курса", default="")
+
+    def __str__(self):
+        return self.title
 
 
 class Task(CatalogBase):
@@ -38,5 +45,9 @@ class Task(CatalogBase):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
-    short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
+    # short_desc = models.TextField(verbose_name="Краткое описание", blank=True, null=True)
+    content = HTMLField(verbose_name="Текст задания", default="")
     leaf = True
+
+    def __str__(self):
+        return self.title

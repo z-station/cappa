@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{object.long_title|default:object.title}}{% endblock %}
+{% block content_title %}{{object.long_title|default:object.title}}{% endblock %}

@@ -1,9 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %}{{ topic.title }}{% endblock %}
+{% extends "cms\base.html" %}
 
 {% block content  %}
-    {{ topic.short_desc }}
     {{ topic.content|safe }}
 {% endblock %}
 
