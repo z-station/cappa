@@ -1,37 +1,16 @@
-<ul  class="list-unstyled">
-    <li><a href="#">Курсы</a>
-        <ul>
-            <li>Тема 1</li>
-                <ul>
-                     <li><a href="#">Задача 1</a></li>
-                     <li>Задача 2</li>
-                     <li>Задача 3</li>
-
-                 </ul>
-            <li>Тема 2</li>
-                <ul>
-                     <li>Задача 1</li>
-                     <li>Задача 2</li>
-                     <li>Задача 3</li>
-
-                 </ul>
-
-
-        </ul>
-    </li>
-    <li><a href="#">Python</a></li>
-        <li><a href="#">Условия</a></li>
-             <li><a href="#">«Площадь прямоугольного треугольника»</a></li>
-             <li><a href="#">«Знак числа»</a></li>
-         <li><a href="#">Ввод и вывод данных</a></li>
-             <li><a href="#">«Сумма трёх чисел»</a></li>
 </ul>
-{% for course in  menu %}
-    <a href="{{course.url}}"> {{course.title}}</a><br/>
-    {% for topic in course.topics %}
-        <a href="{{topic.url}}">{{topic.title}}</a><br/>
-            {% for task in topic.tasks %}
-              <a href="{{task.url}}">{{task.title}}</a><br/>
+<ul  class="list-unstyled">
+    {% for course in  menu %}
+    <li><a href="{{course.url}}"> {{course.title}}</a></li>
+        <ul>
+            {% for topic in course.topics %}
+            <li><a href="{{topic.url}}">{{topic.title}}</a></li>
+                <ul>
+                    {% for task in topic.tasks %}
+                    <li> <a href="{{task.url}}">{{task.title}}</a></li>
+                     {% endfor %}
+                </ul>
             {% endfor %}
+        </ul>
     {% endfor %}
-{% endfor %}
+</ul>
