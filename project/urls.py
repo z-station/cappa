@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from project.views import frontpage
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^cms/',  include('catalog.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
-
-
+    url(r'^', frontpage),
 ]
