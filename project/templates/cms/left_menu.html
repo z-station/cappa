@@ -26,3 +26,12 @@
          <li><a href="#">Ввод и вывод данных</a></li>
              <li><a href="#">«Сумма трёх чисел»</a></li>
 </ul>
+{% for course in  menu %}
+    <a href="{{course.url}}"> {{course.title}}</a><br/>
+    {% for topic in course.topics %}
+        <a href="{{topic.url}}">{{topic.title}}</a><br/>
+            {% for task in topic.tasks %}
+              <a href="{{task.url}}">{{task.title}}</a><br/>
+            {% endfor %}
+    {% endfor %}
+{% endfor %}
