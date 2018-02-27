@@ -1,5 +1,11 @@
 {% extends "base.html" %}
-
+{% load cms_tags %}
 
 {% block title %}{{object.long_title|default:object.title}}{% endblock %}
 {% block content_title %}{{object.long_title|default:object.title}}{% endblock %}
+
+ <!--TODO Шаблонные теги. Собрать меню из информации с БД INCLUSION-->
+{% block sidebar %}
+{% left_menu %}
+
+{% endblock %}
