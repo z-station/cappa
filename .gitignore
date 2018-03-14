@@ -1,4 +1,5 @@
 *.bat
+*.ps1
 *.orig
 *.pyc
 *.sh

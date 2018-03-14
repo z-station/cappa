@@ -21,5 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^cms/',  include('catalog.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^groups/', include('project.groups.urls')),
+    url(r'^modules/', include('project.modules.urls')),
     url(r'^', frontpage),
 ]
