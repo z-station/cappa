@@ -67,8 +67,6 @@ INSTALLED_APPS = [
     'tinymce',
     'project.executors',
     'project.cms',
-    'project.groups',
-    'project.modules',
     'admin_reorder',
 ]
 
