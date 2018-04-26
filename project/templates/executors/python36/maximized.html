@@ -1,0 +1,27 @@
+
+<form method="POST" class="editor-form container mt-2" action="{% url 'execute' %}">
+    {% csrf_token %}
+
+    <div class="row ace-container ace-input">
+        <label for="id-{{ form.input.name }}-{{ num }}">{{ form.input.label }}:</label>
+        <div id="id-{{ form.input.name }}-{{ num }}" class="ace-editor"></div>
+        <textarea class="ace-editor-content" name="{{ form.input.name }}" id="id-{{ form.input.name }}-{{ num }}-content">{{ form.input.value|default:"" }}</textarea>
+    </div>
+
+    <div class="row ace-container">
+        <div id="id-{{ form.content.name }}-{{ num }}" class="ace-editor"></div>
+        <textarea class="ace-editor-content" name="{{ form.content.name }}" id="id-{{ form.content.name }}-{{ num }}-content">{{ form.content.value|default:"" }}</textarea>
+        <div class="ace-control-bar">
+            <input class="run-button" type="submit" value="" />
+        </div>
+    </div>
+
+    <div class="row ace-container ace-output mb-3">
+        <label for="id-{{ form.output.name }}-{{ num }}">{{ form.output.label }}:</label>
+        <div id="id-{{ form.output.name }}-{{ num }}" class="ace-editor"></div>
+        <textarea class="ace-editor-content" name="{{ form.output.name }}" id="id-{{ form.output.name }}-{{ num }}-content">{{ form.output.value|default:"" }}</textarea>
+    </div>
+
+</form>
+
+

@@ -1,0 +1,19 @@
+
+#id_editor {
+    position: relative;
+    width:570px;
+    height: 200px;
+    border: solid 1px #eeeeee;
+}
+
+#id_input, #id_output {
+    position: relative;
+    width:280px;
+    height: 100px;
+    border: solid 1px #eeeeee;
+
+}
+
+pre {
+    width: 100%;
+}

@@ -1,0 +1,13 @@
+
+<form method="POST" class="editor-form container mt-2" action="{% url 'execute' %}">
+    {% csrf_token %}
+    <div class="row ace-container mb-3">
+        <div id="id-{{ form.content.name }}-{{ num }}" class="ace-editor"></div>
+        <textarea class="ace-editor-content" name="{{ form.content.name }}" id="id-{{ form.content.name }}-{{ num }}-content">{{ form.content.value|default:"" }}</textarea>
+        <div class="ace-control-bar">
+            <input class="run-button" type="submit" value="" />
+        </div>
+    </div>
+</form>
+
+

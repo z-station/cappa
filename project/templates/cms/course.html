@@ -1,7 +1,10 @@
 {% extends "cms\base.html" %}
 
 {% block content  %}
-    {{ course.short_desc }}
+   <div class="row mx-3">
+        {% show_executors object.content for object %}
+   </div>
 {% endblock %}
+
 
 

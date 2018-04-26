@@ -1,0 +1,62 @@
+
+.ace-container {
+    padding: 15px 10px;
+    background-color:#f5f2f0;
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.ace-container.ace-input {
+    flex-direction: column;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.ace-container.ace-output {
+    flex-direction: column;
+    border-top: 1px solid #dcdcdc;
+}
+
+.ace-container.ace-input,
+.ace-container.ace-output {
+    font-size: 12px;
+}
+
+.ace-control-bar {
+    display:flex;
+    width:50px;
+    padding-left: 15px;
+    justify-content: flex-start;
+    align-items: center;
+    border-left: 1px solid #dcdcdc;
+}
+
+.ace-editor {
+    position: relative;
+    width: 620px;
+    height: 200px;
+    font-size:14px;
+    line-height: 1.5;
+    background-color:#f5f2f0;
+}
+
+.editor-form.static .ace-editor {
+    background-color: #eaeaea;
+}
+
+.editor-form.maximized .ace-editor {
+    border: solid 1px #eeeeee;
+}
+
+.ace-editor-content {
+    display:none;
+}
+
+.run-button {
+    background: #82b915 url("/static/img/play_green.png") no-repeat;
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

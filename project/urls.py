@@ -19,7 +19,8 @@ from project.views import frontpage
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cms/',  include('catalog.urls')),
+    url(r'^cms/',  include('project.cms.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
-    url(r'^', frontpage),
+    url(r'^executor/', include('project.executors.urls')),
+    url(r'^$', frontpage),
 ]

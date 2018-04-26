@@ -1,0 +1,41 @@
+.ace-container {
+    padding: 15px 10px;
+
+}
+
+.ace_content {
+    background-color:#f5f2f0;
+}
+
+.ace-editor {
+    position: relative;
+    height: 200px;
+
+    background-color:#f5f2f0;
+    font-size:14px !important;
+    line-height: 1.5 !important;
+}
+
+.ace-editor-content {
+    display:none;
+}
+
+.field-input .ace-editor,
+.field-output .ace-editor {
+    height: 60px;
+}
+
+.inline-group h2 {
+    text-transform: none !important;
+}
+
+.dynamic-executors-code-content_type-object_id {
+    margin-bottom:10px;
+}
+.dynamic-executors-code-content_type-object_id h3 {
+}
+
+/*.code-fieldset .form-row {*/
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
+/*}*/

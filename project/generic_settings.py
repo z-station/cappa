@@ -13,15 +13,16 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 MEDIA_ROOT   = os.path.join(PROJECT_ROOT, 'media')
-STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
+# STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
 
 MEDIA_URL    = '/media/'
 STATIC_URL   = '/static/'
 ROOT_URLCONF = 'project.urls'
 WSGI_APPLICATION = 'project.wsgi.application'
 
-STATICFILES_DIRS = []
-
+STATICFILES_DIRS = [
+    os.path.join(PROJECT_ROOT, 'project', 'static'),
+]
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -65,8 +66,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog',
     'tinymce',
-    'project.executors',
     'project.cms',
+    'project.executors',
     'admin_reorder',
 ]
 
@@ -112,6 +113,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'width': 820,
     'height': 600,
     'theme_advanced_resizing': 'True',
+    'extended_valid_elements ': '*[*]',
 }
 
 # Настройки admin_reorder
@@ -120,3 +122,11 @@ ADMIN_REORDER = (
     {'app': 'cms', 'models': ('catalog.TreeItem', 'cms.Course', 'cms.Topic', 'cms.Task')},
     {'app': 'executors', 'models': ('executor.Executor',)},
 )
+
+# --- Executors config
+
+CODE_FOR_MODELS = [
+    'project.cms.models.Task',
+    'project.cms.models.Topic',
+    'project.cms.models.Course',
+]

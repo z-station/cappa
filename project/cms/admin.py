@@ -7,7 +7,6 @@ from django.contrib import admin
 class CourseAdmin(CatalogItemBaseAdmin):
     model = Course
     prepopulated_fields = {'slug': ('title',)}
-    filter_horizontal = ('executors', )
 
 
 admin.site.register(Course, CourseAdmin)
