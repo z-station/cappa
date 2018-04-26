@@ -1,0 +1,27 @@
+{% extends 'modules/base.html' %}
+
+{% block content  %}
+    <h1>{{ group.name }}</h1>
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+
+        <form action="{% url 'groups:join' group.id %}" method="post">
+            {% csrf_token %}
+            {% if member %}
+                <input type="submit" value="Leave" />
+            {% else %}
+                {% if group.state == 2 %}
+                    <label for="codeword">Codeword: </label>
+                    <input id="codeword" type="text"  name="codeword">
+                {% elif group.state != 0 %}
+                <input type="submit" value="Join!" />
+                {% endif %}
+            {% endif %}
+        </form>
+    {% else %}
+        <p>Welcome, new user. Please log in.</p>
+    {% endif %}
+{% endblock %}

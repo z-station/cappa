@@ -1,0 +1,13 @@
+{% extends 'modules/base.html' %}
+
+{% block content  %}
+    {% if modules %}
+        <ul>
+            {% for module in modules %}
+                <li><a href="{% url 'modules:module' module.id %}">{{ module.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No modules.</p>
+    {% endif %}
+{% endblock %}

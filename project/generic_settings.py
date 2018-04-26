@@ -68,6 +68,8 @@ INSTALLED_APPS = [
     'tinymce',
     'project.cms',
     'project.executors',
+    'project.groups',
+    'project.modules',
     'admin_reorder',
 ]
 
@@ -118,9 +120,10 @@ TINYMCE_DEFAULT_CONFIG = {
 
 # Настройки admin_reorder
 ADMIN_REORDER = (
-    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
-    {'app': 'cms', 'models': ('catalog.TreeItem', 'cms.Course', 'cms.Topic', 'cms.Task')},
-    {'app': 'executors', 'models': ('executor.Executor',)},
+    {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
+    {'app': 'cms', 'label': "Управление курсами", 'models': ('catalog.TreeItem', 'cms.Course', 'cms.Topic', 'cms.Task')},
+    {'app': 'executors', "label": "Исполнители кода", 'models': ('executor.Executor',)},
+    {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group')}
 )
 
 # --- Executors config

@@ -1,5 +1,7 @@
 </ul>
 <ul  class="list-unstyled">
+    <li><a href="{% url 'groups:groups' %}">Группы</a></li>
+    <li><a href="{% url 'modules:modules' %}">Модули</a></li>
     {% for course in  menu %}
     <li><a href="{{course.url}}"> {{course.title}}</a></li>
         <ul>

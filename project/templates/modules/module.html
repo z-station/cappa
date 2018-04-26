@@ -1,0 +1,13 @@
+{% extends 'modules/base.html' %}
+
+{% block content  %}
+    <h1>{{ module.name }}</h1>
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+    {% else %}
+        <p>Welcome, new user. Please log in.</p>
+    {% endif %}
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% endblock %}
