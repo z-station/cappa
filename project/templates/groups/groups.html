@@ -1,12 +1,52 @@
 {% extends 'groups/base.html' %}
 
 {% block content  %}
-    {% if groups %}
-        <ul>
-            {% for group in groups %}
-                <li><a href="{% url 'groups:group' group.id %}">{{ group.name }}</a>, {{ group.state }}</li>
+    {% if my %}
+        <div class="row">
+            <form action="{% url 'admin:groups_group_add' %}">
+                <input type="submit" class="btn btn-primary" value="Add" />
+            </form>
+            <form action="{% url 'admin:groups_group_changelist' %}">
+                <input type="submit" class="btn" value="Edit" />
+            </form>
+        </div>
+    {% endif %}
+
+    {% if groups or ownership%}
+        <table class="table table-hover">
+            <caption>Список групп</caption>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Владелец</th>
+                <th>Состояние</th>
+                <th>Участников</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for group in ownership %}
+                <tr onclick="window.location.href='{% url "groups:group" group.id %}'">
+                    <td>{{ group.name }}</td>
+                    <td>{{ group.get_root_owner_username }}</td>
+                    <td>{{ group.get_state }}</td>
+                    <td>{{ group.get_members_number }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+
+            {% for group in groups %}
+                {% if group.state == group.CLOSE %}
+                    <tr class="group-close" onclick="window.location.href='{% url "groups:group" group.id %}'">
+                {% else %}
+                    <tr onclick="window.location.href='{% url "groups:group" group.id %}'">
+                {% endif %}
+                    <td>{{ group.name }}</td>
+                    <td>{{ group.get_root_owner_username }}</td>
+                    <td>{{ group.get_state }}</td>
+                    <td>{{ group.get_members_number }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>No groups.</p>
     {% endif %}

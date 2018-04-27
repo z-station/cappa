@@ -1,12 +1,37 @@
 {% extends 'modules/base.html' %}
 
 {% block content  %}
+    {% if my %}
+        <div class="row">
+            <form action="{% url 'admin:modules_module_add' %}">
+                <input type="submit" class="btn btn-primary" value="Add" />
+            </form>
+            <form action="{% url 'admin:modules_module_changelist' %}">
+                <input type="submit" class="btn" value="Edit" />
+            </form>
+        </div>
+    {% endif %}
+
     {% if modules %}
-        <ul>
+        <table class="table table-hover">
+            <caption>Список модулей</caption>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Владелец</th>
+                <th>Задач</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for module in modules %}
-                <li><a href="{% url 'modules:module' module.id %}">{{ module.name }}</a></li>
+                <tr onclick="window.location.href='{% url "modules:module" module.id %}'">
+                    <td>{{ module.name }}</td>
+                    <td>{{ module.owner.username }}</td>
+                    <td>{{ module.get_tasks_number }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
     {% else %}
         <p>No modules.</p>
     {% endif %}

@@ -1,19 +1,18 @@
-
-#id_editor {
-    position: relative;
-    width:570px;
-    height: 200px;
-    border: solid 1px #eeeeee;
+.group-mine {
+    background: deepskyblue;
+    color: white;
 }
 
-#id_input, #id_output {
-    position: relative;
-    width:280px;
-    height: 100px;
-    border: solid 1px #eeeeee;
-
+.group-close {
+    background: gainsboro;
+    color: gray;
 }
 
-pre {
-    width: 100%;
+.group-close:hover {
+    background: gray !important;
+    color: gainsboro;
+}
+
+div.row .btn {
+    margin: 5px 5px 10px;
 }

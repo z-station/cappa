@@ -1,13 +1,59 @@
 {% extends 'modules/base.html' %}
 
+{% block title %}{{ module.name }}{% endblock %}
+{% block content_title %}{{ module.name }}{% endblock %}
 {% block content  %}
-    <h1>{{ module.name }}</h1>
+    <div class="row" >
+        <div class="col-lg-6">
+            <p>
+                {% if module.comment %}
+                    {{ module.comment }}
+                {% else %}
+                    Комментария нет.
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-lg-6">
+            <p>
+                Владелец: {{ module.owner }}<br>
+                Задач: {{ module.tasks.count }}
+            </p>
+            <p>
+                <i>Изменен {{ module.updated_at }}</i>
+            </p>
+        </div>
+    </div>
 
-    {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
-    {% else %}
-        <p>Welcome, new user. Please log in.</p>
+    {% if my %}
+        <div class="row">
+            <form action="{% url 'admin:modules_module_change' module.id %}">
+                <input type="submit" class="btn btn-primary" value="Change" />
+            </form>
+            <form action="{% url 'admin:modules_module_delete' module.id %}">
+                <input type="submit" class="btn" value="Delete" />
+            </form>
+        </div>
     {% endif %}
 
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {%  if tasks %}
+        <table class="table table-hover">
+            <caption>Список задач</caption>
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Название</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr onclick="window.location.href='{% url "catalog-item" task.get_complete_slug %}'">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ task.title }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        Задач нет.
+    {% endif %}
 {% endblock %}

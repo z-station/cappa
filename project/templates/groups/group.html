@@ -1,27 +1,104 @@
-{% extends 'modules/base.html' %}
+{% extends 'groups/base.html' %}
 
-{% block content  %}
-    <h1>{{ group.name }}</h1>
+{% block title %}{{ group.name }}{% endblock %}
+{% block content_title %}{{ group.name }}{% endblock %}
+{% block content %}
+    {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
 
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-    {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
-
-        <form action="{% url 'groups:join' group.id %}" method="post">
-            {% csrf_token %}
-            {% if member %}
-                <input type="submit" value="Leave" />
-            {% else %}
-                {% if group.state == 2 %}
-                    <label for="codeword">Codeword: </label>
-                    <input id="codeword" type="text"  name="codeword">
-                {% elif group.state != 0 %}
-                <input type="submit" value="Join!" />
+    <div class="row" >
+        <div class="col-lg-6">
+            <p>
+                {% if group.status %}
+                    {{ group.status }}
+                {% else %}
+                    Статуса нет.
                 {% endif %}
-            {% endif %}
-        </form>
+            </p>
+            <p>
+                <i>От {{ group.changed_status }}</i>
+            </p>
+        </div>
+        <div class="col-lg-6">
+            <p>
+                Владелец(ы): {{ group.get_owners_usernames }}<br>
+                Участников: {{ group.get_members_number }}
+            </p>
+            <p>
+                <i>Создана {{ group.created_at }}</i>
+            </p>
+        </div>
+    </div>
+
+    {% if position %}
+        {% if position == group.OWNER %}
+            <!--владелец-->
+            <div class="row">
+                <form action="{% url 'admin:groups_group_change' group.id %}">
+                    <input type="submit" class="btn btn-primary" value="Change" />
+                </form>
+                <form action="{% url 'admin:groups_group_history' group.id %}">
+                    <input type="submit" class="btn" value="History" />
+                </form>
+                <form action="{% url 'admin:groups_group_delete' group.id %}">
+                    <input type="submit" class="btn" value="Delete" />
+                </form>
+            </div>
+        {% else %}
+            <!--участник-->
+            <div class="row">
+                <form action="{% url 'groups:join' group.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" class="btn" value="Leave" />
+                </form>
+            </div>
+        {% endif %}
+
+        {% if modules_data %}
+            <table class="table table-hover">
+                <caption>Список модулей</caption>
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Таймер</th>
+                    <th>Задач</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in modules_data %}
+                    {% if data.state != data.HIDE or position == group.OWNER%}
+                        {% if data.get_stock or position == group.OWNER%}
+                            <tr onclick="window.location.href='{% url "modules:module" data.module.id %}'">
+                        {% else %}
+                            <tr class="group-close">
+                        {% endif %}
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ data.module.name }}</td>
+                            <td>{{ data.get_timer }}</td>
+                            <td>{{ data.module.tasks.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            Модулей нет.
+        {% endif %}
+
+    {% elif group.state != group.CLOSE%}
+        <!--гость-->
+        <div class="row">
+            <form action="{% url 'groups:join' group.id %}" method="post">
+                {% csrf_token %}
+                {% if group.state == group.CODE %}
+                    <input autofocus type="password" id="codeword" name="codeword" placeholder="Введите кодово слово"/>
+                {% endif %}
+                <input type="submit" class="btn btn-primary" value="Join!" />
+            </form>
+        </div>
     {% else %}
-        <p>Welcome, new user. Please log in.</p>
+        Группа закрыта.
     {% endif %}
 {% endblock %}
