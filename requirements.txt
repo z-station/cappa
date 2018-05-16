@@ -1,6 +1,4 @@
 Django==1.11
 django-mptt==0.9.0
-git+git://github.com/oldroute/django-catalog-tree@up_python36
 django-tinymce==2.7.0
 django-modeladmin-reorder==0.2
-beautifulsoup4

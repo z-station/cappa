@@ -13,7 +13,7 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 MEDIA_ROOT   = os.path.join(PROJECT_ROOT, 'media')
-#STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
+# STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
 
 MEDIA_URL    = '/media/'
 STATIC_URL   = '/static/'
@@ -57,21 +57,20 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-INSTALLED_APPS = [
+INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'catalog',
     'tinymce',
-    'project.cms',
-    'project.executors',
-    'project.groups',
-    'project.modules',
-    'admin_reorder',
-]
+    'project.courses',
+     'project.executors',
+    # 'project.groups',
+    # 'project.modules',
+    # 'admin_reorder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,7 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
+    # 'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 DATABASES = {
@@ -94,42 +93,28 @@ DATABASES = {
 SESSION_COOKIE_AGE = 4 * 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Настройки cms
-
-CATALOG_MODELS = (
-    'cms.Course',
-    'cms.Topic',
-    'cms.Task',
-)
-
-CATALOG_TEMPLATES_FOLDER_NAME = 'cms'
-CATALOG_APP_VERBOSE_NAME = "Курсы"
-CATALOG_TREEITEM_VERBOSE_NAME = "Структура курсов"
-CATALOG_TREEITEM_VERBOSE_NAME_PLURAL = "Структура курсов"
-CATALOG_TREEITEM_ROOT_ELEMENT_NAME = "Курсы"
-
 # Настройки tinymce
-
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': 'spellchecker',
-    'width': 820,
-    'height': 600,
+    'theme_advanced_buttons1': 'save,newdocument,|,justifyleft,justifycenter,justifyright,justifyfull,|, hr,bold,italic,underline,|, bullist,numlist,|,formatselect,removeformat,cut,copy,paste,pastetext,pasteword,|,fontselect,fontsizeselect,|,forecolor,backcolor,',
+    'theme_advanced_buttons2' : 'removeformat, cut,copy,paste,pastetext,pasteword,|,outdent,indent,blockquote,|,undo,redo,|,styleprops,spellchecker',
+    'theme_advanced_buttons3': 'sub,sup,|,charmap',
+    'theme_advanced_buttons4': ' code, |,bold,italic,underline,strikethrough',
+    'width': '100%',
+    'height': 300,
     'theme_advanced_resizing': 'True',
     'extended_valid_elements ': '*[*]',
 }
-
 # Настройки admin_reorder
-ADMIN_REORDER = (
-    {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
-    {'app': 'cms', 'label': "Управление курсами", 'models': ('catalog.TreeItem', 'cms.Course', 'cms.Topic', 'cms.Task')},
-    {'app': 'executors', "label": "Исполнители кода", 'models': ('executor.Executor',)},
-    {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group')}
-)
+# ADMIN_REORDER = (
+#     {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
+#     {'app': 'executors', "label": "Исполнители кода", 'models': ('executor.Executor',)},
+#     {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group')}
+# )
 
 # --- Executors config
 
 CODE_FOR_MODELS = [
-    'project.cms.models.Task',
-    'project.cms.models.Topic',
-    'project.cms.models.Course',
+    'project.courses.models.TreeItem',
+
 ]

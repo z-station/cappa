@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if models_info %}
+<ul class="object-tools">
+    {% block object-tools-items %}
+        {% for add_model_info in models_info %}
+        <li>
+        <a href="{{ add_model_info.0 }}" class="addlink"
+           onclick="return showAddAnotherPopup(this);">
+          {% trans 'Add' %} {{ add_model_info.1 }}
+        </a>
+        </li>
+        {% endfor %}
+    {% endblock %}
+</ul>
+{% endif %}

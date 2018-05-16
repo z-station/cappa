@@ -1,0 +1,13 @@
+{% extends "courses\base.html" %}
+{% load executors_tags courses_tags %}
+
+{% block sidebar %}{% left_menu %}{% endblock %}
+
+{% block content  %}
+   <div class="row mx-3">
+        {% show_executors object.content for object %}
+   </div>
+{% endblock %}
+
+
+

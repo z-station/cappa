@@ -7,9 +7,6 @@
 *.bak
 *.dmp
 .svn
-.project
-.pydevproject
-.settings
 .installed.cfg
 .idea/*
 bin/*
@@ -18,13 +15,7 @@ eggs/*
 develop-eggs/*
 parts/*
 commit.txt
-dvery/localsettings.py
 media/upload/*
-static/*
-bootstrap.py
-dvery/production.py
-search/*
-/liderdveri/settings.py
 venv/
 venv27/
 *.sql

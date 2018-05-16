@@ -1,0 +1,18 @@
+{% comment %}
+<ul  class="list-unstyled">
+    <li>
+        <a href="{% url 'groups:my_groups' %}">Мои группы</a> |
+        <a href="{% url 'groups:groups' %}">Группы</a>
+    </li>
+    <li>
+        <a href="{% url 'modules:my_modules' %}">Мои модули</a> |
+        <a href="{% url 'modules:modules' %}">Модули</a>
+    </li>
+</ul>
+{% endcomment %}
+
+<ul>
+    {% for item in menu %}
+        <li><a href="{{item.get_absolute_url}}"> {{item.title}}</a></li>
+    {% endfor %}
+</ul>

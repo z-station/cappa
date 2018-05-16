@@ -1,9 +1,0 @@
-{% extends "cms\base.html" %}
-{% load executors_tags %}
-
-{% block content %}
-    <div class="row mx-3">
-        {% show_executors object.content for object %}
-    </div>
-{% endblock %}
-
