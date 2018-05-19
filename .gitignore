@@ -9,6 +9,8 @@
 .svn
 .installed.cfg
 .idea/*
+*.sql
+*.sqlite3
 bin/*
 downloads/*
 eggs/*
@@ -18,6 +20,4 @@ commit.txt
 media/upload/*
 venv/
 venv27/
-*.sql
-*.sqlite3
-node_modules/
+tmp/*

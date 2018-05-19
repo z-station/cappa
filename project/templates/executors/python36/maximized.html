@@ -1,27 +1,43 @@
+{% if code_solved %}
+    Задача решена! Станцуй Джигу!
+{% endif %}
 
-<form method="POST" class="editor-form container mt-2" action="{% url 'execute' %}">
+<form method="POST" id="editor-form-{{ code_num }}" class="editor-form container mt-2 mb-3"
+      action="{% url 'execute' %}" data-tests-action="{% url 'check_tests' %}"
+      data-code_num="{{ code_num }}" data-code_id="{{ code_id }}">
+
     {% csrf_token %}
+    {{ form.media }}
 
-    <div class="row ace-container ace-input">
-        <label for="id-{{ form.input.name }}-{{ num }}">{{ form.input.label }}:</label>
-        <div id="id-{{ form.input.name }}-{{ num }}" class="ace-editor"></div>
-        <textarea class="ace-editor-content" name="{{ form.input.name }}" id="id-{{ form.input.name }}-{{ num }}-content">{{ form.input.value|default:"" }}</textarea>
+    <div class="ace-control-bar">
+        <input class="run-button" type="submit" value=""
+               onclick="ace_ajax.submit($('#editor-form-{{ code_num }}'));return false;"/>
     </div>
 
-    <div class="row ace-container">
-        <div id="id-{{ form.content.name }}-{{ num }}" class="ace-editor"></div>
-        <textarea class="ace-editor-content" name="{{ form.content.name }}" id="id-{{ form.content.name }}-{{ num }}-content">{{ form.content.value|default:"" }}</textarea>
+    {% include 'ace/widget.html' with field=form.input %}
+    {% include 'ace/widget.html' with field=form.content %}
+    {% if form.output.value %}
+        {% include 'ace/widget.html' with field=form.output %}
+    {% endif %}
+    {% if form.error.value %}
+        {% include 'ace/widget.html' with field=form.error %}
+    {% endif %}
+
+    {% if tests or tests_result %}
+    <div class="row ace-container ace-tests">
+        <label class="tests-title">Тесты</label>
         <div class="ace-control-bar">
-            <input class="run-button" type="submit" value="" />
+            <input class="run-button" type="submit" value=""
+                   onclick="ace_ajax.check_tests($('#editor-form-{{ code_num }}'));return false;"/>
         </div>
-    </div>
 
-    <div class="row ace-container ace-output mb-3">
-        <label for="id-{{ form.output.name }}-{{ num }}">{{ form.output.label }}:</label>
-        <div id="id-{{ form.output.name }}-{{ num }}" class="ace-editor"></div>
-        <textarea class="ace-editor-content" name="{{ form.output.name }}" id="id-{{ form.output.name }}-{{ num }}-content">{{ form.output.value|default:"" }}</textarea>
+        {% if tests_result %}
+            {% include 'executors/python36/tests_result.html' %}
+        {% elif tests %}
+            {% include 'executors/python36/tests.html' %}
+        {% endif %}
     </div>
-
+    {% endif %}
 </form>
 
 

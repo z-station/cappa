@@ -8,14 +8,17 @@ function set_editor_field(editor_id){
     /** Инициализировать Ace-редактор в div **/
     var editor_content_container = $("#" + editor_id + "-content"),
         editor_container = $("#" + editor_id),
+        readonly = editor_container.data("readonly"),
         editor = ace.edit(editor_id);
-        editor.getSession().setMode("ace/mode/python");
-        editor.setOption("showPrintMargin", false)  // убрать верт черту
-        editor.setOption("maxLines", "Infinity");    // авто-высота
-        editor.setHighlightActiveLine(false);       // убрать строку вделения
-        editor.renderer.setShowGutter(false);       // отключить вывод номеров строк
+    editor.getSession().setMode("ace/mode/python");
+    editor.setOption("showPrintMargin", false)   // убрать верт черту
+    editor.setOption("maxLines", "Infinity");    // авто-высота
+    editor.setHighlightActiveLine(false);        // убрать строку вделения
+    editor.renderer.setShowGutter(false);        // отключить вывод номеров строк
+    if(readonly){
+        editor.setReadOnly(true);  // для чтения
+    }
         //editor.renderer.$cursorLayer.element.style.display = "none" // скрыть позиицию курсора
-        //editor.setReadOnly(true);  // для чтения
         //editor_container.css("fontSize", '14px');
         //editor_container.css("background-color", '#f5f2f0');
         //editor_container.css("pointerEvents", 'none');

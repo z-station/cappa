@@ -1,0 +1,15 @@
+
+<table class="table">
+    <thead>
+        <th>Ввод</th>
+        <th>Правильный ответ</th>
+    </thead>
+    <tbody>
+        {% for test in tests %}
+        <tr>
+            <td>{{ test.input }}</td>
+            <td>{{ test.output }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

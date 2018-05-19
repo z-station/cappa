@@ -12,7 +12,12 @@ USE_L10N = True
 USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-MEDIA_ROOT   = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+try:
+    os.stat(MEDIA_ROOT)
+except:
+    os.mkdir(MEDIA_ROOT)
+
 # STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
 
 MEDIA_URL    = '/media/'
@@ -66,7 +71,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'tinymce',
     'project.courses',
-     'project.executors',
+    'project.executors',
     # 'project.groups',
     # 'project.modules',
     # 'admin_reorder',
@@ -118,3 +123,8 @@ CODE_FOR_MODELS = [
     'project.courses.models.TreeItem',
 
 ]
+CODE_TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
+try:
+    os.stat(CODE_TMP_DIR)
+except:
+    os.mkdir(CODE_TMP_DIR)

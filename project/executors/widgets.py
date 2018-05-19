@@ -1,15 +1,15 @@
 from django import forms
 from django.template import loader
-from django.utils import formats
 
 
-class AceEditorWidget(forms.Widget):
+class AceEditorAdminWidget(forms.Widget):
 
-    template_name = 'ace/widget.html'
+    template_name = 'ace/widget_admin.html'
 
     def value_from_datadict(self, data, files, name):
         return data.get(name)
 
     def render(self, name, value, attrs=None, renderer=None):
-        context = self.get_context(name, value, attrs)
+        self.attrs.update(attrs)
+        context = self.get_context(name, value, self.attrs)
         return loader.render_to_string(self.template_name, context)

@@ -1,16 +1,11 @@
 # -*- coding:utf-8 -*-
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
-from project.executors.models import Executor, Code
+from project.executors.models import Executor, Code, CodeTest, CodeSolution
 from project.executors.forms import CodeInlineForm, ExecutorInlineForm
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-
-
-class ExecutorAdmin(admin.ModelAdmin):
-    model = Executor
-
-admin.site.register(Executor, ExecutorAdmin)
+from project.executors.forms import TestInlineForm
 
 
 class ExecutorInline(GenericTabularInline):
@@ -20,6 +15,15 @@ class ExecutorInline(GenericTabularInline):
     max_num = 1
 
 
+class CodeTestAdmin(admin.ModelAdmin):
+    model = CodeTest
+    form = TestInlineForm
+
+admin.site.register(CodeTest, CodeTestAdmin)
+
+admin.site.register(CodeSolution)
+
+
 class CodeInline(GenericStackedInline):
     model = Code
     form = CodeInlineForm
@@ -27,7 +31,7 @@ class CodeInline(GenericStackedInline):
     fieldsets = (
         (
             "Код", {
-                "fields": ("content",("type", "executor",),),
+                "fields": ("input", "content", "type", "executor_type_id",),
                 "classes": ("collapse",),
             }
         ),
@@ -38,8 +42,8 @@ class CodeInline(GenericStackedInline):
             }
         ),
         (
-            "Ввод/вывод", {
-                "fields": ("input", "output",),
+            "Настройки пользовательских решений", {
+                "fields": (("save_solutions", "input_max_signs", "content_max_signs",), ),
                 "classes": ("collapse",),
             }
         ),

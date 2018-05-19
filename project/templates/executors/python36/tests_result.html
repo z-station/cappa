@@ -1,0 +1,21 @@
+
+<table class="table">
+<thead>
+    <th>Ввод</th>
+    <th>Правильный ответ</th>
+    <th>Вывод программы</th>
+    <th>Ошибки</th>
+    <th>Результат</th>
+</thead>
+<tbody>
+    {% for test in tests_result %}
+    <tr>
+        <td>{{ test.input }}</td>
+        <td>{{ test.output }}</td>
+        <td class="ace-editor" >{{ test.user_output }}</td>
+        <td class="ace-editor" >{% if test.error %}True{% else %}False{% endif %}</td>
+        <td class="ace-editor">{{ test.success }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>

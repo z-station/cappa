@@ -4,14 +4,11 @@ from project.courses.models import TreeItem
 from django.shortcuts import get_object_or_404
 
 
-
 class CatalogRootView(TemplateView):
     """
     Render courses root page
     """
     template_name = 'courses/root.html'
-
-
 
     def get_context_data(self, **kwargs):
         context = super(CatalogRootView, self).get_context_data(**kwargs)

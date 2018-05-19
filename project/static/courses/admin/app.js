@@ -586,14 +586,12 @@ CatalogApp.ListItemsView = Backbone.View.extend({
 function dismissChangeRelatedObjectPopup(win) {
     win.close();
     location.reload();
-
 }
 
 function dismissAddRelatedObjectPopup(win) {
     win.close();
     location.reload();
 }
-
 
 $(document).ready(function(){
     var catalogTreeOneView = new CatalogApp.TreeView({});

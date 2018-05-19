@@ -31,7 +31,7 @@ class TreeItem(MPTTModel):
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
     about = HTMLField(verbose_name="Описание", default="", blank=True, null=True)
     content = HTMLField(verbose_name="Содержимое", default="", blank=True, null=True)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,verbose_name="Автор")
 
     def __str__(self):
         return self.title
@@ -68,8 +68,6 @@ class TreeItem(MPTTModel):
         """Для получения url текущего элемента используется метод get_complete_slug см.выше  """
         path = self.get_complete_slug()
         return reverse('courses-item', kwargs={'path': path})
-
-
 
     def move_to(self, target, position='first-child'):
         """
