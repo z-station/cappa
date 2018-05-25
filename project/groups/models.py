@@ -1,7 +1,12 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models.signals import m2m_changed, post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
+from project.courses.models import TreeItem
+from project.executors.models import CodeSolution
 from project.modules.models import Module
 from project.modules.fields import JSONField
 
@@ -24,7 +29,6 @@ class Group(models.Model):
     owners = models.ManyToManyField(User, verbose_name='Владельцы', related_name='ownership')
     members = models.ManyToManyField(User, verbose_name='Пользователи', related_name='membership', blank=True)
     modules = models.ManyToManyField(Module, verbose_name='Модули', blank=True, through='ModuleData')
-    progress = JSONField(blank=True, null=True)
     state = models.IntegerField(verbose_name='Статус', choices=STATE, default=CLOSE)
     codeword = models.CharField(max_length=64, help_text='Введите кодовое слово', verbose_name='Код', blank=True)
     created_at = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
@@ -56,6 +60,9 @@ class Group(models.Model):
     def get_owners_usernames(self):
         return ' ,'.join([owner.username for owner in self.owners.all()])
 
+    def get_members(self):
+        return self.owners.all() | self.members.all()
+
     def get_members_number(self):
         return self.owners.count() + self.members.count()
 
@@ -79,6 +86,7 @@ class ModuleData(models.Model):
     )
 
     module = models.ForeignKey(Module, verbose_name='Модуль')
+    progress = JSONField(blank=True)
     group = models.ForeignKey(Group, verbose_name='Группа', related_name='data')
     state = models.IntegerField(verbose_name='Статус', choices=STATE, default=STOCK)
     open_at = models.DateTimeField(verbose_name='Открыть', default=timezone.now)
@@ -106,3 +114,73 @@ class ModuleData(models.Model):
     @staticmethod
     def format_time(time):
         return time.strftime('%H:%M (%a, %d.%m.%y)')
+
+
+@receiver(m2m_changed, sender=Group.owners.through)
+@receiver(m2m_changed, sender=Group.members.through)
+def changed_members(sender, **kwargs):
+    instance, action, pk_set = kwargs.pop('instance'), kwargs.pop('action'), kwargs.pop('pk_set')
+    if action == 'post_add':
+        for data in instance.data.all():
+            init_progress(data.progress, pk_set, data.module.tasks.all())
+            data.save()
+    elif action == 'post_remove':
+        for data in instance.data.all():
+            for pk in pk_set:
+                data.progress.pop(str(pk), None)
+            data.save()
+
+
+@receiver(m2m_changed, sender=Module.tasks.through)
+def changed_tasks(sender, **kwargs):
+    instance, action, pk_set = kwargs.pop('instance'), kwargs.pop('action'), kwargs.pop('pk_set')
+    if action == 'post_add':
+        module_data = ModuleData.objects.filter(module__pk=instance.pk)
+        for data in module_data:
+            for pk in pk_set:
+                data.progress['tasks'][pk] = TreeItem.objects.get(pk=pk).title
+            update_progress(data.progress, data.group.get_members(), pk_set)
+            data.save()
+    elif action == 'post_remove':
+        module_data = ModuleData.objects.filter(module__pk=instance.pk)
+        for data in module_data:
+            for pk in pk_set:
+                task_pk = str(pk)
+                data.progress['tasks'].pop(task_pk, None)
+                for user in data.group.get_members():
+                    data.progress[str(user.pk)].pop(task_pk, None)
+            data.save()
+
+
+@receiver(post_save, sender=ModuleData)
+def saved_modules(sender, created, **kwargs):
+    if created:
+        instance = kwargs.pop('instance')
+        instance.progress = {'tasks': {}}
+        tasks = instance.module.tasks.all()
+        for task in tasks:
+            instance.progress['tasks'][task.pk] = task.title
+        init_progress(instance.progress, {user.pk for user in instance.group.get_members()}, tasks)
+        instance.save()
+
+
+def init_progress(progress, user_pk_set, tasks):
+    for user_pk in user_pk_set:
+        progress[user_pk] = {'name': User.objects.get(pk=user_pk).username, }
+        for task in tasks:
+            try:
+                solution = CodeSolution.objects.get(code__pk=task.pk, user__pk=user_pk)
+                progress[user_pk][task.pk] = [solution.pk, solution.success, ]
+            except ObjectDoesNotExist:
+                progress[user_pk][task.pk] = [None, None, ]
+
+
+def update_progress(progress, users, task_pk_set):
+    for user in users:
+        user_pk = str(user.pk)
+        for task_pk in task_pk_set:
+            try:
+                solution = CodeSolution.objects.get(code__pk=task_pk, user__pk=user.pk)
+                progress[user_pk][task_pk] = [solution.pk, solution.success, ]
+            except ObjectDoesNotExist:
+                progress[user_pk][task_pk] = [None, None, ]

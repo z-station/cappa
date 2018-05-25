@@ -46,7 +46,7 @@
             </thead>
             <tbody>
             {% for task in tasks %}
-                <tr onclick="window.location.href='{% url "cms-item" task.get_complete_slug %}'">
+                <tr onclick="window.location.href='{% url "courses-item" task.get_complete_slug %}'">
                     <td>{{ forloop.counter }}</td>
                     <td>{{ task.title }}</td>
                 </tr>

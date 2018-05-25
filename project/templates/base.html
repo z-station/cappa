@@ -31,7 +31,21 @@
             <div class="row" >
             {% block container %}
                 <div class="col-lg-3" >
-                    {% block sidebar %}{% endblock %}
+                    {% block sidebar %}
+                        <ul  class="list-unstyled">
+                            <li>
+                                <a href="{% url 'groups:my_groups' %}">Мои группы</a> |
+                                <a href="{% url 'groups:groups' %}">Группы</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'modules:my_modules' %}">Мои модули</a> |
+                                <a href="{% url 'modules:modules' %}">Модули</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'courses-root' %}">Курсы</a>
+                            </li>
+                        </ul>
+                    {% endblock %}
                 </div>
                 <div class="col-lg-8" >
                     {% block content %}{% endblock %}

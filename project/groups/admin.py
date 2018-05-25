@@ -28,6 +28,7 @@ class ModuleDataFormset(forms.models.BaseInlineFormSet):
 
 class ModuleDataInline(admin.TabularInline):
     model = ModuleData
+    fields = ['module', 'state', 'open_at', 'close_at']
     verbose_name = 'Модуль в группе'
     verbose_name_plural = 'Модули в группе'
     formset = ModuleDataFormset

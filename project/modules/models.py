@@ -1,14 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from project.cms.models import Task
+from project.courses.models import TreeItem
 
 
 class Module(models.Model):
     name = models.CharField(max_length=64, help_text='Введите название модуля', verbose_name='Название')
     comment = models.TextField(help_text='Введите комментарий к модулю', verbose_name='Комментарий', blank=True)
     owner = models.ForeignKey(User, verbose_name='Владелец', related_name='modules')
-    tasks = models.ManyToManyField(Task, blank=True)
+    tasks = models.ManyToManyField(TreeItem, blank=True)
     updated_at = models.DateTimeField(verbose_name='Изменен', auto_now=True)
 
     class Meta:

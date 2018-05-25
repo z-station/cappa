@@ -21,8 +21,8 @@ class JSONField(models.TextField):
     """
 
     def to_python(self, value):
-        if value == "":
-            return None
+        if value == '':
+            return {}
         try:
             if isinstance(value, str):
                 return json.loads(value)
@@ -34,8 +34,6 @@ class JSONField(models.TextField):
         return self.to_python(value)
 
     def get_db_prep_save(self, value, *args, **kwargs):
-        if value == "":
-            return None
         if isinstance(value, dict):
             value = json.dumps(value, cls=DjangoJSONEncoder)
         return value

@@ -4,13 +4,13 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from project.cms.models import Task
+from project.courses.models import TreeItem
 from project.modules.models import Module
 
 
 class ModuleAdminForm(forms.ModelForm):
     tasks = forms.ModelMultipleChoiceField(
-        queryset=Task.objects.all(),
+        queryset=TreeItem.objects.all(),
         required=False,
         label="Задачи",
         widget=FilteredSelectMultiple(

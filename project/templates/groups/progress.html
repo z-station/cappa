@@ -1,0 +1,52 @@
+{% extends 'groups/base.html' %}
+
+{% block title %}{{ group.name }}{% endblock %}
+{% block content_title %}{{ group.name }}{% endblock %}
+{% block content %}
+    <div class="row">
+        {% if position == group.OWNER %}
+            <!--владелец-->
+
+        {% else %}
+            <!--участник-->
+
+        {% endif %}
+    </div>
+
+    {% if data %}
+        {% for table in data %}
+            <table border="1">
+                <caption>Прогресс модуля {{ table.0.0 }}</caption>
+                {% for row in table %}
+                    {% if forloop.first %}
+                        <tr bgcolor=#AFEEEE align="center">
+                    {% elif forloop.counter|divisibleby:"2" %}
+                        <tr bgcolor=#E0FFFF align="center">
+                    {% else %}
+                        <tr align="center">
+                    {% endif %}
+                        {% for cell in row %}
+                            <td>
+                                {% if forloop.first %}
+                                    <i>
+                                        {% if forloop.parentloop.first %}
+                                            <b>{{ cell }}</b>
+                                        {% else %}
+                                            {{ cell }}
+                                        {% endif %}
+                                    </i>
+                                {% elif forloop.parentloop.first %}
+                                    <b>{{ cell }}</b>
+                                {% else %}
+                                    {{ cell }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    {% else %}
+        Нет прогресса.
+    {% endif %}
+{% endblock %}

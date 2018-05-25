@@ -32,9 +32,12 @@
     </div>
 
     {% if position %}
-        {% if position == group.OWNER %}
-            <!--владелец-->
-            <div class="row">
+        <div class="row">
+            <form action="{% url 'groups:progress' group.id %}">
+                <input type="submit" class="btn btn-primary" value="Progress" />
+            </form>
+            {% if position == group.OWNER %}
+                <!--владелец-->
                 <form action="{% url 'admin:groups_group_change' group.id %}">
                     <input type="submit" class="btn btn-primary" value="Change" />
                 </form>
@@ -44,16 +47,14 @@
                 <form action="{% url 'admin:groups_group_delete' group.id %}">
                     <input type="submit" class="btn" value="Delete" />
                 </form>
-            </div>
-        {% else %}
-            <!--участник-->
-            <div class="row">
+            {% else %}
+                <!--участник-->
                 <form action="{% url 'groups:join' group.id %}" method="post">
                     {% csrf_token %}
                     <input type="submit" class="btn" value="Leave" />
                 </form>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
 
         {% if modules_data %}
             <table class="table table-hover">
@@ -68,8 +69,8 @@
                 </thead>
                 <tbody>
                 {% for data in modules_data %}
-                    {% if data.state != data.HIDE or position == group.OWNER%}
-                        {% if data.get_stock or position == group.OWNER%}
+                    {% if data.state != data.HIDE or position == group.OWNER %}
+                        {% if data.get_stock or position == group.OWNER %}
                             <tr onclick="window.location.href='{% url "modules:module" data.module.id %}'">
                         {% else %}
                             <tr class="group-close">
