@@ -29,13 +29,31 @@
     text-transform: none !important;
 }
 
-.dynamic-executors-code-content_type-object_id {
-    margin-bottom:10px;
-}
-.dynamic-executors-code-content_type-object_id h3 {
+.inline-related.dynamic-executors-code-content_type-object_id {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+
 }
 
-/*.code-fieldset .form-row {*/
-    /*display: flex;*/
-    /*justify-content: flex-start;*/
-/*}*/
+.add-row {
+    margin-bottom: 20px;
+}
+
+.inline-group.nested-inline.cloned {
+    /*display: none;*/
+}
+
+.inline-group.nested-inline.cloned .tabular{
+    display: none;
+}
+
+.inline-group.nested-inline.cloned:before {
+    content:"Тесты доступны после сохранения блока кода";
+    height:20px;
+    position: relative;
+    display: block;
+    background: #f8f8f8;
+    color: #666;
+    padding: 8px;
+    font-size: 12px;
+}

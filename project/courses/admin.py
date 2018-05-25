@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import json
 from django.contrib.admin.utils import label_for_field
 from django.template.response import TemplateResponse
 from django.conf.urls import url
 from django.utils.functional import Promise
 from django.utils.encoding import force_text
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.exceptions import ValidationError, PermissionDenied
-from django.db.models.fields import FieldDoesNotExist
+from django.core.exceptions import PermissionDenied
 from django.apps import apps
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from project.courses.models import TreeItem
 from project.courses.grid import GridRow
 from django.contrib import admin
+from project.executors.nested_inline.admin import NestedModelAdmin
 
 
 class LazyEncoder(DjangoJSONEncoder):
@@ -28,7 +27,7 @@ class LazyEncoder(DjangoJSONEncoder):
         return super(LazyEncoder, self).default(obj)
 
 
-class TreeItemAdmin(admin.ModelAdmin):
+class TreeItemAdmin(NestedModelAdmin):
     """ Класс ModelAdmin – это отображение модели в интерфейсе администратора """
 
     change_list_template = 'admin/courses/tree_list.html'
@@ -36,8 +35,9 @@ class TreeItemAdmin(admin.ModelAdmin):
     list_display = ("title", "about",)
     exclude = ("author",)
     prepopulated_fields = {"slug": ("title",)}
+    inlines = []
 
-    def save_model(self,request,obj, form,change):
+    def save_model(self, request, obj, form, change):
         obj.author = request.user
         obj.save()
 
@@ -78,10 +78,8 @@ class TreeItemAdmin(admin.ModelAdmin):
         node['data'] = {}
         change_link = reverse('admin:courses_treeitem_change', args=(treeitem.id,))
 
-        # copy_link = reverse('admin:courses_treeitem_add') + '?copy=%d' % treeitem.id
         watch_link = reverse('courses-item', args=(treeitem.get_complete_slug(),))
         node['data']['change_link'] = change_link
-        # node['data']['copy_link'] = copy_link
         node['data']['watch_link'] = watch_link
 
         if treeitem.leaf is False:
@@ -226,5 +224,6 @@ class TreeItemAdmin(admin.ModelAdmin):
             url(r'^list_children/(\d+)$', self.admin_site.admin_view(self.list_children)),
             url(r'^list_children/', self.admin_site.admin_view(self.list_children)),
             ] + super(TreeItemAdmin, self).get_urls()
+
 
 admin.site.register(TreeItem, TreeItemAdmin)

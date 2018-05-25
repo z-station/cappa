@@ -4,10 +4,11 @@
 {% block extrastyle %}
     {{ block.super }}
     {{ media.css }}
-    <link rel="stylesheet" href="{% static 'courses/admin/jstree/default/style.min.css' %}">
-    <link rel="stylesheet" href="{% static 'courses/admin/tablesorter/style.css' %}">
-    <link rel="stylesheet" href="{% static 'courses/admin/jquery-ui/jquery-ui.css' %}">
-    <link rel="stylesheet" href="{% static 'courses/admin/courses.css' %}">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jstree/default/style.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jstree/default/style.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/tablesorter/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/courses.css">
 
     {% if not actions_on_top and not actions_on_bottom %}
         <style>
@@ -19,19 +20,19 @@
 {% block extrahead %}
     {{ block.super }}
     {{ media.js }}
-    <script src="/static/admin/js/core.js"></script>
-    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js">  </script>
-    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-    <script src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/vendor/jquery/jquery.js">  </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-    <script src="{% static 'courses/admin/jquery-ui/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'courses/admin/underscore.min.js' %}"></script>
-    <script src="{% static 'courses/admin/jquery.cookie.js' %}"></script>
-    <script src="{% static 'courses/admin/backbone.js' %}"></script>
-    <script src="{% static 'courses/admin/jstree/jstree.min.js' %}"></script>
-    <script src="{% static 'courses/admin/tablesorter/jquery.tablesorter.js' %}"></script>
-    <script src="{% static 'courses/admin/modernizr.localstorage.min.js' %}"></script>
-    <script src="{% static 'courses/admin/app.js' %}"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jquery-ui/jquery-ui.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/underscore.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/backbone.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jstree/jstree.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/tablesorter/jquery.tablesorter.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/modernizr.localstorage.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/app.js"></script>
     <script>
         function dismissAddAnotherPopup(win) {
             win.close();

@@ -4,9 +4,8 @@ import subprocess
 import os
 import uuid
 import re
-from project.executors.models import EXEC_FOLDERS, PYTHON36
-
-TMP_DIR = os.path.join(settings.CODE_TMP_DIR, EXEC_FOLDERS[PYTHON36])
+from project.executors.models import Executor
+TMP_DIR = os.path.join(settings.CODE_TMP_DIR, Executor.EXEC_FOLDERS[Executor.PYTHON36])
 
 try:
     os.stat(TMP_DIR)
@@ -15,8 +14,6 @@ except:
 
 
 class TmpFile:
-
-    TMP_DIR = os.path.join(settings.CODE_TMP_DIR, EXEC_FOLDERS[PYTHON36])
 
     def __init__(self, extension="py"):
         self.filename = "%s.%s" % (uuid.uuid4(), extension)
@@ -47,7 +44,7 @@ def execute_code(code, content, input):
         # preexec_fn=set_process_limits,
     )
 
-    stdout, stderr = proc.communicate(stdin, timeout=30)
+    stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
     # status = proc.returncode
     tmp_file.remove()
 
@@ -72,7 +69,7 @@ def check_tests(code, content, tests):
         )
 
         stdin = bytes(test.input, 'utf-8')
-        stdout, stderr = proc.communicate(stdin, timeout=30)
+        stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
         # status = proc.returncode
         output = stdout.decode("utf-8").rstrip('\r\n')
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))

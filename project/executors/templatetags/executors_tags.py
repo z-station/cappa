@@ -44,17 +44,20 @@ class ExecutorNode(template.Node):
                 code = Code.objects.get(id=code_ids[i])
                 tests = CodeTest.objects.filter(code=code)
                 try:
-                    code_solved = CodeSolution.objects.get(code=code, user=context["request"].user).success
-                except CodeSolution.DoesNotExist:
+                    code_solution = CodeSolution.objects.get(code=code, user=context["request"].user)
+                    code_solved = code_solution.success
+                except:
                     code_solved = False
 
                 code_context = {
                     "code_solved": code_solved,
                     "form": CodeForm(instance=code),
                     "code_num": i,
-                    "csrf_token": context["csrf_token"],
                     "code_id": code_ids[i],
+                    "show_tests": code.show_tests,
+                    "show_input": code.show_input,
                     "tests": tests,
+                    "csrf_token": context["csrf_token"],
                 }
                 code_node = render_to_string(code.get_template(), code_context)
                 result_str += code_node

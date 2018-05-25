@@ -1,4 +1,5 @@
-<pre><code class="language-python">{{ form.content.value|default:"" }}</code></pre>
-
+{% if form.content.value %}
+    <pre><code class="language-python">{{ form.content.value }}</code></pre>
+{% endif %}
 
 

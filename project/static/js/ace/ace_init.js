@@ -61,6 +61,7 @@ $(function(){
 
     /** При добавлении элемента кода **/
     $('.add-row').on("click", function(){
+        console.log("add");
         update_editor_fields();
         change_new_code_block_title();
     });

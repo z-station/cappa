@@ -1,4 +1,4 @@
-from project.executors.models import Code, Executor, CodeTest, EXEC_TYPES, PYTHON36
+from project.executors.models import Code, Executor, CodeTest
 from django import forms
 from project.executors.widgets import AceEditorAdminWidget
 
@@ -10,12 +10,13 @@ class ExecutorInlineForm(forms.ModelForm):
 
     type_id = forms.ChoiceField(
         label="Исполнитель", required=True,
-        choices=EXEC_TYPES, initial=PYTHON36,
+        choices=Executor.EXEC_TYPES, initial=Executor.PYTHON36,
         help_text="так-же влияет на цветовую схему кода"
     )
 
 
 class CodeForm(forms.ModelForm):
+    """ Для user-интерфейса """
     class Meta:
         model = Code
         fields = ("input", "content", )
@@ -34,7 +35,9 @@ class CodeForm(forms.ModelForm):
     )
 
 
-class CodeInlineForm(forms.ModelForm):
+class CodeInlineAdminForm(forms.ModelForm):
+    """ Для Админ инлайн-интерфейса """
+
     class Meta:
         model = Code
         fields = "__all__"
@@ -53,21 +56,11 @@ class CodeInlineForm(forms.ModelForm):
         css = {'all': ('css/ace/ace_admin.css',)}
 
 
-class TestInlineForm(forms.ModelForm):
+class CodeTestInlineAdminForm(forms.ModelForm):
     class Meta:
         model = CodeTest
-        fields = ("input", "output", "code", )
+        fields = ("input", "output", )
         widgets = {
             "input": AceEditorAdminWidget(),
             "output": AceEditorAdminWidget(),
         }
-
-    class Media:
-        js = (
-            "//code.jquery.com/jquery-3.3.1.min.js",
-            "js/ace/ace_editor_v1.3.2.js",
-            "js/ace/mode_python.js",
-            "js/ace/ace_init.js",
-        )
-        css = {'all': ('css/ace/ace_admin.css',)}
-

@@ -1,4 +1,4 @@
-
+<script src=/static/js/prism.js></script>
 <table class="table">
     <thead>
         <th>Ввод</th>
@@ -7,8 +7,8 @@
     <tbody>
         {% for test in tests %}
         <tr>
-            <td>{{ test.input }}</td>
-            <td>{{ test.output }}</td>
+            <td><pre><code class="language-python">{{ test.input|default:"" }}</code></pre></td>
+            <td><pre><code class="language-python">{{ test.output|default:"" }}</code></pre></td>
         </tr>
         {% endfor %}
     </tbody>

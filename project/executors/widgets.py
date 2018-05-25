@@ -4,7 +4,7 @@ from django.template import loader
 
 class AceEditorAdminWidget(forms.Widget):
 
-    template_name = 'ace/widget_admin.html'
+    template_name = 'admin/executors/ace/widget.html'
 
     def value_from_datadict(self, data, files, name):
         return data.get(name)
