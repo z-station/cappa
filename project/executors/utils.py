@@ -34,16 +34,18 @@ def create_or_update_solution(type, user, code, content, input="", tests_result=
             code_solution.execute_count += 1
 
         elif type == CodeSolution.CHECK_TESTS:
-            total_success = True
+            tests_success = False
             for test in tests_result:
                 new_solution["tests"].append({
                     "id": test["id"],
                     "success": test["success"],
                 })
-                total_success = total_success or test["success"]  # если уже было удачное решение то не перезаписывать
-            new_solution["success"] = total_success
+                tests_success = tests_success or test["success"]  # если уже было удачное решение то не перезаписывать
+            new_solution["success"] = tests_success
             code_solution.check_tests_count += 1
-            code_solution.success = total_success
+            # если еще нет удачного решения и тесты пройдены то задача решена
+            if not code_solution.success and tests_success:
+                code_solution.success = True
 
         details = json.loads(code_solution.details)
         details["solutions"].append(new_solution)

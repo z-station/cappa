@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.admin.utils import label_for_field
+from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.conf.urls import url
 from django.utils.functional import Promise
@@ -10,9 +11,9 @@ from django.core.exceptions import PermissionDenied
 from django.apps import apps
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
+from django import forms
 from project.courses.models import TreeItem, TreeItemFlat
 from project.courses.grid import GridRow
-from django.contrib import admin
 from project.executors.nested_inline.admin import NestedModelAdmin
 
 
@@ -32,7 +33,7 @@ class TreeItemAdmin(NestedModelAdmin):
 
     change_list_template = 'admin/courses/tree_list.html'
     model = TreeItem
-    list_display = ("title",)
+    list_display = ("title", "author", "show")
     exclude = ("author",)
     prepopulated_fields = {"slug": ("title",)}
     inlines = []
@@ -136,10 +137,12 @@ class TreeItemAdmin(NestedModelAdmin):
                     target = TreeItem.objects.get(id=target_id)
                 except TreeItem.DoesNotExist:
                     message = 'Элемент курса не найден'
-                    return JsonResponse({'status': 'error',
-                                         'type_message': 'error',
-                                         'message': message},
-                                        encoder=LazyEncoder,)
+                    return JsonResponse({'status': 'error', 'type_message': 'error', 'message': message}, encoder=LazyEncoder)
+
+                if node.slug and not TreeItem.check_slug(target, position, node.slug, node=node):
+                    message = 'Передвижение невозможно, ' \
+                              'на данном уровне есть элемент с таким-же слагом: "%s"' % node.slug
+                    return JsonResponse({'status': 'error', 'type_message': 'error', 'message': message}, encoder=LazyEncoder)
 
                 node.move_to(target, position)
                 message = 'Успешное перемещение'
@@ -213,8 +216,44 @@ class TreeItemAdmin(NestedModelAdmin):
 
         response['fields'] = fields
         response['nodes'] = nodes
-
         return JsonResponse(response, safe=False, encoder=LazyEncoder)
+
+    def get_form(self, request, obj=None, **kwargs):
+        """ Метод возвращает класс формы, переопределим метод валидации слага
+            при создании нового элемента курса, проверяя наличие такого слага на данном уровне дерева"""
+        # TODO не самое изящное решение, переделать
+
+        FormClass = super(TreeItemAdmin, self).get_form(request, obj, **kwargs)
+
+        class ModelFormCatalogWrapper(FormClass):
+
+            def clean_slug(self):
+                slug = self.cleaned_data['slug']
+                if obj is None:
+                    node = None
+                    target = None
+                    position = 'last-child'
+                else:
+                    node = obj
+                    target = node
+                    position = 'left'
+                target_id = request.GET.get('target', None)
+                copy_id = request.GET.get('copy', None)
+                if target_id or copy_id:
+                    try:
+                        if target_id:
+                            target = TreeItem.objects.get(pk=target_id)
+                        elif copy_id:
+                            target = TreeItem.objects.get(pk=copy_id).parent
+                    except TreeItem.DoesNotExist:
+                        pass
+                    position = 'last-child'
+                if not TreeItem.check_slug(target, position, slug, node):
+                    message = 'На данном уровне есть элемент с таким-же слагом: "%s"' % self.cleaned_data['slug']
+                    raise forms.ValidationError(message)
+                return slug
+
+        return ModelFormCatalogWrapper
 
     def get_urls(self):
         return [
@@ -234,5 +273,42 @@ class TreeItemFlatAdmin(NestedModelAdmin):
     list_display = ("title", "author", "show")
     list_editable = ("show", "author")
     search_fields = ("title", "author__username",)
+    prepopulated_fields = {"slug": ("title",), }
 
+    def get_form(self, request, obj=None, **kwargs):
+        """ Метод возвращает класс формы, переопределим метод валидации слага
+        при создании нового элемента курса, проверяя наличие такого слага на данном уровне дерева"""
+        # TODO не самое изящное решение, переделать
+
+        FormClass = super(TreeItemFlatAdmin, self).get_form(request, obj, **kwargs)
+
+        class ModelFormCatalogWrapper(FormClass):
+
+            def clean_slug(self):
+                slug = self.cleaned_data['slug']
+                if obj is None:
+                    node = None
+                    target = None
+                    position = 'last-child'
+                else:
+                    node = obj
+                    target = node
+                    position = 'left'
+                target_id = request.GET.get('target', None)
+                copy_id = request.GET.get('copy', None)
+                if target_id or copy_id:
+                    try:
+                        if target_id:
+                            target = TreeItem.objects.get(pk=target_id)
+                        elif copy_id:
+                            target = TreeItem.objects.get(pk=copy_id).parent
+                    except TreeItem.DoesNotExist:
+                        pass
+                    position = 'last-child'
+                if not TreeItem.check_slug(target, position, slug, node):
+                    message = 'На данном уровне есть элемент с таким-же слагом: "%s"' % self.cleaned_data['slug']
+                    raise forms.ValidationError(message)
+                return slug
+
+        return ModelFormCatalogWrapper
 admin.site.register(TreeItemFlat, TreeItemFlatAdmin)

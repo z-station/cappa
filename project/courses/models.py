@@ -19,18 +19,18 @@ class TreeItem(MPTTModel):
         related_name='children',
         editable=False,
         on_delete=models.CASCADE,
-        verbose_name="Родительский элемент",
+        verbose_name="родительский элемент",
         null=True, blank=True,
     )
 
     leaf = False
-    show = models.BooleanField(verbose_name="Отображать", default=True)
-    last_modified = models.DateTimeField(verbose_name="Дата последнего изменения", auto_now=True)
-    title = models.CharField(max_length=255, verbose_name="Заголовок")
-    slug = models.SlugField(verbose_name="url", unique=True, max_length=255)
-    long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
-    about = HTMLField(verbose_name="Описание", default="", blank=True, null=True)
-    content = HTMLField(verbose_name="Содержимое", default="", blank=True, null=True)
+    show = models.BooleanField(verbose_name="отображать", default=True)
+    last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
+    title = models.CharField(max_length=255, verbose_name="заголовок")
+    slug = models.SlugField(verbose_name="слаг", max_length=255)
+    long_title = models.CharField(max_length=255, verbose_name="длинный заголовок", blank=True, null=True)
+    about = HTMLField(verbose_name="описание", default="", blank=True, null=True)
+    content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
     author = models.ForeignKey(User, verbose_name="Автор", on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -47,6 +47,23 @@ class TreeItem(MPTTModel):
         cache.delete(self.cache_url_key())
         for child in self.get_children():
             child.clear_cache()
+
+    @classmethod
+    def check_slug(self, target, position, slug, node):
+        """ Проверяет уникальность слага на данном уровне дерева
+            Если слаг уникальный возвращает True
+            используется при переносе элемента по дереву """
+        if target is None:
+            siblings = TreeItem.objects.root_nodes()
+        else:
+            if position == 'first-child' or position == 'last-child':
+                siblings = target.get_children()
+            else:
+                siblings = target.get_siblings(include_self=True)
+        for sibling in siblings:
+            if sibling != node and sibling.slug == slug:
+                return False
+        return True
 
     def get_complete_slug(self):
         """ Если имеется url в cache то возвращаем url,

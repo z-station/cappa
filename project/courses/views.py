@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import DetailView, TemplateView
 from project.courses.models import TreeItem
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 
 class CatalogRootView(TemplateView):
-    """
-    Render courses root page
-    """
+    """ Срендерить корневую страницу курсов """
     template_name = 'courses/root.html'
 
     def get_context_data(self, **kwargs):
@@ -17,9 +15,8 @@ class CatalogRootView(TemplateView):
 
 
 class CatalogItemView(DetailView):
-    """
-    Render courses page for object
-    """
+    """ Идентифицировать по url элемент курса и срендерить его
+        или вернуть 404 """
     template_name = "courses/treeitem.html"
 
     def get_object(self, queryset=None):
@@ -27,5 +24,12 @@ class CatalogItemView(DetailView):
         if path.endswith('/'):
             path = path[:-1]
         slug = path.split('/')[-1]
-        item = get_object_or_404(TreeItem, slug=slug)
-        return item
+        items = TreeItem.objects.filter(slug=slug)
+        if items.exists():
+            if len(items) == 1:
+                return items[0]
+            else:
+                for item in items:
+                    if item.get_complete_slug() == path:
+                        return item
+        return Http404

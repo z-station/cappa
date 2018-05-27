@@ -116,9 +116,9 @@
             <script type="text/template" id="field_tpl">
                 <% if(field.type == 'checkbox'){
                       if(field.value == 't') { %>
-                          <img src="{% static 'admin/img/icon-yes.gif' %}" alt="<%= field.value %>">
+                          <img src="{% static 'admin/img/icon-yes.svg' %}" alt="<%= field.value %>">
                       <% } else { %>
-                          <img src="{% static 'admin/img/icon-no.gif' %}" alt="<%= field.value %>">
+                          <img src="{% static 'admin/img/icon-no.svg' %}" alt="<%= field.value %>">
                       <% } %>
                 <% } else if (field.type == 'select'){ %>
                     <%= field.correct_values[field.value] %>
