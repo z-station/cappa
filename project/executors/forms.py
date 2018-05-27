@@ -35,6 +35,28 @@ class CodeForm(forms.ModelForm):
     )
 
 
+class CodeAdminForm(forms.ModelForm):
+    """ Для Админ интерфейса """
+
+    class Meta:
+        model = Code
+        fields = "__all__"
+        widgets = {
+            "content": AceEditorAdminWidget(),
+            "input": AceEditorAdminWidget(),
+            "solution": AceEditorAdminWidget(),
+        }
+
+    class Media:
+        js = (
+            "//code.jquery.com/jquery-3.3.1.min.js",
+            "js/ace/ace_editor_v1.3.2.js",
+            "js/ace/mode_python.js",
+            "js/ace/ace_init.js",
+        )
+        css = {'all': ('css/ace/ace_admin.css',)}
+
+
 class CodeInlineAdminForm(forms.ModelForm):
     """ Для Админ инлайн-интерфейса """
 
@@ -57,6 +79,7 @@ class CodeInlineAdminForm(forms.ModelForm):
 
 
 class CodeTestInlineAdminForm(forms.ModelForm):
+    """ Для Админ инлайн-интерфейса """
     class Meta:
         model = CodeTest
         fields = ("input", "output", )

@@ -10,9 +10,9 @@ Context = template.Context
 
 
 class ExecutorNode(template.Node):
-    def __init__(self, obj, raw_str):
+    def __init__(self, treeitem, raw_str):
         self.raw_str = template.Variable(raw_str)
-        self.obj = template.Variable(obj)
+        self.treeitem = template.Variable(treeitem)
 
         self.code_tag_pattern = re.compile(r'<\w+>[&nbsp;]*#code[0-9]+#[&nbsp;]*</\w+>|[&nbsp;]*#code[0-9]+#[&nbsp;]*')
         self.id_code_pattern = re.compile(r'[0-9]+')
@@ -23,7 +23,7 @@ class ExecutorNode(template.Node):
         # разделилим строку по блокам, которые будут между блоков кода
         raw_str = self.raw_str.resolve(context)
         str_nodes = re.split(self.code_tag_pattern, raw_str)
-
+        treeitem = self.treeitem.resolve(context)
         # чтобы порядок блоков текста кода был всегда один
         if raw_str.endswith("#"): str_nodes.append("")
         if raw_str.startswith("#"): str_nodes.insert(0, "")
@@ -41,7 +41,7 @@ class ExecutorNode(template.Node):
         for i in range(len(code_ids)):
             result_str += str_nodes[i]
             try:
-                code = Code.objects.get(id=code_ids[i])
+                code = Code.objects.get(id=code_ids[i], treeitem=treeitem)
                 tests = CodeTest.objects.filter(code=code)
                 try:
                     code_solution = CodeSolution.objects.get(code=code, user=context["request"].user)
@@ -82,8 +82,8 @@ def show_executors(parser, token):
         и замена их на срендеренные шаблоны кода"""
     try:
         content = token.split_contents()
-        obj = content[3]
+        treeitem = content[3]
         raw_str = content[1]
     except:
-        raise template.TemplateSyntaxError("Invalid syntax. Use {% show_with_executors [<raw_html_str>] %}")
-    return ExecutorNode(obj, raw_str)
+        raise template.TemplateSyntaxError("Invalid syntax. Use {% show_executors object.content for object %}")
+    return ExecutorNode(treeitem, raw_str)

@@ -1,3 +1,4 @@
+@charset "utf-8";
 .ace-container {
     padding: 15px 10px;
 
@@ -29,7 +30,7 @@
     text-transform: none !important;
 }
 
-.inline-related.dynamic-executors-code-content_type-object_id {
+.inline-related.dynamic-code_set {
     border: 1px solid #ccc;
     margin-bottom: 20px;
 

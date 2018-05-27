@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.apps import apps
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-from project.courses.models import TreeItem
+from project.courses.models import TreeItem, TreeItemFlat
 from project.courses.grid import GridRow
 from django.contrib import admin
 from project.executors.nested_inline.admin import NestedModelAdmin
@@ -32,7 +32,7 @@ class TreeItemAdmin(NestedModelAdmin):
 
     change_list_template = 'admin/courses/tree_list.html'
     model = TreeItem
-    list_display = ("title", "about",)
+    list_display = ("title",)
     exclude = ("author",)
     prepopulated_fields = {"slug": ("title",)}
     inlines = []
@@ -87,7 +87,7 @@ class TreeItemAdmin(NestedModelAdmin):
             node['data']['add_links'].append(
                 {
                    'url': reverse('admin:courses_treeitem_add') + '?target=%s' % treeitem.id,
-                   'label': 'Добавить элемент курса'
+                   'label': 'Добавить элемент'
                 }
             )
         return node
@@ -227,3 +227,12 @@ class TreeItemAdmin(NestedModelAdmin):
 
 
 admin.site.register(TreeItem, TreeItemAdmin)
+
+
+class TreeItemFlatAdmin(NestedModelAdmin):
+    model = TreeItemFlat
+    list_display = ("title", "author", "show")
+    list_editable = ("show", "author")
+    search_fields = ("title", "author__username",)
+
+admin.site.register(TreeItemFlat, TreeItemFlatAdmin)

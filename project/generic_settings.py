@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     'project.executors',
     'project.groups',
     'project.modules',
-    # 'admin_reorder',
+    'admin_reorder',
 )
 
 MIDDLEWARE = [
@@ -85,7 +85,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'admin_reorder.middleware.ModelAdminReorder',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 DATABASES = {
@@ -111,18 +111,15 @@ TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements ': '*[*]',
 }
 # Настройки admin_reorder
-# ADMIN_REORDER = (
-#     {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
-#     {'app': 'executors', "label": "Исполнители кода", 'models': ('executor.Executor',)},
-#     {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group')}
-# )
+ADMIN_REORDER = (
+    {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
+    {'app': 'courses', "label": "Курсы", 'models': ('сourses.TreeItem', 'сourses.TreeItemFlat', )},
+    {'app': 'executors', "label": "Коды и решения", 'models': ('executors.CodeFlat', 'executors.CodeSolution',)},
+    {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group', )}
+)
 
 # --- Executors config
 
-CODE_FOR_MODELS = [
-    'project.courses.models.TreeItem',
-
-]
 CODE_TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
 try:
     os.stat(CODE_TMP_DIR)

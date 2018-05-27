@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
@@ -11,8 +11,8 @@ from django.contrib.auth.models import User
 class TreeItem(MPTTModel):
 
     class Meta:
-        verbose_name = "Элемент курса"
-        verbose_name_plural = "Элементы курса"
+        verbose_name = "элемент"
+        verbose_name_plural = "структура курсов"
 
     parent = TreeForeignKey(
         'self',
@@ -31,29 +31,27 @@ class TreeItem(MPTTModel):
     long_title = models.CharField(max_length=255, verbose_name="Длинный заголовок", blank=True, null=True)
     about = HTMLField(verbose_name="Описание", default="", blank=True, null=True)
     content = HTMLField(verbose_name="Содержимое", default="", blank=True, null=True)
-    author = models.ForeignKey(User,verbose_name="Автор")
+    author = models.ForeignKey(User, verbose_name="Автор", on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
+        """ Строковое представление """
         return self.title
 
     def cache_url_key(self):
-        """Возвращает ключ  в cache на url TreeItem """
+        """ Возвращает ключ  в cache на url TreeItem """
         return 'treeitem_%d_url' % self.id
 
     def clear_cache(self):
-        """ очистка cache при удалении элемента
+        """ Очистка cache при удалении элемента
         (очищается информация у элемента и его дочерних элементов)"""
         cache.delete(self.cache_url_key())
         for child in self.get_children():
             child.clear_cache()
 
     def get_complete_slug(self):
-        """
-        :return: full url of object.
-        """
-        """если имеется url в cache то возвращаем url, 
-        иначе встраиваем url от листьев к корню дерва
-         ex.: course/topic/task"""
+        """ Если имеется url в cache то возвращаем url,
+           иначе встраиваем url от листьев к корню дерва
+           ex.: course/topic/task """
         key = self.cache_url_key()
         url = cache.get(key, None)
         if url is None:
@@ -65,14 +63,20 @@ class TreeItem(MPTTModel):
         return url
 
     def get_absolute_url(self):
-        """Для получения url текущего элемента используется метод get_complete_slug см.выше  """
+        """ Для получения url текущего элемента используется метод get_complete_slug см.выше """
         path = self.get_complete_slug()
         return reverse('courses-item', kwargs={'path': path})
 
     def move_to(self, target, position='first-child'):
-        """
-        Clear cache when moving
-        """
+        """ Очистка кеша после передвижения по дереву """
         self.clear_cache()
         super(TreeItem, self).move_to(target, position=position)
 
+
+class TreeItemFlat(TreeItem):
+    """ Класс с расширенными правами в админ интерфейсе
+        выводит список всех элементов treeitem (для администрирования)"""
+    class Meta:
+        proxy = True
+        verbose_name = 'элемент'
+        verbose_name_plural = 'Список курсов'

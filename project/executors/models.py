@@ -2,9 +2,9 @@
 import os
 import json
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
+from project.courses.models import TreeItem
 
 
 class Executor(models.Model):
@@ -24,9 +24,7 @@ class Executor(models.Model):
         verbose_name_plural = "исполнители кода"
 
     type_id = models.IntegerField(verbose_name="тип", choices=EXEC_TYPES)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    treeitem = models.ForeignKey(TreeItem, on_delete=models.CASCADE)
 
     def __str__(self):
         for exec_type in self.EXEC_TYPES:
@@ -58,20 +56,19 @@ class Code(models.Model):
     type = models.IntegerField(verbose_name="тип", choices=CODE_TYPES, default=STATIC)
     executor_type_id = models.IntegerField(verbose_name="Исполнитель", null=True, blank=True, choices=Executor.EXEC_TYPES,
                                            help_text="если не выбран то наследуется")
+    treeitem = models.ForeignKey(TreeItem, verbose_name='элемент курса', on_delete=models.SET_NULL, blank=True, null=True)
+    description = models.TextField(verbose_name="описание", blank=True, null=True)
+
     content = models.TextField(verbose_name='код', null=True, blank=True)
     input = models.TextField(verbose_name='ввод', null=True, blank=True)
     solution = models.TextField(verbose_name='эталонное решение', null=True, blank=True)
 
     show_input = models.BooleanField(verbose_name='отображать блок ввода', default=False)
     show_tests = models.BooleanField(verbose_name='отображать блок тестов', default=False)
+    save_solutions = models.BooleanField(verbose_name='сохранять пользовательские решения', default=False)
     input_max_signs = models.PositiveIntegerField(verbose_name="макс. символов в блоке ввода", default=100)
     content_max_signs = models.PositiveIntegerField(verbose_name="макс. символов в блоке кода", default=1000)
-    save_solutions = models.BooleanField(verbose_name='сохранять пользовательские решения', default=False)
     timeout = models.PositiveIntegerField(verbose_name="макс. время исполнения(секунд)", default=30)
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
 
     def get_template(self):
         """ Возвращает директорию до шаблона с учетом указанного исполнителя и типа кода"""
@@ -79,12 +76,10 @@ class Code(models.Model):
         if not executor:
             # если исполнитель не выбран то наследуется от связанного объекта
             try:
-                obj = self.content_object
-                obj_content_type = ContentType.objects.get_for_model(model=obj)
-                executor_type_id = Executor.objects.get(content_type=obj_content_type.id, object_id=obj.id).type_id
+                executor_type_id = Executor.objects.get(treeitem=self.treeitem).type_id
             except Executor.DoesNotExist:
                 # если исполнитель не выыбран для связанного объекта то использовать шаблон по умолчанию
-                raise Executor.DoesNotExist("Установи исполнитель для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
+                raise Executor.DoesNotExist("Установите исполнитель кода для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
 
             executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
         else:
@@ -95,21 +90,38 @@ class Code(models.Model):
         return template
 
     def get_executor_type_id(self):
+        """ Возвращает type_id исплнителя кода, иначе None """
         if self.executor_type_id:
             return self.executor_type_id
         else:
             try:
-                obj = self.content_object
-                obj_content_type = ContentType.objects.get_for_model(model=obj)
-                return Executor.objects.get(content_type=obj_content_type.id, object_id=obj.id).type_id
+                return Executor.objects.get(treeitem=self.treeitem).type_id
             except Executor.DoesNotExist:
                 return None
 
     def __str__(self):
+        """ Строкове представление """
         return "#code%s#" % self.id
 
     def get_title(self):
-        return self.content_object.__str__()
+        """ Возвращает title связанного элемента курса """
+        if self.treeitem:
+            return self.treeitem.__str__()
+        return "-"
+
+    def get_author(self):
+        """ Возвращает автора связанного элемента курса """
+        if self.treeitem and self.treeitem.author:
+            return self.treeitem.author
+        return "-"
+
+
+class CodeFlat(Code):
+    """ Класс с расширенными правами в админ интерфейсе (для администрирования) """
+    class Meta:
+        proxy = True
+        verbose_name = "блок кода"
+        verbose_name_plural = "блоки кода"
 
 
 class CodeTest(models.Model):
