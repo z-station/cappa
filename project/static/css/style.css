@@ -17,20 +17,128 @@ div.row .btn {
     margin: 5px 5px 10px;
 }
 
-#id_editor {
-    position: relative;
-    width:570px;
-    height: 200px;
-    border: solid 1px #eeeeee;
-}
+/*#id_editor {*/
+    /*position: relative;*/
+    /*width:570px;*/
+    /*height: 200px;*/
+    /*border: solid 1px #eeeeee;*/
+/*}*/
 
-#id_input, #id_output {
-    position: relative;
-    width:280px;
-    height: 100px;
-    border: solid 1px #eeeeee;
-}
+/*#id_input, #id_output {*/
+    /*position: relative;*/
+    /*width:280px;*/
+    /*height: 100px;*/
+    /*border: solid 1px #eeeeee;*/
+/*}*/
 
 pre {
     width: 100%;
+}
+
+.top-nav {
+    background-color: #fff;
+    box-shadow: 0 0 1px rgba(0,65,94,0.2);
+    z-index: 100;
+    transition: height 600ms 0s ease;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 10px 0;
+}
+
+.top-nav .logo {
+    width: auto;
+    height: 60px;
+}
+
+.top-nav a {
+    font-weight: bold;
+    font-size: 20px;
+    color: #4f4e4d;
+    transition: color 200ms 0s ease, padding 200ms 0s ease, border 200ms 0s ease, background-color 200ms 0s ease;
+}
+
+.top-nav a:hover {
+    color: #5fcf80;
+    text-decoration: none;
+}
+
+.top-nav .username {
+    font-size: 20px;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+main {
+    margin-top: 80px;
+    padding: 30px 0;
+    background: url('../img/bg.svg') #fff repeat top center;
+    position: relative;
+    width:100%;
+    height: 100%;
+}
+
+main .container {
+    box-shadow: 0 0 1px rgba(0,65,94,0.2);
+    background-color: #fff;
+}
+
+footer {
+    position: relative;
+    background-color: #fff;
+    box-shadow: 0 0 1px rgba(0,65,94,0.2);
+    z-index: 100;
+    transition: height 600ms 0s ease;
+    padding: 10px 0;
+}
+
+footer .copyright {
+    font-size: 20px;
+
+}
+
+/* courses root */
+
+.course-item {
+    width: 360px;
+    height: 250px;
+    background-color: #fff;
+    box-shadow: 0 0 1px rgba(0,65,94,0.2);
+    transition: height 600ms 0s ease;
+    margin: 10px;
+    padding: 10px 20px;
+}
+
+.course-item .title {
+    overflow: hidden;
+    height: 35px;
+}
+
+.course-item .desc {
+    overflow: hidden;
+    height: 145px;
+}
+
+.course-item .author {
+    text-align: left;
+    padding-left: 30px;
+    background: url("../img/author.png") #fff no-repeat center left;
+}
+
+.courses-container a {
+    transition: color 200ms 0s ease, padding 200ms 0s ease, border 200ms 0s ease, background-color 200ms 0s ease;
+}
+
+.courses-container a:hover {
+    text-decoration: none;
+}
+
+/* sidebar */
+
+.sidebar {
+    border-left: 1px solid #eaeaea;
 }

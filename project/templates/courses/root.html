@@ -1,46 +1,21 @@
 {% extends 'courses/base.html' %}
-{% block title %}Структура курсов{% endblock %}
-{% block content_title %}Структура курсов{% endblock %}
+
+{% block title %}Курсы{% endblock %}
+{% block content_title %}Курсы{% endblock %}
 
 
-  {% block content %}
-<!--<div class="col-sm-6 col-md-4">-->
-      <!--<div class="caption">-->
-            <!--{% for course in courses %}-->
-            <!--<div class="border p-3 mb-2">-->
-              <!--<h3 class="pb-2"><a href="{{course.get_absolute_url}}">{{course.title}}</a></h3>-->
-                <!--<div >{{course.about|safe}}</div>-->
-                <!--<p class="text-right"><a href="{{course.get_absolute_url}}" class="btn btn-primary btn-lg" role="button">Узнать больше</a></p>-->
-               <!---->
-            <!--</div>-->
-             <!--{% endfor %}-->
-      <!--</div>-->
-  <!--</div>-->
-      <div class="col-sm-6 col-md-4">
-      <div class="caption">
-            {% for course in courses %}
-             <div class="border p-2 mb-2 root-item">
-                 <blockquote>
-                     <h3 class="pb-2">{{course.title}}</h3>
-                     <p>{{course.about|safe|truncatewords_html:20}}</p>
-                     <footer> <b><em><cite title="Source Title">{{course.author.get_full_name|default:course.author.username}}</cite></em></b></footer>
-                </blockquote>
-                 <!--<dl>-->
-                     <!--<dt class="pb-2"> <p class="font-weight-bold">{{course.title}}</p></dt>-->
-                     <!--<dd>{{course.about|safe|truncatewords_html:20}}</dd>-->
-                     <!--<dd>{{course.author.username}}</dd>-->
-                 <!--</dl>-->
-                 <p class="text-right"> <a href="{{course.get_absolute_url}}" class="btn btn-primary" role="button">Перейти</a></p>
-            </div>
-
-             {% endfor %}
-         <script type="text/javascript" src="//web-ptica.ru/VRV-files/knopkavverh/22.js"></script>
-          <!--<a href="#" onclick="$(document).scrollTop(0);return false;">Наверх</a>-->
-          <!--<span title="Вернуться к началу" class="top" onclick="(document.documentElement.scrollTop ? document.documentElement : document.body).scrollTop = 0;">Наверх</span>-->
-      </div>
-
+{% block container %}
+    <div class="col-md-12 d-flex justify-content-start align-items-center courses-container">
+        {% for course in courses %}
+            <a href="{{ course.get_absolute_url }}">
+                <div class="course-item">
+                    <div class="h3 title">{{course.title}}</div>
+                    <div class="desc">{{course.about|safe|truncatewords_html:20}}</div>
+                    <div class="author">{{course.author.get_full_name|default:course.author.username}}</div>
+                </div>
+            </a>
+         {% endfor %}
   </div>
+{% endblock %}
 
-  {% endblock %}
-</form>>
 

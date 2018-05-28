@@ -1,6 +1,32 @@
 {% extends "base.html" %}
+{% load mptt_tags courses_tags %}
 
 {% block title %}{{object.long_title|default:object.title}}{% endblock %}
 {% block content_title %}{{object.long_title|default:object.title}}{% endblock %}
 
+{% block sidebar %}
 
+    {% drilldown_tree_for_node object.get_root as drilldown %}
+    {% for node, structure in drilldown|tree_info %}
+        {% if node.show %}
+            {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+            {% ifequal node object %}
+                <strong>{{ node.title }}</strong>
+                {% with node.get_children as children %}
+                    {% if children %}
+                        <ul>
+                        {% for child in children %}
+                            <li>
+                                <a href="{{ child.get_absolute_url }}">{{ child.title }}</a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+            {% endifequal %}
+            {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

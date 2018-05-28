@@ -8,62 +8,58 @@
     <script src="//code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <div class="container border-bottom mt-4 pb-1">
-            <div class="row">
-                <div class="col-lg-3">
-                    <a href="/admin/">
-                        {% if user.is_authenticated %}
-                            <p>Welcome, {{ user.username }}.</p>
-                        {%  else %}
-                            <p>Please log in.</p>
-                        {% endif %}
-                    </a>
+    <nav class="top-nav">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-2">
+                    <a href="/"><img class="logo" src="{{ STATIC_URL }}img/ceep_calm.png"/></a>
                 </div>
-                <div class="col-lg-8">
-                    <h1>{% block content_title %}{% endblock %}</h1>
+                <div class="col-lg-6 d-flex justify-content-end align-items-center align-middle">
+                    <a class="mr-5" href="{% url 'courses-root' %}">Курсы</a>
+                    <a class="mr-5" href="/groups/">Группы</a>
+                    {% if user.is_authenticated  %}
+                        <span class="username">{{ user.username }}</span> <a class="ml-3" href="{% url 'logout' %}">Выйти</a>
+                    {% else %}
+                        <a class="ml-3" href="{% url 'login' %}">Войти</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </header>
+    </nav>
+
     <main>
-        <div class="container border-bottom mb-3 pt-4">
-            <div class="row" >
-            {% block container %}
-                <div class="col-lg-3" >
-                    {% block sidebar %}
-                        <ul  class="list-unstyled">
-                            <li>
-                                <a href="{% url 'groups:my_groups' %}">Мои группы</a> |
-                                <a href="{% url 'groups:groups' %}">Группы</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'modules:my_modules' %}">Мои модули</a> |
-                                <a href="{% url 'modules:modules' %}">Модули</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'courses-root' %}">Курсы</a>
-                            </li>
-                        </ul>
-                    {% endblock %}
-                </div>
-                <div class="col-lg-8" >
-                    {% block content %}{% endblock %}
-                    {% block pagination %}{% endblock %}
-                </div>
-            {% endblock container %}
+        <div class="container">
+            <div class="row pt-4 pl-4">
+                <div class="h1 col-lg-12">{% block content_title %}{% endblock %}</div>
             </div>
+            <div class="row pt-4">
+                {% block container %}
+                    <div class="content col-lg-8" >
+                        {% block content %}{% endblock %}
+                    </div>
+                    <div class="sidebar col-lg-3" >
+                        {% block sidebar %}{% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+            <div class="row pt-5 pl-5">
+                <div class="h1 col-lg-12">{% block pagination %}{% endblock %}</div>
+            </div>
+
         </div>
     </main>
     <footer>
         <div class="container">
-            <div class="row" >
-                <div class="col-lg-12 mb-3 text-center" >
+            <div class="row">
+                <div class=" copyright col-lg-12 text-center" >
                     CSU Math 2018
                 </div>
             </div>
         </div>
     </footer>
+    {% block js %}
+{#         <script type="text/javascript" src="//web-ptica.ru/VRV-files/knopkavverh/22.js"></script>#}
+    {% endblock %}
 </body>
 </html>
 

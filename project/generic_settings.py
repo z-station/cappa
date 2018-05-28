@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinymce',
+    'mptt',
     'project.courses',
     'project.executors',
     'project.groups',
@@ -86,6 +87,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'admin_reorder.middleware.ModelAdminReorder',
+    'project.middleware.LoginRequiredMiddleware',
 ]
 
 DATABASES = {
@@ -125,3 +127,6 @@ try:
     os.stat(CODE_TMP_DIR)
 except:
     os.mkdir(CODE_TMP_DIR)
+
+# Настройки профиля
+LOGIN_REDIRECT_URL = "/"
