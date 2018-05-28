@@ -18,8 +18,6 @@ try:
 except:
     os.mkdir(MEDIA_ROOT)
 
-# STATIC_ROOT  = os.path.join(PROJECT_ROOT, 'project/static')
-
 MEDIA_URL    = '/media/'
 STATIC_URL   = '/static/'
 ROOT_URLCONF = 'project.urls'

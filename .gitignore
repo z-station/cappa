@@ -19,5 +19,5 @@ parts/*
 commit.txt
 media/upload/*
 venv/
-venv27/
 tmp/*
+settings.py
