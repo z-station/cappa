@@ -1,0 +1,182 @@
+.module {
+    border: 1px solid #ccc;
+}
+
+#right-col {
+    width: 75%;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: auto;
+}
+#left-col {
+    width: 25%;
+    height: 100%;
+    float: left;
+    white-space:nowrap;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.catalog {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+}
+
+#overlay {
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    height: 100% !important;
+    width: 100% !important;
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 999;
+}
+
+#search_box #tree_search {
+    border:none;
+    border-bottom: 1px solid #ddd;
+    height: 14px;
+    font-size: 14px;
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+.catalog ul {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#catalog-root-btn {
+    line-height: 24px;
+    font-size: 13px;
+    cursor: pointer;
+    height: 24px;
+    width: 150px;
+    border-radius: 2px;
+}
+
+#catalog-root-btn:hover {
+    background: #e7f4f9;
+}
+
+#catalog-root-btn.active {
+    background: #79aec8;
+    color: #fff;
+}
+
+.catalog #tree_container {
+    height: 100%;
+}
+
+.app-catalog .delete-item {
+    background-image: url("jstree/default/32px.png");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: -36px -66px;
+}
+
+.jstree-default .jstree-clicked {
+    background: #79aec8;
+    color: #fff;
+}
+
+#list_table {
+    margin: 0;
+}
+
+#list_table th {
+    background-color: #79aec8;
+    color: #fff;
+    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: normal;
+    text-shadow: none;
+}
+
+.tablesorter-ice .header,
+.tablesorter-ice .tablesorter-header {
+    background-image: url("img/unsorted.gif");
+}
+
+.tablesorter-ice .headerSortDown,
+.tablesorter-ice .tablesorter-headerSortDown,
+.tablesorter-ice .tablesorter-headerDesc {
+    background-image: url("img/icon_sort_asc.gif");
+}
+
+.tablesorter-ice .headerSortUp,
+.tablesorter-ice .tablesorter-headerSortUp,
+.tablesorter-ice .tablesorter-headerAsc {
+    background-image: url("img/icon_sort_desc.gif");
+}
+
+#list_table td {
+    vertical-align: middle;
+}
+
+#list_table td.editable {
+    cursor: pointer;
+}
+
+#list_table td.editable .accept,
+#list_table td.editable .cancel {
+    margin-left: 10px;
+    display: inline-block;
+    border-radius: 2px;
+    padding: 5px;
+    color: #fff;
+}
+
+#list_table td.editable .accept {
+    background: #a0db8e;
+}
+
+#list_table .action {
+    text-align: center;
+}
+
+#list_table button.save,
+#list_table button.change {
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    width: 85px;
+    padding: 5px;
+    color: #fff;
+}
+
+#list_table button.change {
+    margin-bottom: 5px;
+    background: #79aec8;
+}
+
+#list_table button.save {
+    margin: 5px 0;
+    background: rgba(160, 219, 142, 1);
+}
+
+#list_table button.save[disabled] {
+    background: rgba(160, 219, 142, 0.6);
+}
+
+#list_table td.editable .cancel {
+    background: #ff2b19;
+}
+
+#list_table td.accept_value {
+    background: #a0db8e;
+}
+
+#list_table td input {
+    float: left;
+    border: none;
+}
+
+#list_table td.error input {
+    border: 1px solid #ff0000;
+}
