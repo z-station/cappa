@@ -60,6 +60,8 @@
 
 {% block coltype %}flex{% endblock %}
 
+{% block content_title %}{% if title %}<h1>&nbsp;</h1>{% endif %}{% endblock %}
+
 {% block content %}
     <div id="content-main">
         {% block object-tools %}

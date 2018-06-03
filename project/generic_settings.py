@@ -69,11 +69,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'tinymce',
     'mptt',
+    'project',
     'project.courses',
     'project.executors',
     'project.groups',
     'project.modules',
-    'admin_reorder',
 )
 
 MIDDLEWARE = [
@@ -84,7 +84,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
     'project.middleware.LoginRequiredMiddleware',
 ]
 
@@ -113,16 +112,8 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme_advanced_resizing': 'True',
     'extended_valid_elements ': '*[*]',
 }
-# Настройки admin_reorder
-ADMIN_REORDER = (
-    {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
-    {'app': 'courses', "label": "Курсы", 'models': ('сourses.TreeItem', 'сourses.TreeItemFlat', )},
-    {'app': 'executors', "label": "Коды и решения", 'models': ('executors.CodeFlat', 'executors.UserSolution',)},
-    {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group', )}
-)
 
 # --- Executors config
-
 CODE_TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
 try:
     os.stat(CODE_TMP_DIR)

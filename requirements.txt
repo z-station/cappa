@@ -1,4 +1,4 @@
 Django==1.11
 django-mptt==0.9.0
 django-tinymce==2.7.0
-django-modeladmin-reorder==0.2
+# установить системно postgresql 9.6.9 и psycorg2

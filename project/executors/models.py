@@ -121,8 +121,8 @@ class CodeFlat(Code):
     """ Класс с расширенными правами в админ интерфейсе (для администрирования) """
     class Meta:
         proxy = True
-        verbose_name = "блок кода"
-        verbose_name_plural = "блоки кода"
+        verbose_name = "элемент списка блоков кода"
+        verbose_name_plural = "список блоков кода"
 
 
 class CodeTest(models.Model):

@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 class TreeItem(MPTTModel):
 
     class Meta:
-        verbose_name = "элемент"
+        verbose_name = "элемент структуры курсов"
         verbose_name_plural = "структура курсов"
 
     parent = TreeForeignKey(
@@ -95,5 +95,5 @@ class TreeItemFlat(TreeItem):
         выводит список всех элементов treeitem (для администрирования)"""
     class Meta:
         proxy = True
-        verbose_name = 'элемент'
+        verbose_name = 'элемент списка курсов'
         verbose_name_plural = 'Список курсов'
