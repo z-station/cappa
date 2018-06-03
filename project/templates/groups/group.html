@@ -70,7 +70,7 @@
                 <tbody>
                 {% for data in modules_data %}
                     {% if data.state != data.HIDE or position == group.OWNER %}
-                        {% if data.get_stock or position == group.OWNER %}
+                        {% if data.is_active or position == group.OWNER %}
                             <tr onclick="window.location.href='{% url "modules:module" data.module.id %}'">
                         {% else %}
                             <tr class="group-close">

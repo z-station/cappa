@@ -23,7 +23,7 @@ class TreeItem(MPTTModel):
         null=True, blank=True,
     )
 
-    leaf = False
+    leaf = models.BooleanField(verbose_name="задача", default=False)  # leaf - это лист дерева, задача яввляется листом
     show = models.BooleanField(verbose_name="отображать", default=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     title = models.CharField(max_length=255, verbose_name="заголовок")

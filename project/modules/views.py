@@ -38,6 +38,6 @@ class ModuleView(generic.DetailView):
             if context['module'].owner.pk == self.request.user.pk:
                 context['my'] = True
 
-        context['tasks'] = context['module'].tasks.all()
+        context['tasks'] = context['module'].treeitems.all()
 
         return context

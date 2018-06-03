@@ -90,8 +90,11 @@ MIDDLEWARE = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_ROOT, 'project.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "project",
+        'USER': "project",
+        'PASSWORD': "project",
+        'PORT': 5432,
     }
 }
 
@@ -114,7 +117,7 @@ TINYMCE_DEFAULT_CONFIG = {
 ADMIN_REORDER = (
     {'app': "auth", 'label': "Администрирование", 'models': ('auth.User', 'auth.Group', )},
     {'app': 'courses', "label": "Курсы", 'models': ('сourses.TreeItem', 'сourses.TreeItemFlat', )},
-    {'app': 'executors', "label": "Коды и решения", 'models': ('executors.CodeFlat', 'executors.CodeSolution',)},
+    {'app': 'executors', "label": "Коды и решения", 'models': ('executors.CodeFlat', 'executors.UserSolution',)},
     {'app': 'modules', "label": "Модули и группы", 'models': ('modules.Module', 'groups.Group', )}
 )
 

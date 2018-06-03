@@ -38,10 +38,6 @@ class TreeItemAdmin(NestedModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     inlines = []
 
-    def save_model(self, request, obj, form, change):
-        obj.author = request.user
-        obj.save()
-
     def changelist_view(self, request):
 
         """Представление Django для страницы отображения всех объектов модели."""
@@ -255,6 +251,30 @@ class TreeItemAdmin(NestedModelAdmin):
 
         return ModelFormCatalogWrapper
 
+    def save_model(self, request, obj, form, change):
+        """
+        Override save_model.
+        Moves TreeItem object if request.POST contains target node or
+        copied node
+        """
+        obj.author = request.user
+        target_id = request.GET.get('target', None)
+        copy_id = request.GET.get('copy', None)
+        target = None
+        if target_id or copy_id:
+            try:
+                if target_id:
+                    target = TreeItem.objects.get(pk=target_id)
+                elif copy_id:
+                    target = TreeItem.objects.get(pk=copy_id)
+            except TreeItem.DoesNotExist:
+                pass
+        obj.save()
+        if target and target_id:
+            obj.move_to(target, 'last-child')
+        if target and copy_id:
+            obj.move_to(target.parent, 'last-child')
+
     def get_urls(self):
         return [
             url(r'^tree/$', self.admin_site.admin_view(self.json_tree)),
@@ -270,8 +290,8 @@ admin.site.register(TreeItem, TreeItemAdmin)
 
 class TreeItemFlatAdmin(NestedModelAdmin):
     model = TreeItemFlat
-    list_display = ("title", "author", "show")
-    list_editable = ("show", "author")
+    list_display = ("title", "author", "show", "leaf")
+    list_editable = ("show", "leaf", "author")
     search_fields = ("title", "author__username",)
     prepopulated_fields = {"slug": ("title",), }
 

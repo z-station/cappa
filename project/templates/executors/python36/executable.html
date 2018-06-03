@@ -3,6 +3,11 @@
       data-code_num="{{ code_num }}" data-code_id="{{ code_id }}">
 
     {% csrf_token %}
+
+    {% if code_solved %}
+        <input type="hidden" name="code_solved" value="True">
+    {% endif %}
+
     {{ form.media }}
 
     <div class="ace-control-bar">

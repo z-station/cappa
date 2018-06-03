@@ -2,51 +2,54 @@
 
 {% block title %}{{ group.name }}{% endblock %}
 {% block content_title %}{{ group.name }}{% endblock %}
-{% block content %}
-    <div class="row">
-        {% if position == group.OWNER %}
-            <!--владелец-->
 
-        {% else %}
-            <!--участник-->
-
-        {% endif %}
-    </div>
-
-    {% if data %}
-        {% for table in data %}
-            <table border="1">
-                <caption>Прогресс модуля {{ table.0.0 }}</caption>
-                {% for row in table %}
-                    {% if forloop.first %}
-                        <tr bgcolor=#AFEEEE align="center">
-                    {% elif forloop.counter|divisibleby:"2" %}
-                        <tr bgcolor=#E0FFFF align="center">
-                    {% else %}
-                        <tr align="center">
-                    {% endif %}
-                        {% for cell in row %}
-                            <td>
-                                {% if forloop.first %}
-                                    <i>
-                                        {% if forloop.parentloop.first %}
-                                            <b>{{ cell }}</b>
-                                        {% else %}
-                                            {{ cell }}
-                                        {% endif %}
-                                    </i>
-                                {% elif forloop.parentloop.first %}
-                                    <b>{{ cell }}</b>
-                                {% else %}
-                                    {{ cell }}
-                                {% endif %}
-                            </td>
+{% block container %}
+    <div class="content col-lg-12" >
+    {% if tables %}
+        {% for table in tables %}
+            <div class="mb-5">
+                <h5>{{ table.caption }}</h5>
+                <table class="table-bordered progress-table">
+                    <thead>
+                        <tr>
+                        {% for th in table.thead.values %}
+                            {% if forloop.first %}
+                                <th>
+                                    <a href="{{ th.url }}">{{ th.text }}</a>
+                                </th>
+                            {% else %}
+                                <th title="{{ th.text }}">
+                                    <a href="{{ th.url }}">{{ forloop.counter0 }}</a>
+                                </th>
+                            {% endif %}
                         {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for tr in table.tbody %}
+                        <tr>
+                        {% for td in tr.values %}
+                            {% if forloop.first %}
+                                <td>
+                                    {{ td.text }}
+                                </td>
+                            {% else %}
+                                <td class="{{ td.class }}">
+                                    {{ td.text }}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
         {% endfor %}
+
     {% else %}
         Нет прогресса.
     {% endif %}
+    </div>
 {% endblock %}

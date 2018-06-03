@@ -1,55 +1,43 @@
 # -*- coding: utf-8 -*-
 import json
 from datetime import datetime
-from project.executors.models import CodeSolution
+from project.executors.models import UserSolution
 
 
-def create_or_update_solution(type, user, code, content, input="", tests_result=None):
+def create_or_update_solution(user, code, tests_result, content ):
 
-    """ Создать/дополнить запись о решении задачи пользователем CodeSolution
-        Пока есть 2 типа решений:
-           1. тип: EXECUTE = 1 простой запуск
-           2. тип: CHECK_TESTS = 2 запуск тестов
-           фиксируется количество запусков обоих типов для статистики
-    """
+    """ Создать/дополнить запись о решении задачи пользователем UserSolution
+        """
     if user.is_anonymous:
         return False
     else:
         try:
-            code_solution = CodeSolution.objects.get(user=user, code=code)
-        except CodeSolution.DoesNotExist:
-            code_solution = CodeSolution(code=code, user=user)
-            code_solution.save()
-
+            user_solution = UserSolution.objects.get(user=user, code=code)
+        except UserSolution.DoesNotExist:
+            user_solution = UserSolution(code=code, user=user)
+            user_solution.save()
+        details = user_solution.details
         new_solution = {
-            "type": type,
-            "datetime": str(datetime.now()),
-            "input": input,
-            "content": content,
-            "tests": [],
+            "datetime": str(datetime.now()),                   # текущее время
+            "content": content,                                # пользовательский код
+            "tests_num": tests_result["num"],                  # количество тестов
+            "tests_success_num": tests_result["success_num"],  # количество пройденных тестов
         }
+        if tests_result["num"] == tests_result["success_num"]:
+            new_solution_progress = 100  # прогресс 100%
+        else:
+            new_solution_progress = tests_result["success_num"] / (tests_result["num"]/100)  # прогресс в процентах
 
-        if type == CodeSolution.EXECUTE:
-            new_solution["success"] = False
-            code_solution.execute_count += 1
-
-        elif type == CodeSolution.CHECK_TESTS:
-            tests_success = False
-            for test in tests_result:
-                new_solution["tests"].append({
-                    "id": test["id"],
-                    "success": test["success"],
-                })
-                tests_success = tests_success or test["success"]  # если уже было удачное решение то не перезаписывать
-            new_solution["success"] = tests_success
-            code_solution.check_tests_count += 1
-            # если еще нет удачного решения и тесты пройдены то задача решена
-            if not code_solution.success and tests_success:
-                code_solution.success = True
-
-        details = json.loads(code_solution.details)
-        details["solutions"].append(new_solution)
-        code_solution.details = json.dumps(details, ensure_ascii=False)
-        code_solution.save()
-        return code_solution.success
+        # Если новое решение более успешное
+        if new_solution_progress > user_solution.progress:
+            user_solution.progress = new_solution_progress
+            user_solution.details["best_solution_num"] = len(details["solutions"])  # обновить порядковый номер успешного решения
+            user_solution.details["best_solution_tests"] = []
+            for i in range(tests_result["num"]):
+                test = tests_result["data"][i]
+                test_data = {i+1: test["success"]}
+                user_solution.details["best_solution_tests"].append(test_data)
+        user_solution.details["solutions"].append(new_solution)
+        user_solution.save()
+        return True if user_solution.progress == 100 else False
 

@@ -4,11 +4,10 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 from django.utils import timezone
-
+from collections import OrderedDict
 from project.courses.models import TreeItem
-from project.executors.models import CodeSolution
+from project.executors.models import UserSolution, Code
 from project.modules.models import Module
-from project.modules.fields import JSONField
 
 
 class Group(models.Model):
@@ -28,7 +27,7 @@ class Group(models.Model):
     changed_status = models.DateTimeField(default=timezone.now)
     owners = models.ManyToManyField(User, verbose_name='Владельцы', related_name='ownership')
     members = models.ManyToManyField(User, verbose_name='Пользователи', related_name='membership', blank=True)
-    modules = models.ManyToManyField(Module, verbose_name='Модули', blank=True, through='ModuleData')
+    modules = models.ManyToManyField(Module, verbose_name='Модули', blank=True, through='GroupModule')
     state = models.IntegerField(verbose_name='Статус', choices=STATE, default=CLOSE)
     codeword = models.CharField(max_length=64, help_text='Введите кодовое слово', verbose_name='Код', blank=True)
     created_at = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
@@ -75,112 +74,139 @@ class Group(models.Model):
         super(Group, self).save(force_insert, force_update, using, update_fields)
 
 
-class ModuleData(models.Model):
+class GroupModule(models.Model):
     STOCK = 0
     HIDE = 1
     TIMER = 2
-    STATE = (
+    STATES = (
         (STOCK, 'Доступен'),
         (HIDE, 'Скрыт'),
         (TIMER, 'Таймер'),
     )
 
     module = models.ForeignKey(Module, verbose_name='Модуль')
-    progress = JSONField(blank=True)
-    group = models.ForeignKey(Group, verbose_name='Группа', related_name='data')
-    state = models.IntegerField(verbose_name='Статус', choices=STATE, default=STOCK)
+    group = models.ForeignKey(Group, verbose_name='Группа', related_name='group_module')
+    state = models.IntegerField(verbose_name='Статус', choices=STATES, default=STOCK)
     open_at = models.DateTimeField(verbose_name='Открыть', default=timezone.now)
     close_at = models.DateTimeField(verbose_name='Закрыть', default=timezone.now)
 
     def __str__(self):
         return self.module.name
 
-    def get_stock(self):
-        if self.state == self.STOCK or self.open_at < timezone.now() < self.close_at:
+    def is_active(self):
+        """ Если модуль активен возвращает True """
+        if (self.state == self.STOCK) or (self.open_at < timezone.now() < self.close_at):
             return True
         return False
 
     def get_timer(self):
+        """  docstring """
         if self.state == self.TIMER:
             now = timezone.now()
             if now < self.open_at:
-                return 'Отктроется в {0}'.format(self.format_time(self.open_at))
+                return 'Отктроется в %s' % self.format_time(self.open_at)
             elif now > self.close_at:
-                return 'Закрылся в {0}'.format(self.format_time(self.close_at))
+                return 'Закрылся в %s' % self.format_time(self.close_at)
             else:
-                return 'Доступен до {0}'.format(self.format_time(self.close_at))
-        return self.STATE[self.state][1]
+                return 'Доступен до %s' % self.format_time(self.close_at)
+        return self.STATES[self.state][1]
 
     @staticmethod
     def format_time(time):
         return time.strftime('%H:%M (%a, %d.%m.%y)')
 
+    def get_solutions_as_table(self):
+        """ Возвращает объект (в формате таблицы) с данными о решении задач модуля участниками группы
+        table =
+            {
+                'caption': 'Проверка травами',
+                'thead': {
+                    -1: {'text': 'Участник/Задача', 'url': ""},
+                     0: {'text': 'task1', 'url': '/courses/theme1/task1/'},
+                     2: {'text': 'task2', 'url': '/courses/theme1/task2/'}
+                },
+                'tbody': [
+                  {
+                   -1: {'text': 'Klava', 'url': ""},
+                    0: {'text': '100%', 'url': "", 'class': "success"},
+                    2: {'text': ""', 'url': "", 'class': "absent"},
+                  },
+                  {
+                    -1: {'text': 'Karl', 'url': ""),
+                     1: {'text': '33%', 'url': "", 'class': "process"},
+                     2: {'text': '100%', 'url': "", 'class': "success"},
+                  },
+              ]
+            }
+        * где каждая ячейка таблицы содержит след. данные:
+          1: {                    # id блока кода (для первого столбика -1)
+             'text': '33%',       # текст выводимый в ячейке
+             'url': None,         # ссылка ячейки (на стр. задачи, детали решения, профиля польз)
+             'class': "process"   # css-класс для стилизации ячейки
+             },
+        * обратить внимание что treeitem может содержать несколько блоков кода code,
+          потому в таблицу попадают блоки кода, а не treeitem
+        """
 
-@receiver(m2m_changed, sender=Group.owners.through)
-@receiver(m2m_changed, sender=Group.members.through)
-def changed_members(sender, **kwargs):
-    instance, action, pk_set = kwargs.pop('instance'), kwargs.pop('action'), kwargs.pop('pk_set')
-    if action == 'post_add':
-        for data in instance.data.all():
-            init_progress(data.progress, pk_set, data.module.tasks.all())
-            data.save()
-    elif action == 'post_remove':
-        for data in instance.data.all():
-            for pk in pk_set:
-                data.progress.pop(str(pk), None)
-            data.save()
+        # элементы дерева привязанные к модулю, у порядоченные как в структуре курсов
+        treeitems_ids = self.module.treeitems.all().values_list("id", flat=True).order_by("lft")
+        # блоки кода данных элементов дерева (которые сохраняют польз. решения при исполнении)
+        codes = Code.objects.filter(treeitem__in=treeitems_ids, save_solutions=True)
+        # заполнение ячеек th шапки таблицы thead
+        thead = OrderedDict()
+        first_th = {
+            "text": "Участник/Задача",
+            "url": "",
+        }
+        thead[-1] = first_th
+        for code in codes:
+            th = {
+                "text": code.get_title(),
+                "url": code.treeitem.get_absolute_url(),
+            }
+            thead[code.id] = th
 
+        # заполнение строк tr и их ячеек td тела таблицы tbody
+        tbody = []
+        # получить решения по данным задачам codes для указанного пользователя user
+        for user in self.group.members.all().order_by("last_name", "first_name", "username"):
+            tr = OrderedDict()
+            first_td = {
+                "text": user.get_full_name() if user.get_full_name() else user.username,
+                "url": "",  # TODO позже будет ссылка на профиль пользователья
+            }
+            tr[-1] = first_td
+            for code in codes:
+                try:
+                    user_solution = UserSolution.objects.get(user=user, code=code)
+                    css_class = "process"
+                    if user_solution.progress == 0:
+                        css_class = "unluck"
+                    elif user_solution.progress == 100:
+                        css_class = "success"
 
-@receiver(m2m_changed, sender=Module.tasks.through)
-def changed_tasks(sender, **kwargs):
-    instance, action, pk_set = kwargs.pop('instance'), kwargs.pop('action'), kwargs.pop('pk_set')
-    if action == 'post_add':
-        module_data = ModuleData.objects.filter(module__pk=instance.pk)
-        for data in module_data:
-            for pk in pk_set:
-                data.progress['tasks'][pk] = TreeItem.objects.get(pk=pk).title
-            update_progress(data.progress, data.group.get_members(), pk_set)
-            data.save()
-    elif action == 'post_remove':
-        module_data = ModuleData.objects.filter(module__pk=instance.pk)
-        for data in module_data:
-            for pk in pk_set:
-                task_pk = str(pk)
-                data.progress['tasks'].pop(task_pk, None)
-                for user in data.group.get_members():
-                    data.progress[str(user.pk)].pop(task_pk, None)
-            data.save()
+                    text = ""
+                    if user_solution.progress != 0:
+                        text = str(user_solution.progress) + "%"
 
+                    td = {
+                        "text": text,
+                        "url": "",  # TODO позже будет ссылка на детали решения
+                        "class": css_class
+                    }
+                except UserSolution.DoesNotExist:
+                    td = {
+                        "text": "",
+                        "url": "",
+                        "class": "absent",
+                    }
+                tr[code.id] = td
+            tbody.append(tr)
+        caption = self.module.name
+        table = {
+            "caption": caption,
+            "thead": thead,
+            "tbody": tbody,
+        }
+        return table
 
-@receiver(post_save, sender=ModuleData)
-def saved_modules(sender, created, **kwargs):
-    if created:
-        instance = kwargs.pop('instance')
-        instance.progress = {'tasks': {}}
-        tasks = instance.module.tasks.all()
-        for task in tasks:
-            instance.progress['tasks'][task.pk] = task.title
-        init_progress(instance.progress, {user.pk for user in instance.group.get_members()}, tasks)
-        instance.save()
-
-
-def init_progress(progress, user_pk_set, tasks):
-    for user_pk in user_pk_set:
-        progress[user_pk] = {'name': User.objects.get(pk=user_pk).username, }
-        for task in tasks:
-            try:
-                solution = CodeSolution.objects.get(code__pk=task.pk, user__pk=user_pk)
-                progress[user_pk][task.pk] = [solution.pk, solution.success, ]
-            except ObjectDoesNotExist:
-                progress[user_pk][task.pk] = [None, None, ]
-
-
-def update_progress(progress, users, task_pk_set):
-    for user in users:
-        user_pk = str(user.pk)
-        for task_pk in task_pk_set:
-            try:
-                solution = CodeSolution.objects.get(code__pk=task_pk, user__pk=user.pk)
-                progress[user_pk][task_pk] = [solution.pk, solution.success, ]
-            except ObjectDoesNotExist:
-                progress[user_pk][task_pk] = [None, None, ]

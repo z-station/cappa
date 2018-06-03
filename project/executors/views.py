@@ -2,12 +2,12 @@
 
 from django.shortcuts import HttpResponse, render
 from project.executors.forms import CodeForm
-from project.executors.models import Code, CodeTest, CodeSolution, Executor
+from project.executors.models import Code, CodeTest, Executor
 from project.executors.utils import create_or_update_solution
 
 
 def execute(request):
-    """ Контроллер обработки асинхронных запусков кода
+    """ Обрабатывает ajax-запросы исполнения блока кода со страницы
         - Исполняет код в исполнителе (указанного для кода)
         - Обновляет запись пользовательского решения (если указанно для кода)
         - возвращает результаты пользователю
@@ -20,14 +20,12 @@ def execute(request):
     else:
         content = request.POST.get("content")
         input, output, error = request.POST.get("input", ""), "", ""
-        code_solved = False
         tests = CodeTest.objects.filter(code=code)
+        code_solved = request.POST.get("code_solved", False)
         if content:
             if code.get_executor_type_id() == Executor.PYTHON36:
                 from project.executors.python36.utils import execute_code
                 output, error = execute_code(code, content, input)
-                if code.save_solutions and not request.user.is_anonymous:
-                    code_solved = create_or_update_solution(CodeSolution.EXECUTE, request.user, code, content, input)
 
         form = CodeForm(initial={
             "content": content,
@@ -61,7 +59,7 @@ def check_tests(request):
     else:
         content = request.POST.get("content")
         input, output, error = request.POST.get("input", ""), "", ""
-        code_solved = False
+        code_solved = None
         tests = CodeTest.objects.filter(code=code)
         tests_result = []
         if content and tests and (code.type == Code.EXECUTABLE):
@@ -69,7 +67,7 @@ def check_tests(request):
                 from project.executors.python36.utils import check_tests
                 tests_result = check_tests(code, content, tests)
                 if code.save_solutions and not request.user.is_anonymous:
-                    code_solved = create_or_update_solution(CodeSolution.CHECK_TESTS, request.user, code, content, "", tests_result)
+                    code_solved = create_or_update_solution(request.user, code, tests_result, content)
 
         form = CodeForm(initial={
             "content": content,
@@ -85,6 +83,6 @@ def check_tests(request):
             "show_tests": code.show_tests,
             "show_input": code.show_input,
             "tests": tests,
-            "tests_result": tests_result,
+            "tests_result": tests_result["data"],
         }
         return render(request, code.get_template(), context)

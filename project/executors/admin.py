@@ -1,10 +1,7 @@
 # -*- coding:utf-8 -*-
 from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
-from project.executors.models import Executor, Code, CodeTest, CodeSolution, CodeFlat
+from project.executors.models import *
 from project.executors.forms import *
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from project.executors.nested_inline.admin import NestedStackedInline, NestedModelAdmin, NestedInline
 from project.courses.admin import TreeItemAdmin, TreeItemFlatAdmin
 from project.courses.models import TreeItem, TreeItemFlat
@@ -18,23 +15,26 @@ class ExecutorInlineAdmin(NestedStackedInline, admin.StackedInline):
     inlines = []
 
 
-class CodeSolutionAdmin(admin.ModelAdmin):
+class UserSolutionAdmin(admin.ModelAdmin):
 
     def get_code_title(self, obj):
         return obj.code.get_title()
-
     get_code_title.short_description = "Элемент курса"
 
-    model = CodeSolution
-    list_display = ("user", "code", "get_code_title", "success")
+    def get_progress_percent(self, obj):
+        return str(obj.progress) + '%'
+    get_progress_percent.short_description = "Прогресс"
+
+    model = UserSolution
+    list_display = ("user", "code", "get_code_title", "get_progress_percent")
     search_fields = ["user__username", ]
-    readonly_fields = ("code", "user", "execute_count", "check_tests_count", "details",)
+    # readonly_fields = ("progress", "code", "user", "details",)
 
     def has_add_permission(self, request):
         """ Отключает возможность добавления решений через админку - только просмотр """
         return False
 
-admin.site.register(CodeSolution, CodeSolutionAdmin)
+admin.site.register(UserSolution, UserSolutionAdmin)
 
 
 class CodeTestInlineAdmin(admin.TabularInline):

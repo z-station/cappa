@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from project.courses.models import TreeItem
+from django.contrib.postgres.fields import JSONField
 
 
 class Executor(models.Model):
@@ -138,8 +139,8 @@ class CodeTest(models.Model):
         return "test %s" % self.id
 
 
-class CodeSolution(models.Model):
-
+class UserSolution(models.Model):
+    """ """
     class Meta:
         verbose_name = "пользовательское решение"
         verbose_name_plural = "пользовательские решения"
@@ -153,14 +154,37 @@ class CodeSolution(models.Model):
         (CHECK_TESTS, "Запуск тестов"),
     )
 
-    default_details = json.dumps({"solutions": []}, ensure_ascii=False)
+    default_details = {
+        "solutions": [],
+        "best_solution_tests": [],
+    }
 
     code = models.ForeignKey(Code, verbose_name="блок кода")
     user = models.ForeignKey(User, verbose_name="пользователь")
-    details = models.TextField(verbose_name="детали решения", default=default_details)
-    success = models.BooleanField(verbose_name="задача решена", default=False)
-    execute_count = models.PositiveIntegerField(verbose_name="количество запусков кода", default=0)
-    check_tests_count = models.PositiveIntegerField(verbose_name="количество запусков тестирования", default=0)
+    details = JSONField(verbose_name="детали решения", default=default_details)
+    progress = models.PositiveIntegerField(verbose_name="Прогресс решения", default=0)
 
     def __str__(self):
         return "%s (%s)" % (self.user, self.code.get_title())
+
+    """ Пример JSON структуры поля details
+    details = {
+        best_solution_num: <int>  # порядковый номер удачного решения в списке решений solutions
+        best_solution_tests: [
+            {"1": True},
+            {"2": False},
+            {...},
+        ]
+        solutions: [
+            {
+                datetime: <datetime>,  # дата/время попытки
+                content:  <unicode>,   # код программы
+                tests_num: <int>
+                tests_success_num: <int>
+            },
+            {...},
+            {...},
+        ]
+    }
+
+    """

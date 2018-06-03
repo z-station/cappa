@@ -1,36 +1,17 @@
-from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
-from project.courses.models import TreeItem
 from project.modules.models import Module
 
 
-class ModuleAdminForm(forms.ModelForm):
-    tasks = forms.ModelMultipleChoiceField(
-        queryset=TreeItem.objects.all(),
-        required=False,
-        label="Задачи",
-        widget=FilteredSelectMultiple(
-            verbose_name="задачи",
-            is_stacked=False
-        )
-    )
-
-    class Meta:
-        model = Module
-        fields = ['name', 'comment', 'tasks']
-
-
-@admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'owner', 'get_tasks_number', 'updated_at', 'id', )
+
+    model = Module
+    list_display = ('name', 'owner', 'updated_at', 'id', )
     list_filter = ('updated_at', )
     search_fields = ('name', )
-    fields = (('name', 'comment'), 'tasks', )
-    form = ModuleAdminForm
+    fields = (('name', 'comment'), 'treeitems', )
+    filter_horizontal = ('treeitems',)
 
     def response_add(self, request, obj, post_url_continue=None):
         if '_continue' not in request.POST:
@@ -50,3 +31,5 @@ class ModuleAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         super(ModuleAdmin, self).save_model(request, obj, form, change)
+
+admin.site.register(Module, ModuleAdmin)

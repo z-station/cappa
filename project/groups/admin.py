@@ -1,41 +1,23 @@
-from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.functional import curry
 
-from project.groups.models import Group, ModuleData
-from project.modules.models import Module
+from project.groups.forms import GroupModuleFormset, GroupAdminForm
+from project.groups.models import Group, GroupModule
 
 
-class ModuleDataFormset(forms.models.BaseInlineFormSet):
-
-    class Meta:
-        model = ModuleData
-        fields = ['module', 'state', 'open_at', 'close_at']
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(ModuleDataFormset, self).__init__(*args, **kwargs)
-
-        if user:
-            queryset = Module.objects.filter(owner__id=user.id)
-            for form in self.forms:
-                form.fields['module'].queryset = queryset
-
-
-class ModuleDataInline(admin.TabularInline):
-    model = ModuleData
+class GroupModuleInline(admin.TabularInline):
+    model = GroupModule
     fields = ['module', 'state', 'open_at', 'close_at']
     verbose_name = 'Модуль в группе'
     verbose_name_plural = 'Модули в группе'
-    formset = ModuleDataFormset
-    extra = 1
+    formset = GroupModuleFormset
+    extra = 0
 
     def get_formset(self, request, obj=None, **kwargs):
-        formset = super(ModuleDataInline, self).get_formset(request, obj, **kwargs)
+        formset = super(GroupModuleInline, self).get_formset(request, obj, **kwargs)
         if request.method == "GET":
             if getattr(obj, 'owners', None) is None:
                 formset.__init__ = curry(formset.__init__, user=request.user)
@@ -47,60 +29,12 @@ class ModuleDataInline(admin.TabularInline):
         return formset
 
 
-class GroupAdminForm(forms.ModelForm):
-    # #owners
-    # owners = forms.ModelMultipleChoiceField(
-    #     queryset=User.objects.all(),
-    #     required=False,
-    #     label='Владельцы',
-    #     widget=FilteredSelectMultiple(
-    #         verbose_name='пользователи',
-    #         is_stacked=False
-    #     )
-    # )
-    owners = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-        label='Владелец',
-    )
-    members = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        required=False,
-        label='Участники',
-        widget=FilteredSelectMultiple(
-            verbose_name='пользователи',
-            is_stacked=False
-        )
-    )
-
-    class Meta:
-        model = Group
-        fields = ['name', 'status', 'owners', 'members', 'state', 'codeword']
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        if user:
-            kwargs.update(initial={
-                'owners': user
-            })
-
-        super(GroupAdminForm, self).__init__(*args, **kwargs)
-
-    def clean_codeword(self):
-        codeword = self.cleaned_data['codeword']
-        state = int(self.data.get('state'))
-        if state == Group.CODE and codeword == '':
-            raise forms.ValidationError('В этом случае, кодовое слово - обязательно')
-
-        return codeword
-
-
-@admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'get_root_owner_username', 'state', 'get_members_number', 'created_at', 'id', )
     list_filter = ('state', 'created_at', )
     search_fields = ('name', )
     fields = (('name', 'status'), ('owners', 'members'), ('state', 'codeword'), )
-    inlines = (ModuleDataInline, )
+    inlines = (GroupModuleInline, )
     form = GroupAdminForm
 
     def get_form(self, request, obj=None, **kwargs):
@@ -135,3 +69,5 @@ class GroupAdmin(admin.ModelAdmin):
         form.cleaned_data['owners'] = User.objects.filter(pk=form.cleaned_data['owners'].pk)
 
         super(GroupAdmin, self).save_model(request, obj, form, change)
+
+admin.site.register(Group, GroupAdmin)

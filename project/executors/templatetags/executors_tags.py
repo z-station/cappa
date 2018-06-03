@@ -1,6 +1,6 @@
 from django import template
 from project.executors.forms import CodeForm
-from project.executors.models import Code, CodeTest, CodeSolution
+from project.executors.models import Code, CodeTest, UserSolution
 from django.template.loader import render_to_string
 import re
 
@@ -43,11 +43,12 @@ class ExecutorNode(template.Node):
             try:
                 code = Code.objects.get(id=code_ids[i], treeitem=treeitem)
                 tests = CodeTest.objects.filter(code=code)
-                try:
-                    code_solution = CodeSolution.objects.get(code=code, user=context["request"].user)
-                    code_solved = code_solution.success
-                except:
-                    code_solved = False
+                if not context["request"].user.is_anonymous:
+                    try:
+                        user_solution = UserSolution.objects.get(code=code, user=context["request"].user)
+                        code_solved = True if user_solution.progress == 100 else False
+                    except:
+                        code_solved = False
 
                 code_context = {
                     "code_solved": code_solved,

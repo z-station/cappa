@@ -1,11 +1,11 @@
-from django.core.exceptions import ObjectDoesNotExist
+# -*- coding:utf-8 -*-
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.template import RequestContext
 
-from project.executors.models import CodeSolution
-from project.groups.models import Group, ModuleData
+from project.groups.models import Group
 
 
 class GroupsView(generic.ListView):
@@ -55,69 +55,28 @@ class GroupView(generic.DetailView):
                 except self.request.user.DoesNotExist:
                     pass
 
-            context['modules_data'] = context['group'].data.all()
+            context['modules_data'] = context['group'].group_module.all()
 
         return context
 
 
-class ProgressView(generic.DetailView):
-    model = Group
-    template_name = 'groups/progress.html'
+# TODO Переделать. 1. Создать и согласовать json-структуру таблицы. 2 GroupModule лишнее звено - сохранять в кэш
+def progress(request, group_id):
 
-    def get_context_data(self, **kwargs):
-        context = super(ProgressView, self).get_context_data(**kwargs)
+    """ Добавление доп. переменных в шаблон """
+    group = get_object_or_404(Group, id=group_id)
+    user_is_owner = group.owners.filter(id=request.user.id)
+    if not user_is_owner:
+        return HttpResponseRedirect(reverse('groups:groups'))
 
-        try:
-            if context['group'].members.get(pk=self.request.user.pk):
-                context['position'] = Group.MEMBER
-        except self.request.user.DoesNotExist:
-            try:
-                if context['group'].owners.get(pk=self.request.user.pk):
-                    context['position'] = Group.OWNER
-            except self.request.user.DoesNotExist:
-                # messages.error(self.request, 'Вы не состоите в группе {}'.format(context['group'].name))
-                return HttpResponseRedirect(reverse('groups:groups'))
+    tables = []
+    for group_module in group.group_module.all():
+        table_data = group_module.get_solutions_as_table()
+        tables.append(table_data)
 
-        """
-        progress_v2.3a = {
-            'tasks': {
-                task1.pk: task1.title,
-                task2.pk: task2.title,
-            },
-            user1.pk: {
-                'name': user1.username
-                task1.pk: [solution1.pk, success],
-                task2.pk: [solution2.pk, success],
-            },
-            user2.pk: {
-            },
-        }
-        """
-        context['data'] = []
-        for data in context['group'].data.all():
-            context['data'].append([])
-            tasks = data.progress.pop('tasks', {}).values()
-            context['data'][-1].append([data.module.name, ])
-            context['data'][-1][-1].extend(tasks)
-            for user_pk, row in data.progress.items():
-                context['data'][-1].append([row.pop('name'), ])
-                for task_pk, cell in row.items():
-                    if cell[1]:
-                        context['data'][-1][-1].append(True)
-                    else:
-                        try:
-                            solution = CodeSolution.objects.get(code__pk=task_pk, user__pk=user_pk)
-                            if solution.success:
-                                data_save = ModuleData.objects.get(pk=data.pk)
-                                data_save.progress[str(user_pk)][str(task_pk)] = [solution.pk, solution.success]
-                                data_save.save()
-                                context['data'][-1][-1].append(True)
-                            else:
-                                context['data'][-1][-1].append(False)
-                        except ObjectDoesNotExist:
-                            context['data'][-1][-1].append(None)
-
-        return context
+    template = "groups/progress.html"
+    context = {"tables": tables, "object": group}
+    return render(request, template, context)
 
 
 def join(request, pk):
