@@ -43,12 +43,13 @@ class ExecutorNode(template.Node):
             try:
                 code = Code.objects.get(id=code_ids[i], treeitem=treeitem)
                 tests = CodeTest.objects.filter(code=code)
+                code_solved = False
                 if not context["request"].user.is_anonymous:
                     try:
                         user_solution = UserSolution.objects.get(code=code, user=context["request"].user)
                         code_solved = True if user_solution.progress == 100 else False
                     except:
-                        code_solved = False
+                        pass
 
                 code_context = {
                     "code_solved": code_solved,

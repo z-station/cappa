@@ -1,0 +1,15 @@
+
+<li>
+    {% if item.url == object.get_absolute_url %}
+        <span class="active">{{ item.title }}</span>
+    {% else %}
+        <a href="{{ item.url }}">{{ item.title }}</a>
+    {% endif %}
+    {% if item.children %}
+        <ul>
+            {% for child in item.children %}
+                {% include 'courses/nav_item.html' with item=child %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

@@ -1,11 +1,30 @@
 {% extends "courses/base.html" %}
-{% load executors_tags courses_tags %}
+{% load executors_tags courses_tags mptt_tags %}
 
-
-{% block content  %}
-   <div class="row mx-3">
-        {% show_executors object.content for object %}
-   </div>
+{% block main %}
+    <div class="container">
+        <div class="row">
+            {% courses_breadcrumbs %}
+        </div>
+        <div class="row content">
+            <div class="left-col">
+                <h1 class="text-center">{{ object.long_title|default:object.title }}</h1>
+                {% show_executors object.content for object %}
+            </div>
+            <div class="right-col">
+                <h1 class="">Навигация по курсу</h1>
+                <hr>
+                {% get_navigation object as navigation %}
+                {% if navigation %}
+                    <ul>
+                    {% for item in navigation %}
+                        {% include 'courses/nav_item.html' %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 

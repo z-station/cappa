@@ -8,58 +8,80 @@
     <script src="//code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="top-nav">
-        <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-lg-2">
-                    <a href="/"><img class="logo" src="{{ STATIC_URL }}img/ceep_calm.png"/></a>
+    <div class="wrapper">
+        <nav class="top-nav">
+            <div class="container">
+                <div class="top-nav-left">
+                    <div class="logo-container">
+                        <a href="/">Главная</a>
+                    </div>
+                    <ul class="col-lg-6 top-menu-container">
+                        <li><a href="{% url 'courses-root' %}">Курсы</a></li>
+
+                    </ul>
                 </div>
-                <div class="col-lg-6 d-flex justify-content-end align-items-center align-middle">
-                    <a class="mr-5" href="{% url 'courses-root' %}">Курсы</a>
-                    <a class="mr-5" href="/groups/">Группы</a>
+                <div class="top-nav-right">
                     {% if user.is_authenticated  %}
-                        <span class="username">{{ user.username }}</span> <a class="ml-3" href="{% url 'logout' %}">Выйти</a>
+                        <a class="profile" href="">{{ user.first_name|default:user.username }}</a>
                     {% else %}
-                        <a class="ml-3" href="{% url 'login' %}">Войти</a>
+                        <a class="profile" href="{% url 'login' %}">Войти</a>
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <main>
-        <div class="container">
-            <div class="row pt-4 pl-4">
-                <div class="h1 col-lg-12">{% block content_title %}{% endblock %}</div>
-            </div>
-            <div class="row pt-4">
-                {% block container %}
-                    <div class="content col-lg-8" >
+        <main>
+        {% block main %}
+            <div class="container">
+                <div class="row">
+                    {% block breadcrumbs %}{% endblock %}
+                </div>
+                <div class="row">
+                    <div>
+                        <h1>{% block content_title %}{% endblock %}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="content">
                         {% block content %}{% endblock %}
                     </div>
-                    <div class="sidebar col-lg-3" >
-                        {% block sidebar %}{% endblock %}
-                    </div>
-                {% endblock %}
+                </div>
             </div>
-            <div class="row pt-5 pl-5">
-                <div class="h1 col-lg-12">{% block pagination %}{% endblock %}</div>
-            </div>
+        {% endblock %}
+        </main>
+    </div>
 
+    <footer>
+        <div class="container">
+            <div class="row footer-nav">
+                <div class="col-lg-3">
+                    CSU Math 2018
+                </div>
+                <div class="col-lg-3">
+                    <div class="footer-nav-title">О нас</div>
+                    <ul>
+                        <li><a href="">Команда проекта</a></li>
+                        <li><a href="">О проекте</a></li>
+                        <li><a href="">Контакты</a></li>
+                        <li><a href="">Помощь</a></li>
+
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <div class="footer-nav-title">Разработчикам</div>
+                    <ul>
+                        <li><a href="">Быстрый старт</a></li>
+                        <li><a href="">Обратная связь</a></li>
+                        <li><a href="">Документация</a></li>
+                        <li><a href="//github.com/oldroute/project">Репозиторий</a></li>
+                    </ul>
+                </div>
+                <div class="copyright col-lg-3">
+                </div>
+            </div>
         </div>
-    </main>
-{#    <footer>#}
-{#        <div class="container">#}
-{#            <div class="row">#}
-{#                <div class=" copyright col-lg-12 text-center" >#}
-{#                    CSU Math 2018#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </footer>#}
-    {% block js %}
-{#         <script type="text/javascript" src="//web-ptica.ru/VRV-files/knopkavverh/22.js"></script>#}
-    {% endblock %}
+    </footer>
+    {% block js %}{% endblock %}
 </body>
 </html>
 
