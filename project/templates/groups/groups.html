@@ -1,7 +1,9 @@
 {% extends 'groups/base.html' %}
 
-{% block content  %}
-    {% if my %}
+{% block title %}Группы{% endblock %}
+{% block content_title %}Группы{% endblock %}
+{% block content %}
+    {% if my_groups %}
         <div class="row">
             <form action="{% url 'admin:groups_group_add' %}">
                 <input type="submit" class="btn btn-primary" value="Add" />
@@ -35,7 +37,7 @@
 
             {% for group in groups %}
                 {% if group.state == group.CLOSE %}
-                    <tr class="group-close" onclick="window.location.href='{% url "groups:group" group.id %}'">
+                    <tr class="tr-close" onclick="window.location.href='{% url "groups:group" group.id %}'">
                 {% else %}
                     <tr onclick="window.location.href='{% url "groups:group" group.id %}'">
                 {% endif %}
@@ -48,6 +50,6 @@
             </tbody>
         </table>
     {% else %}
-        <p>No groups.</p>
+        <p>Групп нет.</p>
     {% endif %}
 {% endblock %}

@@ -1,0 +1,35 @@
+<table class="table-bordered progress-table">
+    <thead>
+        <tr>
+        {% for th in table.thead.values %}
+            {% if forloop.first %}
+                <th>
+                    <a href="{{ th.url }}">{{ th.text }}</a>
+                </th>
+            {% else %}
+                <th title="{{ th.text }}">
+                    <a href="{{ th.url }}">{{ forloop.counter0 }}</a>
+                </th>
+            {% endif %}
+        {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for tr in table.tbody %}
+        <tr>
+        {% for td in tr.values %}
+            {% if forloop.first %}
+                <td>
+                    {{ td.text }}
+                </td>
+            {% else %}
+                <td class="{{ td.class }}">
+                    {{ td.text }}
+                </td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

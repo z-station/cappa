@@ -1,11 +1,7 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.db.models.signals import m2m_changed, post_save
-from django.dispatch import receiver
 from django.utils import timezone
 from collections import OrderedDict
-from project.courses.models import TreeItem
 from project.executors.models import UserSolution, Code
 from project.modules.models import Module
 
@@ -14,7 +10,7 @@ class Group(models.Model):
     OPEN = 0
     CLOSE = 1
     CODE = 2
-    STATE = (
+    STATES = (
         (OPEN, 'Открытая'),
         (CLOSE, 'Закрытая'),
         (CODE, 'Кодовое слово'),
@@ -26,9 +22,9 @@ class Group(models.Model):
     status = models.TextField(help_text='Введите статус группы', verbose_name='Статус', blank=True)
     changed_status = models.DateTimeField(default=timezone.now)
     owners = models.ManyToManyField(User, verbose_name='Владельцы', related_name='ownership')
-    members = models.ManyToManyField(User, verbose_name='Пользователи', related_name='membership', blank=True)
+    members = models.ManyToManyField(User, verbose_name='Участники', related_name='membership', blank=True)
     modules = models.ManyToManyField(Module, verbose_name='Модули', blank=True, through='GroupModule')
-    state = models.IntegerField(verbose_name='Статус', choices=STATE, default=CLOSE)
+    state = models.IntegerField(verbose_name='Статус', choices=STATES, default=CLOSE)
     codeword = models.CharField(max_length=64, help_text='Введите кодовое слово', verbose_name='Код', blank=True)
     created_at = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
 
@@ -46,7 +42,7 @@ class Group(models.Model):
         return instance
 
     def get_state(self):
-        return self.STATE[self.state][1]
+        return self.STATES[self.state][1]
 
     def get_root_owner_username(self):
         try:
@@ -67,6 +63,14 @@ class Group(models.Model):
 
     get_members_number.short_description = 'Участников'
 
+    def get_user_position(self, user):
+        if user.is_authenticated():
+            if self.members.filter(pk=user.pk):
+                return Group.MEMBER
+            elif self.owners.filter(pk=user.pk):
+                return Group.OWNER
+        return None
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if not self._state.adding and self.__status != self.status:
@@ -84,8 +88,8 @@ class GroupModule(models.Model):
         (TIMER, 'Таймер'),
     )
 
-    module = models.ForeignKey(Module, verbose_name='Модуль')
     group = models.ForeignKey(Group, verbose_name='Группа', related_name='group_module')
+    module = models.ForeignKey(Module, verbose_name='Модуль')
     state = models.IntegerField(verbose_name='Статус', choices=STATES, default=STOCK)
     open_at = models.DateTimeField(verbose_name='Открыть', default=timezone.now)
     close_at = models.DateTimeField(verbose_name='Закрыть', default=timezone.now)
@@ -115,7 +119,7 @@ class GroupModule(models.Model):
     def format_time(time):
         return time.strftime('%H:%M (%a, %d.%m.%y)')
 
-    def get_solutions_as_table(self):
+    def get_solutions_as_table(self, members):
         """ Возвращает объект (в формате таблицы) с данными о решении задач модуля участниками группы
         table =
             {
@@ -169,7 +173,7 @@ class GroupModule(models.Model):
         # заполнение строк tr и их ячеек td тела таблицы tbody
         tbody = []
         # получить решения по данным задачам codes для указанного пользователя user
-        for user in self.group.members.all().order_by("last_name", "first_name", "username"):
+        for user in members.order_by("last_name", "first_name", "username"):
             tr = OrderedDict()
             first_td = {
                 "text": user.get_full_name() if user.get_full_name() else user.username,
@@ -209,4 +213,3 @@ class GroupModule(models.Model):
             "tbody": tbody,
         }
         return table
-

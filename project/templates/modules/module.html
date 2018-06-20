@@ -24,7 +24,12 @@
         </div>
     </div>
 
-    {% if my %}
+{#    {% if position == group.OWNER %}#}
+{#        {% include 'groups/table_progress.html' %}#}
+{#    {% endif %}#}
+    {% include 'groups/table_progress.html' %}
+
+    {% if my_module %}
         <div class="row">
             <form action="{% url 'admin:modules_module_change' module.id %}">
                 <input type="submit" class="btn btn-primary" value="Change" />
@@ -35,25 +40,13 @@
         </div>
     {% endif %}
 
-    {%  if tasks %}
-        <table class="table table-hover">
-            <caption>Список задач</caption>
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Название</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for task in tasks %}
-                <tr onclick="window.location.href='{% url "courses-item" task.get_complete_slug %}'">
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ task.title }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {% if tasks %}
+        {% if position %}
+            {% include 'modules/tasks_member.html' %}
+        {% else %}
+            {% include 'modules/tasks_anonymous.html' %}
+        {% endif %}
     {% else %}
-        Задач нет.
+        <p>Задач нет.</p>
     {% endif %}
 {% endblock %}

@@ -62,12 +62,12 @@ a:hover {
     color: white;
 }
 
-.group-close {
+.tr-close {
     background: gainsboro;
     color: gray;
 }
 
-.group-close:hover {
+.tr-close:hover {
     background: gray !important;
     color: gainsboro;
 }

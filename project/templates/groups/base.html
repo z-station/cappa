@@ -1,20 +1,24 @@
 {% extends "base_pagination.html" %}
 
-{% block title %}Группы{% endblock %}
-{% block content_title %}Группы{% endblock %}
+{% block main %}
+    <div class="container">
+        <div class="row">
+            {% block breadcrumbs %}{% endblock %}
+        </div>
 
-{% block sidebar %}
-    <ul  class="list-unstyled">
-        <li>
-            <a href="{% url 'groups:my_groups' %}">Мои группы</a> |
-            <a href="{% url 'groups:groups' %}">Группы</a>
-        </li>
-        <li>
-            <a href="{% url 'modules:my_modules' %}">Мои модули</a> |
-            <a href="{% url 'modules:modules' %}">Модули</a>
-        </li>
-        <li>
-            <a href="{% url 'courses-root' %}">Курсы</a>
-        </li>
-    </ul>
+        <div class="row content">
+            <div class="left-col">
+                <h1>{% block content_title %}{% endblock %}</h1>
+                {% block content %}{% endblock %}
+            </div>
+
+            <div class="right-col">
+                <h1>Навигация</h1>
+                <hr>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'groups:my_groups' %}">Мои группы</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

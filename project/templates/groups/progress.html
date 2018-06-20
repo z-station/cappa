@@ -1,55 +1,10 @@
-{% extends 'groups/base.html' %}
+{% extends 'groups/group.html' %}
 
-{% block title %}{{ group.name }}{% endblock %}
-{% block content_title %}{{ group.name }}{% endblock %}
-
-{% block container %}
-    <div class="content col-lg-12" >
-    {% if tables %}
-        {% for table in tables %}
-            <div class="mb-5">
-                <h5>{{ table.caption }}</h5>
-                <table class="table-bordered progress-table">
-                    <thead>
-                        <tr>
-                        {% for th in table.thead.values %}
-                            {% if forloop.first %}
-                                <th>
-                                    <a href="{{ th.url }}">{{ th.text }}</a>
-                                </th>
-                            {% else %}
-                                <th title="{{ th.text }}">
-                                    <a href="{{ th.url }}">{{ forloop.counter0 }}</a>
-                                </th>
-                            {% endif %}
-                        {% endfor %}
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for tr in table.tbody %}
-                        <tr>
-                        {% for td in tr.values %}
-                            {% if forloop.first %}
-                                <td>
-                                    {{ td.text }}
-                                </td>
-                            {% else %}
-                                <td class="{{ td.class }}">
-                                    {{ td.text }}
-                                </td>
-                            {% endif %}
-                        {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
-            </div>
-        {% endfor %}
-
-    {% else %}
-        Нет прогресса.
-    {% endif %}
-    </div>
+{% block content %}
+    {% for table in tables %}
+        <div class="mb-5">
+            <h3>{{ table.caption }}</h3>
+            {% include 'groups/table_progress.html' %}
+        </div>
+    {% endfor %}
 {% endblock %}

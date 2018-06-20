@@ -1,7 +1,9 @@
 {% extends 'modules/base.html' %}
 
+{% block title %}Модули{% endblock %}
+{% block content_title %}Модули{% endblock %}
 {% block content  %}
-    {% if my %}
+    {% if my_modules %}
         <div class="row">
             <form action="{% url 'admin:modules_module_add' %}">
                 <input type="submit" class="btn btn-primary" value="Add" />
@@ -27,12 +29,12 @@
                 <tr onclick="window.location.href='{% url "modules:module" module.id %}'">
                     <td>{{ module.name }}</td>
                     <td>{{ module.owner.username }}</td>
-                    <td>{{ module.get_tasks_number }}</td>
+                    <td>{{ module.treeitems.count }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>No modules.</p>
+        <p>Модулей нет.</p>
     {% endif %}
 {% endblock %}

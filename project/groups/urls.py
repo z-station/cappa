@@ -1,15 +1,18 @@
 # -*- coding:utf-8 -*-
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from project.groups.views import GroupsView, MyGroupsView, GroupView, progress, join
+
+from project.groups import views
+from project.modules.views import ModuleProgressView
 
 app_name = 'groups'
 urlpatterns = [
-    url(r'^$', GroupsView.as_view(), name='groups'),
-    url(r'^my_groups/$', MyGroupsView.as_view(), name='my_groups'),
-    url(r'^(?P<pk>[0-9]+)/$', GroupView.as_view(), name='group'),
-    url(r'^(?P<group_id>[0-9]+)/progress/$', progress, name='progress'),
-    url(r'^(?P<pk>[0-9]+)/join/$', join, name='join'),
+    url(r'^$', views.GroupsView.as_view(), name='groups'),
+    url(r'^my_groups/$', login_required(views.MyGroupsView.as_view()), name='my_groups'),
+    url(r'^(?P<pk>[0-9]+)/$', views.GroupView.as_view(), name='group'),
+    url(r'^(?P<group_id>[0-9]+)/modules/(?P<pk>[0-9]+)/$', ModuleProgressView.as_view(), name='module_progress'),
+    url(r'^(?P<group_id>[0-9]+)/progress/$', views.progress, name='progress'),
+    url(r'^(?P<group_id>[0-9]+)/join/$', login_required(views.join), name='join'),
 ]
 
 """

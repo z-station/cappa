@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
-from django.template import RequestContext
 
 from project.groups.models import Group
 
@@ -25,7 +24,7 @@ class MyGroupsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(MyGroupsView, self).get_context_data(**kwargs)
         context['ownership'] = self.request.user.ownership.all()
-        context['my'] = True
+        context['my_groups'] = True
 
         return context
 
@@ -44,20 +43,16 @@ class GroupView(generic.DetailView):
         if context['error_message']:
             del self.request.session['error_message']
 
-        if self.request.user.is_authenticated():
-            try:
-                if context['group'].members.get(pk=self.request.user.pk):
-                    context['position'] = Group.MEMBER
-            except self.request.user.DoesNotExist:
-                try:
-                    if context['group'].owners.get(pk=self.request.user.pk):
-                        context['position'] = Group.OWNER
-                except self.request.user.DoesNotExist:
-                    pass
+        context['position'] = context['group'].get_user_position(self.request.user)
+        if context['position'] == Group.OWNER:
+            context['members'] = context['group'].members.all()
 
-            context['modules_data'] = context['group'].group_module.all()
+        context['modules_data'] = context['group'].group_module.all()
 
         return context
+
+
+
 
 
 # TODO Переделать. 1. Создать и согласовать json-структуру таблицы. 2 GroupModule лишнее звено - сохранять в кэш
@@ -70,17 +65,18 @@ def progress(request, group_id):
         return HttpResponseRedirect(reverse('groups:groups'))
 
     tables = []
+    members = group.members.all()
     for group_module in group.group_module.all():
-        table_data = group_module.get_solutions_as_table()
+        table_data = group_module.get_solutions_as_table(members)
         tables.append(table_data)
 
     template = "groups/progress.html"
-    context = {"tables": tables, "object": group}
+    context = {"tables": tables, }
     return render(request, template, context)
 
 
-def join(request, pk):
-    group = get_object_or_404(Group, pk=pk)
+def join(request, group_id):
+    group = get_object_or_404(Group, pk=group_id)
 
     if request.method == 'POST':
         try:

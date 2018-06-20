@@ -32,29 +32,59 @@
     </div>
 
     {% if position %}
-        <div class="row">
-            <form action="{% url 'groups:progress' group.id %}">
-                <input type="submit" class="btn btn-primary" value="Progress" />
-            </form>
             {% if position == group.OWNER %}
                 <!--владелец-->
-                <form action="{% url 'admin:groups_group_change' group.id %}">
-                    <input type="submit" class="btn btn-primary" value="Change" />
-                </form>
-                <form action="{% url 'admin:groups_group_history' group.id %}">
-                    <input type="submit" class="btn" value="History" />
-                </form>
-                <form action="{% url 'admin:groups_group_delete' group.id %}">
-                    <input type="submit" class="btn" value="Delete" />
-                </form>
+                <div class="row">
+                    <form action="{% url 'groups:progress' group.id %}">
+                        <input type="submit" class="btn btn-primary" value="Progress" />
+                    </form>
+                    <form action="{% url 'admin:groups_group_change' group.id %}">
+                        <input type="submit" class="btn btn-primary" value="Change" />
+                    </form>
+                    <form action="{% url 'admin:groups_group_history' group.id %}">
+                        <input type="submit" class="btn" value="History" />
+                    </form>
+                    <form action="{% url 'admin:groups_group_delete' group.id %}">
+                        <input type="submit" class="btn" value="Delete" />
+                    </form>
+                </div>
+
+                {% if members %}
+{#                    <table class="table table-hover">#}
+                    <table class="table">
+                        <caption>Список участников</caption>
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Псевдоним</th>
+                            <th>ФИО</th>
+                            <th>Последний раз был</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for member in members %}
+{#                            <tr onclick="window.location.href='{% url "profile:profile" member.id %}'">#}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ member.username }}</td>
+                                <td>{{ member.first_name }} {{ member.last_name }}</td>
+                                <td>{{ member.last_login }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Участников нет.</p>
+                {% endif %}
             {% else %}
                 <!--участник-->
-                <form action="{% url 'groups:join' group.id %}" method="post">
-                    {% csrf_token %}
-                    <input type="submit" class="btn" value="Leave" />
-                </form>
+                <div class="row">
+                    <form action="{% url 'groups:join' group.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" class="btn" value="Leave" />
+                    </form>
+                </div>
             {% endif %}
-        </div>
 
         {% if modules_data %}
             <table class="table table-hover">
@@ -71,21 +101,21 @@
                 {% for data in modules_data %}
                     {% if data.state != data.HIDE or position == group.OWNER %}
                         {% if data.is_active or position == group.OWNER %}
-                            <tr onclick="window.location.href='{% url "modules:module" data.module.id %}'">
+                            <tr onclick="window.location.href='{% url "groups:module_progress" data.group.id data.module.id %}'">
                         {% else %}
-                            <tr class="group-close">
+                            <tr class="tr-close">
                         {% endif %}
                             <td>{{ forloop.counter }}</td>
                             <td>{{ data.module.name }}</td>
                             <td>{{ data.get_timer }}</td>
-                            <td>{{ data.module.tasks.count }}</td>
+                            <td>{{ data.module.treeitems.count }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            Модулей нет.
+            <p>Модулей нет.</p>
         {% endif %}
 
     {% elif group.state != group.CLOSE%}
@@ -100,6 +130,6 @@
             </form>
         </div>
     {% else %}
-        Группа закрыта.
+        <p>Группа закрыта.</p>
     {% endif %}
 {% endblock %}
