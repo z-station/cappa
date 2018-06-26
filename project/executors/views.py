@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, render, get_object_or_404, Http404
 from project.executors.forms import CodeForm
-from project.executors.models import Code, CodeTest, Executor
+from project.executors.models import Code, CodeTest, Executor, UserSolution
 from project.executors.utils import create_or_update_solution
 
 
@@ -86,3 +86,60 @@ def check_tests(request):
             "tests_result": tests_result["data"],
         }
         return render(request, code.get_template(), context)
+
+
+def user_solution(request, user_id, code_id):
+    user_solution_obj = get_object_or_404(UserSolution, user=user_id, code=code_id)
+    solutions = user_solution_obj.details["solutions"]
+    if solutions:
+        template = user_solution_obj.code.get_template("code_solution.html")
+        num = user_solution_obj.details.get("best_solution_num")
+        if num:
+            solution = user_solution_obj.details["solutions"][num]
+            tests = user_solution_obj.details["best_solution_tests"]
+        else:
+            solution = user_solution_obj.details["solutions"].pop()
+            tests = []
+
+        form = CodeForm(initial={
+            "content": solution["content"],
+            "input": None,
+            "output": None,
+            "error": None,
+        })
+
+        try:
+            # TODO сделать замену тега на форму
+            treeitem = user_solution_obj.code.treeitem
+            title = treeitem.long_title if treeitem.long_title else treeitem.title
+            content = treeitem.content
+
+            import re
+            code_tag_pattern = re.compile(r'<\w+>[&nbsp;]*#code[0-9]+#[&nbsp;]*</\w+>|[&nbsp;]*#code[0-9]+#[&nbsp;]*')
+            content = re.sub(code_tag_pattern, "", content)
+        except:
+            title = None
+            content = None
+
+        executor_name = Code.objects.get(id=code_id).get_executor_name()
+
+        css_class = "process"
+        if user_solution_obj.progress == 0:
+            css_class = "unluck"
+        elif user_solution_obj.progress == 100:
+            css_class = "success"
+        solution["css_class"] = css_class
+
+        context = {
+            "treeitem_title": title,
+            "treeitem_content": content,
+            "form": form,
+            "object": user_solution_obj,
+            "solution": solution,
+            "tests_result": tests,
+            "solution_user": user_solution_obj.user,
+            "executor_name": executor_name,
+        }
+        return render(request, template, context)
+    else:
+        return Http404

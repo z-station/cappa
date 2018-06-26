@@ -1,8 +1,8 @@
 {% extends 'left-right-col.html' %}
 
-{% block title %}Группы{% endblock %}
+{% block title %}Мои группы{% endblock %}
 
-{% block content_title %}Группы{% endblock %}
+{% block content_title %}Мои группы{% endblock %}
 
 {% block content %}
     {% if groups or ownership%}
@@ -13,15 +13,16 @@
 {% endblock %}
 
 {% block right-col %}
-    <h1>Навигация</h1>
+    <h1>Управление</h1>
     <hr>
     <ul class="list-unstyled">
-        <form action="{% url 'groups:groups' %}">
+        <form action="{% url 'groups:my_groups' %}">
             <input type="text" id="search" name="search" placeholder="Введите название" autofocus
                    value="{% if request.GET.search %}{{ request.GET.search }}{% endif %}" />
             <input type="submit" class="btn btn-primary" value="Поиск" />
         </form>
         <hr>
-        <li><a href="{% url 'groups:my_groups' %}">Мои группы</a></li>
+        <li><a href="{% url 'admin:groups_group_add' %}">Добавить группу</a></li>
+        <li><a href="{% url 'admin:groups_group_changelist' %}">Редактировать группы</a></li>
     </ul>
 {% endblock %}

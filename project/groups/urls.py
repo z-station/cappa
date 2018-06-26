@@ -10,8 +10,8 @@ urlpatterns = [
     url(r'^$', views.GroupsView.as_view(), name='groups'),
     url(r'^my_groups/$', login_required(views.MyGroupsView.as_view()), name='my_groups'),
     url(r'^(?P<pk>[0-9]+)/$', views.GroupView.as_view(), name='group'),
+    url(r'^(?P<pk>[0-9]+)/progress/$', views.GroupProgressView.as_view(), name='progress'),
     url(r'^(?P<group_id>[0-9]+)/modules/(?P<pk>[0-9]+)/$', ModuleProgressView.as_view(), name='module_progress'),
-    url(r'^(?P<group_id>[0-9]+)/progress/$', views.progress, name='progress'),
     url(r'^(?P<group_id>[0-9]+)/join/$', login_required(views.join), name='join'),
 ]
 

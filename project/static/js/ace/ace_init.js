@@ -14,7 +14,7 @@ function set_editor_field(editor_id){
     editor.setOption("showPrintMargin", false)   // убрать верт черту
     editor.setOption("maxLines", "Infinity");    // авто-высота
     editor.setHighlightActiveLine(false);        // убрать строку вделения
-    editor.renderer.setShowGutter(false);        // отключить вывод номеров строк
+    //editor.renderer.setShowGutter(false);        // отключить вывод номеров строк
     if(readonly){
         editor.setReadOnly(true);  // для чтения
     }

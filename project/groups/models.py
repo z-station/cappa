@@ -4,6 +4,7 @@ from django.utils import timezone
 from collections import OrderedDict
 from project.executors.models import UserSolution, Code
 from project.modules.models import Module
+from django.urls import reverse
 
 
 class Group(models.Model):
@@ -11,15 +12,18 @@ class Group(models.Model):
     CLOSE = 1
     CODE = 2
     STATES = (
-        (OPEN, 'Открытая'),
-        (CLOSE, 'Закрытая'),
+        (OPEN, 'Открыта'),
+        (CLOSE, 'Закрыта'),
         (CODE, 'Кодовое слово'),
     )
-    OWNER = 100
-    MEMBER = 101
+
+    ROOT = 100
+    OWNER = 90
+    MEMBER = 50
+    NONE = 10
 
     name = models.CharField(max_length=64, help_text='Введите название группы', verbose_name='Название')
-    status = models.TextField(help_text='Введите статус группы', verbose_name='Статус', blank=True)
+    status = models.TextField(max_length=1024, help_text='Введите статус группы', verbose_name='Статус', blank=True)
     changed_status = models.DateTimeField(default=timezone.now)
     owners = models.ManyToManyField(User, verbose_name='Владельцы', related_name='ownership')
     members = models.ManyToManyField(User, verbose_name='Участники', related_name='membership', blank=True)
@@ -41,22 +45,26 @@ class Group(models.Model):
         instance.__status = values[field_names.index('status')]
         return instance
 
+    def get_absolute_url(self):
+        return reverse('groups:group', args=(self.pk, ))
+
     def get_state(self):
         return self.STATES[self.state][1]
 
-    def get_root_owner_username(self):
+    def get_root_username(self):
         try:
             return self.owners.all()[0].username
         except IndexError:
             return 'None'
 
-    get_root_owner_username.short_description = 'Владелец'
+    get_root_username.short_description = 'Владелец'
 
     def get_owners_usernames(self):
         return ' ,'.join([owner.username for owner in self.owners.all()])
 
     def get_members(self):
-        return self.owners.all() | self.members.all()
+        return self.owners.all()\
+            .union(self.members.all())
 
     def get_members_number(self):
         return self.owners.count() + self.members.count()
@@ -68,8 +76,10 @@ class Group(models.Model):
             if self.members.filter(pk=user.pk):
                 return Group.MEMBER
             elif self.owners.filter(pk=user.pk):
+                if self.owners.all()[0].pk == user.pk:
+                    return Group.ROOT
                 return Group.OWNER
-        return None
+        return Group.NONE
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -103,16 +113,15 @@ class GroupModule(models.Model):
             return True
         return False
 
-    def get_timer(self):
-        """  docstring """
+    def get_state(self):
         if self.state == self.TIMER:
             now = timezone.now()
-            if now < self.open_at:
-                return 'Отктроется в %s' % self.format_time(self.open_at)
-            elif now > self.close_at:
-                return 'Закрылся в %s' % self.format_time(self.close_at)
+            if now > self.close_at:
+                return 'Закрылся в {}'.format(self.format_time(self.close_at))
+            elif now < self.open_at:
+                return 'Отктроется в {}'.format(self.format_time(self.open_at))
             else:
-                return 'Доступен до %s' % self.format_time(self.close_at)
+                return 'Доступен до {}'.format(self.format_time(self.close_at))
         return self.STATES[self.state][1]
 
     @staticmethod
@@ -195,7 +204,7 @@ class GroupModule(models.Model):
 
                     td = {
                         "text": text,
-                        "url": "",  # TODO позже будет ссылка на детали решения
+                        "url": reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id}),
                         "class": css_class
                     }
                 except UserSolution.DoesNotExist:

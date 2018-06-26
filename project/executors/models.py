@@ -54,9 +54,9 @@ class Code(models.Model):
         verbose_name = "блок кода"
         verbose_name_plural = "блоки кода"
 
-    type = models.IntegerField(verbose_name="тип", choices=CODE_TYPES, default=STATIC)
+    type = models.IntegerField(verbose_name="тип", choices=CODE_TYPES, default=EXECUTABLE)
     executor_type_id = models.IntegerField(verbose_name="Исполнитель", null=True, blank=True, choices=Executor.EXEC_TYPES,
-                                           help_text="если не выбран то наследуется")
+                                           help_text="если не выбран то наследуется", default=Executor.PYTHON36)
     treeitem = models.ForeignKey(TreeItem, verbose_name='элемент курса', on_delete=models.SET_NULL, blank=True, null=True)
     description = models.TextField(verbose_name="описание", blank=True, null=True)
 
@@ -71,23 +71,18 @@ class Code(models.Model):
     content_max_signs = models.PositiveIntegerField(verbose_name="макс. символов в блоке кода", default=1000)
     timeout = models.PositiveIntegerField(verbose_name="макс. время исполнения(секунд)", default=30)
 
-    def get_template(self):
-        """ Возвращает директорию до шаблона с учетом указанного исполнителя и типа кода"""
-        executor = self.executor_type_id
-        if not executor:
-            # если исполнитель не выбран то наследуется от связанного объекта
-            try:
-                executor_type_id = Executor.objects.get(treeitem=self.treeitem).type_id
-            except Executor.DoesNotExist:
-                # если исполнитель не выыбран для связанного объекта то использовать шаблон по умолчанию
-                raise Executor.DoesNotExist("Установите исполнитель кода для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
+    def get_template(self, template_name=None):
+        """ Возвращает полную директорию до шаблона (с учетом исполнителя)
+            если указан template_name - возвращает путь до этого шаблона
+            иначе возвращает путь до шаблона блока кода с указаным типом """
 
-            executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
+        executor_type_id = self.get_executor_type_id()
+        executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
+        if template_name:
+            template = os.path.join("executors", executor_folder, template_name)
         else:
-            executor_folder = Executor.EXEC_FOLDERS[self.executor_type_id]
-
-        code_template = self.CODE_TEMPLATES[self.type]
-        template = os.path.join("executors", executor_folder, code_template)
+            code_template = self.CODE_TEMPLATES[self.type]
+            template = os.path.join("executors", executor_folder, code_template)
         return template
 
     def get_executor_type_id(self):
@@ -98,7 +93,13 @@ class Code(models.Model):
             try:
                 return Executor.objects.get(treeitem=self.treeitem).type_id
             except Executor.DoesNotExist:
-                return None
+                raise Executor.DoesNotExist("Установите исполнитель кода для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
+
+    def get_executor_name(self):
+        executor_type_id = self.get_executor_type_id()
+        for exec_type in Executor.EXEC_TYPES:
+            if exec_type[0] == executor_type_id:
+                return exec_type[1]
 
     def __str__(self):
         """ Строкове представление """
@@ -157,6 +158,7 @@ class UserSolution(models.Model):
     default_details = {
         "solutions": [],
         "best_solution_tests": [],
+        "best_solution_num": False,
     }
 
     code = models.ForeignKey(Code, verbose_name="блок кода")
@@ -166,6 +168,25 @@ class UserSolution(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.user, self.code.get_title())
+
+    def get_template(self):
+        """ Возвращает директорию до шаблона с учетом указанного исполнителя"""
+        executor = self.code.executor_type_id
+        if not executor:
+            # если исполнитель не выбран то наследуется от связанного объекта
+            try:
+                executor_type_id = Executor.objects.get(treeitem=self.treeitem).type_id
+            except Executor.DoesNotExist:
+                # если исполнитель не выыбран для связанного объекта то использовать шаблон по умолчанию
+                raise Executor.DoesNotExist("Установите исполнитель кода для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
+
+            executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
+        else:
+            executor_folder = Executor.EXEC_FOLDERS[self.executor_type_id]
+
+        code_template = self.CODE_TEMPLATES[self.type]
+        template = os.path.join("executors", executor_folder, code_template)
+        return template
 
     """ Пример JSON структуры поля details
     details = {

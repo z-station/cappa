@@ -32,10 +32,11 @@ class GroupAdminForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         if user:
             kwargs.update(initial={
-                'owners': user
+                'owners': user,
             })
 
         super(GroupAdminForm, self).__init__(*args, **kwargs)
+
     # #owners
     # owners = forms.ModelMultipleChoiceField(
     #     queryset=User.objects.all(),
@@ -65,5 +66,4 @@ class GroupAdminForm(forms.ModelForm):
         state = int(self.data.get('state'))
         if state == Group.CODE and codeword == '':
             raise forms.ValidationError('В этом случае, кодовое слово - обязательно')
-
         return codeword

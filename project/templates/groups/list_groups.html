@@ -1,0 +1,34 @@
+<table class="table table-hover">
+    <caption>Список групп</caption>
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Владелец</th>
+        <th>Состояние</th>
+        <th>Участников</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for group in ownership %}
+        <tr onclick="window.location.href='{% url "groups:group" group.id %}'">
+            <td>{{ group.name }}</td>
+            <td>{{ group.get_root_owner_username }}</td>
+            <td>{{ group.get_state }}</td>
+            <td>{{ group.get_members_number }}</td>
+        </tr>
+    {% endfor %}
+
+    {% for group in groups %}
+        {% if group.state == group.CLOSE %}
+            <tr class="tr-close" onclick="window.location.href='{% url "groups:group" group.id %}'">
+        {% else %}
+            <tr onclick="window.location.href='{% url "groups:group" group.id %}'">
+        {% endif %}
+            <td>{{ group.name }}</td>
+            <td>{{ group.get_root_username }}</td>
+            <td>{{ group.get_state }}</td>
+            <td>{{ group.get_members_number }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

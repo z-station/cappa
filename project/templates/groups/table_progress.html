@@ -8,7 +8,7 @@
                 </th>
             {% else %}
                 <th title="{{ th.text }}">
-                    <a href="{{ th.url }}">{{ forloop.counter0 }}</a>
+                    <a target="_blank" href="{{ th.url }}">{{ forloop.counter0 }}</a>
                 </th>
             {% endif %}
         {% endfor %}
@@ -25,7 +25,7 @@
                 </td>
             {% else %}
                 <td class="{{ td.class }}">
-                    {{ td.text }}
+                   <a target="_blank" href="{{ td.url }}">{{ td.text }}</a>
                 </td>
             {% endif %}
         {% endfor %}

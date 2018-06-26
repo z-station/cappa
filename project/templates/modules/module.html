@@ -1,7 +1,9 @@
-{% extends 'modules/base.html' %}
+{% extends 'left-right-col.html' %}
 
 {% block title %}{{ module.name }}{% endblock %}
+
 {% block content_title %}{{ module.name }}{% endblock %}
+
 {% block content  %}
     <div class="row" >
         <div class="col-lg-6">
@@ -24,21 +26,10 @@
         </div>
     </div>
 
-{#    {% if position == group.OWNER %}#}
+{#    {% if position >= group.OWNER %}#}
 {#        {% include 'groups/table_progress.html' %}#}
 {#    {% endif %}#}
     {% include 'groups/table_progress.html' %}
-
-    {% if my_module %}
-        <div class="row">
-            <form action="{% url 'admin:modules_module_change' module.id %}">
-                <input type="submit" class="btn btn-primary" value="Change" />
-            </form>
-            <form action="{% url 'admin:modules_module_delete' module.id %}">
-                <input type="submit" class="btn" value="Delete" />
-            </form>
-        </div>
-    {% endif %}
 
     {% if tasks %}
         {% if position %}
@@ -49,4 +40,23 @@
     {% else %}
         <p>Задач нет.</p>
     {% endif %}
+{% endblock %}
+
+{% block right-col %}
+    <h1>Управление</h1>
+    <hr>
+    <ul class="list-unstyled">
+        {% if my_module %}
+            <li><a href="{% url 'admin:modules_module_change' module.id %}">Изменить модуль</a></li>
+            <li><a href="{% url 'admin:modules_module_history' module.id %}">Показать историю</a></li>
+            <hr>
+            <li><a href="{% url 'admin:modules_module_delete' module.id %}">Удалить модуль</a></li>
+        {% else %}
+            {% if group %}
+                <li><a href="{% url 'groups:group' group.id %}">Вернуться к группе</a></li>
+            {% else %}
+                <li><a href="{% url 'modules:modules' %}">Вернуться к модулям</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
 {% endblock %}

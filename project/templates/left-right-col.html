@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            {% block breadcrumbs %}{% endblock %}
+        </div>
+
+        <div class="row content">
+            <div class="left-col">
+                {% block left-col %}
+                    <h1>{% block content_title %}{% endblock %}</h1>
+                    {% block content %}{% endblock %}
+                    {% include 'pagination.html' %}
+                {% endblock %}
+            </div>
+
+            <div class="right-col">
+                {% block right-col %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

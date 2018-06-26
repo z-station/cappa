@@ -1,8 +1,8 @@
 {% extends 'left-right-col.html' %}
 
-{% block title %}Модули{% endblock %}
+{% block title %}Мои модули{% endblock %}
 
-{% block content_title %}Модули{% endblock %}
+{% block content_title %}Мои модули{% endblock %}
 
 {% block content  %}
     {% if modules %}
@@ -13,15 +13,16 @@
 {% endblock %}
 
 {% block right-col %}
-    <h1>Навигация</h1>
+    <h1>Управление</h1>
     <hr>
     <ul class="list-unstyled">
-        <form action="{% url 'modules:modules' %}">
+        <form action="{% url 'modules:my_modules' %}">
             <input type="text" id="search" name="search" placeholder="Введите название" autofocus
                    value="{% if request.GET.search %}{{ request.GET.search }}{% endif %}" />
             <input type="submit" class="btn btn-primary" value="Поиск" />
         </form>
         <hr>
-        <li><a href="{% url 'modules:my_modules' %}">Мои модули</a></li>
+        <li><a href="{% url 'admin:modules_module_add' %}">Добавить модуль</a></li>
+        <li><a href="{% url 'admin:modules_module_changelist' %}">Редактировать модули</a></li>
     </ul>
 {% endblock %}

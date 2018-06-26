@@ -8,8 +8,14 @@
         </div>
         <div class="row content">
             <div class="left-col">
-                <h1 class="text-center">{{ object.long_title|default:object.title }}</h1>
-                {% show_executors object.content for object %}
+                {% if object.leaf %}
+                    <h1 class="text-center">Задание "{{ object.long_title|default:object.title }}"</h1>
+                    <h3>Условие</h3><br/>
+                    {% show_executors object.content for object %}
+                {% else %}
+                    <h1>{{ object.long_title|default:object.title }}</h1>
+                    {% show_executors object.content for object %}
+                {% endif %}
             </div>
             <div class="right-col">
                 <h1 class="">Навигация по курсу</h1>

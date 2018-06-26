@@ -1,12 +1,10 @@
-{% extends 'groups/base.html' %}
+{% extends 'left-right-col.html' %}
 
 {% block title %}{{ group.name }}{% endblock %}
-{% block content_title %}{{ group.name }}{% endblock %}
-{% block content %}
-    {% if error_message %}
-        <p><strong>{{ error_message }}</strong></p>
-    {% endif %}
 
+{% block content_title %}{{ group.name }}{% endblock %}
+
+{% block content %}
     <div class="row" >
         <div class="col-lg-6">
             <p>
@@ -31,61 +29,39 @@
         </div>
     </div>
 
-    {% if position %}
-            {% if position == group.OWNER %}
-                <!--владелец-->
-                <div class="row">
-                    <form action="{% url 'groups:progress' group.id %}">
-                        <input type="submit" class="btn btn-primary" value="Progress" />
-                    </form>
-                    <form action="{% url 'admin:groups_group_change' group.id %}">
-                        <input type="submit" class="btn btn-primary" value="Change" />
-                    </form>
-                    <form action="{% url 'admin:groups_group_history' group.id %}">
-                        <input type="submit" class="btn" value="History" />
-                    </form>
-                    <form action="{% url 'admin:groups_group_delete' group.id %}">
-                        <input type="submit" class="btn" value="Delete" />
-                    </form>
-                </div>
+    {% if position >= group.OWNER %}
+        <!--ROOT/OWNER-->
+        {% if members %}
+{#            <table class="table table-hover">#}
+            <table class="table">
+                <caption>Список участников</caption>
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Псевдоним</th>
+                    <th>ФИО</th>
+                    <th>Последний раз был</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for member in members %}
+{#                    <tr onclick="window.location.href='{% url "profile:profile" member.id %}'">#}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ member.username }}</td>
+                        <td>{{ member.first_name }} {{ member.last_name }}</td>
+                        <td>{{ member.last_login }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Участников нет.</p>
+        {% endif %}
+    {% endif %}
 
-                {% if members %}
-{#                    <table class="table table-hover">#}
-                    <table class="table">
-                        <caption>Список участников</caption>
-                        <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Псевдоним</th>
-                            <th>ФИО</th>
-                            <th>Последний раз был</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for member in members %}
-{#                            <tr onclick="window.location.href='{% url "profile:profile" member.id %}'">#}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ member.username }}</td>
-                                <td>{{ member.first_name }} {{ member.last_name }}</td>
-                                <td>{{ member.last_login }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>Участников нет.</p>
-                {% endif %}
-            {% else %}
-                <!--участник-->
-                <div class="row">
-                    <form action="{% url 'groups:join' group.id %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" class="btn" value="Leave" />
-                    </form>
-                </div>
-            {% endif %}
-
+    {% if position != group.NONE or group.state != group.CLOSE %}
+        <!--ROOT/-/NONE-->
         {% if modules_data %}
             <table class="table table-hover">
                 <caption>Список модулей</caption>
@@ -107,7 +83,7 @@
                         {% endif %}
                             <td>{{ forloop.counter }}</td>
                             <td>{{ data.module.name }}</td>
-                            <td>{{ data.get_timer }}</td>
+                            <td>{{ data.get_state }}</td>
                             <td>{{ data.module.treeitems.count }}</td>
                         </tr>
                     {% endif %}
@@ -117,19 +93,50 @@
         {% else %}
             <p>Модулей нет.</p>
         {% endif %}
-
-    {% elif group.state != group.CLOSE%}
-        <!--гость-->
-        <div class="row">
-            <form action="{% url 'groups:join' group.id %}" method="post">
-                {% csrf_token %}
-                {% if group.state == group.CODE %}
-                    <input autofocus type="password" id="codeword" name="codeword" placeholder="Введите кодово слово"/>
-                {% endif %}
-                <input type="submit" class="btn btn-primary" value="Join!" />
-            </form>
-        </div>
     {% else %}
         <p>Группа закрыта.</p>
     {% endif %}
+{% endblock %}
+
+{% block right-col %}
+    <h1>Управление</h1>
+    <hr>
+    <ul class="list-unstyled">
+        {% if position >= group.OWNER %}
+            <!--ROOT/OWNER-->
+            <li><a href="{% url 'admin:groups_group_change' group.id %}">Изменить группу</a></li>
+            <li><a href="{% url 'groups:progress' group.id %}">Показать прогресс</a></li>
+            <li><a href="{% url 'admin:groups_group_history' group.id %}">Показать истоию</a></li>
+            <hr>
+            {% if position == group.ROOT %}
+                <li><a href="{% url 'admin:groups_group_delete' group.id %}">Удалить группу</a></li>
+            {% else %}
+                <form action="{% url 'groups:join' group.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" class="btn" value="Уйти из группы" />
+                </form>
+            {% endif %}
+        {% elif position == group.MEMBER %}
+            <!--MEMBER-->
+            <form action="{% url 'groups:join' group.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="btn" value="Уйти из группы" />
+            </form>
+        {% elif group.state != group.CLOSE %}
+            <!--NONE-->
+            <div class="row">
+                <form action="{% url 'groups:join' group.id %}" method="post">
+                    {% csrf_token %}
+                    {% if group.state == group.CODE %}
+                        <input type="password" id="codeword" name="codeword" placeholder="Введите кодово слово" autofocus />
+                        <input type="submit" class="btn btn-primary" value="Ввод" />
+                    {% else %}
+                        <input type="submit" class="btn btn-primary" value="Вступить в группу" />
+                    {% endif %}
+                </form>
+            </div>
+        {% else %}
+            <li><a href="{% url 'groups:groups' %}">Вернуться к группам</a></li>
+        {% endif %}
+    </ul>
 {% endblock %}

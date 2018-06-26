@@ -32,11 +32,7 @@ def create_or_update_solution(user, code, tests_result, content ):
         if new_solution_progress > user_solution.progress:
             user_solution.progress = new_solution_progress
             user_solution.details["best_solution_num"] = len(details["solutions"])  # обновить порядковый номер успешного решения
-            user_solution.details["best_solution_tests"] = []
-            for i in range(tests_result["num"]):
-                test = tests_result["data"][i]
-                test_data = {i+1: test["success"]}
-                user_solution.details["best_solution_tests"].append(test_data)
+            user_solution.details["best_solution_tests"] = tests_result["data"] # обновить детали тестов успешного решения
         user_solution.details["solutions"].append(new_solution)
         user_solution.save()
         return True if user_solution.progress == 100 else False

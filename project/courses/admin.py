@@ -37,6 +37,24 @@ class TreeItemAdmin(NestedModelAdmin):
     exclude = ("author",)
     prepopulated_fields = {"slug": ("title",)}
     inlines = []
+    fieldsets = (
+        (
+          None, {
+              "fields": (("show", "leaf"),  "title", "slug", "long_title"),
+          }
+        ),
+        (
+            'Короткое описание', {
+                "fields": ("about", ),
+                "classes": ("collapse", )
+            }
+        ),
+        (
+          None, {
+              "fields": ("content",),
+          }
+        ),
+    )
 
     def changelist_view(self, request):
 
@@ -294,6 +312,25 @@ class TreeItemFlatAdmin(NestedModelAdmin):
     list_editable = ("show", "leaf", "author")
     search_fields = ("title", "author__username",)
     prepopulated_fields = {"slug": ("title",), }
+
+    fieldsets = (
+        (
+          None, {
+              "fields": (("show", "leaf"),  "title", "slug", "long_title", "author"),
+          }
+        ),
+        (
+            'Короткое описание', {
+                "fields": ("about", ),
+                "classes": ("collapse", )
+            }
+        ),
+        (
+          None, {
+              "fields": ("content",),
+          }
+        ),
+    )
 
     def get_form(self, request, obj=None, **kwargs):
         """ Метод возвращает класс формы, переопределим метод валидации слага
