@@ -24,21 +24,17 @@
                 </div>
                 <div class="top-nav-right">
                     {% if user.is_authenticated  %}
-                        <a class="profile" href="">{{ user.first_name|default:user.username }}</a>
+                        {% if user.is_staff %}
+                            <a class="mr-5" href="/admin/">Управление сайтом</a>
+                        {% endif %}
+                        <a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>
+                        <a class="profile" href="/logout/">Выйти</a>
                     {% else %}
                         <a class="profile" href="{% url 'login' %}">Войти</a>
                     {% endif %}
                 </div>
             </div>
         </nav>
-
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
 
         <main>
         {% block main %}
