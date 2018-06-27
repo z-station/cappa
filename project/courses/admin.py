@@ -308,15 +308,17 @@ admin.site.register(TreeItem, TreeItemAdmin)
 
 class TreeItemFlatAdmin(NestedModelAdmin):
     model = TreeItemFlat
+    search_fields = ("title", "author")
+    list_filter = ("author", "leaf")
     list_display = ("title", "author", "show", "leaf")
-    list_editable = ("show", "leaf", "author")
     search_fields = ("title", "author__username",)
     prepopulated_fields = {"slug": ("title",), }
+    exclude = ("author",)
 
     fieldsets = (
         (
           None, {
-              "fields": (("show", "leaf"),  "title", "slug", "long_title", "author"),
+              "fields": (("show", "leaf"),  "title", "slug", "long_title",),
           }
         ),
         (
@@ -331,6 +333,23 @@ class TreeItemFlatAdmin(NestedModelAdmin):
           }
         ),
     )
+
+    def save_model(self, request, obj, form, change):
+        """
+        Override save_model.
+        Moves TreeItem object if request.POST contains target node or
+        copied node
+        """
+        obj.author = request.user
+        tmp, created = TreeItem.objects.get_or_create(
+            slug='na-raspredelenie',
+            title='На распределение',
+        )
+        tmp.show = False
+        tmp.save()
+
+        obj.save()
+        obj.move_to(tmp, 'last-child')
 
     def get_form(self, request, obj=None, **kwargs):
         """ Метод возвращает класс формы, переопределим метод валидации слага

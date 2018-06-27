@@ -77,6 +77,13 @@ class CodeInlineAdminForm(forms.ModelForm):
         )
         css = {'all': ('css/ace/ace_admin.css',)}
 
+    def save(self, commit=True):
+        if self.instance.treeitem and self.instance.treeitem.leaf:
+            self.instance.show_input = True
+            self.instance.show_tests = True
+            self.instance.save_solutions = True
+        return super(CodeInlineAdminForm, self).save(commit)
+
 
 class CodeTestInlineAdminForm(forms.ModelForm):
     """ Для Админ инлайн-интерфейса """

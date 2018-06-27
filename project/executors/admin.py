@@ -64,7 +64,7 @@ admin.site.register(CodeFlat, CodeFlatAdmin)
 class CodeTestNestedInlineAdmin(NestedInline):
     model = CodeTest
     form = CodeTestInlineAdminForm
-    extra = 5
+    extra = 10
     classes = ("collapse", )
     inlines = []
 

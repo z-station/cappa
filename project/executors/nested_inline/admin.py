@@ -128,8 +128,13 @@ class NestedModelAdmin(admin.ModelAdmin):
 
                     #TODO - find out why this breaks when extra = 1 and just adding new item with no sub items
                     if (not hasattr(form, 'cleaned_data') or not form.cleaned_data) and self.formset_has_nested_data(form.nested_formsets):
-                        form._errors["__all__"] = form.error_class([u"Parent object must be created when creating nested inlines."])
-                        return False
+                        try:
+                            # Если при сохранении формы теста, не сохранен родительский блок кода вылетает ошибка,
+                            # нужно сохранить блок кода
+                            form.save()
+                        except:
+                            form._errors["__all__"] = form.error_class([u"Блок кода должен быть создан, когда добавляются наборы тестов"])
+                            return False
         return True
 
     @csrf_protect_m
