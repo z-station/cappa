@@ -15,6 +15,7 @@ from django import forms
 from project.courses.models import TreeItem, TreeItemFlat
 from project.courses.grid import GridRow
 from project.executors.nested_inline.admin import NestedModelAdmin
+from project.executors.models import CodeTest, Code
 
 
 class LazyEncoder(DjangoJSONEncoder):
@@ -307,18 +308,28 @@ admin.site.register(TreeItem, TreeItemAdmin)
 
 
 class TreeItemFlatAdmin(NestedModelAdmin):
+
+    def tests(self, obj):
+        code = Code.objects.filter(treeitem=obj)
+        if code.exists():
+            len_tests = CodeTest.objects.filter(code=code[0]).count()
+            return len_tests
+        return 0
+
+    tests.short_description = "Тесты"
+
     model = TreeItemFlat
-    search_fields = ("title", "author")
-    list_filter = ("author", "leaf")
-    list_display = ("title", "author", "show", "leaf")
-    search_fields = ("title", "author__username",)
+    search_fields = ("title", "author", "source__name", "source_raw_id")
+    list_filter = ("author", "leaf", "source",)
+    list_display = ("title", "author", "show", "leaf", "tests", "source", "source_raw_id", )
+    search_fields = ("title", "author__username", "source__name", "source_raw_id")
     prepopulated_fields = {"slug": ("title",), }
-    exclude = ("author",)
+    raw_id_fields = ("author",)
 
     fieldsets = (
         (
           None, {
-              "fields": (("show", "leaf"),  "title", "slug", "long_title",),
+              "fields": (("show", "leaf"),  "title", "slug", "long_title", ("source_raw_id", "source"), "author"),
           }
         ),
         (
@@ -334,22 +345,33 @@ class TreeItemFlatAdmin(NestedModelAdmin):
         ),
     )
 
+    def get_queryset(self, request):
+        """ В списке показывать только те что принадлежат пользователю (супер видет все элементы) """
+        qs = super(TreeItemFlatAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        else:
+            return qs.filter(author=request.user)
+
     def save_model(self, request, obj, form, change):
         """
         Override save_model.
         Moves TreeItem object if request.POST contains target node or
         copied node
         """
-        obj.author = request.user
+        if not obj.id and obj.author is None:
+            obj.author = request.user
+        obj.save()
         tmp, created = TreeItem.objects.get_or_create(
             slug='na-raspredelenie',
             title='На распределение',
         )
         tmp.show = False
-        tmp.save()
+        if created:
+            tmp.save()
 
-        obj.save()
-        obj.move_to(tmp, 'last-child')
+        if obj.id != tmp.id:
+            obj.move_to(tmp, 'last-child')
 
     def get_form(self, request, obj=None, **kwargs):
         """ Метод возвращает класс формы, переопределим метод валидации слага
@@ -387,4 +409,6 @@ class TreeItemFlatAdmin(NestedModelAdmin):
                 return slug
 
         return ModelFormCatalogWrapper
+
+
 admin.site.register(TreeItemFlat, TreeItemFlatAdmin)

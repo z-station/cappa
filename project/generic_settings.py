@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'tinymce',
     'mptt',
     'project',
+    'project.sources',
     'project.courses',
     'project.executors',
     'project.groups',

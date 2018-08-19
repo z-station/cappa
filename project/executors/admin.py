@@ -46,15 +46,15 @@ class CodeTestInlineAdmin(admin.TabularInline):
 
 class CodeFlatAdmin(admin.ModelAdmin):
 
-    def get_author(self, obj):
+    def author(self, obj):
         return obj.get_author()
 
-    get_author.short_description = "Автор элемента курса"
+    author.short_description = "Автор элемента курса"
 
     model = CodeFlat
     form = CodeAdminForm
     list_display = ("__str__", "description", "treeitem", "get_author")
-    list_editable = ("treeitem", )
+    list_filter = ("treeitem__author",)
     inlines = [CodeTestInlineAdmin, ]
     search_fields = ("id", "treeitem__title", "treeitem__author")
 

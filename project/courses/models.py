@@ -6,6 +6,7 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from tinymce.models import HTMLField
 from django.contrib.auth.models import User
+from project.sources.models import Source
 
 
 class TreeItem(MPTTModel):
@@ -32,6 +33,9 @@ class TreeItem(MPTTModel):
     about = HTMLField(verbose_name="описание", default="", blank=True, null=True)
     content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
     author = models.ForeignKey(User, verbose_name="Автор", on_delete=models.SET_NULL, blank=True, null=True)
+
+    source = models.ForeignKey(Source, verbose_name="Источник", on_delete=models.SET_NULL, null=True, blank=True)
+    source_raw_id = models.CharField(verbose_name="Идентификатор в источнике", max_length=255, null=True, blank=True)
 
     def __str__(self):
         """ Строковое представление """
