@@ -43,16 +43,16 @@ class ModuleProgressView(generic.DetailView):
             context['group'] = get_object_or_404(Group, pk=group_id, modules=context['module'])
             context['position'] = context['group'].get_user_position(self.request.user)
             if context['position']:
-                if context['position'] >= Group.OWNER:
-                    members = context['group'].members.all()
-                else:
-                    members = context['group'].members.filter(pk=self.request.user.pk)
+                # if context['position'] >= Group.OWNER:
+                members = context['group'].members.all()
+                # else:
+                #     members = context['group'].members.filter(pk=self.request.user.pk)
                 context['table'] = context['group'].group_module.get(module_id=context['module'].id)\
                     .get_solutions_as_table(members)
 
         if context['module'].owner.pk == self.request.user.pk:
             context['my_module'] = True
 
-        context['tasks'] = context['module'].treeitems.all()
+        context['tasks'] = context['module'].treeitems.all().order_by('lft')
 
         return context

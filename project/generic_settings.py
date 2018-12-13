@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'project.executors',
     'project.groups',
     'project.modules',
+    'project.news'
 )
 
 MIDDLEWARE = [
@@ -85,7 +86,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'project.middleware.LoginRequiredMiddleware',
+    # 'project.middleware.LoginRequiredMiddleware',
 ]
 
 DATABASES = {

@@ -11,7 +11,7 @@ class ModuleAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'updated_at', 'id', )
     list_filter = ('updated_at', )
     search_fields = ('name', )
-    fields = (('name', 'comment'), 'treeitems', )
+    # fields = (('name', 'comment'), 'treeitems', )
     filter_horizontal = ('treeitems',)
 
     # def response_add(self, request, obj, post_url_continue=None):
@@ -32,6 +32,6 @@ class ModuleAdmin(admin.ModelAdmin):
     #     messages.success(request, 'Модуль "{}" был успешно удален!'.format(obj_display.name))
     #     return HttpResponseRedirect(reverse('modules:my_modules'))
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        super(ModuleAdmin, self).save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     obj.owner = request.user
+    #     super(ModuleAdmin, self).save_model(request, obj, form, change)

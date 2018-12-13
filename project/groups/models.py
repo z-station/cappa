@@ -53,7 +53,7 @@ class Group(models.Model):
 
     def get_root_username(self):
         try:
-            return self.owners.all()[0].username
+            return self.owners.all()[0].get_full_name()
         except IndexError:
             return 'None'
 
@@ -162,9 +162,9 @@ class GroupModule(models.Model):
         """
 
         # элементы дерева привязанные к модулю, у порядоченные как в структуре курсов
-        treeitems_ids = self.module.treeitems.all().values_list("id", flat=True).order_by("lft")
+        treeitems_ids = self.module.treeitems.all().values_list("id", flat=True)
         # блоки кода данных элементов дерева (которые сохраняют польз. решения при исполнении)
-        codes = Code.objects.filter(treeitem__in=treeitems_ids, save_solutions=True)
+        codes = Code.objects.filter(treeitem__in=treeitems_ids, save_solutions=True).order_by("treeitem__lft")
         # заполнение ячеек th шапки таблицы thead
         thead = OrderedDict()
         first_th = {

@@ -17,18 +17,14 @@
         </div>
         <div class="col-lg-6">
             <p>
-                Владелец: {{ module.owner }}<br>
-                Задач: {{ module.tasks.count }}
+                Владелец: {{ module.owner.get_full_name }}<br>
+                Задач: {{ module.treeitems.all|length }}
             </p>
-            <p>
-                <i>Изменен {{ module.updated_at }}</i>
-            </p>
+            <!--<p>-->
+                <!--<i>Изменен {{ module.updated_at }}</i>-->
+            <!--</p>-->
         </div>
     </div>
-
-{#    {% if position >= group.OWNER %}#}
-{#        {% include 'groups/table_progress.html' %}#}
-{#    {% endif %}#}
     {% include 'groups/table_progress.html' %}
 
     {% if tasks %}
@@ -47,15 +43,15 @@
     <hr>
     <ul class="list-unstyled">
         {% if my_module %}
-            <li><a href="{% url 'admin:modules_module_change' module.id %}">Изменить модуль</a></li>
+            <li><a href="{% url 'admin:modules_module_change' module.id %}">Изменить олимпиаду</a></li>
             <li><a href="{% url 'admin:modules_module_history' module.id %}">Показать историю</a></li>
             <hr>
-            <li><a href="{% url 'admin:modules_module_delete' module.id %}">Удалить модуль</a></li>
+            <li><a href="{% url 'admin:modules_module_delete' module.id %}">Удалить олимпиаду</a></li>
         {% else %}
             {% if group %}
                 <li><a href="{% url 'groups:group' group.id %}">Вернуться к группе</a></li>
             {% else %}
-                <li><a href="{% url 'modules:modules' %}">Вернуться к модулям</a></li>
+                <li><a href="{% url 'modules:modules' %}">Вернуться к олимпиадам</a></li>
             {% endif %}
         {% endif %}
     </ul>

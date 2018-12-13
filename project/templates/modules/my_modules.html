@@ -1,14 +1,14 @@
 {% extends 'left-right-col.html' %}
 
-{% block title %}Мои модули{% endblock %}
+{% block title %}Мои олимпиады{% endblock %}
 
-{% block content_title %}Мои модули{% endblock %}
+{% block content_title %}Мои олимпиады{% endblock %}
 
 {% block content  %}
     {% if modules %}
         {% include 'modules/list_modules.html' %}
     {% else %}
-        <p>Модулей нет.</p>
+        <p>Олимпиад нет.</p>
     {% endif %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
             <input type="submit" class="btn btn-primary" value="Поиск" />
         </form>
         <hr>
-        <li><a href="{% url 'admin:modules_module_add' %}">Добавить модуль</a></li>
-        <li><a href="{% url 'admin:modules_module_changelist' %}">Редактировать модули</a></li>
+        <li><a href="{% url 'admin:modules_module_add' %}">Добавить олимпиаду</a></li>
+        <li><a href="{% url 'admin:modules_module_changelist' %}">Редактировать олимпиаду</a></li>
     </ul>
 {% endblock %}

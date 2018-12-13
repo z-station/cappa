@@ -14,7 +14,7 @@ class TreeItem(MPTTModel):
     class Meta:
         verbose_name = "элемент структуры курсов"
         verbose_name_plural = "структура курсов"
-
+        ordering = ['lft']
     parent = TreeForeignKey(
         'self',
         related_name='children',

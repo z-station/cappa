@@ -353,25 +353,25 @@ class TreeItemFlatAdmin(NestedModelAdmin):
         else:
             return qs.filter(author=request.user)
 
-    def save_model(self, request, obj, form, change):
-        """
-        Override save_model.
-        Moves TreeItem object if request.POST contains target node or
-        copied node
-        """
-        if not obj.id and obj.author is None:
-            obj.author = request.user
-        obj.save()
-        tmp, created = TreeItem.objects.get_or_create(
-            slug='na-raspredelenie',
-            title='На распределение',
-        )
-        tmp.show = False
-        if created:
-            tmp.save()
+    # def save_model(self, request, obj, form, change):
+    #     """
+    #     Override save_model.
+    #     Moves TreeItem object if request.POST contains target node or
+    #     copied node
+    #     """
+        # if not obj.id and obj.author is None:
+        #     obj.author = request.user
+        # obj.save()
+        # tmp, created = TreeItem.objects.get_or_create(
+        #     slug='na-raspredelenie',
+        #     title='На распределение',
+        # )
+        # tmp.show = False
+        # if created:
+        #     tmp.save()
 
-        if obj.id != tmp.id:
-            obj.move_to(tmp, 'last-child')
+        # if obj.id != tmp.id:
+        #     obj.move_to(tmp, 'last-child')
 
     def get_form(self, request, obj=None, **kwargs):
         """ Метод возвращает класс формы, переопределим метод валидации слага

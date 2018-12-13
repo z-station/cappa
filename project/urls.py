@@ -2,9 +2,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView
+from django.conf import settings
+from django.views.static import serve
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^courses/',  include('project.courses.urls')),
     url(r'^executor/', include('project.executors.urls')),
     url(r'^groups/', include('project.groups.urls')),

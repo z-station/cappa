@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}CAPPA{% endblock %}</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
     <script src="//code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -13,13 +13,11 @@
             <div class="container">
                 <div class="top-nav-left">
                     <div class="logo-container">
-                        <a href="/">Главная</a>
+                        <a href="/">CAPPA</a>
                     </div>
                     <ul class="col-lg-6 top-menu-container">
-                        <li><a href="{% url 'courses-root' %}">Курсы</a></li>
-                        <li><a href="{% url 'groups:groups' %}">Группы</a></li>
-                        <li><a href="{% url 'modules:modules' %}">Модули</a></li>
-
+                        <li><a class="logo-desc" href="/">комплекс автоматической проверки программ</a></li>
+                        <li><img style="height:60px" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/500px-Xmas_tree_animated.gif" /></li>
                     </ul>
                 </div>
                 <div class="top-nav-right">
@@ -35,7 +33,16 @@
                 </div>
             </div>
         </nav>
+        <nav class="top-nav menu">
+            <div class="container">
+                <ul class="col-lg-6 top-menu-container">
+                    <li><a href="{% url 'courses-root' %}">Курсы</a></li>
+                    <li><a href="{% url 'groups:groups' %}">Группы</a></li>
+                    <li><a href="{% url 'modules:modules' %}">Олимпиады</a></li>
 
+                </ul>
+            </div>
+        </nav>
         <main>
         {% block main %}
             <div class="container">

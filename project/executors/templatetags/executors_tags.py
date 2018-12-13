@@ -10,7 +10,8 @@ Context = template.Context
 
 
 class ExecutorNode(template.Node):
-    def __init__(self, treeitem, raw_str):
+    def __init__(self, treeitem, raw_str, row_num=None):
+        self.row_num = row_num
         self.raw_str = template.Variable(raw_str)
         self.treeitem = template.Variable(treeitem)
 
@@ -21,6 +22,7 @@ class ExecutorNode(template.Node):
     def render(self, context):
 
         # разделилим строку по блокам, которые будут между блоков кода
+        row_num = self.row_num
         raw_str = self.raw_str.resolve(context)
         str_nodes = re.split(self.code_tag_pattern, raw_str)
         treeitem = self.treeitem.resolve(context)
@@ -54,7 +56,7 @@ class ExecutorNode(template.Node):
                 code_context = {
                     "code_solved": code_solved,
                     "form": CodeForm(instance=code),
-                    "code_num": i,
+                    "code_num": i if not row_num else row_num,
                     "code_id": code_ids[i],
                     "show_tests": code.show_tests,
                     "show_input": code.show_input,
@@ -86,6 +88,7 @@ def show_executors(parser, token):
         content = token.split_contents()
         treeitem = content[3]
         raw_str = content[1]
+        row_num = content[5] if len(content) >= 5 else None
     except:
         raise template.TemplateSyntaxError("Invalid syntax. Use {% show_executors object.content for object %}")
-    return ExecutorNode(treeitem, raw_str)
+    return ExecutorNode(treeitem, raw_str, row_num)

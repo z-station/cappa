@@ -2,6 +2,9 @@
 from django import template
 from itertools import chain
 from project.courses.models import TreeItem
+from project.executors.models import Code
+from project.groups.models import Group
+from project.modules.models import Module
 register = template.Library()
 
 
@@ -88,3 +91,24 @@ def get_navigation(treeitem):
     first_level_items = ancestors[0].get_children()
     navigation = set_navigation_level(first_level_items, ancestors)
     return navigation
+
+
+@register.assignment_tag
+def get_courses():
+    return TreeItem.objects.filter(show=True, level=0)
+
+
+@register.assignment_tag
+def get_example_obj(id):
+    return TreeItem.objects.get(id=id)
+
+
+@register.assignment_tag
+def get_module(group_id, module_id):
+    context = {}
+    module = Module.objects.get(id=module_id)
+    group = Group.objects.get(id=group_id)
+    members = group.members.all()
+    context['table'] = group.group_module.get(module_id=module_id).get_solutions_as_table(members)
+    context['tasks'] = module.treeitems.all().order_by('lft')
+    return context
