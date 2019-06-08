@@ -17,7 +17,7 @@ eggs/*
 develop-eggs/*
 parts/*
 commit.txt
-media/upload/*
 venv/
 tmp/*
 settings.py
+media/*

@@ -52,9 +52,9 @@ class ExecutorNode(template.Node):
                         code_solved = True if user_solution.progress == 100 else False
                     except:
                         pass
-
                 code_context = {
                     "code_solved": code_solved,
+                    "executor_name": code.get_executor_name(),
                     "form": CodeForm(instance=code),
                     "code_num": i if not row_num else row_num,
                     "code_id": code_ids[i],
@@ -73,8 +73,7 @@ class ExecutorNode(template.Node):
         # добавить скрипты иницализации ace-редактора
         result_str = '<link href="/static/css/ace/ace.css" type="text/css" media="all" rel="stylesheet" />\n' +\
                      '<link href="/static/css/prism.css" type="text/css" media="all" rel="stylesheet" />\n' +\
-                     '<script src="/static/js/ace/ace_editor_v1.3.2.js"></script>\n' +\
-                     '<script src="/static/js/ace/mode_python.js"></script>\n' +\
+                     '<script type = "text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>\n' +\
                      '<script src="/static/js/ace/ace_ajax_submit.js"></script>\n' +\
                      '<script src=/static/js/prism.js></script>\n' + result_str
         return result_str

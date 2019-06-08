@@ -3,6 +3,7 @@
       data-code_num="{{ code_num }}" data-code_id="{{ code_id }}">
 
     {% csrf_token %}
+
     {% if code_solved %}
         <input type="hidden" name="code_solved" value="True">
     {% endif %}
@@ -13,7 +14,6 @@
         <input class="run-button" type="submit" value=""
                onclick="ace_ajax.submit($('#editor-form-{{ code_num }}'));return false;"/>
     </div>
-
     {% if show_input %}
         {% include 'executors/ace/widget.html' with field=form.input %}
     {% endif %}
@@ -39,9 +39,9 @@
             </div>
 
             {% if tests_result %}
-                {% include 'executors/python36/tests_result.html' %}
+                {% include 'executors/cpp/tests_result.html' %}
             {% elif tests %}
-                {% include 'executors/python36/tests.html' %}
+                {% include 'executors/cpp/tests.html' %}
             {% endif %}
         </div>
     {% endif %}

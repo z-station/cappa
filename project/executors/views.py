@@ -26,6 +26,9 @@ def execute(request):
             if code.get_executor_type_id() == Executor.PYTHON36:
                 from project.executors.python36.utils import execute_code
                 output, error = execute_code(code, content, input)
+            elif code.get_executor_type_id() == Executor.CPP:
+                from project.executors.cpp.utils import execute_code
+                output, error = execute_code(code, content, input)
 
         form = CodeForm(initial={
             "content": content,
@@ -35,6 +38,7 @@ def execute(request):
         })
         context = {
             "code_solved": code_solved,
+            "executor_name": code.get_executor_name(),
             "form": form,
             "code_num": request.POST.get("code_num"),
             "code_id": code_id,
@@ -69,6 +73,12 @@ def check_tests(request):
                 if code.save_solutions and not request.user.is_anonymous:
                     code_solved = create_or_update_solution(request.user, code, tests_result, content)
 
+            elif code.get_executor_type_id() == Executor.CPP:
+                from project.executors.cpp.utils import check_tests
+                tests_result = check_tests(code, content, tests)
+                if code.save_solutions and not request.user.is_anonymous:
+                    code_solved = create_or_update_solution(request.user, code, tests_result, content)
+
         form = CodeForm(initial={
             "content": content,
             "input": input,
@@ -77,6 +87,7 @@ def check_tests(request):
         })
         context = {
             "code_solved": code_solved,
+            "executor_name": code.get_executor_name(),
             "form": form,
             "code_id": code_id,
             "code_num": request.POST.get("code_num"),
