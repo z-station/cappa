@@ -34,7 +34,7 @@ def execute_code(code, content, input):
     stdin = bytes(input, 'utf-8')
     tmp_file = TmpFile()
     filename = tmp_file.create(content)
-    args = ["python", filename]
+    args = ["python3.6", filename]
     proc = subprocess.Popen(
         args=args,
         stdin=subprocess.PIPE,
@@ -56,7 +56,7 @@ def execute_code(code, content, input):
 def check_tests(code, content, tests):
     tmp_file = TmpFile()
     filename = tmp_file.create(content)
-    args = ["python", filename]
+    args = ["python3.6", filename]
     tests_result = {
         "data": [],          # список результатов по каждому тесту
         "num": len(tests),   # количество тестов

@@ -43,7 +43,7 @@ def execute_code(code, content, input):
     stdin = bytes(input, 'utf-8')
     tmp = TmpFiles(content)
     p1 = subprocess.Popen(
-        args=['g++', tmp.file_cpp_dir, '-o', tmp.filename_out],
+        args=['c++', tmp.file_cpp_dir, '-o', tmp.filename_out],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -79,7 +79,6 @@ def execute_code(code, content, input):
 
 def check_tests(code, content, tests):
     tmp = TmpFiles(content)
-    args = ['g++', tmp.file_cpp_dir, '-o', tmp.filename_out],
     tests_result = {
         "data": [],          # список результатов по каждому тесту
         "num": len(tests),   # количество тестов
@@ -87,7 +86,7 @@ def check_tests(code, content, tests):
     }
     for test in tests:
         p1 = subprocess.Popen(
-            args=['g++', tmp.file_cpp_dir, '-o', tmp.filename_out],
+            args=['c++', tmp.file_cpp_dir, '-o', tmp.filename_out],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
