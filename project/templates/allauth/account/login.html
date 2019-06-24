@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% load account socialaccount %}
+
+{% block content_title %}Войти{% endblock %}
+
+{% block content %}
+
+
+
+    {% get_providers as socialaccount_providers %}
+
+    {% if socialaccount_providers %}
+        <p>Please sign in with one
+            of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+            for a {{ site_name }} account and sign in below:</p>
+
+        <div class="socialaccount_ballot">
+
+            <ul class="socialaccount_providers">
+                {% include "socialaccount/snippets/provider_list.html" with process="account_login" %}
+            </ul>
+
+            <div class="login-or">Или</div>
+
+        </div>
+
+        {% include "socialaccount/snippets/login_extra.html" %}
+
+    {% endif %}
+
+    <section class="container">
+        <section class="row justify-content-center">
+
+
+            <form class="col-4 login auth-form" method="POST" action="{% url 'account_login' %}">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-error">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-error">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% csrf_token %}
+                <span class="float-right">Нет аккаунта? <a href="{{ signup_url }}">Зарегестрируйтесь</a></span>
+                <div class="form-group">
+
+                    {{ form.login }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.password }}
+                </div>
+                <span class="float-right"><a class="button secondaryAction" href="{% url 'account_reset_password' %}">Забыли пароль?</a></span>
+                <div class="form-group">
+                    <label for="id_remember">Запомнить меня:</label> {{ form.remember }}
+                </div>
+
+
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+
+                <button class="primaryAction" type="submit">Войти</button>
+            </form>
+        </section>
+    </section>
+
+
+{% endblock %}
