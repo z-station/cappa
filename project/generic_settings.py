@@ -123,12 +123,12 @@ TINYMCE_DEFAULT_CONFIG = {
 
 
 SITE_ID = 1
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'mailUser'
-EMAIL_HOST_PASSWORD = 'pass'
-EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'mailUser'
+# EMAIL_HOST_PASSWORD = 'pass'
+# EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = 'info@cappa.ru'
 
 # allauth
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
