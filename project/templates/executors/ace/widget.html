@@ -1,6 +1,6 @@
 <div class="row ace-container ace-{{ field.name }}">
     <label for="id-{{ field.name }}-{{ code_num }}">{{ field.label }}:</label>
-    <div id="id-{{ field.name }}-{{ code_num }}" class="ace-editor"
+    <div id="id-{{ field.name }}-{{ code_num }}" class="ace-editor" data-lang="{{ executor_name }}"
         {% if field.field.widget.attrs.disabled %}data-readonly="1"{% endif %}></div>
     <textarea class="ace-editor-content" name="{{ field.name }}"
               id="id-{{ field.name }}-{{ code_num }}-content">{{ field.value|default:"" }}</textarea>

@@ -9,8 +9,15 @@ function set_editor_field(editor_id){
     var editor_content_container = $("#" + editor_id + "-content"),
         editor_container = $("#" + editor_id),
         readonly = editor_container.data("readonly"),
+        lang = editor_container.data("lang"),
         editor = ace.edit(editor_id);
-    editor.getSession().setMode("ace/mode/python");
+    if(lang == 'Python 3.6'){
+        editor.getSession().setMode("ace/mode/python");
+    } else if(lang == 'C++'){
+        editor.getSession().setMode("ace/mode/c_cpp");
+    } else {
+        editor.getSession().setMode("ace/mode/python");
+    }
     editor.setOption("showPrintMargin", false)   // убрать верт черту
     editor.setOption("maxLines", "Infinity");    // авто-высота
     editor.setHighlightActiveLine(false);        // убрать строку вделения

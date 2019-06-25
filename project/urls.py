@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.views.static import serve
-
 from project.profile.views import MyLoginView, MyLogoutView, MySignupView, MyEmailVerifySentView, MyEmailConfirmView, \
     MyPasswordResetView, MyPasswordResetFromKeyView, MyPasswordResetDoneView, PasswordResetFromKeyDoneView
 

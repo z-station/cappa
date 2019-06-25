@@ -12,12 +12,15 @@ class Executor(models.Model):
 
     # Доступные исполнители
     PYTHON36 = 1
+    CPP = 2
     EXEC_TYPES = (
         (PYTHON36,  "Python 3.6"),
+        (CPP,  "C++"),
     )
     # Названия папок с html-шаблонами исполнителей
     EXEC_FOLDERS = {
         PYTHON36: "python36",
+        CPP: "cpp",
     }
 
     class Meta:
