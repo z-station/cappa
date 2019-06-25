@@ -16,7 +16,7 @@ function set_editor_field(editor_id){
     } else if(lang == 'C++'){
         editor.getSession().setMode("ace/mode/c_cpp");
     } else if(lang == 'C#'){
-        editor.getSession().setMode("ace/mode/c_csharp");
+        editor.getSession().setMode("ace/mode/csharp");
     } else {
         editor.getSession().setMode("ace/mode/python");
     }
