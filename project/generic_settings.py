@@ -58,15 +58,21 @@ TEMPLATES = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'tinymce',
     'mptt',
     'project',
@@ -115,6 +121,18 @@ TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements ': '*[*]',
 }
 
+
+SITE_ID = 1
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'mailUser'
+EMAIL_HOST_PASSWORD = 'pass'
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# allauth
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
 # --- Executors config
 CODE_TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
 try:

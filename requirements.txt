@@ -2,4 +2,5 @@ Django==1.11
 Pillow==5.3.0
 django-mptt==0.9.0
 django-tinymce==2.7.0
-# установить системно postgresql 9.6.9 и psycorg2
+django-allauth==0.39.1
+# установить системно postgresql 9.6.9 и psycopg2

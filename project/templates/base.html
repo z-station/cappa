@@ -27,7 +27,8 @@
                         <a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>
                         <a class="profile" href="/logout/">Выйти</a>
                     {% else %}
-                        <a class="profile" href="{% url 'login' %}">Войти</a>
+                        <a class="profile" href="{% url 'account_login' %}">Войти</a>
+                        <a class="profile" href="{% url 'account_signup' %}">Зарегистрироваться</a>
                     {% endif %}
                 </div>
             </div>

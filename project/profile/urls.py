@@ -1,11 +1,12 @@
 # -*- coding:utf-8 -*-
 
 from django.conf.urls import url
-from project.profile import views
+
+from project.profile.views import profile
 
 app_name = 'modules'
 urlpatterns = [
-
+    url(r'^$', profile, name=''),
 ]
 
 """
