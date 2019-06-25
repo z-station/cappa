@@ -29,6 +29,9 @@ def execute(request):
             elif code.get_executor_type_id() == Executor.CPP:
                 from project.executors.cpp.utils import execute_code
                 output, error = execute_code(code, content, input)
+            elif code.get_executor_type_id() == Executor.CH:
+                from project.executors.ch.utils import execute_code
+                output, error = execute_code(code, content, input)
 
         form = CodeForm(initial={
             "content": content,
@@ -75,6 +78,12 @@ def check_tests(request):
 
             elif code.get_executor_type_id() == Executor.CPP:
                 from project.executors.cpp.utils import check_tests
+                tests_result = check_tests(code, content, tests)
+                if code.save_solutions and not request.user.is_anonymous:
+                    code_solved = create_or_update_solution(request.user, code, tests_result, content)
+
+            elif code.get_executor_type_id() == Executor.CH:
+                from project.executors.ch.utils import check_tests
                 tests_result = check_tests(code, content, tests)
                 if code.save_solutions and not request.user.is_anonymous:
                     code_solved = create_or_update_solution(request.user, code, tests_result, content)

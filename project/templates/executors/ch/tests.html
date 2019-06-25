@@ -1,0 +1,15 @@
+<script src=/static/js/prism.js></script>
+<table class="table">
+    <thead>
+        <th>Ввод</th>
+        <th>Правильный ответ</th>
+    </thead>
+    <tbody>
+        {% for test in tests %}
+        <tr>
+            <td><pre><code class="language-cpp">{{ test.input|default:"" }}</code></pre></td>
+            <td><pre><code class="language-cpp">{{ test.output|default:"" }}</code></pre></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
