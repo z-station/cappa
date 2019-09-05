@@ -124,7 +124,7 @@
             <!--ROOT/OWNER-->
             <li><a href="{% url 'admin:groups_group_change' group.id %}">Изменить группу</a></li>
             <li><a href="{% url 'groups:progress' group.id %}">Показать прогресс</a></li>
-            <li><a href="{% url 'admin:groups_group_history' group.id %}">Показать истоию</a></li>
+            <li><a href="{% url 'admin:groups_group_history' group.id %}">Показать историю</a></li>
             <hr>
             {% if position == group.ROOT %}
                 <li><a href="{% url 'admin:groups_group_delete' group.id %}">Удалить группу</a></li>

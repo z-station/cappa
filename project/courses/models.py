@@ -35,7 +35,7 @@ class TreeItem(MPTTModel):
     )
 
     type = models.CharField(verbose_name='тип', choices=TYPE_CHOICES, max_length=1, default=TASK, null=True, blank=True)
-    in_number_list = models.BooleanField(verbose_name="участвует в нумерации кура", default=True)
+    in_number_list = models.BooleanField(verbose_name="участвует в нумерации курса", default=True)
     show = models.BooleanField(verbose_name="отображать", default=False)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     title = models.CharField(max_length=255, verbose_name="заголовок")
