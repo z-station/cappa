@@ -133,7 +133,7 @@ class TreeItem(MPTTModel):
                     if theme:
                         order_number += '%s.' % theme.order_number
 
-                siblings_ids = self.get_siblings(include_self=True).filter(show=True).values_list('id', flat=True)
+                siblings_ids = self.get_siblings(include_self=True).filter(show=True, in_number_list=True).values_list('id', flat=True)
                 for i in range(len(siblings_ids)):
                     if self.id == siblings_ids[i]:
                         order_number += '%s' % (i + 1)
