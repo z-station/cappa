@@ -114,8 +114,13 @@ class Code(models.Model):
     def get_title(self):
         """ Возвращает title связанного элемента курса """
         if self.treeitem:
-            return self.treeitem.__str__()
+            return self.treeitem.tree_name
         return "-"
+
+    def get_order_number(self):
+        if self.treeitem:
+            return self.treeitem.order_number
+        return '-'
 
     def get_author(self):
         """ Возвращает автора связанного элемента курса """
@@ -174,6 +179,12 @@ class UserSolution(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.user, self.code.get_title())
+
+    @property
+    def best_solution(self):
+        num = self.details.get('best_solution_num')
+        if num:
+            return self.details['solutions'][num]
 
     def get_template(self):
         """ Возвращает директорию до шаблона с учетом указанного исполнителя"""

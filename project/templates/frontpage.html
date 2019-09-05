@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load courses_tags news_tags executors_tags %}
 
+{% block breadcrumbs %}{% endblock %}
+
 {% block content %}
 
     <h2 class="fp-title">Эффективное обучение программированию c CAPPA</h2>
@@ -67,10 +69,11 @@
                 Весь процесс решения прозрачен для участников.
                 Смотрите ваш прогресс в турнирной таблице</p>
 
+            {% get_module 1 2 as module %}
+            {% if module %}
             <span class="fp-help-text fp-help-6">Ваши баллы, как процент от количества пройденных тестов</span>
             <img src="{{ STATIC_URL }}img/fp-help1.png"/>
 
-            {% get_module 1 2 as module %}
             <table class="table-bordered progress-table">
                 <thead>
                     <tr>
@@ -107,6 +110,7 @@
                 </tbody>
             </table>
             <br/>
+            {% endif %}
         </div>
         </div>
         <div class="fp-right-col">

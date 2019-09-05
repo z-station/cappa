@@ -1,0 +1,63 @@
+{% extends 'left-right-col.html' %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content_title %}{{ group.name }}{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }}
+    <a class="breadcrumb" href="/groups/">
+        {% include 'includes/svg/arrow-left.svg' %}
+        <span>Группы</span>
+    </a>
+    <a class="breadcrumb" href="/groups/{{ group.id }}/">
+        {% include 'includes/svg/arrow-left.svg' %}
+        <span>{{ group.name }}</span>
+    </a>
+{% endblock %}
+
+{% block content %}
+    <h4>Результаты по курсу {{ course.title }}</h4>
+    <div class="row group__courses">
+        {% if course_data %}
+            <div class="col-lg-3 col-md-3 course__head">
+                <table class="course__table">
+                    {% for id, member in course_data.members_col.items %}
+                        <tr>
+                            <td class="user-col" >{{ member.name }}</td>
+                            <td>{{ member.score }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-lg-9 col-md-9 course__tables">
+            {% for table in course_data.tables %}
+                    <table class="course__table">
+                        <caption>{{ table.caption }}</caption>
+                        <thead>
+                            <tr>
+                                {% for th in table.thead %}
+                                <th title="{{ th.title }}"><a href="{{ th.url }}" >{{ th.text }}</a></th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tr in table.tbody %}
+                                <tr>
+                                    {% for td in tr %}
+                                        <td class="{{ td.status }}" >
+                                            {% if td.url and show_solutions_links %}
+                                                <a title="{{ td.title }}" href="{{ td.url }}">{{ td.text }}</a>
+                                            {% else %}
+                                                <span title="{{ td.title }}" >{{ td.text }}</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

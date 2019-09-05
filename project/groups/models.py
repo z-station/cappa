@@ -5,6 +5,8 @@ from collections import OrderedDict
 from project.executors.models import UserSolution, Code
 from project.modules.models import Module
 from django.urls import reverse
+from project.courses.models import TreeItem
+from datetime import datetime
 
 
 class Group(models.Model):
@@ -222,3 +224,74 @@ class GroupModule(models.Model):
             "tbody": tbody,
         }
         return table
+
+
+class GroupCourse(models.Model):
+
+    group = models.ForeignKey(Group, related_name='course_items')
+    course = models.ForeignKey(TreeItem, verbose_name='курс', limit_choices_to={'show': True, 'type': TreeItem.COURSE})
+
+    @property
+    def course_data(self):
+        members = self.group.members.filter(is_active=True)
+        tables = []
+        members_col = OrderedDict({-1: {'name': 'Участник', 'score': 'Решено задач'}})
+        for member in members:
+            members_col[member.id] = {
+                'name': member.get_full_name,
+                'score': 0
+            }
+
+        for theme in self.course.get_descendants().filter(type=TreeItem.THEME, in_number_list=True, show=True):
+            tasks_ids = theme.get_descendants().filter(type=TreeItem.TASK, show=True).values_list("id", flat=True)
+            codes = Code.objects.filter(treeitem__in=tasks_ids, save_solutions=True).order_by("treeitem__lft")
+            thead = []
+            for code in codes:
+                th = {
+                    "text": code.get_order_number(),
+                    "url": code.treeitem.get_absolute_url(),
+                    "title": code.get_title()
+                }
+                thead.append(th)
+            tbody = []
+            for user in members:
+                tr = []
+                for code in codes:
+                    status = ''
+                    text = ''
+                    solution_time = ''
+                    user_solution = UserSolution.objects.filter(user=user, code=code).first()
+                    if user_solution:
+                        status = "process"
+                        if user_solution.progress == 0:
+                            status = "unluck"
+                        elif user_solution.progress == 100:
+                            status = "success"
+                            text = '+'
+                            members_col[user.id]['score'] += 1
+                        elif user_solution.progress != 0:
+                            text = str(user_solution.progress) + "%"
+                        best_solution = user_solution.best_solution
+                        if best_solution:
+                            d = datetime.strptime(best_solution['datetime'], '%Y-%m-%d %H:%M:%S.%f')
+                            solution_time = '%s.%s.%s [%s:%s]' % (d.year, d.month, d.day, d.hour, d.minute)
+                    title = '%s  %s\n%s' % (user.get_full_name(), solution_time, code.get_title())
+                    url = ''
+                    if status in ['success', 'process']:
+                        url = reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id})
+                    tr.append({
+                        "text": text,
+                        "url": url,
+                        "status": status,
+                        "title": title,
+                    })
+                tbody.append(tr)
+            tables.append({
+                'caption': theme.tree_name,
+                'thead': thead,
+                'tbody': tbody
+            })
+        return {
+            'tables': tables,
+            'members_col': members_col,
+        }

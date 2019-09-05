@@ -9,11 +9,11 @@
         <div class="row content">
             <div class="left-col">
                 {% if object.leaf %}
-                    <h1 class="text-center">Задание "{{ object.long_title|default:object.title }}"</h1>
+                    <h1 class="text-center">{{ object.tree_name }}</h1>
                     <h3>Условие</h3><br/>
                     {% show_executors object.content for object %}
                 {% else %}
-                    <h1>{{ object.long_title|default:object.title }}</h1>
+                    <h1>{{ object.tree_name }}</h1>
                     {% show_executors object.content for object %}
                 {% endif %}
             </div>

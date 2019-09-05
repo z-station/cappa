@@ -1,3 +1,7 @@
+<a class="breadcrumb" href="/">
+    {% include 'includes/svg/arrow-left.svg' %}
+    <span>Главная</span>
+</a>
 <a class="breadcrumb" href="{% url 'courses-root' %}">
     {% include 'includes/svg/arrow-left.svg' %}
     <span>Курсы</span>
@@ -6,7 +10,7 @@
     {% for item in breadcrumbs %}
     <a class="breadcrumb" href="{{ item.get_absolute_url }}">
         {% include 'includes/svg/arrow-left.svg' %}
-        <span>{{ item }}</span>
+        <span>{{ item.tree_name }}</span>
     </a>
     {% endfor %}
 {% endif %}

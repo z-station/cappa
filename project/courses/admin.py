@@ -41,7 +41,7 @@ class TreeItemAdmin(NestedModelAdmin):
     fieldsets = (
         (
           None, {
-              "fields": (("show", "leaf"),  "title", "slug", "long_title"),
+              "fields": ("type",("show", "in_number_list"),  "title", "slug", "long_title"),
           }
         ),
         (
@@ -320,8 +320,8 @@ class TreeItemFlatAdmin(NestedModelAdmin):
 
     model = TreeItemFlat
     search_fields = ("title", "author", "source__name", "source_raw_id")
-    list_filter = ("author", "leaf", "source",)
-    list_display = ("title", "author", "show", "leaf", "tests", "source", "source_raw_id", )
+    list_filter = ("author", "type", "source",)
+    list_display = ("title", "author", "show", "type", "in_number_list",  "tests", "source", "source_raw_id", )
     search_fields = ("title", "author__username", "source__name", "source_raw_id")
     prepopulated_fields = {"slug": ("title",), }
     raw_id_fields = ("author",)
@@ -329,7 +329,7 @@ class TreeItemFlatAdmin(NestedModelAdmin):
     fieldsets = (
         (
           None, {
-              "fields": (("show", "leaf"),  "title", "slug", "long_title", ("source_raw_id", "source"), "author"),
+              "fields": (("show", "type"),  "title", "slug", "long_title", ("source_raw_id", "source"), "author"),
           }
         ),
         (

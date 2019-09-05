@@ -4,6 +4,9 @@
 
 {% block content_title %}Группы{% endblock %}
 
+{% block breadcrumbs %}{{ block.super }}
+{% endblock %}
+
 {% block content %}
     {% if groups or ownership%}
         {% include 'groups/list_groups.html' %}
@@ -13,6 +16,7 @@
 {% endblock %}
 
 {% block right-col %}
+<div class="right-col">
     <h1>Навигация</h1>
     <hr>
     <ul class="list-unstyled">
@@ -24,4 +28,5 @@
         <hr>
         <li><a href="{% url 'groups:my_groups' %}">Мои группы</a></li>
     </ul>
+</div>
 {% endblock %}

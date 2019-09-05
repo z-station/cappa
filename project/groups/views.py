@@ -2,10 +2,10 @@
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render, Http404
 from django.urls import reverse
-from django.views import generic
-
+from django.views import generic, View
+from project.courses.models import TreeItem
 from project.groups.models import Group
 
 
@@ -41,14 +41,41 @@ class GroupView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(GroupView, self).get_context_data(**kwargs)
-
-        context['position'] = context['group'].get_user_position(self.request.user)
-        if context['position'] >= Group.OWNER:
-            context['members'] = context['group'].members.all()
-
-        context['modules_data'] = context['group'].group_module.all()
+        group = context['group']
+        context['members'] = group.members.all()
+        if self.request.user.is_authenticated:
+            context['is_member'] = self.request.user in group.get_members()
+        else:
+            context['is_member'] = False
+        context['position'] = group.get_user_position(self.request.user)
+        context['modules_data'] = group.group_module.all()
+        courses = []
+        for course_item in group.course_items.all():
+            courses.append({
+                'title': course_item.course.title,
+                'url': '/groups/%d/courses/%d/' % (group.id, course_item.course.id)
+            })
+        context['courses'] = courses
 
         return context
+
+
+class GroupCourse(View):
+
+    template = 'groups/group_course.html'
+
+    def get(self, request, group_id, course_id):
+        group = get_object_or_404(Group, id=group_id)
+        if request.user in group.get_members():
+            course_item = get_object_or_404(group.course_items, course__id=course_id)
+            context = {
+                'course_data': course_item.course_data,
+                'group': group,
+                'course': course_item.course,
+                'show_solutions_links': request.user.is_superuser
+            }
+            return render(request, self.template, context)
+        raise Http404
 
 
 # TODO Переделать. 1. Создать и согласовать json-структуру таблицы. 2 GroupModule лишнее звено - сохранять в кэш

@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block right-col %}
+<div class="right-col">
     <h1>Управление</h1>
     <hr>
     <ul class="list-unstyled">
@@ -25,4 +26,5 @@
         <li><a href="{% url 'admin:groups_group_add' %}">Добавить группу</a></li>
         <li><a href="{% url 'admin:groups_group_changelist' %}">Редактировать группы</a></li>
     </ul>
+</div>
 {% endblock %}

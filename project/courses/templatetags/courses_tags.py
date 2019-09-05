@@ -53,7 +53,7 @@ def set_navigation_level(level_items, ancestors):
     navigation = []
     for treeitem in level_items:
         nav_item = {
-            "title": treeitem.title,
+            "tree_name": treeitem.tree_name,
             "url": treeitem.get_absolute_url(),
         }
         if treeitem in ancestors:
@@ -68,7 +68,7 @@ def get_navigation(treeitem):
     """ Получить
     [
          {
-            title = "Тема"
+            tree_name = "Тема"
             url = "/tema/"
             children = [
                 {...},
@@ -109,6 +109,9 @@ def get_module(group_id, module_id):
     module = Module.objects.get(id=module_id)
     group = Group.objects.get(id=group_id)
     members = group.members.all()
-    context['table'] = group.group_module.get(module_id=module_id).get_solutions_as_table(members)
-    context['tasks'] = module.treeitems.all().order_by('lft')
+    try:
+        context['table'] = group.group_module.get(module_id=module_id).get_solutions_as_table(members)
+        context['tasks'] = module.treeitems.all().order_by('lft')
+    except:
+        pass
     return context

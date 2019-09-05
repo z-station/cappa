@@ -3,7 +3,7 @@
 {% block main %}
     <div class="container">
         <div class="row">
-            {% block breadcrumbs %}{% endblock %}
+            {% block breadcrumbs %}{{ block.super }}{% endblock %}
         </div>
 
         <div class="row content">
@@ -15,9 +15,7 @@
                 {% endblock %}
             </div>
 
-            <div class="right-col">
-                {% block right-col %}{% endblock %}
-            </div>
+            {% block right-col %}{% endblock %}
         </div>
     </div>
 {% endblock %}

@@ -2,6 +2,13 @@
 
 {% block title %}{{ group.name }}{% endblock %}
 
+{% block breadcrumbs %}{{ block.super }}
+    <a class="breadcrumb" href="/groups/">
+        {% include 'includes/svg/arrow-left.svg' %}
+        <span>Группы</span>
+    </a>
+{% endblock %}
+
 {% block content_title %}{{ group.name }}{% endblock %}
 
 {% block content %}
@@ -29,35 +36,47 @@
         </div>
     </div>
 
-    {% if position >= group.OWNER %}
-        <!--ROOT/OWNER-->
-        {% if members %}
-{#            <table class="table table-hover">#}
-            <table class="table">
-                <caption>Список участников</caption>
-                <thead>
+    {% if courses %}
+        <h3>Курсы</h3><br>
+        <ul>
+            {% for course in courses %}
+                <li>
+                    {% if is_member %}
+                        <a href="{{ course.url }}">{{ course.title }}</a>
+                    {% else %}
+                        <span>{{ course.title }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+    {% endif %}
+
+    <!--ROOT/OWNER-->
+    {% if members %}
+        <h3>Список участников</h3><br>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Псевдоним</th>
+                <th>ФИО</th>
+                <th>Последний раз был</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for member in members %}
                 <tr>
-                    <th>№</th>
-                    <th>Псевдоним</th>
-                    <th>ФИО</th>
-                    <th>Последний раз был</th>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ member.username }}</td>
+                    <td>{{ member.first_name }} {{ member.last_name }}</td>
+                    <td>{{ member.last_login }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for member in members %}
-{#                    <tr onclick="window.location.href='{% url "profile:profile" member.id %}'">#}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ member.username }}</td>
-                        <td>{{ member.first_name }} {{ member.last_name }}</td>
-                        <td>{{ member.last_login }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Участников нет.</p>
-        {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Участников нет.</p>
     {% endif %}
 
     {% if position != group.NONE or group.state != group.CLOSE %}
@@ -90,8 +109,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>олимпиад нет.</p>
         {% endif %}
     {% else %}
         <p>Группа закрыта.</p>
@@ -99,6 +116,7 @@
 {% endblock %}
 
 {% block right-col %}
+<div class="right-col">
     <h1>Управление</h1>
     <hr>
     <ul class="list-unstyled">
@@ -139,4 +157,5 @@
             <li><a href="{% url 'groups:groups' %}">Вернуться к группам</a></li>
         {% endif %}
     </ul>
+</div>
 {% endblock %}

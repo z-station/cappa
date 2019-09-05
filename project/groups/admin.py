@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.functional import curry
 
 from project.groups.forms import GroupModuleFormset, GroupAdminForm
-from project.groups.models import Group, GroupModule
+from project.groups.models import Group, GroupModule, GroupCourse
 from project.utils import check_custom_response
 
 
@@ -30,13 +30,19 @@ class GroupModuleInline(admin.TabularInline):
         return formset
 
 
+class GroupCourseInline(admin.TabularInline):
+
+    model = GroupCourse
+    extra = 0
+
+
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'get_root_username', 'state', 'get_members_number', 'created_at', 'id', )
     list_filter = ('state', 'created_at', )
     search_fields = ('name', )
     fields = (('name', 'status'), ('owners', 'members'), ('state', 'codeword'), )
-    inlines = (GroupModuleInline, )
+    inlines = [GroupCourseInline, GroupModuleInline]
     form = GroupAdminForm
 
     def get_form(self, request, obj=None, **kwargs):

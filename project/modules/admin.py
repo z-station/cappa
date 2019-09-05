@@ -3,6 +3,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from project.modules.models import Module
 from project.utils import check_custom_response
+from allauth.socialaccount.admin import SocialAccount, SocialApp, SocialToken
+
+admin.site.unregister([SocialToken, SocialApp, SocialAccount])
 
 
 @admin.register(Module)

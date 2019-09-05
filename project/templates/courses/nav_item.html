@@ -1,9 +1,9 @@
 
 <li>
     {% if item.url == object.get_absolute_url %}
-        <span class="active">{{ item.title }}</span>
+        <span class="active">{{ item.tree_name }}</span>
     {% else %}
-        <a href="{{ item.url }}">{{ item.title }}</a>
+        <a href="{{ item.url }}">{{ item.tree_name }}</a>
     {% endif %}
     {% if item.children %}
         <ul>

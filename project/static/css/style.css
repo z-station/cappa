@@ -85,15 +85,17 @@ table.progress-table th {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
+    width: 200px;
+    min-width: 200px;
 }
 
 table.progress-table th a {
     display: block;
-    width: 100%;
-    height: 100%;
     text-decoration: none;
     padding: 5px 10px;
     transition: color 200ms 0s ease, padding 200ms 0s ease, border 200ms 0s ease, background-color 200ms 0s ease;
+    white-space: normal;
+    line-height: 1.2;
 }
 
 table.progress-table th:first-child a,
@@ -127,6 +129,80 @@ table.progress-table th:first-child a:hover {
     background-color: #ffae95;
 }
 
+/* group course table */
+.group__courses {
+    height: max-content;
+}
+
+.course__tables {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+}
+
+.course__head {
+    padding: 0;
+    margin-top: 48px;
+}
+.course__head table {
+    width: 100%;
+    max-width: 100%;
+}
+
+.course__head table tr td {
+    white-space: normal;
+}
+
+.course__head table tr td:first-child {
+    text-align: left;
+}
+
+.course__table {
+    margin-right: 10px;
+    margin-bottom: 13px;
+}
+.course__table:last-child {
+    margin-right: 0px;
+}
+
+.course__table caption {
+    caption-side: top;
+}
+.course__table tr th,
+.course__table tr td {
+    white-space: nowrap;
+    min-width: 40px;
+    min-height: 40px;
+    height: 40px;
+    border: 1px #ddd solid;
+    text-align: center;
+    font-size: 14px;
+}
+.course__table tr th a,
+.course__table tr td a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #3e474f;
+}
+
+.course__table tr th {
+    font-size: 13px
+}
+
+.course__table tr td.success {
+    background-color: #96ff8e;
+}
+
+.course__table tr td.process {
+    background-color: #fdffcf;
+}
+
+.course__table tr td.user-col {
+    padding: 0 10px
+}
 /*#id_editor {*/
 /*position: relative;*/
 /*width:570px;*/

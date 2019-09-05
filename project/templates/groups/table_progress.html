@@ -2,15 +2,13 @@
     <thead>
         <tr>
         {% for th in table.thead.values %}
-            {% if forloop.first %}
-                <th>
-                    <a href="{{ th.url }}">{{ th.text }}</a>
-                </th>
-            {% else %}
-                <th title="{{ th.text }}">
-                    <a target="_blank" href="{{ th.url }}">{{ forloop.counter0 }}</a>
-                </th>
-            {% endif %}
+            <th>
+                {% if forloop.first %}
+                    <span>{{ th.text }}</span>
+                {% else %}
+                    <a target="_blank" href="{{ th.url }}">{{ th.text }}</a>
+                {% endif %}
+            </th>
         {% endfor %}
         </tr>
     </thead>

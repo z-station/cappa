@@ -109,6 +109,9 @@ def check_tests(request):
 
 
 def user_solution(request, user_id, code_id):
+    # Заменить на проверку владельца группы
+    if not request.user.is_superuser:
+        raise Http404
     user_solution_obj = get_object_or_404(UserSolution, user=user_id, code=code_id)
     solutions = user_solution_obj.details["solutions"]
     if solutions:

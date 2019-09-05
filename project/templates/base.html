@@ -47,7 +47,12 @@
         {% block main %}
             <div class="container">
                 <div class="row">
-                    {% block breadcrumbs %}{% endblock %}
+                    {% block breadcrumbs %}
+                        <a class="breadcrumb" href='/'>
+                            {% include 'includes/svg/arrow-left.svg' %}
+                            <span>Главная</span>
+                        </a>
+                    {% endblock %}
                 </div>
                 <div class="row">
                     <div>

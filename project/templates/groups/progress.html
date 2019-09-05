@@ -14,9 +14,11 @@
 {% endblock %}
 
 {% block right-col %}
+<div class="right-col">
     <h1>Управление</h1>
     <hr>
     <ul class="list-unstyled">
         <li><a href="{% url 'groups:group' group.id %}">Вернуться в группу</a></li>
     </ul>
+</div>
 {% endblock %}
