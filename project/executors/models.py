@@ -169,7 +169,7 @@ class UserSolution(models.Model):
     default_details = {
         "solutions": [],
         "best_solution_tests": [],
-        "best_solution_num": False,
+        "best_solution_num": None,
     }
 
     code = models.ForeignKey(Code, verbose_name="блок кода")

@@ -117,7 +117,7 @@ def user_solution(request, user_id, code_id):
     if solutions:
         template = user_solution_obj.code.get_template("code_solution.html")
         num = user_solution_obj.details.get("best_solution_num")
-        if num:
+        if num is not None:
             solution = user_solution_obj.details["solutions"][num]
             tests = user_solution_obj.details["best_solution_tests"]
         else:
