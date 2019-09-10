@@ -71,14 +71,12 @@ def check_tests(code, content, tests):
             cwd=TMP_DIR,
             # preexec_fn=set_process_limits,
         )
-
         stdin = bytes(test.input, 'utf-8')
         stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
         # status = proc.returncode
-        output = stdout.decode("utf-8").rstrip('\r\n')
+        output = stdout.decode("utf-8").rstrip('\r\n').replace('\r', '')
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))
-
-        success = True if (test.output == output) and not error else False
+        success = True if (test.output.replace('\r', '') == output) and not error else False
         tests_result["data"].append({
             "id": test.id,            # id теста
             "input": test.input,      # ввод теста

@@ -203,6 +203,16 @@ table.progress-table th:first-child a:hover {
 .course__table tr td.user-col {
     padding: 0 10px
 }
+
+
+/* tables */
+.groups-table tr.success {
+    background-color: #96ff8e;
+}
+.groups-table tr {
+    cursor: pointer;
+}
+
 /*#id_editor {*/
 /*position: relative;*/
 /*width:570px;*/

@@ -1,15 +1,12 @@
 from allauth.account.views import LoginView, LogoutView, SignupView, ConfirmEmailView, \
     PasswordResetView, PasswordResetFromKeyView
 from django.views.generic import TemplateView
-from django.shortcuts import get_object_or_404, redirect, HttpResponse, render
-
-from project.executors.forms import CodeForm
-from project.executors.models import Code, CodeTest, Executor, UserSolution
-from project.executors.utils import create_or_update_solution
+from .forms import CustomSignupForm, CustomLoginForm
 
 
 class MyLoginView(LoginView):
     template_name = 'allauth/account/login.html'
+    form_class = CustomLoginForm
 
 
 class MyLogoutView(LogoutView):
@@ -18,6 +15,7 @@ class MyLogoutView(LogoutView):
 
 class MySignupView(SignupView):
     template_name = 'allauth/account/signup.html'
+    form_class = CustomSignupForm
 
 
 class MyEmailVerifySentView(TemplateView):
