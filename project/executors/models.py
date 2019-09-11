@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from project.courses.models import TreeItem
 from django.contrib.postgres.fields import JSONField
-
+from django.urls import reverse
 
 class Executor(models.Model):
 
@@ -204,6 +204,9 @@ class UserSolution(models.Model):
         code_template = self.CODE_TEMPLATES[self.type]
         template = os.path.join("executors", executor_folder, code_template)
         return template
+
+    def get_absolute_url(self):
+        return reverse('user_solution', kwargs={'user_id': self.user.id, 'code_id': self.code.id})
 
     """ Пример JSON структуры поля details
     details = {

@@ -28,7 +28,7 @@ class UserSolutionAdmin(admin.ModelAdmin):
     model = UserSolution
     list_display = ("user", "code", "get_code_title", "get_progress_percent")
     search_fields = ["user__username", ]
-    # readonly_fields = ("progress", "code", "user", "details",)
+    readonly_fields = ("progress", "code", "user", "details",)
 
     def has_add_permission(self, request):
         """ Отключает возможность добавления решений через админку - только просмотр """

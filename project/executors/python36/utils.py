@@ -34,14 +34,13 @@ def execute_code(code, content, input):
     stdin = bytes(input, 'utf-8')
     tmp_file = TmpFile()
     filename = tmp_file.create(content)
-    args = ["python3.6", filename]
+    args = [settings.PYTHON_PATH, filename]
     proc = subprocess.Popen(
         args=args,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         cwd=TMP_DIR,
-        # preexec_fn=set_process_limits,
     )
 
     stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
@@ -53,10 +52,43 @@ def execute_code(code, content, input):
     return output, error
 
 
+def normalize_fract_part(val1, val2, limit=8):
+    parts1 = val1.split('.')
+    if len(parts1) < 2:
+        parts1.append('0')
+
+    parts2 = val2.split('.')
+    if len(parts2) < 2:
+        parts2.append('0')
+
+    parts1[1] = parts1[1][:limit]
+    parts2[1] = parts2[1][:limit]
+
+    return '.'.join(parts1), '.'.join(parts2)
+
+
+def check_test(output, error, test):
+
+    """ Проверка вывода программы на тесте
+        Нормализация:
+            - удаление спец. символов возврата каректи и пробелов в начале и конце
+            - для дробных чисел проверка только до восьмого символа дробной части
+            - для дробных числе 1.0 == 1
+    """
+    if error:
+        return False
+    else:
+        out = output.rstrip('\r\n').replace('\r', '').strip()
+        t_out = test.output.replace('\r', '').strip()
+        if t_out.replace('.', '').isdigit():
+            out, t_out = normalize_fract_part(out, t_out)
+        return t_out == out
+
+
 def check_tests(code, content, tests):
     tmp_file = TmpFile()
     filename = tmp_file.create(content)
-    args = ["python3.6", filename]
+    args = [settings.PYTHON_PATH, filename]
     tests_result = {
         "data": [],          # список результатов по каждому тесту
         "num": len(tests),   # количество тестов
@@ -73,10 +105,9 @@ def check_tests(code, content, tests):
         )
         stdin = bytes(test.input, 'utf-8')
         stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
-        # status = proc.returncode
-        output = stdout.decode("utf-8").rstrip('\r\n').replace('\r', '')
+        output = stdout.decode("utf-8")
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))
-        success = True if (test.output.replace('\r', '') == output) and not error else False
+        success = check_test(output, error, test)
         tests_result["data"].append({
             "id": test.id,            # id теста
             "input": test.input,      # ввод теста

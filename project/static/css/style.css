@@ -201,7 +201,14 @@ table.progress-table th:first-child a:hover {
 }
 
 .course__table tr td.user-col {
-    padding: 0 10px
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100px;
+}
+
+.course__table tr td.score-col {
+    padding: 0 5px
 }
 
 
@@ -1017,4 +1024,11 @@ li.error {
     border: solid 2px;
     border-radius: 8px;
 
+}
+
+/* tests */
+
+.tests_container {
+    overflow-x: auto;
+    width: 100%;
 }

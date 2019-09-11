@@ -37,12 +37,13 @@
                 <input class="run-button" type="submit" value=""
                        onclick="ace_ajax.check_tests($('#editor-form-{{ code_num }}'));return false;"/>
             </div>
-
-            {% if tests_result %}
-                {% include 'executors/python36/tests_result.html' %}
-            {% elif tests %}
-                {% include 'executors/python36/tests.html' %}
-            {% endif %}
+            <div class="tests_container">
+                {% if tests_result %}
+                    {% include 'executors/python36/tests_result.html' %}
+                {% elif tests %}
+                    {% include 'executors/python36/tests.html' %}
+                {% endif %}
+            </div>
         </div>
     {% endif %}
 </form>

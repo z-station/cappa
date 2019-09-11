@@ -19,17 +19,17 @@
     <h4>Результаты по курсу {{ course.title }}</h4>
     <div class="row group__courses">
         {% if course_data %}
-            <div class="col-lg-3 col-md-3 course__head">
+            <div class="col-lg-2 col-md-2 course__head">
                 <table class="course__table">
                     {% for id, member in course_data.members_col.items %}
                         <tr>
-                            <td class="user-col" >{{ member.name }}</td>
-                            <td>{{ member.score }}</td>
+                            <td title="{{ member.title }}" class="user-col" >{{ member.name }}</td>
+                            <td class="score-col" >{{ member.score }}</td>
                         </tr>
                     {% endfor %}
                 </table>
             </div>
-            <div class="col-lg-9 col-md-9 course__tables">
+            <div class="col-lg-10 col-md-10 course__tables">
             {% for table in course_data.tables %}
                     <table class="course__table">
                         <caption>{{ table.caption }}</caption>

@@ -27,7 +27,7 @@
         </div>
         <div class="col-lg-6">
             <p>
-                Владелец(ы): {{ group.get_owners_usernames }}<br>
+                Владелец: {{ group.get_owners_usernames }}<br>
                 Участников: {{ group.get_members_number }}
             </p>
             <p>
@@ -59,8 +59,7 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Псевдоним</th>
-                <th>ФИО</th>
+                <th>Пользователь</th>
                 <th>Последний раз был</th>
             </tr>
             </thead>
@@ -68,8 +67,7 @@
             {% for member in members %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ member.username }}</td>
-                    <td>{{ member.first_name }} {{ member.last_name }}</td>
+                    <td>{{ member.get_full_name|default:member.username }}</td>
                     <td>{{ member.last_login }}</td>
                 </tr>
             {% endfor %}

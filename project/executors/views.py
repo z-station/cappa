@@ -134,7 +134,7 @@ def user_solution(request, user_id, code_id):
         try:
             # TODO сделать замену тега на форму
             treeitem = user_solution_obj.code.treeitem
-            title = treeitem.long_title if treeitem.long_title else treeitem.title
+            title = treeitem.tree_name
             content = treeitem.content
 
             import re

@@ -5,7 +5,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["*", ]
 
 LANGUAGE_CODE = 'ru-ru'
-
+PYTHON_PATH = '/usr/local/bin/python3.6'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

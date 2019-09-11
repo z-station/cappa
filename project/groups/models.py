@@ -62,7 +62,7 @@ class Group(models.Model):
     get_root_username.short_description = 'Владелец'
 
     def get_owners_usernames(self):
-        return ' ,'.join([owner.username for owner in self.owners.all()])
+        return ' ,'.join([owner.get_full_name() or owner.username for owner in self.owners.all()])
 
     def get_members(self):
         return self.owners.all()\
@@ -235,11 +235,12 @@ class GroupCourse(models.Model):
     def course_data(self):
         members = self.group.members.filter(is_active=True)
         tables = []
-        members_col = OrderedDict({-1: {'name': 'Участник', 'score': 'Решено задач'}})
+        members_col = OrderedDict({-1: {'name': 'Участник', 'score': 'Решено'}})
         for member in members:
             members_col[member.id] = {
-                'name': member.get_full_name,
-                'score': 0
+                'name': member.first_name or member.username,
+                'score': 0,
+                'title': member.get_full_name
             }
 
         for theme in self.course.get_descendants().filter(type=TreeItem.THEME, in_number_list=True, show=True):

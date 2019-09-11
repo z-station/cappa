@@ -1,7 +1,7 @@
 <table class="solution-info">
     <tr>
         <td><h4>Пользователь:</h4></td>
-        <td>{{ solution_user.get_full_name }}</td>
+        <td>{{ solution_user.get_full_name|default:solution_user.username }}</td>
     </tr>
     {% if treeitem_title %}
         <tr>
