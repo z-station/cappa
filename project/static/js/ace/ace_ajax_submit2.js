@@ -53,15 +53,13 @@ var ace_ajax = {
         this.disableBtns(form);
         this.showLoader(form, 'Отладка');
         $.post(form.attr('action'), this.serializeForm(form), function(response, textStatus){
-            setTimeout(function(){
-                ace_ajax.showMsg(form, response.msg, response.status);
-                form.find('.ace-input div').first().replaceWith(response.input).show();
-                form.find('.ace-content div').first().replaceWith(response.content).show();
-                form.find('.ace-output div').first().replaceWith(response.output).show();
-                form.find('.ace-error div').first().replaceWith(response.error).show();
-                update_editor_fields();
-                ace_ajax.enableBtns(form);
-            }, 1000)
+            ace_ajax.showMsg(form, response.msg, response.status);
+            form.find('.ace-input div').first().replaceWith(response.input).show();
+            form.find('.ace-content div').first().replaceWith(response.content).show();
+            form.find('.ace-output div').first().replaceWith(response.output).show();
+            form.find('.ace-error div').first().replaceWith(response.error).show();
+            update_editor_fields();
+            ace_ajax.enableBtns(form);
         });
         return false;
     },
@@ -69,17 +67,15 @@ var ace_ajax = {
         this.disableBtns(form);
         this.showLoader(form, 'Тестирование');
         $.post(form.data('tests-action'), this.serializeForm(form), function(response, textStatus){
-            setTimeout(function(){
-                ace_ajax.showMsg(form, response.msg, response.status);
-                form.find('.ace-input div').first().replaceWith(response.input).show();
-                form.find('.ace-content div').first().replaceWith(response.content).show();
-                form.find('.ace-output div').first().replaceWith(response.output).show();
-                form.find('.ace-error div').first().replaceWith(response.error).show();
-                testsContainer.find('table').first().replaceWith(response.tests).show();
-                update_editor_fields();
-                ace_ajax.enableBtns(form);
-                ace_ajax.enableVersionsBtn(form);
-            }, 1000)
+            ace_ajax.showMsg(form, response.msg, response.status);
+            form.find('.ace-input div').first().replaceWith(response.input).show();
+            form.find('.ace-content div').first().replaceWith(response.content).show();
+            form.find('.ace-output div').first().replaceWith(response.output).show();
+            form.find('.ace-error div').first().replaceWith(response.error).show();
+            testsContainer.find('table').first().replaceWith(response.tests).show();
+            update_editor_fields();
+            ace_ajax.enableBtns(form);
+            ace_ajax.enableVersionsBtn(form);
         });
         return false;
     },
@@ -87,11 +83,9 @@ var ace_ajax = {
         this.disableBtns(form);
         this.showLoader(form, 'Сохранение')
         $.post(form.data('save-version-action'), this.serializeForm(form), function(response, textStatus){
-            setTimeout(function(){
-                ace_ajax.showMsg(form, response.msg, response.status);
-                ace_ajax.enableBtns(form);
-                ace_ajax.enableVersionsBtn(form);
-            }, 1000)
+            ace_ajax.showMsg(form, response.msg, response.status);
+            ace_ajax.enableBtns(form);
+            ace_ajax.enableVersionsBtn(form);
         });
         return false;
 
@@ -100,11 +94,9 @@ var ace_ajax = {
         this.disableBtns(form);
         this.showLoader(form, msg);
         $.post(form.data('save-version-action'), this.serializeForm(form), function(response, textStatus){
-            setTimeout(function(){
-                ace_ajax.showMsg(form, 'Изменения сохранены', response.status);
-                ace_ajax.enableBtns(form);
-                ace_ajax.enableVersionsBtn(form);
-            }, 1000)
+            ace_ajax.showMsg(form, 'Изменения сохранены', response.status);
+            ace_ajax.enableBtns(form);
+            ace_ajax.enableVersionsBtn(form);
         });
         return false;
     }
