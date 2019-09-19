@@ -132,4 +132,5 @@ def check_tests(code, content, tests):
             tests_result["success_num"] += 1
     tmp.remove_file_cpp()
     tmp.remove_file_out()
+    tests_result["progress"] = round(tests_result["success_num"] / (tests_result["num"] / 100))
     return tests_result

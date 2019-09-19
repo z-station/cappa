@@ -276,7 +276,8 @@ class TreeItemAdmin(NestedModelAdmin):
         Moves TreeItem object if request.POST contains target node or
         copied node
         """
-        obj.author = request.user
+        if not obj.author:
+            obj.author = request.user
         target_id = request.GET.get('target', None)
         copy_id = request.GET.get('copy', None)
         target = None

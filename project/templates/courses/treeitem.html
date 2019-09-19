@@ -8,16 +8,18 @@
         </div>
         <div class="row content">
             <div class="left-col">
-                {% if object.leaf %}
-                    <h1 class="text-center">{{ object.tree_name }}</h1>
-                    <h3>Условие</h3><br/>
-                    {% show_executors object.content for object %}
-                {% else %}
-                    <h1>{{ object.tree_name }}</h1>
-                    {% show_executors object.content for object %}
-                {% endif %}
+                <div class="white fp-content">
+                    {% if object.leaf %}
+                    <h1 class="text-center">{{ object.tree_name }}{% if solution.status_success %}<span>[ Решено ]</span>{% endif %}</h1>
+                        <h3>Условие</h3><br/>
+                        {% show_executors object.content for object %}
+                    {% else %}
+                        <h1>{{ object.tree_name }}</h1>
+                        {% show_executors object.content for object %}
+                    {% endif %}
+                </div>
             </div>
-            <div class="right-col">
+            <div class="right-col white">
                 <h1 class="">Навигация по курсу</h1>
                 <hr>
                 {% get_navigation object as navigation %}

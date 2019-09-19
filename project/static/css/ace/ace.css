@@ -1,3 +1,29 @@
+@keyframes pulse {
+  to {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+.loader {
+  color: #337ab7;
+  font-family: Consolas, Menlo, Monaco, monospace;
+  font-weight: bold;
+  font-size: 20px;
+  opacity: 0.8;
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+}
+
+.loader span {
+    display: inline-block;
+    animation: pulse 0.4s alternate infinite ease-in-out;
+}
+
+.loader span:nth-child(odd) {
+  animation-delay: 0.4s;
+}
 
 .ace-container {
     padding: 15px 10px;
@@ -15,7 +41,7 @@
 .ace-container.ace-output {
     flex-direction: column;
     font-size: 12px;
-    border-top: 1px solid #dcdcdc;
+    margin-top: 10px
 }
 
 .ace-container.ace-tests table {
@@ -55,15 +81,9 @@
     display:none;
 }
 
-.ace-control-bar {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-}
-
 .ace-editor {
     position: relative;
-    width: 620px;
+    width: 100%;
     height: auto;
     font-size:14px;
     line-height: 1.5;
@@ -82,13 +102,100 @@
     display:none;
 }
 
-.run-button {
-    background: #82b915 url("/static/img/play_green.png") no-repeat;
+/* ace control bar */
+
+.ace-control-bar {
+    margin: 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.control-bar-col {
+    display: flex;
+    background-color: #f5f2f0;
+}
+
+.control-bar-col.bar-col-1 {
+    width: calc(40% - 10px);
+    min-width: calc(40% - 10px);
+    max-width: calc(40% - 10px);
+    margin-right: 10px;
+    justify-content: flex-start;
+}
+
+.control-bar-col.bar-col-2 {
+    width: 20%;
+    min-width: 20%;
+    max-width: 20%;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.control-bar-col.bar-col-3 {
+    width: calc(40% - 10px);
+    min-width: calc(40% - 10px);
+    max-width: calc(40% - 10px);
+    margin-left: 10px;
+    justify-content: flex-end;
+}
+
+.control-btn {
+    border-radius: 2px;
+    cursor: pointer;
     height: 30px;
     width: 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    transition: all 400ms ease;
+}
+
+.control-btn.full-content {
+    width: 100% !important;
+}
+
+.control-btn + .control-btn {
+    margin-left: 10px;
+}
+
+
+.control-btn.run {
+    background: #afafaf url("/static/img/play.svg") no-repeat center;
+    width: 100px;
+}
+
+.control-btn.check-tests {
+    background: #afafaf url("/static/img/check.svg") no-repeat center;
+    width: 100px;
+}
+
+.control-btn.run:hover,
+.control-btn.check-tests:hover {
+    background-color: #5fcf80
+}
+
+.control-btn.save-version {
+    background: #afafaf url("/static/img/save.svg") no-repeat center;
+}
+
+.control-btn.save {
+    background: #afafaf url("/static/img/fast-save.svg") no-repeat center;
+}
+
+.control-btn.versions {
+    background: #afafaf url("/static/img/doc.svg") no-repeat center;
+    margin-left: 10px;
+}
+
+.control-btn.save-version:hover,
+.control-btn.save:hover,
+.control-btn.versions:hover {
+    background-color: #337ab7
+}
+
+.control-btn.disabled,
+.control-btn.not-versions,
+.control-btn.disabled:hover {
+    opacity: 0.4;
+    background-color: #afafaf;
+    pointer-events: none;
 }
 
 .editor-form {
@@ -96,13 +203,35 @@
     width:100%;
     height:auto;
 }
+/* ace messages */
 
-.success_bar {
-    z-index: 5;
-    background: #15b957;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
-    padding: 2px 6px;
-    height: 30px;
+.msg {
+    display: flex;
+    color: #337ab7;
+    align-items: center;
+    font-weight: 600;
+}
+.msg.hide {
+    display: none;
+}
+
+.msg-success {
+    background: url('/static/img/success.svg') no-repeat right center;
+    padding-right: 40px;
+    background-size: 40px 25px;
+    color: #14bf46;
+}
+
+.msg-warning {
+    background: url('/static/img/warning.svg') no-repeat right center;
+    padding-right: 40px;
+    background-size: 40px 25px;
+    color: #ffc107;
+}
+
+.msg-error {
+    background: url('/static/img/error.svg') no-repeat right center;
+    padding-right: 40px;
+    background-size: 40px 25px;
+    color: #c82333;
 }

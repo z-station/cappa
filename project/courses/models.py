@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import json
-from django.contrib.contenttypes.models import ContentType
+import re
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.db import models
@@ -8,6 +7,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from tinymce.models import HTMLField
 from django.contrib.auth.models import User
 from project.sources.models import Source
+
+code_tag_pattern = re.compile(r'<\w+>[&nbsp;]*#code[0-9]+#[&nbsp;]*</\w+>|[&nbsp;]*#code[0-9]+#[&nbsp;]*')
 
 
 class TreeItem(MPTTModel):
@@ -144,6 +145,9 @@ class TreeItem(MPTTModel):
     @property
     def tree_name(self):
         return '%s %s' % (self.order_number, self.title)
+
+    def get_clear_content(self):
+        return re.sub(code_tag_pattern, "", self.content)
 
 
 class TreeItemFlat(TreeItem):

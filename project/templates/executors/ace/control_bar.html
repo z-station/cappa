@@ -1,0 +1,24 @@
+<div class="control-bar-col bar-col-1">
+    {% if show_versions_btn %}
+        <div class="control-btn versions {% if disable_btns %} disabled{% endif %}{% if not solution %} not-versions{% endif %}" title="История решения" onclick="window.open('{% url 'user_solution' user_id=user.id code_id=code_id %}', '_blank')"></div>
+        <div class="control-btn save-version{% if disable_btns %} disabled{% endif %}"  title="Сохранить версию решения" onclick="ace_ajax.save_version($('#editor-form-{{ code_num }}'))"></div>
+        <div class="control-btn save{% if disable_btns %} disabled{% endif %}" title="Быстрое сохранение" onclick="ace_ajax.fast_save($('#editor-form-{{ code_num }}'))"></div>
+    {% endif %}
+</div>
+
+<div class="control-bar-col bar-col-2">
+    {% if show_tests %}
+        <div class="control-btn check-tests{% if disable_btns %} disabled{% endif %}" title="Протестировать решение" onclick="ace_ajax.check_tests($('#editor-form-{{ code_num }}'), $('#ace-tests-{{ code_num }}'))"></div>
+        <div class="control-btn run{% if disable_btns %} disabled{% endif %}" title="Отладка" onclick="ace_ajax.execute($('#editor-form-{{ code_num }}'))"></div>
+    {% else %}
+        <div class="control-btn full-content run{% if disable_btns %} disabled{% endif %}" title="Отладка" onclick="ace_ajax.execute($('#editor-form-{{ code_num }}'))"></div>
+    {% endif %}
+</div>
+
+<div class="control-bar-col bar-col-3 msg-box">
+    <span class="msg msg-loader hide"></span>
+    <span class="msg loader hide"><span>{</span><span>}</span></span>
+    <span class="msg msg-success hide"></span>
+    <span class="msg msg-warning hide"></span>
+    <span class="msg msg-error hide"></span>
+</div>

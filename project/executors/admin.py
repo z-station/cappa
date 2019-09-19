@@ -15,6 +15,7 @@ class ExecutorInlineAdmin(NestedStackedInline, admin.StackedInline):
     inlines = []
 
 
+@admin.register(UserSolution)
 class UserSolutionAdmin(admin.ModelAdmin):
 
     def get_code_title(self, obj):
@@ -28,13 +29,11 @@ class UserSolutionAdmin(admin.ModelAdmin):
     model = UserSolution
     list_display = ("user", "code", "get_code_title", "get_progress_percent")
     search_fields = ["user__username", ]
-    readonly_fields = ("progress", "code", "user", "details",)
+    readonly_fields = ("code", "user", "best", 'last_changes', 'versions')
 
     def has_add_permission(self, request):
         """ Отключает возможность добавления решений через админку - только просмотр """
         return False
-
-admin.site.register(UserSolution, UserSolutionAdmin)
 
 
 class CodeTestInlineAdmin(admin.TabularInline):
@@ -56,7 +55,7 @@ class CodeFlatAdmin(admin.ModelAdmin):
     list_display = ("__str__", "description", "treeitem", "get_author")
     list_filter = ("treeitem__author",)
     inlines = [CodeTestInlineAdmin, ]
-    search_fields = ("id", "treeitem__title", "treeitem__author")
+    search_fields = ("id",)
 
 admin.site.register(CodeFlat, CodeFlatAdmin)
 

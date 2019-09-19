@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}CAPPA{% endblock %}</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+    {% block css %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+    {% endblock %}
     <script src="//code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -59,7 +61,7 @@
                         <h1>{% block content_title %}{% endblock %}</h1>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row content">
                     <div class="content">
                         {% block content %}{% endblock %}
                     </div>
@@ -99,6 +101,8 @@
             </div>
         </div>
     </footer>
-    {% block js %}{% endblock %}
+    {% block js %}
+        <script src="{{ STATIC_URL }}js/base.js" ></script>
+    {% endblock %}
 </body>
 </html>

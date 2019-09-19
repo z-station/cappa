@@ -45,23 +45,29 @@ class ExecutorNode(template.Node):
             try:
                 code = Code.objects.get(id=code_ids[i], treeitem=treeitem)
                 tests = CodeTest.objects.filter(code=code)
-                code_solved = False
+                form = CodeForm(instance=code)
+                user_solution, content_exist = None, bool(code.content)
                 if not context["request"].user.is_anonymous:
-                    try:
-                        user_solution = UserSolution.objects.get(code=code, user=context["request"].user)
-                        code_solved = True if user_solution.progress == 100 else False
-                    except:
-                        pass
+                    user_solution = UserSolution.objects.filter(code_id=code.id, user_id=context["request"].user.id).first()
+                    if user_solution:
+                        last_changes = user_solution.last_changes
+                        if last_changes:
+                            form = CodeForm(instance=code, data={"input": last_changes['input'], "content": last_changes['content']})
+                            content_exist = bool(last_changes['content'])
                 code_context = {
-                    "code_solved": code_solved,
+                    "object": treeitem,
                     "executor_name": code.get_executor_name(),
-                    "form": CodeForm(instance=code),
+                    "form": form,
                     "code_num": i if not row_num else row_num,
                     "code_id": code_ids[i],
                     "show_tests": code.show_tests,
                     "show_input": code.show_input,
                     "tests": tests,
                     "csrf_token": context["csrf_token"],
+                    "user": context['request'].user,
+                    "show_versions_btn": not context['request'].user.is_anonymous and tests,
+                    "disable_btns": not content_exist,
+                    "solution": user_solution,
                 }
                 code_node = render_to_string(code.get_template(), code_context)
                 result_str += code_node
@@ -73,7 +79,7 @@ class ExecutorNode(template.Node):
         # добавить скрипты иницализации ace-редактора
         result_str = '<link href="/static/css/ace/ace.css" type="text/css" media="all" rel="stylesheet" />\n' +\
                      '<link href="/static/css/prism.css" type="text/css" media="all" rel="stylesheet" />\n' +\
-                     '<script type = "text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>\n' +\
+                     '<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>\n' +\
                      '<script src="/static/js/ace/ace_ajax_submit.js"></script>\n' +\
                      '<script src=/static/js/prism.js></script>\n' + result_str
         return result_str

@@ -14,6 +14,10 @@ h6, .h6 {
 }
 
 
+pre {
+    margin: 0
+}
+
 h1, .h1 {
     font-size: 27px;
     font-weight: 600;
@@ -197,7 +201,11 @@ table.progress-table th:first-child a:hover {
 }
 
 .course__table tr td.process {
-    background-color: #fdffcf;
+    background-color: #f7ff4b;
+}
+
+.course__table tr td.unluck {
+    background-color: #ffae95;
 }
 
 .course__table tr td.user-col {
@@ -457,13 +465,11 @@ main .content {
     width: 100%;
 }
 
-.left-col,
-.right-col,
-.one-col {
+.white {
     padding: 30px;
     background-color: #fff;
     border-radius: 4px;
-    flex: 1 0 auto;
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.1)
 }
 
 .coutses-about {
@@ -477,20 +483,21 @@ main .content {
 }
 
 .left-col {
+    flex: 1 0 auto;
     width: calc(100% - 370px);
     margin-right: 20px;
-    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.1)
 }
 
 .right-col {
+    flex: 1 0 auto;
     width: 350px;
     height: 100%;
 }
 
 .one-col {
+    flex: 1 0 auto;
     width: 100%;
     margin-right: 20px;
-    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.1)
 }
 
 /* courses root */
@@ -524,15 +531,15 @@ main .content {
 .course-item-author {
     position: relative;
     padding: 10px 10px 10px 40px;
-    background: url('../img/author.png') #5fcf80 no-repeat 10px center;
-    color: #dfecef;
+    background: url('../img/author.svg') #5fcf80 no-repeat 10px center;
+    color: #fff;
     font-weight: bold;
 
 }
 
 .course-item {
     position: relative;
-    width: 32%;
+    width: 230px;
     height: 250px;
     background-color: #fff;
     box-shadow: 0 0 1px rgba(0, 65, 94, 0.2);
@@ -541,21 +548,16 @@ main .content {
     flex-direction: column;
     border-radius: 4px;
     justify-content: space-between;
-    margin: 0 11px 15px 5px;
+    margin: 5px;
 
 }
 
 .courses {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
     position: relative;
     flex-wrap: wrap;
-}
-
-.courses .course-item {
-    margin: 0 0 15px 0;
-    width: 230px;
 }
 
 .courses-container a {
@@ -682,13 +684,13 @@ main .content {
 }
 
 .fp-help-1 {
-    top: 154px;
+    top: 380px;
     left: 15px;
 }
 
 .fp-help-1 + img {
-    top: 208px;
-    left: -40px;
+    top: 415px;
+    left: -30px;
 }
 
 .fp-help-2 {
@@ -931,8 +933,24 @@ main .content {
     margin-bottom: 20px;
 }
 
-.solution-info td {
-    padding: 0 20px 5px 0;
+.solution-info tr td {
+    padding: 0 20px 0 5px;
+}
+
+.solution-info h4 {
+    margin: 5px;
+}
+
+.solution-info tr.success {
+    background-color: #96ff8e;
+}
+
+.solution-info tr.process {
+    background-color: #f7ff4b;
+}
+
+.solution-info tr.unluck {
+    background-color: #ffae95;
 }
 
 .subtitle {
@@ -1028,7 +1046,41 @@ li.error {
 
 /* tests */
 
-.tests_container {
-    overflow-x: auto;
+.tests-container {
     width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: block;
+}
+
+.tests-table thead tr th {
+    border-top: none;
+    border-bottom: 1px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.tests-table tbody tr td {
+    padding: 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tests-table thead tr th:first-child,
+.tests-table tbody tr td:first-child {
+    text-align: center;
+    width: 30px
+}
+
+.tests-table tbody tr.success {
+    background-color: #96ff8e;
+}
+
+.tests-table tbody tr.unluck {
+    background-color: #ffae95;
+}
+
+.tests-table tbody tr.success td,
+.tests-table tbody tr.unluck td {
+    border-bottom: 5px solid #fff;
 }

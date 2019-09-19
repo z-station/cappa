@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 import os
 import json
+from datetime import datetime
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from project.courses.models import TreeItem
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.urls import reverse
+
 
 class Executor(models.Model):
 
@@ -77,19 +78,8 @@ class Code(models.Model):
     content_max_signs = models.PositiveIntegerField(verbose_name="макс. символов в блоке кода", default=1000)
     timeout = models.PositiveIntegerField(verbose_name="макс. время исполнения(секунд)", default=30)
 
-    def get_template(self, template_name=None):
-        """ Возвращает полную директорию до шаблона (с учетом исполнителя)
-            если указан template_name - возвращает путь до этого шаблона
-            иначе возвращает путь до шаблона блока кода с указаным типом """
-
-        executor_type_id = self.get_executor_type_id()
-        executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
-        if template_name:
-            template = os.path.join("executors", executor_folder, template_name)
-        else:
-            code_template = self.CODE_TEMPLATES[self.type]
-            template = os.path.join("executors", executor_folder, code_template)
-        return template
+    def get_template(self):
+        return os.path.join("executors", self.CODE_TEMPLATES[self.type])
 
     def get_executor_type_id(self):
         """ Возвращает type_id исплнителя кода, иначе None """
@@ -128,6 +118,24 @@ class Code(models.Model):
             return self.treeitem.author
         return "-"
 
+    def check_tests(self, content, input, tests):
+        if self.get_executor_type_id() == Executor.PYTHON36:
+            from project.executors.python36.utils import check_tests
+        elif self.get_executor_type_id() == Executor.CPP:
+            from project.executors.cpp.utils import check_tests
+        elif self.get_executor_type_id() == Executor.CH:
+            from project.executors.ch.utils import check_tests
+        return check_tests(self, content, input, tests)
+
+    def execute(self, content, input):
+        if self.get_executor_type_id() == Executor.PYTHON36:
+            from project.executors.python36.utils import execute_code
+        elif self.get_executor_type_id() == Executor.CPP:
+            from project.executors.cpp.utils import execute_code
+        elif self.get_executor_type_id() == Executor.CH:
+            from project.executors.ch.utils import execute_code
+        return execute_code(self, content, input)
+
 
 class CodeFlat(Code):
     """ Класс с расширенными правами в админ интерфейсе (для администрирования) """
@@ -152,10 +160,16 @@ class CodeTest(models.Model):
 
 
 class UserSolution(models.Model):
-    """ """
+
     class Meta:
-        verbose_name = "пользовательское решение"
-        verbose_name_plural = "пользовательские решения"
+        verbose_name = "решение"
+        verbose_name_plural = "решения"
+
+    # Статус решения
+    SUCCESS = 'success'
+    PROCESS = 'process'
+    UNLUCK  = 'unluck'
+    NONE    = 'none'
 
     # Типы исполнения кода
     EXECUTE = 1
@@ -166,66 +180,105 @@ class UserSolution(models.Model):
         (CHECK_TESTS, "Запуск тестов"),
     )
 
-    default_details = {
-        "solutions": [],
-        "best_solution_tests": [],
-        "best_solution_num": None,
-    }
-
     code = models.ForeignKey(Code, verbose_name="блок кода")
     user = models.ForeignKey(User, verbose_name="пользователь")
-    details = JSONField(verbose_name="детали решения", default=default_details)
-    progress = models.PositiveIntegerField(verbose_name="Прогресс решения", default=0)
+    last_changes = JSONField(verbose_name="последние изменения", blank=True, null=True)
+    best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
+    versions = JSONField(verbose_name="сохраненные решения", default=list)
+
+    details = JSONField(verbose_name="детали решения", default={})
 
     def __str__(self):
         return "%s (%s)" % (self.user, self.code.get_title())
 
+    def get_formated_time(self, str_date):
+
+        d = datetime.strptime(str_date, '%Y-%m-%d %H:%M:%S.%f')
+        return d.strftime('%Y.%m.%d [%H:%M]')
+
     @property
-    def best_solution(self):
-        num = self.details.get('best_solution_num')
-        if num:
-            return self.details['solutions'][num]
-
-    def get_template(self):
-        """ Возвращает директорию до шаблона с учетом указанного исполнителя"""
-        executor = self.code.executor_type_id
-        if not executor:
-            # если исполнитель не выбран то наследуется от связанного объекта
-            try:
-                executor_type_id = Executor.objects.get(treeitem=self.treeitem).type_id
-            except Executor.DoesNotExist:
-                # если исполнитель не выыбран для связанного объекта то использовать шаблон по умолчанию
-                raise Executor.DoesNotExist("Установите исполнитель кода для элемента курса или блока кода")  # TODO сделать блекджековый дефолтный шаблон
-
-            executor_folder = Executor.EXEC_FOLDERS[executor_type_id]
+    def best_time(self):
+        if self.best:
+            return self.get_formated_time(self.best['datetime'])
         else:
-            executor_folder = Executor.EXEC_FOLDERS[self.executor_type_id]
+            return ''
 
-        code_template = self.CODE_TEMPLATES[self.type]
-        template = os.path.join("executors", executor_folder, code_template)
-        return template
+    @property
+    def progress(self):
+        if self.best is None:
+            return None
+        else:
+            return int(self.best['progress'])
+
+    @property
+    def status_success(self):
+        return self.progress == 100
+
+    @property
+    def status_process(self):
+        return self.progress != 100
+
+    @property
+    def status_unluck(self):
+        return self.progress == 0
+
+    @property
+    def status_none(self):
+        return self.best is None
+
+    @property
+    def status(self):
+        if self.status_none:
+            return self.NONE
+        else:
+            if self.status_success:
+                return self.SUCCESS
+            elif self.status_unluck:
+                return self.UNLUCK
+            else:
+                return self.PROCESS
+
+    def __create_version(self, data):
+
+        return {
+            "datetime": data['datetime'],
+            "input": data.get('input', ''),
+            "content": data['content'],
+            "progress": data['progress'],
+            "tests": {
+                'num': data.get("num", ''),
+                'num_success': data.get("success_num", ''),
+            }
+        }
+
+    def update_best(self, data=None, version=None):
+        if not version:
+            version = self.__create_version(data)
+
+        self.last_changes = version
+        if self.best is None:
+            self.best = version
+        else:
+            if int(version['progress']) > self.progress:
+                self.best = version
+
+    def add_version(self, data):
+        version = self.__create_version(data)
+        self.last_changes = version
+        self.versions.append(json.dumps(version, ensure_ascii=False))
+        self.update_best(version=version)
+
+    def get_versions(self):
+        data = []
+        for json_version in self.versions:
+            version = json.loads(json_version)
+            version['datetime'] = self.get_formated_time(version['datetime'])
+            version['content'] = {
+                'name': 'content',
+                'value': version['content'],
+            }
+            data.append(version)
+        return data
 
     def get_absolute_url(self):
         return reverse('user_solution', kwargs={'user_id': self.user.id, 'code_id': self.code.id})
-
-    """ Пример JSON структуры поля details
-    details = {
-        best_solution_num: <int>  # порядковый номер удачного решения в списке решений solutions
-        best_solution_tests: [
-            {"1": True},
-            {"2": False},
-            {...},
-        ]
-        solutions: [
-            {
-                datetime: <datetime>,  # дата/время попытки
-                content:  <unicode>,   # код программы
-                tests_num: <int>
-                tests_success_num: <int>
-            },
-            {...},
-            {...},
-        ]
-    }
-
-    """

@@ -4,6 +4,7 @@ import subprocess
 import os
 import uuid
 import re
+from datetime import datetime
 from project.executors.models import Executor
 TMP_DIR = os.path.join(settings.CODE_TMP_DIR, Executor.EXEC_FOLDERS[Executor.CPP])
 
@@ -77,12 +78,16 @@ def execute_code(code, content, input):
     return output, error
 
 
-def check_tests(code, content, tests):
+def check_tests(code, content, input, tests):
     tmp = TmpFiles(content)
     tests_result = {
         "data": [],          # список результатов по каждому тесту
         "num": len(tests),   # количество тестов
         "success_num": 0,    # количество пройденных тестов
+        "progress": 0,
+        "input": input,
+        "content": content,
+        "datetime": str(datetime.now())
     }
     for test in tests:
         p1 = subprocess.Popen(
@@ -132,4 +137,5 @@ def check_tests(code, content, tests):
             tests_result["success_num"] += 1
     tmp.remove_file_cpp()
     tmp.remove_file_out()
+    tests_result["progress"] = round(tests_result["success_num"] / (tests_result["num"] / 100))
     return tests_result

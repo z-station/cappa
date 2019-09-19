@@ -35,8 +35,8 @@ class Group(models.Model):
     created_at = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Группу'
-        verbose_name_plural = 'Группы'
+        verbose_name = 'Учебная группа'
+        verbose_name_plural = 'Учебные группы'
 
     def __str__(self):
         return self.name
@@ -194,20 +194,10 @@ class GroupModule(models.Model):
             for code in codes:
                 try:
                     user_solution = UserSolution.objects.get(user=user, code=code)
-                    css_class = "process"
-                    if user_solution.progress == 0:
-                        css_class = "unluck"
-                    elif user_solution.progress == 100:
-                        css_class = "success"
-
-                    text = ""
-                    if user_solution.progress != 0:
-                        text = str(user_solution.progress) + "%"
-
                     td = {
-                        "text": text,
+                        "text": str(user_solution.progress) + "%" if user_solution.status_process else '',
                         "url": reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id}),
-                        "class": css_class
+                        "class": user_solution.status
                     }
                 except UserSolution.DoesNotExist:
                     td = {
@@ -238,7 +228,7 @@ class GroupCourse(models.Model):
         members_col = OrderedDict({-1: {'name': 'Участник', 'score': 'Решено'}})
         for member in members:
             members_col[member.id] = {
-                'name': member.first_name or member.username,
+                'name': member.last_name or member.username,
                 'score': 0,
                 'title': member.get_full_name
             }
@@ -258,28 +248,22 @@ class GroupCourse(models.Model):
             for user in members:
                 tr = []
                 for code in codes:
-                    status = ''
-                    text = ''
+                    status, text, url = '', '', ''
                     solution_time = ''
                     user_solution = UserSolution.objects.filter(user=user, code=code).first()
                     if user_solution:
-                        status = "process"
-                        if user_solution.progress == 0:
-                            status = "unluck"
-                        elif user_solution.progress == 100:
-                            status = "success"
+                        status = user_solution.status
+                        solution_time = user_solution.best_time
+                        if status == UserSolution.SUCCESS:
                             text = '+'
                             members_col[user.id]['score'] += 1
-                        elif user_solution.progress != 0:
+                        elif status == UserSolution.PROCESS:
                             text = str(user_solution.progress) + "%"
-                        best_solution = user_solution.best_solution
-                        if best_solution:
-                            d = datetime.strptime(best_solution['datetime'], '%Y-%m-%d %H:%M:%S.%f')
-                            solution_time = '%s.%s.%s [%s:%s]' % (d.year, d.month, d.day, d.hour, d.minute)
-                    title = '%s  %s\n%s' % (user.get_full_name(), solution_time, code.get_title())
-                    url = ''
-                    if status in ['success', 'process']:
+                        elif status == UserSolution.UNLUCK:
+                            text = "-"
                         url = reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id})
+
+                    title = '%s  %s\n%s' % (user.get_full_name(), solution_time, code.get_title())
                     tr.append({
                         "text": text,
                         "url": url,

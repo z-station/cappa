@@ -1,0 +1,20 @@
+{% if tests %}
+    <table class="table tests-table">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Ввод</th>
+            <th>Правильный ответ</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for test in tests %}
+            <tr>
+                <td><div>{{ forloop.counter }}</div></td>
+                <td><div><pre>{{ test.input|default:"" }}</pre></div></td>
+                <td><div><pre>{{ test.output|default:"" }}</pre></div></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

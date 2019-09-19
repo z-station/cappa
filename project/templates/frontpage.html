@@ -3,8 +3,10 @@
 
 {% block breadcrumbs %}{% endblock %}
 
-{% block content %}
-
+{% block main %}
+<div class="container">
+    <div class="row content">
+        <div class="one-col">
     <h2 class="fp-title">Эффективное обучение программированию c CAPPA</h2>
 
     <div class="fp-container">
@@ -18,7 +20,7 @@
 
                 </span>
             </div>
-            <div class="one-col fp-content">
+            <div class="one-col fp-content white">
                 <p>
                     Например, в языке Python для ввода данных в программу мы используем функцию <code>input().</code> Она считывает одну строку.</br>
                     Вот программа, которая считывает имя пользователя и приветствует его
@@ -33,7 +35,7 @@
                     Проверьте себя! Решайте задачи, проходя тесты, и набирайте баллы в личном рейтинге!
                 </span>
             </div>
-            <div class="one-col fp-content">
+            <div class="one-col fp-content white">
                 <h4>Задача «Площадь прямоугольного треугольника»</h4>
                 <p>
                     Напишите программу, которая считывает длины двух катетов в прямоугольном треугольнике и выводит его площадь.
@@ -58,60 +60,7 @@
 
                 {% show_executors '#code13#' for example_obj_2 with 1 %}
             </div>
-            <div class="fp-content">
-                <h3>3. Записывайтесь на участие в олимпиадах!</h3>
-                <span>
-                    Для участия подайте заявку на участие, выбрав олимпиаду в <a href="/modules/">списке актуальных олимпиад</a>
-                </span>
-            </div>
-            <div class="one-col fp-content">
-            <p>Проверка задач и подсчет баллов происходит автоматически.
-                Весь процесс решения прозрачен для участников.
-                Смотрите ваш прогресс в турнирной таблице</p>
 
-            {% get_module 1 2 as module %}
-            {% if module %}
-            <span class="fp-help-text fp-help-6">Ваши баллы, как процент от количества пройденных тестов</span>
-            <img src="{{ STATIC_URL }}img/fp-help1.png"/>
-
-            <table class="table-bordered progress-table">
-                <thead>
-                    <tr>
-                    {% for th in module.table.thead.values %}
-                        {% if forloop.first %}
-                            <th>
-                                <a href="{{ th.url }}">{{ th.text }}</a>
-                            </th>
-                        {% else %}
-                            <th title="{{ th.text }}">
-                                <a target="_blank" href="{{ th.url }}">{{ forloop.counter0 }}</a>
-                            </th>
-                        {% endif %}
-                    {% endfor %}
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for tr in module.table.tbody %}
-                    <tr>
-                    {% for td in tr.values %}
-                        {% if forloop.first %}
-                            <td>
-                                {{ td.text }}
-                            </td>
-                        {% else %}
-                            <td class="{{ td.class }}">
-                               <a target="_blank" href="{{ td.url }}">{{ td.text }}</a>
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <br/>
-            {% endif %}
-        </div>
         </div>
         <div class="fp-right-col">
             <span class="fp-help-text fp-help-1">Нажмите для запуска интерпретатора</span>
@@ -142,7 +91,7 @@
     <div class="news">
         <h2 class="fp-title">Новости</h2>
         {% for new in news %}
-            <div class="one-col">
+            <div class="one-col white">
                 <div class="news-item">
                     <div class="new-image">
                         <img src="{{ new.image.url }}"/>
@@ -159,11 +108,14 @@
 
     <div class="command">
         <h2 class="fp-title">Наша команда</h2>
-        <div class="one-col">
+        <div class="one-col white">
             <img src="{{ STATIC_URL }}img/command-2.png">
             <img src="{{ STATIC_URL }}img/command-3.png">
             <img src="{{ STATIC_URL }}img/command-1.jpg">
         </div>
     </div>
+    </div>
+    </div>
+</div>
 
 {% endblock %}
