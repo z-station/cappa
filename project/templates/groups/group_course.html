@@ -32,7 +32,7 @@
             <div class="col-lg-2 col-md-2 course__head">
                 <table class="course__table">
                     {% for id, member in course_data.members_col.items %}
-                        <tr>
+                        <tr id="member-{{ id }}">
                             <td title="{{ member.title }}" class="user-col" >{{ member.name }}</td>
                             <td class="score-col" >{{ member.score }}</td>
                         </tr>
@@ -81,6 +81,12 @@
                         while (div.children.length > 0) {
                           tables.appendChild(div.children[0]);
                         }
+
+                        for(const [id, value] of Object.entries(data.members_col)) {
+                            var memberScore = document.querySelector(`#member-${id} .score-col`)
+                            memberScore.innerHTML = (parseInt(memberScore.innerHTML.trim()) + value.score)
+                        }
+
                         updateLoader()
                         if(themes_ids.length){
                             loadTheme()

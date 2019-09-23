@@ -87,14 +87,18 @@ def group_course_theme(request, group_id, course_id, theme_id):
     if request.user in group.get_members():
         course_item = get_object_or_404(group.course_items, course__id=course_id)
         theme = TreeItem.objects.get(id=theme_id)
-
+    data = course_item.get_course_data(theme)
     context = {
-        'table':  course_item.get_course_data(theme)['tables'][0],
+        'table':  data['tables'][0],
         'group': group,
         'show_solutions_links': request.user.is_superuser,
     }
     table_html = render_to_string('groups/includes/group_course_table.html', context, request)
-    return JsonResponse({'table': table_html})
+    del data['members_col'][-1]
+    return JsonResponse({
+        'table': table_html,
+        'members_col': data['members_col']
+    })
 
 
 # TODO Переделать. 1. Создать и согласовать json-структуру таблицы. 2 GroupModule лишнее звено - сохранять в кэш

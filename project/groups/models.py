@@ -229,7 +229,7 @@ class GroupCourse(models.Model):
             members_col[member.id] = {
                 'name': member.last_name or member.username,
                 'score': 0,
-                'title': member.get_full_name
+                'title': member.get_full_name()
             }
 
         tasks_ids = theme.get_descendants().filter(type=TreeItem.TASK, show=True).values_list("id", flat=True)
