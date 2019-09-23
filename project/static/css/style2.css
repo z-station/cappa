@@ -219,6 +219,77 @@ table.progress-table th:first-child a:hover {
     padding: 0 5px
 }
 
+.course__loader {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.course__loader.hide {
+    transition: all 1s ease;
+    opacity: 0;
+}
+.course__loader-text {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 20px;
+}
+
+.course__loader-text .h1 {
+    line-height: 1 !important;
+    margin: 0;
+}
+
+course__loader-text small {
+    margin-right:
+}
+
+/* loader */
+
+.hourglass{
+    display:block;
+    background:#fff;
+    width:30px;
+    height:60px;
+    animation:hourglass 2s linear infinite;
+}
+
+.outer{
+    fill:#6c757d;
+}
+
+.middle{
+    fill:#fff;
+}
+
+@keyframes hourglass{
+    0%{
+        transform:rotate(0deg);
+        box-shadow:
+            inset #5fcf80 0 -0em 0 0,
+            inset #fff 0 -2em 0 0,
+            inset #5fcf80 0 -4em 0 0;
+    }
+    80%{
+        transform:rotate(0deg);
+        box-shadow:
+            inset #5fcf80 0 -2em 0 0,
+            inset #fff 0 -2em 0 0,
+            inset #5fcf80 0 -2em 0 0;
+    }
+    100%{
+        transform:rotate(180deg);
+        box-shadow:
+            inset #5fcf80 0 -2em 0 0,
+            inset #fff 0 -2em 0 0,
+            inset #5fcf80 0 -2em 0 0;
+    }
+}
 
 /* tables */
 .groups-table tr.success {
@@ -227,20 +298,6 @@ table.progress-table th:first-child a:hover {
 .groups-table tr {
     cursor: pointer;
 }
-
-/*#id_editor {*/
-/*position: relative;*/
-/*width:570px;*/
-/*height: 200px;*/
-/*border: solid 1px #eeeeee;*/
-/*}*/
-
-/*#id_input, #id_output {*/
-/*position: relative;*/
-/*width:280px;*/
-/*height: 100px;*/
-/*border: solid 1px #eeeeee;*/
-/*}*/
 
 * {
     -webkit-box-sizing: border-box;
@@ -483,6 +540,7 @@ main .content {
 }
 
 .left-col {
+    position: relative;
     flex: 1 0 auto;
     width: calc(100% - 370px);
     margin-right: 20px;

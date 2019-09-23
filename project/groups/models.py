@@ -221,8 +221,7 @@ class GroupCourse(models.Model):
     group = models.ForeignKey(Group, related_name='course_items')
     course = models.ForeignKey(TreeItem, verbose_name='курс', limit_choices_to={'show': True, 'type': TreeItem.COURSE})
 
-    @property
-    def course_data(self):
+    def get_course_data(self, theme):
         members = self.group.members.filter(is_active=True)
         tables = []
         members_col = OrderedDict({-1: {'name': 'Участник', 'score': 'Решено'}})
@@ -233,49 +232,48 @@ class GroupCourse(models.Model):
                 'title': member.get_full_name
             }
 
-        for theme in self.course.get_descendants().filter(type=TreeItem.THEME, in_number_list=True, show=True):
-            tasks_ids = theme.get_descendants().filter(type=TreeItem.TASK, show=True).values_list("id", flat=True)
-            codes = Code.objects.filter(treeitem__in=tasks_ids, save_solutions=True).order_by("treeitem__lft")
-            thead = []
+        tasks_ids = theme.get_descendants().filter(type=TreeItem.TASK, show=True).values_list("id", flat=True)
+        codes = Code.objects.filter(treeitem__in=tasks_ids, save_solutions=True).order_by("treeitem__lft")
+        thead = []
+        for code in codes:
+            th = {
+                "text": code.get_order_number(),
+                "url": code.treeitem.get_absolute_url(),
+                "title": code.get_title()
+            }
+            thead.append(th)
+        tbody = []
+        for user in members:
+            tr = []
             for code in codes:
-                th = {
-                    "text": code.get_order_number(),
-                    "url": code.treeitem.get_absolute_url(),
-                    "title": code.get_title()
-                }
-                thead.append(th)
-            tbody = []
-            for user in members:
-                tr = []
-                for code in codes:
-                    status, text, url = '', '', ''
-                    solution_time = ''
-                    user_solution = UserSolution.objects.filter(user=user, code=code).first()
-                    if user_solution:
-                        status = user_solution.status
-                        solution_time = user_solution.best_time
-                        if status == UserSolution.SUCCESS:
-                            text = '+'
-                            members_col[user.id]['score'] += 1
-                        elif status == UserSolution.PROCESS:
-                            text = str(user_solution.progress) + "%"
-                        elif status == UserSolution.UNLUCK:
-                            text = "-"
-                        url = reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id})
+                status, text, url = '', '', ''
+                solution_time = ''
+                user_solution = UserSolution.objects.filter(user=user, code=code).first()
+                if user_solution:
+                    status = user_solution.status
+                    solution_time = user_solution.best_time
+                    if status == UserSolution.SUCCESS:
+                        text = '+'
+                        members_col[user.id]['score'] += 1
+                    elif status == UserSolution.PROCESS:
+                        text = str(user_solution.progress) + "%"
+                    elif status == UserSolution.UNLUCK:
+                        text = "-"
+                    url = reverse('user_solution', kwargs={"user_id": user.id, "code_id": code.id})
 
-                    title = '%s  %s\n%s' % (user.get_full_name(), solution_time, code.get_title())
-                    tr.append({
-                        "text": text,
-                        "url": url,
-                        "status": status,
-                        "title": title,
-                    })
-                tbody.append(tr)
-            tables.append({
-                'caption': theme.tree_name,
-                'thead': thead,
-                'tbody': tbody
-            })
+                title = '%s  %s\n%s' % (user.get_full_name(), solution_time, code.get_title())
+                tr.append({
+                    "text": text,
+                    "url": url,
+                    "status": status,
+                    "title": title,
+                })
+            tbody.append(tr)
+        tables.append({
+            'caption': theme.tree_name,
+            'thead': thead,
+            'tbody': tbody
+        })
         return {
             'tables': tables,
             'members_col': members_col,

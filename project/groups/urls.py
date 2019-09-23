@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/progress/$', views.GroupProgressView.as_view(), name='progress'),
     url(r'^(?P<group_id>[0-9]+)/modules/(?P<pk>[0-9]+)/$', ModuleProgressView.as_view(), name='module_progress'),
     url(r'^(?P<group_id>[0-9]+)/courses/(?P<course_id>[0-9]+)/$', views.GroupCourse.as_view(), name='group_course'),
+    url(r'^(?P<group_id>[0-9]+)/courses/(?P<course_id>[0-9]+)/themes/(?P<theme_id>[0-9]+)/$', views.group_course_theme, name='group_course_theme'),
     url(r'^(?P<group_id>[0-9]+)/join/$', login_required(views.join), name='join'),
 ]
 

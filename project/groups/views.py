@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, Http404
 from django.urls import reverse
+from django.template.loader import render_to_string
 from django.views import generic, View
 from project.courses.models import TreeItem
 from project.groups.models import Group
@@ -68,14 +69,32 @@ class GroupCourse(View):
         group = get_object_or_404(Group, id=group_id)
         if request.user in group.get_members():
             course_item = get_object_or_404(group.course_items, course__id=course_id)
+            themes = course_item.course.get_descendants().filter(type=TreeItem.THEME, in_number_list=True, show=True)
             context = {
-                'course_data': course_item.course_data,
+                'course_data': course_item.get_course_data(themes.first()),
                 'group': group,
                 'course': course_item.course,
-                'show_solutions_links': request.user.is_superuser
+                'show_solutions_links': request.user.is_superuser,
+                'themes_ids': list(themes.exclude(id=themes.first().id).values_list('id', flat=True))[::-1]
             }
             return render(request, self.template, context)
         raise Http404
+
+
+def group_course_theme(request, group_id, course_id, theme_id):
+
+    group = get_object_or_404(Group, id=group_id)
+    if request.user in group.get_members():
+        course_item = get_object_or_404(group.course_items, course__id=course_id)
+        theme = TreeItem.objects.get(id=theme_id)
+
+    context = {
+        'table':  course_item.get_course_data(theme)['tables'][0],
+        'group': group,
+        'show_solutions_links': request.user.is_superuser,
+    }
+    table_html = render_to_string('groups/includes/group_course_table.html', context, request)
+    return JsonResponse({'table': table_html})
 
 
 # TODO Переделать. 1. Создать и согласовать json-структуру таблицы. 2 GroupModule лишнее звено - сохранять в кэш

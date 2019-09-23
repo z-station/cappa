@@ -321,9 +321,8 @@ class TreeItemFlatAdmin(NestedModelAdmin):
 
     model = TreeItemFlat
     search_fields = ("title", "author", "source__name", "source_raw_id")
-    list_filter = ("author", "type", "source",)
+    list_filter = ("type", "source",)
     list_display = ("title", "author", "show", "type", "in_number_list",  "tests", "source", "source_raw_id", )
-    search_fields = ("title", "author__username", "source__name", "source_raw_id")
     prepopulated_fields = {"slug": ("title",), }
     raw_id_fields = ("author",)
 
