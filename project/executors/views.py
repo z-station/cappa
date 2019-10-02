@@ -99,13 +99,14 @@ def check_tests(request):
         content = request.POST.get("content")
         input, output, error = request.POST.get("input", ""), "", ""
         tests = CodeTest.objects.filter(code=code)
+        success = False
         if content and tests and (code.type == Code.EXECUTABLE):
             tests_result = code.check_tests(content, input, tests)
             if code.save_solutions and not request.user.is_anonymous:
                 user_solution, _ = UserSolution.objects.get_or_create(user=request.user, code=code)
                 user_solution.update_best(data=tests_result)
                 user_solution.save()
-                # code_solved = user_solution.status_success
+                success = user_solution.status_success
 
         return JsonResponse(
             render_executor_blocks(
@@ -116,7 +117,7 @@ def check_tests(request):
                 output=output,
                 error=error,
                 tests=tests_result,
-                success=user_solution.status_success
+                success=success
             )
         )
 
