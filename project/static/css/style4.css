@@ -24,6 +24,13 @@ h1, .h1 {
     margin-bottom: 15px;
 }
 
+h1 .success,
+.h1 .success {
+    background-color: #96ff8e;
+    margin-left: 10px;
+    padding: 5px 10px;
+}
+
 h2, .h2 {
     font-size: 1.75rem !important
 }

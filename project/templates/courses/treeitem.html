@@ -10,7 +10,7 @@
             <div class="left-col">
                 <div class="white fp-content">
                     {% if object.leaf %}
-                    <h1 class="text-center">{{ object.tree_name }}{% if solution.status_success %}<span>[ Решено ]</span>{% endif %}</h1>
+                    <h1 class="text-center">{{ object.tree_name }}<span class="success" {% if not solution.status_success %} style="display:none" {% endif %}>Решено</span></h1>
                         <h3>Условие</h3><br/>
                         {% show_executors object.content for object %}
                     {% else %}

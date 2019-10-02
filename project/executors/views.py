@@ -7,7 +7,7 @@ from project.executors.models import Code, CodeTest, Executor, UserSolution
 from django.core.exceptions import PermissionDenied
 
 
-def render_executor_blocks(content, code_num, executor_name, input='', output='', error='', tests=None):
+def render_executor_blocks(content, code_num, executor_name, input='', output='', error='', tests=None, success=False):
 
     msg, status = '', ''
     block_error, block_output, block_tests = '<div></div>', '<div></div>', '<div></div>'
@@ -48,7 +48,8 @@ def render_executor_blocks(content, code_num, executor_name, input='', output=''
         'error': block_error,
         'msg': msg,
         'status': status,
-        'tests': block_tests
+        'tests': block_tests,
+        'success': success,
     }
 
 
@@ -114,7 +115,8 @@ def check_tests(request):
                 input=input,
                 output=output,
                 error=error,
-                tests=tests_result
+                tests=tests_result,
+                success=user_solution.status_success
             )
         )
 

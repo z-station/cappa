@@ -80,7 +80,7 @@ class ExecutorNode(template.Node):
         result_str = '<link href="/static/css/ace/ace2.css" type="text/css" media="all" rel="stylesheet" />\n' +\
                      '<link href="/static/css/prism.css" type="text/css" media="all" rel="stylesheet" />\n' +\
                      '<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>\n' +\
-                     '<script src="/static/js/ace/ace_ajax_submit2.js"></script>\n' +\
+                     '<script src="/static/js/ace/ace_ajax_submit3.js"></script>\n' +\
                      '<script src=/static/js/prism.js></script>\n' + result_str
         return result_str
 

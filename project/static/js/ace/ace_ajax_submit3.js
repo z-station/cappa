@@ -76,6 +76,9 @@ var ace_ajax = {
             update_editor_fields();
             ace_ajax.enableBtns(form);
             ace_ajax.enableVersionsBtn(form);
+            if(response.success){
+                $('h1 .success').show()
+            }
         });
         return false;
     },

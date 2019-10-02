@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 from project.courses.models import TreeItem
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 
 class CatalogRootView(TemplateView):
@@ -48,4 +48,13 @@ def catalog_item(request, path=None):
     context = {
         "object": treeitem,
     }
+
+    if treeitem.type == TreeItem.TASK and request.user.is_authenticated:
+        from project.executors.models import Code, UserSolution
+        code = Code.objects.filter(treeitem=treeitem).first()
+        if code and code.save_solutions:
+            solution = UserSolution.objects.filter(user=request.user, code=code).first()
+            if solution and solution.best:
+                context['solution'] = solution
+
     return render(request, template, context)
