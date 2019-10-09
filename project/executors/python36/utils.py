@@ -45,6 +45,7 @@ def execute_code(code, content, input):
     )
 
     stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
+    proc.kill()
     tmp_file.remove()
 
     output = stdout.decode("utf-8")
@@ -109,6 +110,7 @@ def check_tests(code, content, input, tests):
         stdin = bytes(test.input.replace('\r', ''), 'utf-8')
         stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
         output = stdout.decode("utf-8")
+        proc.kill()
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))
         success = check_test(output, error, test)
         tests_result["data"].append({
