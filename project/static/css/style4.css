@@ -1127,7 +1127,7 @@ li.error {
 
 .tests-table tbody tr td {
     padding: 10px;
-    vertical-align: middle;
+    vertical-align: top;
     border-bottom: 1px solid #dee2e6;
 }
 

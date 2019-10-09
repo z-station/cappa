@@ -106,7 +106,7 @@ def check_tests(code, content, input, tests):
             stderr=subprocess.PIPE,
             cwd=TMP_DIR,
         )
-        stdin = bytes(test.input, 'utf-8')
+        stdin = bytes(test.input.replace('\r', ''), 'utf-8')
         stdout, stderr = proc.communicate(stdin, timeout=code.timeout)
         output = stdout.decode("utf-8")
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))
