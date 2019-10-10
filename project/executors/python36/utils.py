@@ -53,19 +53,24 @@ def execute_code(code, content, input):
     return output, error
 
 
-def normalize_fract_part(val1, val2, limit=8):
-    parts1 = val1.split('.')
-    if len(parts1) < 2:
-        parts1.append('0')
+def normalize_fract_part(v1, v2):
 
-    parts2 = val2.split('.')
-    if len(parts2) < 2:
-        parts2.append('0')
+    """ Приведение чисел к одному виду (ДЧ - дробная часть)"""
 
-    parts1[1] = parts1[1][:limit]
-    parts2[1] = parts2[1][:limit]
+    vp1 = v1.split('.')
+    vp2 = v2.split('.')
+    # Добавление пустой ДЧ, если ее нет
+    if len(vp1) < 2: vp1.append('0')
+    if len(vp2) < 2: vp2.append('0')
 
-    return '.'.join(parts1), '.'.join(parts2)
+    result1, result2 = float('.'.join(vp1)), float('.'.join(vp2))
+
+    # Если ДЧ вывода программы > ДЧ в тесте
+    # то округляем ДЧ вывода программы до длинны ДЧ в тесте
+    if len(vp1[1]) > len(vp2[1]):
+        fract_part_len = len(vp2[1])
+        result1 = round(result1, fract_part_len)
+    return result1, result2
 
 
 def check_test(output, error, test):
