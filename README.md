@@ -21,5 +21,7 @@ Official website: [cappa.math.csu.ru](http://cappa.math.csu.ru/)  \
 Developer: zakirmalay@gmail.com, [vk](https://vk.com/zakirmalay)  \
 For cooperation: mig19@mail.ru
 
-With the support of the [CSU Math faсulty](http://math.csu.ru)
+### License
+
+With the support of the [CSU Math faсulty](http://math.csu.ru)  \
 Licensed under the MIT [License](LICENSE).
