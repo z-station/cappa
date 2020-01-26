@@ -1,0 +1,20 @@
+{% load i18n %}
+{% if models_info %}
+<ul class="object-tools">
+    {% block object-tools-items %}
+        {% for add_model_info in models_info %}
+        <li>
+        <a href="{{ add_model_info.0 }}" class="addlink"
+           onclick="add_course_item();return false;">Добавить элемент</a>
+        </li>
+        {% endfor %}
+    {% endblock %}
+</ul>
+{% endif %}
+
+<script>
+    function add_course_item(){
+        var win = window.open('/admin/courses/treeitem/add/?_popup=1', '', '');
+        win.focus();
+    }
+</script>

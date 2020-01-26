@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load training_tags %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% show_breadcrumbs object %}
+{% endblock %}
+
+{% block sidebar_title %}{{ course.title }}{% endblock %}
+
+{% block sidebar_control %}
+    <div class="sidebar__control-btn sidebar__control-btn-menu js__sidebar-btn"></div>
+    {{ block.super }}
+{% endblock %}
+
+{% block sidebar_body %}
+    {% if course %}
+        {% show_sidebar course %}
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        window.dispatchEvent(new Event('initSidebar'))
+        window.dispatchEvent(new Event('toggleSidebar'))
+        {% if request.user.is_active and course %}
+            window.userSolutionUrl = '{% url 'training:course-solutions' course=course.slug %}?user_id={{ request.user.id }}'
+            window.dispatchEvent(new Event('getUserSolutions'))
+        {% endif %}
+    </script>
+{% endblock %}

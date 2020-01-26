@@ -1,0 +1,54 @@
+{% extends 'groups/base.html' %}
+
+{% block content %}
+    <div class="one-col groups">
+        <div class="white fp-content">
+            <h1 class="text-center">Учебные группы</h1>
+
+            <form class="search__form">
+                <div class="input-group input-group-sm">
+                    {% csrf_token %}
+                    {{ form.search }}
+                    <input type="submit" value="" title="поиск" />
+                </div>
+            </form>
+            {% if objects %}
+                <div class="groups__table-container">
+                    <table class="groups__table js__tablesorter">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Год</th>
+                                <th>Владелец</th>
+                                <th>Участников</th>
+                                <th>Вступление в группу</th>
+                                {% if request.user.is_active %}<th>Статус</th>{% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for group in objects %}
+                                <tr>
+                                    <td><a href="{% url 'groups:group' group_id=group.id %}" >{{ group.title }}</td>
+                                    <td>{{ group.creation_date.year }}</td>
+                                    <td>{{ group.author }}</td>
+                                    <td>{{ group.members.count }}</td>
+                                    <td>{{ group.get_status }}</td>
+                                    {% if request.user.is_active %}
+                                        <td>{% if request.user in group.members %}Участник{% endif %}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>Ничего не найдено!</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('initTablesorter'))</script>
+{% endblock %}

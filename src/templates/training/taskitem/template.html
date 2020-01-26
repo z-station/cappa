@@ -1,0 +1,99 @@
+{% extends 'training/base.html' %}
+{% load static taskitem_tags %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">
+                <span>{{ object.numbered_title }}</span>
+                {% if solution.progress == 100 %}
+                    <span class="success">Решено</span>
+                {% endif %}
+            </h1>
+            <h3>Условие</h3><br/>
+                {{ object.task.content|safe }}
+            <form method="POST" class="editor-form js__editor-form">
+
+                {% csrf_token %}
+
+                <input class="js__{{ form.lang.name }}" type="hidden" name="lang" value="{{ form.lang.value }}">
+
+                {% show_ace_field form.input %}
+
+                {% show_ace_field form.content %}
+
+                <div class="control__bar taskitem">
+                    <div class="control__bar-col col__1">
+                        {% if request.user.is_active %}
+                            <div class="js__editor-btn js__editor-btn-versions {% if not solution %} not-versions{% endif %}"
+                                 title="История решения"
+                                 onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
+                            ></div>
+                            <div class="js__editor-btn js__editor-btn-version" title="Сохранить версию решения"></div>
+                            <div class="js__editor-btn js__editor-btn-save" title="Быстрое сохранение"></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="control__bar-col col__2">
+                        {% if object.task.tests %}
+                            <div class="js__editor-btn js__editor-btn-tests" title="Протестировать решение"></div>
+                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
+                        {% else %}
+                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="control__bar-col col__3">
+                        <span class="js__msg js__msg-loader-text"></span>
+                        <span class="js__msg js__msg-loader">
+                            <span class="pulse"><span>{</span><span>}</span></span>
+                        </span>
+                        <span class="js__msg js__msg-success"></span>
+                        <span class="js__msg js__msg-warning"></span>
+                        <span class="js__msg js__msg-error"></span>
+                    </div>
+                </div>
+
+                {% show_ace_field form.output %}
+
+                {% show_ace_field form.error %}
+
+            </form>
+        </div>
+        {% if object.task.tests %}
+            <div class="fp-content">
+                <h3>Тесты</h3>
+            </div>
+            <div class="white fp-content">
+                <div class="form__tests-container">
+                    <table class="js__form__tests-table" id="form__tests-table">
+                        <thead>
+                        <tr>
+                            <th class="form__test-counter">№</th>
+                            <th class="form__test-input">Ввод</th>
+                            <th class="form__test-output">Правильный ответ</th>
+                            <th class="js__form__test-result"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for test in object.task.tests %}
+                            <tr class="js__form__test-{{ forloop.counter0 }}">
+                                <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
+                                <td class="form__test-input"><pre>{{ test.input }}</pre></td>
+                                <td class="form__test-output"><pre>{{ test.output }}</pre></td>
+                                <td class="js__form__test-result"><pre></pre></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('taskItemPageLoaded'))</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+#_content-group h3 .inline_label {
+    display: none;
+}
+#_content-group .field-input label,
+#_content-group .field-content label {
+    margin-left: 12px;
+}
+#_content-group .field-text label {
+    display: none;
+}
+#_content-group .field-type label {
+    width: 50px;
+}
+#_content-group .field-input .js__editor .js__editor-content,
+#_content-group .field-content .js__editor .js__editor-content {
+    display: none;
+}
+#_content-group .field-text,
+#_content-group .field-show_input,
+#_content-group .field-input,
+#_content-group .field-content {
+    display: none;
+}
+
+/* ace */
+.js__editor {
+    padding: 15px 10px;
+    background-color:#f5f2f0;
+    font-size: 12px;
+    border: 1px solid #CCC;
+}
+
+.js__editor.ace-error,
+.js__editor.ace-output {
+    display: none;
+}
+
+.js__editor-ace {
+    position: relative;
+    width: 100%;
+    height: auto;
+    font-size:14px;
+    line-height: 1.5;
+    background-color:#f5f2f0;
+}
+
+.editor-form.static .js__editor {
+    background-color: #eaeaea;
+}
+
+.editor-form.maximized .js__editor {
+    border: solid 1px #eeeeee;
+}
+
+.js__editor-content {
+    display:none;
+}

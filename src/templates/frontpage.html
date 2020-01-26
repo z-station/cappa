@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load news_tags %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <div class="one-col">
+        {% get_news as news %}
+        <div class="news">
+            <h2 class="text-center">Новости</h2>
+            {% for new in news %}
+                <div class="one-col white news">
+                    <div class="news__item">
+                        <div class="news__item-img" style="background-image: url('{{ new.image.url }}')"></div>
+                        <div class="news__item-info">
+                            <div class="news__item-date">{{ new.date|date:"d.m.Y" }}</div>
+                            <div class="news__item-title">{{ new.title }}</div>
+                            <div class="news__item-content">{{ new.content|safe }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

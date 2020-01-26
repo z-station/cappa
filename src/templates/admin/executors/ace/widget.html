@@ -1,0 +1,6 @@
+<div class="ace-container">
+    <div id="{{ widget.attrs.id }}" class="ace-editor"></div>
+    <textarea class="ace-editor-content"
+              name="{{ widget.name }}"
+              id="{{ widget.attrs.id }}-content">{{ widget.value|default:"" }}</textarea>
+</div>

@@ -1,0 +1,148 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_list courses_admin %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {{ media.css }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jstree/default/style.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jstree/default/style.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/tablesorter/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/courses/courses.css">
+
+    {% if not actions_on_top and not actions_on_bottom %}
+        <style>
+            #changelist table thead th:first-child {width: inherit}
+        </style>
+    {% endif %}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media.js }}
+    <script src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/vendor/jquery/jquery.js">  </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jquery-ui/jquery-ui.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/underscore.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/backbone.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/jstree/jstree.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/tablesorter/jquery.tablesorter.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/modernizr.localstorage.min.js"></script>
+    <script src="{{ STATIC_URL }}admin/courses/app.js"></script>
+    <script>
+        function dismissAddAnotherPopup(win) {
+            win.close();
+            location.reload();
+        }
+    </script>
+{% endblock %}
+
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_config.verbose_name }}</a>
+&rsaquo; {{ opts.verbose_name_plural|capfirst }}
+</div>
+{% endblock %}
+{% endif %}
+
+{% block messages %}
+    <ul class="messagelist"></ul>
+{% endblock messages %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content_title %}{% if title %}<h1>&nbsp;</h1>{% endif %}{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% block object-tools %}
+            {% add_btns %}
+        {% endblock %}
+        <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
+
+           {% block filters %}{% endblock %}
+
+            <div class="catalog">
+                <div id="overlay"></div>
+                <div id="left-col">
+                    <div id="search_box">
+                        <input type="text" id="tree_search" placeholder="Поиск">
+                    </div>
+                    <div id="catalog-root-btn" class="jstree-default">
+                        <i class="jstree-icon jstree-themeicon" role="presentation"></i>
+                        {{ root_title }}
+                    </div>
+                    <div id="tree_container"></div>
+                </div>
+                <div id="right-col">
+                    <div id="list_items_container"></div>
+                </div>
+            </div>
+            <script type="text/template" id="table_items_tpl">
+                <table class="tablesorter" id="list_table"  >
+                    <thead>
+                        <tr>
+                            <% _.each(fields, function(field){ %>
+                                <th><%= field[1] %></th>
+                            <% }); %>
+                            <th data-sorter="false"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </script>
+            <script type="text/template" id="item_tpl">
+                <td>
+                    <% var html = templateHelper('field_tpl', {field: field}) %>
+                    <%= html %>
+                </td>
+            </script>
+            <script type="text/template" id="action_tpl">
+                <td class="action">
+                <% if(edit){ %>
+                <button class="save" disabled>{% trans 'Save' %}</button>
+                <% } %>
+                <button class="change">{% trans 'Change' %}</button>
+                </td>
+            </script>
+            <script type="text/template" id="field_tpl">
+                <% if(field.type == 'checkbox'){
+                      if(field.value == 't') { %>
+                          <img src="{% static 'admin/img/icon-yes.svg' %}" alt="<%= field.value %>">
+                      <% } else { %>
+                          <img src="{% static 'admin/img/icon-no.svg' %}" alt="<%= field.value %>">
+                      <% } %>
+                <% } else if (field.type == 'select'){ %>
+                    <%= field.correct_values[field.value] %>
+                <% } else { %>
+                   <%= field.value %>
+                <% } %>
+            </script>
+            <script type="text/template" id="edit_tpl">
+                <% if(type == 'checkbox'){ %>
+                    <input <% if(value == 't'){ %>checked="checked"<% } %> type="checkbox" >
+                <% } else if (type == 'select'){ %>
+                    <select>
+                        <% _.each(correct_values, function(val, key){ %>
+                            <option <% if(key == value){ %>selected <% } %> value="<%= key %>"><%= val %></option>
+                        <% }); %>
+                    </select>
+                <% } else { %>
+                    <input type="text">
+                <% } %>
+                <div class="accept">OK</div>
+                <div class="cancel">{% trans 'Cancel' %}</div>
+            </script>
+        </div>
+    </div>
+{% endblock %}
