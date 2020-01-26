@@ -18,6 +18,5 @@ develop-eggs/*
 parts/*
 commit.txt
 venv/
-tmp/*
-settings.py
 media/*
+cappa/settings/local.py

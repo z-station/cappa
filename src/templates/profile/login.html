@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="center-col">
+        <h1 class="text-center">Вход</h1>
+        <form class="login__form white {% if form.errors %}error{% endif %}" method="POST">
+            {% csrf_token %}
+            {{ form.next }}
+            {{ form.login }}
+            {{ form.password }}
+            <small class="msg">{{ form.non_field_errors.0 }}</small>
+            <input type="submit" class="btn btn-primary" value="Войти">
+            <a class="signup__link" href="{% url 'profile:signup' %}">Регистрация</a>
+        </form>
+    </div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

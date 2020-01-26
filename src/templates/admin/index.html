@@ -1,0 +1,101 @@
+{% extends "admin/index.html" %}
+{% load i18n static base_tags %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/dashboard.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/common.css' %}" />
+{% endblock %}
+
+
+{# убрал ссылку с caption #}
+{% block content %}
+<div id="content-main">
+
+{% if app_list %}
+    {% for app in app_list %}
+        <div class="app-{{ app.app_label }} module">
+        <table>
+        <caption>
+            <div class="section">{{ app.name }}</div>
+        </caption>
+        {% for model in app.models %}
+            <tr class="model-{{ model.object_name|lower }}">
+            {% if model.admin_url %}
+                <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+            {% else %}
+                <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+            {% if model.add_url %}
+                <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{# Вывод расширенного блока последних действий #}
+
+<div id="content-related" class="sidebar">
+    {% get_admin_sidebar_models as sidebar_models %}
+    {% if sidebar_models %}
+        <div class="module">
+            <table class="sidebar__table">
+                <caption>
+                    <span class="section" title="">Настройки</span>
+                </caption>
+                <tbody>
+                    {% for model in sidebar_models %}
+                    <tr>
+                        <td scope="row"><a href="{{ model.url }}">{{ model.title }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+{% if app_list or sidebar_models %}
+
+    <div class="module" id="recent-actions-module">
+        <div class="sidebar__caption">Последние действия на сайте</div>
+        {% load log %}
+        {% get_admin_log 10 as admin_log %}
+        {% if not admin_log %}
+             <p>{% trans 'None available' %}</p>
+        {% else %}
+            <ul class="actionlist">
+            {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                    {{ entry.object_repr|truncatechars:20 }}
+                {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr|truncatechars:20 }}</a>
+                {% endif %}
+                {% if entry.content_type %}
+                    {# Add the author here, at the end #}
+                    <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                {% else %}
+                    <span class="mini quiet">неизвестный контент</span>
+                {% endif %}
+                <br>
+                <span class="mini quiet"> {{ entry.user }} {{ entry.action_time|date:"d.m.y" }} ({{ entry.action_time|date:"H:i:s" }})</span>
+            </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

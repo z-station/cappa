@@ -1,0 +1,16 @@
+{% extends 'training/base.html' %}
+{% load topic_tags %}
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.numbered_title }}</h1>
+            {% show_content object %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('topicPageLoaded'))</script>
+{% endblock %}

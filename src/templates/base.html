@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CAPPA{% endblock %}</title>
+    {% block css %}
+        <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery.tablesorter.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style11.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header__menu">
+            <nav class="header__menu-nav container">
+                <div class="header__menu-col-1">
+                    <a class="menu__item-home" href="/">CAPPA</a>
+                    <span class="menu__item-desc">комплекс автоматической проверки программ</span>
+                </div>
+                <div class="header__menu-col-2">
+                    <a class="menu__item" href="{% url 'training:course' course='python' %}">Python</a>
+                    <a class="menu__item" href="{% url 'training:courses' %}">Все курсы</a>
+                    <a class="menu__item" href="{% url 'groups:groups' %}">Учебные группы</a>
+                </div>
+                <div class="header__menu-col-3">
+                    <div class="profile__bar">
+                        {% if request.user.is_active %}
+                            {% if request.user.is_staff %}
+                                <a class="profile__bar-username-icon" target="_blank" href="/admin/"></a>
+                                <a class="profile__bar-username" target="_blank" href="/admin/">{{ request.user.get_full_name }}</a>
+                            {% else %}
+                                <span class="profile__bar-username-icon"></span>
+                                <span class="profile__bar-username">{{ request.user.get_full_name }}</span>
+                            {% endif %}
+
+                        {% endif %}
+                        {% if request.user.is_active %}
+                            <a class="profile__bar-logout-icon" title="Выйти" href="{% url 'profile:logout' %}"></a>
+                        {% else %}
+                            <a class="profile__bar-login" href="{% url 'profile:login' %}">Войти</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <main>
+        {% block main %}
+            <div class="container">
+                <div class="row breadcrumbs">
+                    {% block breadcrumbs %}
+                        <a class="breadcrumbs__item-home" href='/'></a>
+                    {% endblock %}
+                </div>
+                <div class="row content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            {% block sidebar %}
+            <div class="sidebar js__sidebar">
+                <div class="sidebar__control">
+                    {% block sidebar_control %}
+                        <a href="{% url 'groups:groups' %}" class="sidebar__control-btn sidebar__control-btn-groups" title="Учебные группы"></a>
+                        <a href="{% url 'training:course' course='python' %}" class="sidebar__control-btn sidebar__control-btn-python" title="Учебный курс Python"></a>
+                    {% endblock %}
+                </div>
+                <div class="sidebar__control-background"></div>
+                <div class="sidebar__body">
+                    <div class="sidebar__body-title">
+                        {% block sidebar_title %}{% endblock %}
+                    </div>
+                    {% block sidebar_body %}{% endblock %}
+                </div>
+            </div>
+            {% endblock %}
+        {% endblock %}
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row footer-nav">
+                <div class="">
+                   © CSU Math {% now 'Y' %}
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+{% block js %}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/training/main.js' %}"></script>
+    <script src="{% static 'js/training/taskitem11.js' %}"></script>
+    <script src="{% static 'js/training/topic.js' %}"></script>
+    <script src="{% static 'js/training/solution.js' %}"></script>
+    <script src="{% static 'js/groups/group_course.js' %}"></script>
+{% endblock %}
+
+</body>
+</html>

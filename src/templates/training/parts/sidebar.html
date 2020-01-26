@@ -1,0 +1,38 @@
+<div id="js__{{ data.id }}">
+    {% for topic in data.topics %}
+    <div class="topic__item js__topic-item">
+        <div id="js__{{ topic.id }}-heading" class="topic__item-heading">
+            {% if topic.taskitems %}
+                <div class="topic__item-toggler collapsed"
+                     id="{{ topic.id }}"
+                     data-toggle="collapse"
+                     data-target="#js__{{ topic.id }}-collapse"
+                     aria-expanded="false"
+                     aria-controls="js__{{ topic.id }}-collapse">
+                </div>
+            {% endif %}
+            {% if request.path == topic.url %}
+                <span class="topic__item-title current js__current">{{ topic.number }} {{ topic.title }}</span>
+            {% else %}
+                <a class="topic__item-title js__topic-item-title" href="{{ topic.url }}">{{ topic.number }} {{ topic.title }}</a>
+            {% endif %}
+        </div>
+        {% if topic.taskitems %}
+        <ul id="js__{{ topic.id }}-collapse"
+            class="collapse"
+            aria-labelledby="js__{{ topic.id }}-heading"
+            data-parent="#js__{{ data.id }}">
+            {% for taskitem in topic.taskitems %}
+            <li id="js__{{ taskitem.id }}" class="js__taskitem-item" >
+                {% if request.path == taskitem.url %}
+                    <span class="current js__current">{{ taskitem.number }} {{ taskitem.title }}</span>
+                {% else %}
+                    <a href="{{ taskitem.url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>

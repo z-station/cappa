@@ -1,0 +1,39 @@
+{% extends 'training/base.html' %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.title }}</h1>
+            {% if object.content %}
+                <div class ="text">{{ object.content|safe }}</div>
+            {% endif %}
+            <div class="topic__list">
+                {% for topic in object.get_cache_data.topics %}
+                    <div class="topic__item">
+                        <a class="topic__item-title h3" href="{{ topic.url }}">{{ topic.number }} {{ topic.title }}</a>
+                        {% if topic.taskitems %}
+                        <ul>
+                            {% for taskitem in topic.taskitems %}
+                                <li id="js__{{ taskitem.id }}">
+                                     <a href="{{ taskitem.url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if object.content_bottom %}
+            <div class ="white fp-content text">{{ object.content_bottom|safe }}</div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block sidebar_control %}
+    <a href="{% url 'groups:groups' %}" class="sidebar__control-btn sidebar__control-btn-groups"></a>
+    <a href="{% url 'training:course' course='python' %}" class="sidebar__control-btn sidebar__control-btn-python"></a>
+{% endblock %}
+

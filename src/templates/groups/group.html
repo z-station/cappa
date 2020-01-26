@@ -1,0 +1,91 @@
+{% extends 'groups/base.html' %}
+
+{% block content %}
+    <div class="one-col group fp-content">
+        <div class="group__col white">
+            <h1 class="text-center">{{ object.title }}</h1>
+
+            {% if object.content %}
+                <div class="text">{{ object.content|safe }}</div>
+            {% endif %}
+
+            <table class="group__info">
+                <tr><td>Год:</td><td>{{ object.creation_date.year }}</td></tr>
+                <tr><td>Владелец:</td><td>{{ object.author }}</td></tr>
+                {% if user_is_member %}
+                    <tr><td>Статус:</td><td>Участник</td></tr>
+                {% endif %}
+            </table>
+
+            {% if form %}
+                {% if object.status == '0' %}
+                    <p>Группа открыта для участия</p>
+                    <form class="group__invite-form" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-primary" value="Стать участником" />
+                    </form>
+                {% elif object.status == '1' %}
+                    <p>Закрытая группа</p>
+                {% elif object.status == '2' %}
+                    <p>Для участия в группе введите кодовое слово</p>
+                    <form class="group__invite-form" method="POST">
+                        {% csrf_token %}
+                        <div class="form__col{% if form.errors %} error{% endif %}">
+                            {{ form.code }}
+                            <small class="field__msg">{{ form.errors.code.0 }}</small>
+                        </div>
+                        <input type="submit" class="btn btn-primary form__col" value="Отправить" />
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            {% if object.group_courses.all %}
+            <h3>Учебная программа</h3>
+            <table class="group__info">
+                {% for group_course in object.group_courses.all %}
+                    <tr>
+                        <td>Курс:</td>
+                        <td>
+                            <a href="{{ group_course.course.get_absolute_url }}">{{ group_course.course }}</a>
+                            {% if request.user == object.author or request.user in object.members %}
+                               <a href="{% url 'groups:group-course' object.id group_course.id %}">[таблица результатов]</a></td>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+
+        </div>
+        <div class="group__col white">
+            <h3 class="text-center">Список участников</h3>
+            {% if object.members %}
+                <div class="group__table-container">
+                    <table class="group__table js__tablesorter">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Фамилия</th>
+                                <th>Имя</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in object.members %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ member.last_name }}</td>
+                                    <td>{{ member.first_name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('initTablesorter'))</script>
+{% endblock %}

@@ -1,6 +1,0 @@
-{% extends "base.html" %}
-{% load mptt_tags courses_tags %}
-
-{% block title %}{{ object.tree_name|default:object.title }}{% endblock %}
-{% block content_title %}{{ object.tree_name|default:object.title  }}{% endblock %}
-
