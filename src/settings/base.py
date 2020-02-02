@@ -15,7 +15,11 @@ USE_TZ = True
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 SRC_DIR = os.path.join(PROJECT_ROOT, 'src')
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-TMP_DIR = os.path.join(MEDIA_ROOT, "tmp")
+TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
+
+access_mode = 0o700
+os.makedirs(TMP_DIR, access_mode, exist_ok=True)
+os.makedirs(MEDIA_ROOT, access_mode, exist_ok=True)
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'

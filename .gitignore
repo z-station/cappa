@@ -19,5 +19,6 @@ parts/*
 commit.txt
 venv/
 media/*
+tmp/*
 src/settings/local.py
 src/settings/prod.py
