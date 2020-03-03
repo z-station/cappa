@@ -1,27 +1,19 @@
 # Cappa
-Starting to learn programming is now easier.
-### Features for teachers
-- Creating and managing training courses;
-- Create study groups and invite users;
-- Create test tasks and collect statistics in a convenient format.
+Сервис для управления процессом обучения программированию.
+### Возможности для преподавателей
+- создание собственной библиотеки учебных программ и заданий;
+- работа с группами студентов, быстрый сбор статистики по прогрессу решения заданий.
+- автоматизированный процесс проверки заданий;
 
-### Features for students
-- Nothing more, register and study now;
-- Сonvenient and simple interface, independence from the platform;
-- No problems with installing programs;
-- Compare stats with other members.
+### Для разработчиков
+Если вы хотите принять участие в развитии проекта или у вас есть интересные идеи то свяжитесь со мной [здесь](https://vk.com/zakirmalay)
+Так же смотрите [инструкцию](docs/installation.md) по развертке среды разработчика.
 
-### For developers
-If you want to participate in the development of the project, contact [me](https://vk.com/zakirmalay) and together we will make the application better!
-See [installation guide](docs/installation.md) for quick start.
+### Контакты
+Официальный сайт: [cappa.math.csu.ru](http://cappa.math.csu.ru/)  \
+Старший разработчик: zakirmalay@gmail.com, [vk](https://vk.com/zakirmalay)  \
+По вопросам сотрудничества: mig19@mail.ru
 
-### Contacts
-
-Official website: [cappa.math.csu.ru](http://cappa.math.csu.ru/)  \
-Developer: zakirmalay@gmail.com, [vk](https://vk.com/zakirmalay)  \
-For cooperation: mig19@mail.ru
-
-### License
-
-With the support of the [CSU Math faсulty](http://math.csu.ru)  \
-Licensed under the MIT [License](LICENSE).
+### Лицензия
+При поддержке [Математического факультета ЧелГУ](http://math.csu.ru)  \
+Распространяется под лицензией [MIT](LICENSE).
