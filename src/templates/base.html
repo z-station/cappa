@@ -1,10 +1,10 @@
-{% load static %}
+{% load static menu_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CAPPA{% endblock %}</title>
+    <title>{% block title %}{% if site.logo_title %}{{ site.logo_title }}{% endif %}{% endblock %}</title>
     {% block css %}
         <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
         <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
@@ -22,13 +22,11 @@
         <div class="header__menu">
             <nav class="header__menu-nav container">
                 <div class="header__menu-col-1">
-                    <a class="menu__item-home" href="/">CAPPA</a>
-                    <span class="menu__item-desc">комплекс автоматической проверки программ</span>
+                    {% if site.logo_title %}<a class="menu__item-home" href="/">{{ site.logo_title }}</a>{% endif %}
+                    {% if site.logo_desc %}<span class="menu__item-desc">{{ site.logo_desc }}</span>{% endif %}
                 </div>
                 <div class="header__menu-col-2">
-                    <a class="menu__item" href="{% url 'training:course' course='python' %}">Python</a>
-                    <a class="menu__item" href="{% url 'training:courses' %}">Все курсы</a>
-                    <a class="menu__item" href="{% url 'groups:groups' %}">Учебные группы</a>
+                    {% show_menu 'top' %}
                 </div>
                 <div class="header__menu-col-3">
                     <div class="profile__bar">
@@ -67,8 +65,7 @@
             <div class="sidebar js__sidebar">
                 <div class="sidebar__control">
                     {% block sidebar_control %}
-                        <a href="{% url 'groups:groups' %}" class="sidebar__control-btn sidebar__control-btn-groups" title="Учебные группы"></a>
-                        <a href="{% url 'training:course' course='python' %}" class="sidebar__control-btn sidebar__control-btn-python" title="Учебный курс Python"></a>
+                        {% show_menu 'sidebar' %}
                     {% endblock %}
                 </div>
                 <div class="sidebar__control-background"></div>
@@ -87,9 +84,11 @@
     <footer>
         <div class="container">
             <div class="row footer-nav">
-                <div class="">
-                   © CSU Math 2016-{% now 'Y' %}
-                </div>
+                <span>{% if site.copyright %}© {{ site.copyright }}-{% now 'Y' %}{% endif %}</span>
+                <a href="//github.com/z-station/cappa" target="_blank" class="footer-powered">
+                    <div class="first">powered by</div>
+                    <div class="second">z-station</div>
+                </a>
             </div>
         </div>
     </footer>

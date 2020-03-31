@@ -54,6 +54,10 @@ var taskItemPage = function(e){
                btn.classList.add('disabled')
            })
         },
+        disableBtn: function(btnName){
+           var btn = form.querySelector(`.js__editor-btn.js__editor-btn-${btnName}`);
+           btn && btn.classList.add('disabled');
+        },
         enableBtns: function(){
            form.querySelectorAll('.js__editor-btn').forEach(function(btn){
            btn.classList.remove('disabled')
@@ -70,22 +74,17 @@ var taskItemPage = function(e){
             form.querySelector('.js__msg-loader-text').style.display = 'block'
         },
         showMsg(response){
-            formControl.hideMsg()
-            switch(response.status){
-                case 200:
-                    form.querySelector('.js__msg-success').innerHTML = response.msg
-                    form.querySelector('.js__msg-success').style.display = 'block'
-                    break
-                case 201:
-                    form.querySelector('.js__msg-warning').innerHTML = response.msg
-                    form.querySelector('.js__msg-warning').style.display = 'block'
-                    break
-                case 202:
-                case 203:
-                case 204:
-                    form.querySelector('.js__msg-error').innerHTML = response.msg
-                    form.querySelector('.js__msg-error').style.display = 'block'
-                    break
+            formControl.hideMsg();
+            var status = response.status;
+            if(status >= 200 && status < 300){
+                form.querySelector('.js__msg-success').innerHTML = response.msg
+                form.querySelector('.js__msg-success').style.display = 'block'
+            } else if(status >= 300 && status < 400){
+                form.querySelector('.js__msg-warning').innerHTML = response.msg
+                form.querySelector('.js__msg-warning').style.display = 'block'
+            } else if (status >= 400 && status < 500){
+                form.querySelector('.js__msg-error').innerHTML = response.msg
+                form.querySelector('.js__msg-error').style.display = 'block'
             }
             setTimeout(function(){ formControl.hideMsg() }, 10000);
         },
@@ -129,9 +128,8 @@ var taskItemPage = function(e){
         tests : function(e){
             formControl.showLoader('Тестирование')
             formControl.disableBtns()
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='tests'), function(response){
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='check_tests'), function(response){
                 formControl.showMsg(response)
-                formControl.enableVersionsBtn()
                 table = document.querySelector('.js__form__tests-table')
                 if(response.tests_result){
                     table.querySelector('th.js__form__test-result').innerHTML = 'Вывод программы'
@@ -177,19 +175,29 @@ var taskItemPage = function(e){
         },
         save: function(e){
             formControl.showLoader('Сохранение');
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_solution'), function(response){
                 formControl.showMsg(response)
                 formControl.enableVersionsBtn()
             })
             return false
         },
         autosave: function(e){
-            formControl.showLoader('Сохранение')
+            formControl.showLoader('Автосохранение')
             $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
                 formControl.showMsg(response)
-                formControl.enableVersionsBtn()
             })
             return false
+        },
+        ready: function(e){
+            if(confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')){
+                formControl.showLoader('Отправляем на проверку');
+                $.post(form.getAttribute('action'), formControl.serializeForm(operation='ready_solution'), function(response){
+                    formControl.showMsg(response)
+                    formControl.disableBtn('save');
+                    formControl.disableBtn('ready');
+                    formControl.enableVersionsBtn()
+                })
+            }
         }
     }
 
@@ -216,6 +224,9 @@ var taskItemPage = function(e){
 
     var saveBtn = form.querySelector('.js__editor-btn-save')
     saveBtn && saveBtn.addEventListener('click', formControl.save)
+
+    var readyBtn = form.querySelector('.js__editor-btn-ready')
+    readyBtn && readyBtn.addEventListener('click', formControl.ready)
 }
 
 window.addEventListener('taskItemPageLoaded', taskItemPage)

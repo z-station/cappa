@@ -1,0 +1,74 @@
+{% load training_tags %}
+{% if form %}
+<form method="POST" class="solution__form {% if form.non_field_errors %}error{% endif %}">{% csrf_token %}
+{% endif %}
+    <table class="solution-info">
+        <tr>
+            <td>Задача:</td>
+            <td>{{ object.taskitem.numbered_title }}</td>
+        </tr>
+        <tr>
+            <td>Пользователь:</td>
+            <td>{{ object.user.get_full_name|default:object.user.username }}</td>
+        </tr>
+        <tr>
+            <td>Язык:</td>
+            <td>{{ object.taskitem.lang }}</td>
+        </tr>
+        <tr>
+            <td>Дата отправки:</td>
+            <td>{{ object.version_best.datetime|date_format }}</td>
+        </tr>
+        {% if object.taskitem.task.tests %}
+            <tr>
+                <td>Баллы по тестам:</td>
+                <td>{{ object.tests_score|cut_zero|default:"-" }} / {{ object.taskitem.max_score|cut_zero }}</td>
+            </tr>
+        {% endif %}
+        {% if form %}
+            <tr class="form-tr">
+                <td>{{ form.manual_status.label_tag }}</td>
+                <td>{{ form.manual_status }}</td>
+            </tr>
+            <tr class="form-tr">
+                <td>{{ form.manual_score.label_tag }}</td>
+                <td>{{ form.manual_score }}</td>
+            </tr>
+            {% for error in form.non_field_errors %}
+                <tr class="form-tr">
+                    <td colspan="2">
+                        <small class="solution__form-msg">{{ error }}</small>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="2">Оценку выставляет преподаватель</td>
+            </tr>
+            {% if object.manual_status != '3' %}
+                <tr>
+                    <td>Статус:</td>
+                    <td> {{ object.manual_status_name|default:"-" }}</td>
+                </tr>
+            {% else %}
+                <tr class="status__{{ object.status }}" >
+                    <td>Оценка:</td>
+                    <td>{{ object.score|cut_zero }} / {{ object.taskitem.max_score|cut_zero }}</td>
+                </tr>
+            {% endif %}
+            {% if object.comment %}
+                <tr><td colspan="2">Комментарий преподавателя</td></tr>
+                <tr><td colspan="2">{{ object.comment|safe }}</td></tr>
+            {% endif %}
+        {% endif %}
+    </table>
+
+    {% if form %}
+    <div>
+        {{ form.comment.label_tag }}
+        {{ form.comment }}
+        <input type="submit" class="btn btn-primary" value="Сохранить" />
+    </div>
+</form>
+{% endif %}
+

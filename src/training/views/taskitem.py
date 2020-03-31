@@ -2,13 +2,12 @@
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from src.training.models import TaskItem, Solution, Course
-from src.training.forms import TaskItemForm
-from src.groups.models import GroupCourse
+from src.training.forms import TaskItemForm, SolutionForm
 
 
 UserModel = get_user_model()
@@ -27,7 +26,7 @@ class TaskItemView(View):
     def get(self, request, *args, **kwargs):
         taskitem = self.get_object(request,  *args, **kwargs)
         solution = None
-        form_initial = {'lang': taskitem.lang.provider}
+        form_initial = {'lang': taskitem.lang.provider_name}
         if request.user.is_active:
             solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first()
             if solution:
@@ -51,53 +50,108 @@ class TaskItemView(View):
         return JsonResponse(response.__dict__)
 
 
+@method_decorator(login_required, name='dispatch')
 class SolutionView(View):
 
-    def get_object(self, request, *args, **kwargs):
+    PERM_DENIED = 0
+    VIEW_PERM = 1
+    CHANGE_PERM = 2
 
-        try:
-            user_id = request.GET.get('user')
-            if user_id and int(user_id) == request.user.id:
-                # Запрос решения участника сделан самим участником группы
-                return Solution.objects.get(
-                    taskitem__slug=kwargs['taskitem'],
-                    taskitem__topic__slug=kwargs['topic'],
-                    taskitem__topic__course__slug=kwargs['course'],
-                    user_id=user_id
-                )
-            elif user_id:
-                # Запрос решения участника сделан владельцем группы
-                user = UserModel.objects.get(id=user_id)
-                group = user.member.filter(group__author=request.user).first().group
-                group_course = GroupCourse.objects.filter(course__slug=kwargs['course'], group=group)
-                if group_course.exists():
-                    return Solution.objects.get(
-                        taskitem__slug=kwargs['taskitem'],
-                        taskitem__topic__slug=kwargs['topic'],
-                        taskitem__topic__course__slug=kwargs['course'],
-                        user=user
-                    )
-                else:
-                    raise Http404
-            else:
-                # Запрос собственного решения
-                return Solution.objects.get(
-                    taskitem__slug=kwargs['taskitem'],
-                    taskitem__topic__slug=kwargs['topic'],
-                    taskitem__topic__course__slug=kwargs['course'],
-                    user_id=request.user.id
-                )
+    def get_solution_user_id(self, request) -> int:
 
-        except (ObjectDoesNotExist, ValueError, AttributeError):
+        """ Возвращает id пользователя, чье решение запрашивается
+
+        Возможно 3 варианта:
+            - в get-параметра 'user' указан id целевого пользователя
+            - get-параметр не указан, тогда возвращает id текущего пользователя
+            - get-параметр не целое число, тога возбуждаем 404 ошибку
+        """
+
+        target_user_id = request.GET.get('user')
+        if target_user_id is None:
+            solution_user_id = int(request.user.id)
+        elif target_user_id.isdigit():
+            solution_user_id = int(target_user_id)
+        else:
             raise Http404
+        return solution_user_id
+
+    def get_user_perm(self, request, solution_user_id: int) -> int:
+
+        """
+        Возвращает права пользователя на запрашиваемое решение:
+
+            Доступ к просмотру решения имеют 3 группы пользователей:
+            1. Суперпользователь
+            2. Автор решения
+            3. Автор группы (учитель) в которой состоит пользователь (ученик)
+
+            Доступ к редактированию решения имеют 2 группы пользователей:
+            1. Суперпользователь
+            2. Автор группы (учитель) в которой состоит пользователь (ученик)
+
+        """
+        if request.user.is_superuser:
+            perm = self.CHANGE_PERM
+        else:
+            solution_user = UserModel.objects.filter(id=solution_user_id).first()
+            if solution_user.member.filter(group__author=request.user).exists():  # преподаватель в группе ученика
+                perm = self.CHANGE_PERM
+            elif solution_user_id == request.user.id:  # просмотр собственного решения
+                perm = self.VIEW_PERM
+            else:
+                perm = self.PERM_DENIED
+        return perm
+
+    def get_object(self, user_id, **kwargs) -> Solution:
+        try:
+            solution = Solution.objects.get(
+                taskitem__slug=kwargs['taskitem'],
+                taskitem__topic__slug=kwargs['topic'],
+                taskitem__topic__course__slug=kwargs['course'],
+                user_id=user_id
+            )
+        except ObjectDoesNotExist:
+            raise Http404
+        else:
+            return solution
 
     def get(self, request, *args, **kwargs):
-        solution = self.get_object(request, *args, **kwargs)
+        solution_user_id = self.get_solution_user_id(request)
+        solution = self.get_object(user_id=solution_user_id, **kwargs)
+        request_user_perm = self.get_user_perm(request, solution_user_id)
+        form = None
+        if request_user_perm == self.CHANGE_PERM and solution.taskitem.manual_check:
+            form = SolutionForm(instance=solution)
+        elif request_user_perm == self.PERM_DENIED:
+            raise Http404
+
         return render(
             request,
-            template_name='training/solution.html',
+            template_name='training/solution/template.html',
             context={
                 'object': solution,
+                'form': form,
+                'course': solution.taskitem.topic.course
+            }
+        )
+
+    def post(self, request, *args, **kwargs):
+        solution_user_id = self.get_solution_user_id(request)
+        solution = self.get_object(user_id=solution_user_id, **kwargs)
+        request_user_perm = self.get_user_perm(request, solution_user_id)
+        if request_user_perm == self.CHANGE_PERM and solution.taskitem.manual_check:
+            form = SolutionForm(instance=solution, data=request.POST)
+            if form.is_valid():
+                solution = form.save()
+        else:
+            raise Http404
+        return render(
+            request,
+            template_name='training/solution/template.html',
+            context={
+                'object': solution,
+                'form': form,
                 'course': solution.taskitem.topic.course
             }
         )

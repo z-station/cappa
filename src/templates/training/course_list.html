@@ -1,5 +1,5 @@
 {% extends 'training/base.html' %}
-
+{% load menu_tags %}
 
 {% block content %}
     <div class="one-col">
@@ -23,6 +23,5 @@
 {% endblock %}
 
 {% block sidebar_control %}
-    <a href="{% url 'groups:groups' %}" class="sidebar__control-btn sidebar__control-btn-groups" title="Учебные группы"></a>
-    <a href="{% url 'training:course' course='python' %}" class="sidebar__control-btn sidebar__control-btn-python" title="Учебный курс Python"></a>
+    {% show_menu 'sidebar' %}
 {% endblock %}

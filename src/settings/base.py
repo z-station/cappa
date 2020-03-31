@@ -14,6 +14,7 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 SRC_DIR = os.path.join(PROJECT_ROOT, 'src')
+TESTS_DIR = os.path.join(PROJECT_ROOT, 'tests')
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
 
@@ -54,6 +55,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'src.service.context_processors.site_settings'
              ],
          }
     },
@@ -77,6 +79,7 @@ INSTALLED_APPS = [
     'src.training',
     'src.langs',
     'src.groups',
+    'src.service'
 ]
 
 MIDDLEWARE = [
@@ -90,9 +93,13 @@ MIDDLEWARE = [
 ]
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "cappa",
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "HOST": "localhost",
+        'PORT': '5432',
+        "NAME": "cappa",
+        "USER": "cappa",
+        "PASSWORD": "cappa",
     }
 }
 
@@ -133,6 +140,6 @@ ADMIN_REORDER = (
     },
     {
         'app': 'news', 'label': u'Контент',
-        'models': ('news.News',)
+        'models': ('news.News', 'service.Menu')
     },
 )

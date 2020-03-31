@@ -1,0 +1,11 @@
+.json-editor__editor table {
+    width: 100%;
+}
+
+.json-editor__editor textarea {
+    height: 150px !important;
+}
+
+.json-editor__content {
+    display: none;
+}

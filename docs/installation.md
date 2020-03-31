@@ -7,7 +7,7 @@
 - pycharm
 - git
 
-Допустимо использовать любую популярную OC (Windows, Mac, Linux)
+Допустимо использовать Windows, Mac, Linux/Unix операционные системы.
 Установка на примере Linux Ubuntu 18.04 LTS:
 ```bash
 # python уже будет предустановлен
@@ -52,16 +52,17 @@ pipenv shell
 5. Запустить локальный сервер на тестовой базе данных.
 
 - Находясь в корне проекта выполнить команду:
-``python manage.py runserver``. После этого сайт должен запустится на локальном сервере. Открыть в браузере адрес ``http://localhost:8000/``
+``python manage.py runserver``. После этого сайт должен запустится на локальном сервере.
+ - Открыть в браузере адрес ``http://localhost:8000/``
 
-- Для входа в административный интерфейс перейдите по адресу ``http://localhost:8000/admin/``, логин / пароль суперпользователя: admin / 1
-
+- Для входа в административный интерфейс перейдите по адресу ``http://localhost:8000/admin/``
+- Данные для входа: логин: user, пароль: user
 
 6. Подключение базы данных postgresql
 
 Тестовая база данных sqlite3 не может обеспечить требуемый функционал, потому подходит только для ознакомления с проектом.
 
-- установить последний postgresql;
+- установить postgresql >= 9.6;
 
 Установка на примере Linux Ubuntu 18.04 LTS:
 ```bash
@@ -82,24 +83,37 @@ sudo systemctl restart postgresql
 
 ```
 
-- удалить из ``cappa/src/settings/local.py`` настройки тестовой базы данных:
+- удалить из ``cappa/src/settings/local.py`` настройку тестовой базы данных: DATABASES (добавленную в пункте 3)
 
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': "test_db",
-    }
-}
+- создать базу данных в postgresql с именем, пользователем и паролем: "cappa", например через консоль, командами:
+```bash
+createdb --owner cappa cappa
+su postgresql
+psql
+create role "cappa" WITH NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN NOREPLICATION PASSWORD 'cappa';
+GRANT ALL PRIVILEGES ON DATABASE cappa TO cappa;
 ```
-- создать postgresql базу данных с именем "cappa";
-- применить файлы миграций, создать суперпользователя и запустить локальный сервер командами:
+
+Далее можно запустить сайт на "чистой" базе, либо воспользоваться дампом с начальными данными:
+
+Загрузить дамп можно через команду в консоли:
+```bash
+psql -U cappa -h localhost cappa < tests/pg.dump 
+```
+Дамп содержит учетную запись суперпользователя: логин: user, пароль: user
+
+Для иницализации "чистой" базы применить файлы миграций:
 ```bash 
 python manage.py migrate
+```
+
+- Запустить локальный сервер, если нужно создать учетную запись суперпользователя
+```bash 
 python manage.py createsuperuser
 python manage.py runserver
-```
-- Открыть в браузере адрес ``http://localhost:8000/``
+``` 
+
+Открыть в браузере адрес ``http://localhost:8000/``
 
 #### Процесс работы
 - Все доработки делать в новой git-ветке (например с именем: feature/php);

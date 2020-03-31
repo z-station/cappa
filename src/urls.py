@@ -4,7 +4,6 @@ from django.conf import settings
 from django.views.static import serve
 from django.contrib import admin
 
-admin.site.site_header = 'CAPPA'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -23,3 +22,8 @@ urlpatterns = [
 #     ] + urlpatterns
 #
 
+try:
+    from src.service.models import SiteSettings
+    admin.site.site_header = SiteSettings.objects.get(id=settings.SITE_ID).name
+except:
+    pass

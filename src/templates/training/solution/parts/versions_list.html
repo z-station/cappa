@@ -1,0 +1,15 @@
+{% load training_tags %}
+{% for version in object.version_list reversed %}
+    <div class="white fp-content solution__version">
+        <div class="solution__version-header">
+            <span class="text-small" title="Дата и время создания">{{ version.datetime|date_format }}</span>
+            {% if version.tests_score %}
+                <span class="text-small" title="Баллы на основании тестов">{{ version.tests_score|cut_zero }} / {{ object.taskitem.max_score }}</span>
+            {% endif %}
+        </div>
+        <div class="js__editor" data-lang="{{ object.taskitem.lang.provider_name }}">
+            <div class="js__editor-ace">{{ version.content }}</div>
+        </div>
+
+    </div>
+{% endfor %}

@@ -15,12 +15,17 @@ class ProfileAppConfig(AppConfig):
             from src.training.models import Solution
             data = {}
             for solution in Solution.objects.select_related('taskitem').filter(user=self, taskitem__topic__course=course):
-                data['taskitem__%d' % solution.taskitem.id] = {
+                solution_data = {
                     'status': solution.status,
-                    'progress': solution.progress,
+                    'score': solution.score,
                     'datetime': solution.version_best['datetime'] if solution.version_best else '',
-                    'url': '%s?user=%d' % (solution.get_absolute_url(), self.id)
+                    'url': '%s?user=%d' % (solution.get_absolute_url(), self.id),
                 }
+                if solution.taskitem.manual_check:
+                    solution_data['manual_check'] = {
+                        'status': solution.manual_status
+                    }
+                data[f'taskitem__{solution.taskitem.id}'] = solution_data
             return data
 
         def get_cache_course_solutions_data(self, course):

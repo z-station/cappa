@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from src.training.models import Course
-from src.training.fields import OrderField
+from src.utils.fields import OrderField
 
 
 UserModel = get_user_model()

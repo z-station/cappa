@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from src.langs.models import Lang
-from src.training.fields import OrderField
+from src.utils.fields import OrderField
 
 
 UserModel = get_user_model()

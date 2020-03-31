@@ -5,12 +5,16 @@
         <h1>{{ object.group.title }}</h1>
         <h4>Результаты по курсу {{ object.course }}</h4>
 
-        <div class="course__table-container">
-            <table class="course__table js__tablesorter">
+        <div class="course__fake-table-container js__course__fake-table-container">
+            <div class="course__fake-table js__course__fake-table"></div>
+        </div>
+        <div class="course__table-container mb-4 js__course__table-container">
+            <table class="course__table js__course__table js__tablesorter">
                 <thead>
                     <tr>
                         <th class="wide">Участник</th>
                         <th class="wide">Решено</th>
+                        <th class="wide">Баллы</th>
                         {% for topic in course_data.topics %}
                             {% for taskitem in topic.taskitems %}
                                 <th data-sorter="false">
@@ -18,7 +22,7 @@
                                         <div class="caption"><span>{{ topic.number }} {{ topic.title }}</span></div>
                                     {% endif %}
                                     <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ taskitem.url }}"
-                                       target="_blank" title="{{ taskitem.number }} {{ taskitem.title }}">
+                                       target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ taskitem.number }} {{ taskitem.title }}">
                                         {{ taskitem.number }}
                                     </a>
                                 </th>
@@ -29,8 +33,9 @@
                 <tbody>
                     {% for member in object.group.members %}
                         <tr id="js__member-{{ member.id }}">
-                            <td title="{{ member }}" class="wide">{{ member.last_name }}</td>
-                            <td class="js__score wide"></td>
+                            <td title="{{ member }}" class="wide">{{ member.get_full_name }}</td>
+                            <td class="js__total_solved_tasks wide"></td>
+                            <td class="js__total_score wide"></td>
                             {% for topic in course_data.topics %}
                                 {% for taskitem in topic.taskitems %}
                                     <td class="js__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
@@ -50,6 +55,16 @@
             </svg>
         </div>
 
+         <h4 class="mb-4">Обозначения:</h4>
+
+         <table class="course__table-legend">
+            <tr><td class="status__0"></td><td>Нет попыток</td></tr>
+            <tr><td class="status__1">-</td><td>Нет решения</td></tr>
+            <tr><td class="status__2">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
+            <tr><td class="status__3">+</td><td>Решено</td></tr>
+            <tr><td class="not-checked"></td><td>В процессе решения (для режима ручной проверки)</td></tr>
+            <tr><td class="awaiting-check"></td><td>Отправлено на проверку (для режима ручной проверки)</td></tr>
+         </table>
     </div>
 {% endblock %}
 

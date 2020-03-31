@@ -1,3 +1,17 @@
+// solution statuses
+var S_NONE = '0',
+    S_UNLUCK = '1',
+    S_PROGRESS = '2',
+    S_SUCCESS = '3';
+var S_WITH_SCORE = [S_PROGRESS, S_SUCCESS]
+
+// manual statuses
+var MS__NOT_CHECKED = '0',
+    MS__READY_TO_CHECK = '1',
+    MS__CHECK_IN_PROGRESS = '2',
+    MS__CHECKED = '3';
+var MS__AWAITING_CHECK = [MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS];
+
 var getFormatedDateTime = function(strDate) {
     var d = new Date(strDate)
     var year = d.getFullYear()
@@ -12,7 +26,8 @@ var groupCoursePage = function(e){
     var url = e.target.groupCourseSolutionsUrl
     $.get(url, function(response){
         for(const [member, val] of Object.entries(response)){
-            var score = 0
+            var total_solved_tasks = 0;
+            var total_score = 0;
             var userName = val.full_name
             var tr = document.querySelector('#js__' + member)
             for(const [taskitem, data] of Object.entries(val.data)){
@@ -20,11 +35,12 @@ var groupCoursePage = function(e){
                 if(td){
                     var datetime = getFormatedDateTime(data.datetime)
                     var th = document.querySelector(td.getAttribute('data-th'))
-                    var title = th.getAttribute('title')
+                    var topicTitle = th.getAttribute('data-topic-title')
+                    var taskitemTitle = th.getAttribute('data-taskitem-title')
                     var statusClass = 'status__' + data.status;
+                    th.setAttribute('title', `Тема: ${topicTitle}\nЗадача: ${taskitemTitle}`)
                     td.classList.add(statusClass)
-                    td.setAttribute('title', `${userName}\n${datetime}\n${title}`)
-                    if(data.status == 3) score+=1
+                    td.setAttribute('title', `Тема: ${topicTitle}\nЗадача: ${taskitemTitle}\n${userName}\n${datetime}\n`)
                     if(val.show_link){
                         var content = document.createElement('a')
                         content.setAttribute('href', data.url)
@@ -32,23 +48,42 @@ var groupCoursePage = function(e){
                     } else {
                         var content = document.createElement('div')
                     }
-                    if(data.status == 3){
-                        content.innerHTML = '+'
-                    } else if(data.status == 2){
-                        content.innerHTML = data.progress + '%'
-                    } else if(data.status == 1){
-                        content.innerHTML = '-'
+                    switch(data.status){
+                        case S_UNLUCK: content.innerHTML = '-'; break;
+                        case S_PROGRESS: content.innerHTML = data.score; break;
+                        case S_SUCCESS: content.innerHTML = '+'; break;
+                    }
+                    if(data.manual_check){
+                        if(data.manual_check.status == MS__NOT_CHECKED){
+                            td.classList.add('not-checked');
+                        }
+                        else if(MS__AWAITING_CHECK.indexOf(data.manual_check.status) != -1){
+                            td.classList.add('awaiting-check');
+                        }
                     }
                     td.append(content)
+                    if(data.status == S_SUCCESS) total_solved_tasks+=1;
+                    if(S_WITH_SCORE.indexOf(data.status) != -1) total_score += data.score;
                 }
             }
-            tr.querySelector('.js__score').innerHTML = score
+            tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks;
+            tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);
         }
         $(".js__tablesorter").tablesorter()
         document.querySelector('.js__loader').style.display = 'none';
 
     })
 
+    $(".js__course__fake-table").width($(".js__course__table").width() + 20);
+
+    $(".js__course__fake-table-container").scroll(function(){
+        console.log('fake');
+        $(".js__course__table-container").scrollLeft($(".js__course__fake-table-container").scrollLeft());
+    });
+    $(".js__course__table-container").scroll(function(){
+        console.log('scroll');
+        $(".js__course__fake-table-container").scrollLeft($(".js__course__table-container").scrollLeft());
+    });
 }
 
 window.addEventListener('groupCoursePageLoaded', groupCoursePage)

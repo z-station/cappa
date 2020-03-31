@@ -3,11 +3,12 @@ from django.core.cache import cache
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
+from tinymce.models import HTMLField
 from datetime import datetime
 from django.urls import reverse
 from src.tasks.models import Task
 from src.training.models import Topic
-from src.training.fields import OrderField, SlugField
+from src.utils.fields import OrderField, SlugField
 
 
 UserModel = get_user_model()
@@ -22,6 +23,9 @@ class TaskItem(models.Model):
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
+    max_score = models.PositiveIntegerField(verbose_name='балл за решение', default=5)
+    manual_check = models.BooleanField(verbose_name='ручная проверка', default=False)
+    compiler_check = models.BooleanField(verbose_name='проверка автотестами', default=True)
     slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
 
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
@@ -87,81 +91,105 @@ class Solution(models.Model):
         verbose_name = "решение задачи"
         verbose_name_plural = "решения задач"
 
-    class Status:
-        NONE = '0'
-        UNLUCK = '1'
-        PROCESS = '2'
-        SUCCESS = '3'
-        CHOICES = (
-            (NONE, 'нет попыток'),
-            (UNLUCK, 'нет прогресса'),
-            (PROCESS, 'есть прогресс'),
-            (SUCCESS, 'решено'),
-        )
+    MS__NOT_CHECKED = '0'
+    MS__READY_TO_CHECK = '1'
+    MS__CHECK_IN_PROGRESS = '2'
+    MS__CHECKED = '3'
+    MS__BLOCKED_STATUSES = (MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS, MS__CHECKED)
+    MS__AWAITING_CHECK = (MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS)
+    MS__CHOICES = (
+        (MS__NOT_CHECKED, 'нет'),
+        (MS__READY_TO_CHECK, 'ожидает проверки'),
+        (MS__CHECK_IN_PROGRESS, 'в процессе проверки'),
+        (MS__CHECKED, 'проверено'),
+    )
+
+    S__NONE = '0'
+    S__UNLUCK = '1'
+    S__IN_PROGRESS = '2'
+    S__SUCCESS = '3'
+    S__CHOICES = (
+        (S__NONE, 'нет попыток'),
+        (S__UNLUCK, 'нет решения'),
+        (S__IN_PROGRESS, 'частично решено'),
+        (S__SUCCESS, 'решено'),
+    )
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
-    status = models.CharField(verbose_name='статус', max_length=255,  choices=Status.CHOICES, default=Status.NONE)
-    progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, null=True)
+    manual_status = models.CharField(
+        verbose_name='статус проверки преподавателем', max_length=255,
+        choices=MS__CHOICES, default=MS__NOT_CHECKED
+    )
+    tests_score = models.FloatField(verbose_name='оценка по автотестам', blank=True, null=True)
+    manual_score = models.FloatField(verbose_name='оценка преподавателя', blank=True, null=True)
     last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
     version_best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
+    comment = HTMLField(verbose_name="комментарий к решению", blank=True, null=True)
 
-    def _create_version_data(self, content, tests_result):
-        if tests_result['num_success'] > 0 and tests_result['num'] > 0:
-            progress = round(100 * tests_result['num_success'] / tests_result['num'])
+    @property
+    def score(self):
+
+        """ Оценка преподавателя имеет больший приоритет чем оценка по автотестам """
+
+        if self.taskitem.manual_check:
+            if self.manual_status == self.MS__CHECKED:
+                return self.manual_score
+            else:
+                return None
         else:
-            progress = 0
+            return self.tests_score
+
+    @property
+    def status(self) -> str:
+
+        """ Статус вычисляется на основе оценки """
+
+        if self.score is None:
+            return self.S__NONE
+        elif self.score <= 0:
+            return self.S__UNLUCK
+        elif self.score >= self.taskitem.max_score:
+            return self.S__SUCCESS
+        else:
+            return self.S__IN_PROGRESS
+
+    @property
+    def status_name(self) -> str:
+        """ Возващает текст статуса """
+        status = self.status
+        for choice in self.S__CHOICES:
+            if choice[0] == status:
+                return choice[1]
+
+    @property
+    def manual_status_name(self):
+        for choice in self.MS__CHOICES:
+            if choice[0] == self.manual_status:
+                return choice[1]
+
+    @staticmethod
+    def _get_version_data(content: str, tests_score=None) -> dict:
+        """ Возвращает структуру версии решения для хранения в JSON"""
         return {
             "datetime": str(datetime.now()),
             "content": content,
-            "progress": progress,
-            "tests": {
-                'num': tests_result['num'],
-                'num_success': tests_result['num_success'],
-            }
+            "tests_score": tests_score,
         }
 
-    def _set_status(self):
-        if self.progress is None:
-            self.status = self.Status.NONE
-        if self.progress == 0:
-            self.status = self.Status.UNLUCK
-        elif self.progress == 100:
-            self.status = self.Status.SUCCESS
-        else:
-            self.status = self.Status.PROCESS
-
-    def update(self, content, tests_result):
-        version = self._create_version_data(content, tests_result)
+    def update(self, content, tests_score=None):
         self.last_changes = content
-        if self.version_best:
-            if version['progress'] > self.progress:
-                self.version_best = version
-                self.progress = version['progress']
-                self._set_status()
-        else:
+        if self.manual_status not in self.MS__BLOCKED_STATUSES:
+            version = self._get_version_data(content=content, tests_score=tests_score)
             self.version_best = version
-            self.progress = version['progress']
-            self._set_status()
+            self.tests_score = version['tests_score']
 
-    def create_version(self, content, tests_result):
-        version = self._create_version_data(content, tests_result)
-        self.last_changes = content
-        if self.version_best:
-            if version['progress'] > self.progress:
-                self.version_best = version
-                self.progress = version['progress']
-                self._set_status()
-        else:
-            self.version_best = version
-            self.progress = version['progress']
-            self._set_status()
-
-        if len(self.version_list) < 10:
-            self.version_list.append(version)
-        else:
-            self.version_list[9] = version
+    def create_version(self, content, tests_score=None):
+        version = self._get_version_data(content=content, tests_score=tests_score)
+        if len(self.version_list) == 10:
+            self.version_list.pop(0)
+        self.version_list.append(version)
 
     def get_breadcrumbs(self):
         return [
@@ -183,6 +211,9 @@ class Solution(models.Model):
 
     def __str__(self):
         return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
+
+    def __repr__(self):
+        return f"Solution: {self.__str__()}"
 
 
 __all__ = ['TaskItem', 'Solution']

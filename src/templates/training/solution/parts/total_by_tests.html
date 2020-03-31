@@ -1,0 +1,26 @@
+{% load training_tags %}
+<table class="solution-info">
+    <tr>
+        <td>Задача:</td>
+        <td>{{ object.taskitem.numbered_title }}</td>
+    </tr>
+    <tr>
+        <td>Пользователь:</td>
+        <td>{{ object.user.get_full_name|default:object.user.username }}</td>
+    </tr>
+    <tr>
+        <td>Язык:</td>
+        <td>{{ object.taskitem.lang }}</td>
+    </tr>
+    <tr>
+        <td>Дата отправки:</td>
+        <td>{{ object.version_best.datetime|date_format }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Оценка выставляется на основании пройденных тестов</td>
+    </tr>
+    <tr class="status__{{ object.status }}">
+        <td>Оценка:</td>
+        <td>{{ object.tests_score|cut_zero|default:"-" }} / {{ object.taskitem.max_score|cut_zero }}</td>
+    </tr>
+</table>

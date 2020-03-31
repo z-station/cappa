@@ -2,11 +2,16 @@
 class Response:
 
     """ statuses:
-        200 ok
-        201 failed tests
-        202 debug error
-        203 invalid form data
-        204 not authorized
+        success:
+            200 ok
+        warnings:
+            300 failed tests
+        errors:
+            400 debug error
+            401 invalid form data
+            402 not authorized
+            403 solution checked, change not allowed
+            404 operation not allowed
      """
 
     def __init__(self, status, msg, output=None, error=None, tests_result=None):

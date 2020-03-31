@@ -22,3 +22,11 @@ def show_breadcrumbs(obj):
 def show_sidebar(context, course):
     context['data'] = course.get_cache_data()
     return context
+
+
+@register.filter
+def cut_zero(float_val):
+    try:
+        return float_val if float_val % 1 else int(float_val)
+    except TypeError:
+        return float_val

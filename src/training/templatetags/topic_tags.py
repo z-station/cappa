@@ -22,7 +22,7 @@ def show_content(context, topic):
             extra_context['form'] = ContentForm(initial={
                 'content': content.content,
                 'input': content.input,
-                'lang': content.lang.provider
+                'lang': content.lang.provider_name
             }, prefix=content.id)
 
         raw_html += render_to_string(

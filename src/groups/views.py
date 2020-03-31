@@ -119,6 +119,8 @@ class GroupCourseSolutionsView(View):
             result['member-%d' % user.id] = {
                 'full_name': user.get_full_name(),
                 'data': user.get_cache_course_solutions_data(course),
-                'show_link': request.user == group.author or request.user == user
+                'show_link': request.user.is_superuser or
+                             request.user == user or
+                             request.user == group.author
             }
         return JsonResponse(result)

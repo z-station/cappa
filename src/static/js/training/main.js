@@ -4,7 +4,12 @@ var getUserSolutions = function(e){
     $.get(e.target.userSolutionUrl, function(response){
         for (const [key, val] of Object.entries(response)) {
             var elem = document.querySelector('#js__' + key)
-            elem && elem.classList.add('status__' + val.status)
+            if(elem){
+                elem.classList.add('status__' + val.status);
+                if(val.awaiting_check){
+                    elem.classList.add('awaiting-check');
+                }
+            }
         }
         document.querySelectorAll('.js__topic-item').forEach(function(elem){
             var taskitems = elem.querySelectorAll('.js__taskitem-item')

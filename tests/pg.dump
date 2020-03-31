@@ -1,0 +1,2668 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
+-- Dumped by pg_dump version 12.2 (Ubuntu 12.2-2.pgdg18.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO cappa;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO cappa;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO cappa;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO cappa;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO cappa;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO cappa;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO cappa;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO cappa;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO cappa;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO cappa;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO cappa;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO cappa;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO cappa;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO cappa;
+
+--
+-- Name: django_site; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.django_site (
+    id integer NOT NULL,
+    domain character varying(100) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE public.django_site OWNER TO cappa;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.django_site_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_site_id_seq OWNER TO cappa;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.django_site_id_seq OWNED BY public.django_site.id;
+
+
+--
+-- Name: groups_group; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.groups_group (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    title character varying(255) NOT NULL,
+    status character varying(255) NOT NULL,
+    codeword character varying(255),
+    content text,
+    creation_date timestamp with time zone NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE public.groups_group OWNER TO cappa;
+
+--
+-- Name: groups_group_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.groups_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_group_id_seq OWNER TO cappa;
+
+--
+-- Name: groups_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.groups_group_id_seq OWNED BY public.groups_group.id;
+
+
+--
+-- Name: groups_groupcourse; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.groups_groupcourse (
+    id integer NOT NULL,
+    course_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.groups_groupcourse OWNER TO cappa;
+
+--
+-- Name: groups_groupcourse_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.groups_groupcourse_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_groupcourse_id_seq OWNER TO cappa;
+
+--
+-- Name: groups_groupcourse_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.groups_groupcourse_id_seq OWNED BY public.groups_groupcourse.id;
+
+
+--
+-- Name: groups_groupmember; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.groups_groupmember (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.groups_groupmember OWNER TO cappa;
+
+--
+-- Name: groups_groupmember_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.groups_groupmember_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_groupmember_id_seq OWNER TO cappa;
+
+--
+-- Name: groups_groupmember_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.groups_groupmember_id_seq OWNED BY public.groups_groupmember.id;
+
+
+--
+-- Name: langs_lang; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.langs_lang (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    provider_name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.langs_lang OWNER TO cappa;
+
+--
+-- Name: langs_lang_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.langs_lang_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.langs_lang_id_seq OWNER TO cappa;
+
+--
+-- Name: langs_lang_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.langs_lang_id_seq OWNED BY public.langs_lang.id;
+
+
+--
+-- Name: news_news; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.news_news (
+    id integer NOT NULL,
+    title character varying(255) NOT NULL,
+    date date NOT NULL,
+    content text,
+    show boolean NOT NULL,
+    author_id integer,
+    image character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.news_news OWNER TO cappa;
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.news_news_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.news_news_id_seq OWNER TO cappa;
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.news_news_id_seq OWNED BY public.news_news.id;
+
+
+--
+-- Name: service_menu; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.service_menu (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    key character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.service_menu OWNER TO cappa;
+
+--
+-- Name: service_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.service_menu_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.service_menu_id_seq OWNER TO cappa;
+
+--
+-- Name: service_menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.service_menu_id_seq OWNED BY public.service_menu.id;
+
+
+--
+-- Name: service_menuitem; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.service_menuitem (
+    id integer NOT NULL,
+    order_key integer,
+    name character varying(255) NOT NULL,
+    url character varying(255) NOT NULL,
+    image character varying(100),
+    show boolean NOT NULL,
+    menu_id integer NOT NULL,
+    CONSTRAINT service_menuitem_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.service_menuitem OWNER TO cappa;
+
+--
+-- Name: service_menuitem_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.service_menuitem_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.service_menuitem_id_seq OWNER TO cappa;
+
+--
+-- Name: service_menuitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.service_menuitem_id_seq OWNED BY public.service_menuitem.id;
+
+
+--
+-- Name: service_sitesettings; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.service_sitesettings (
+    site_ptr_id integer NOT NULL,
+    logo_title text,
+    logo_desc text,
+    copyright text
+);
+
+
+ALTER TABLE public.service_sitesettings OWNER TO cappa;
+
+--
+-- Name: tasks_source; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.tasks_source (
+    id integer NOT NULL,
+    order_key integer NOT NULL,
+    title character varying(255) NOT NULL,
+    content text,
+    CONSTRAINT tasks_source_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.tasks_source OWNER TO cappa;
+
+--
+-- Name: tasks_source_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.tasks_source_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tasks_source_id_seq OWNER TO cappa;
+
+--
+-- Name: tasks_source_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.tasks_source_id_seq OWNED BY public.tasks_source.id;
+
+
+--
+-- Name: tasks_task; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.tasks_task (
+    id integer NOT NULL,
+    order_key integer NOT NULL,
+    show boolean NOT NULL,
+    last_modified timestamp with time zone NOT NULL,
+    title character varying(255) NOT NULL,
+    content text,
+    source_raw_id character varying(255),
+    tests jsonb,
+    author_id integer,
+    source_id integer,
+    output_type character varying(255) NOT NULL,
+    CONSTRAINT tasks_task_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.tasks_task OWNER TO cappa;
+
+--
+-- Name: tasks_task_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.tasks_task_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tasks_task_id_seq OWNER TO cappa;
+
+--
+-- Name: tasks_task_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.tasks_task_id_seq OWNED BY public.tasks_task.id;
+
+
+--
+-- Name: training_content; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.training_content (
+    id integer NOT NULL,
+    input text,
+    content text,
+    show_input boolean NOT NULL,
+    show_debug boolean NOT NULL,
+    readonly boolean NOT NULL,
+    text text,
+    type character varying(255) NOT NULL,
+    order_key integer NOT NULL,
+    topic_id integer NOT NULL,
+    CONSTRAINT training_content_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.training_content OWNER TO cappa;
+
+--
+-- Name: training_content_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.training_content_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.training_content_id_seq OWNER TO cappa;
+
+--
+-- Name: training_content_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.training_content_id_seq OWNED BY public.training_content.id;
+
+
+--
+-- Name: training_course; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.training_course (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    title character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    about text,
+    content text,
+    content_bottom text,
+    order_key integer,
+    last_modified timestamp with time zone NOT NULL,
+    author_id integer,
+    lang_id integer NOT NULL,
+    CONSTRAINT training_course_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.training_course OWNER TO cappa;
+
+--
+-- Name: training_course_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.training_course_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.training_course_id_seq OWNER TO cappa;
+
+--
+-- Name: training_course_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.training_course_id_seq OWNED BY public.training_course.id;
+
+
+--
+-- Name: training_solution; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.training_solution (
+    id integer NOT NULL,
+    last_changes text NOT NULL,
+    version_best jsonb,
+    version_list jsonb,
+    taskitem_id integer NOT NULL,
+    user_id integer NOT NULL,
+    comment text,
+    manual_score double precision,
+    manual_status character varying(255) NOT NULL,
+    tests_score double precision
+);
+
+
+ALTER TABLE public.training_solution OWNER TO cappa;
+
+--
+-- Name: training_solution_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.training_solution_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.training_solution_id_seq OWNER TO cappa;
+
+--
+-- Name: training_solution_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.training_solution_id_seq OWNED BY public.training_solution.id;
+
+
+--
+-- Name: training_taskitem; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.training_taskitem (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    slug character varying(255),
+    order_key integer,
+    task_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    number integer,
+    compiler_check boolean NOT NULL,
+    manual_check boolean NOT NULL,
+    max_score integer NOT NULL,
+    CONSTRAINT training_taskitem_max_score_check CHECK ((max_score >= 0)),
+    CONSTRAINT training_taskitem_number_check CHECK ((number >= 0)),
+    CONSTRAINT training_taskitem_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.training_taskitem OWNER TO cappa;
+
+--
+-- Name: training_taskitem_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.training_taskitem_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.training_taskitem_id_seq OWNER TO cappa;
+
+--
+-- Name: training_taskitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.training_taskitem_id_seq OWNED BY public.training_taskitem.id;
+
+
+--
+-- Name: training_topic; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.training_topic (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    title character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    order_key integer,
+    last_modified timestamp with time zone NOT NULL,
+    author_id integer,
+    course_id integer NOT NULL,
+    number integer,
+    CONSTRAINT training_topic_number_check CHECK ((number >= 0)),
+    CONSTRAINT training_topic_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.training_topic OWNER TO cappa;
+
+--
+-- Name: training_topic_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.training_topic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.training_topic_id_seq OWNER TO cappa;
+
+--
+-- Name: training_topic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.training_topic_id_seq OWNED BY public.training_topic.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: django_site id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_site ALTER COLUMN id SET DEFAULT nextval('public.django_site_id_seq'::regclass);
+
+
+--
+-- Name: groups_group id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_group ALTER COLUMN id SET DEFAULT nextval('public.groups_group_id_seq'::regclass);
+
+
+--
+-- Name: groups_groupcourse id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupcourse ALTER COLUMN id SET DEFAULT nextval('public.groups_groupcourse_id_seq'::regclass);
+
+
+--
+-- Name: groups_groupmember id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupmember ALTER COLUMN id SET DEFAULT nextval('public.groups_groupmember_id_seq'::regclass);
+
+
+--
+-- Name: langs_lang id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.langs_lang ALTER COLUMN id SET DEFAULT nextval('public.langs_lang_id_seq'::regclass);
+
+
+--
+-- Name: news_news id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.news_news ALTER COLUMN id SET DEFAULT nextval('public.news_news_id_seq'::regclass);
+
+
+--
+-- Name: service_menu id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menu ALTER COLUMN id SET DEFAULT nextval('public.service_menu_id_seq'::regclass);
+
+
+--
+-- Name: service_menuitem id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menuitem ALTER COLUMN id SET DEFAULT nextval('public.service_menuitem_id_seq'::regclass);
+
+
+--
+-- Name: tasks_source id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_source ALTER COLUMN id SET DEFAULT nextval('public.tasks_source_id_seq'::regclass);
+
+
+--
+-- Name: tasks_task id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task ALTER COLUMN id SET DEFAULT nextval('public.tasks_task_id_seq'::regclass);
+
+
+--
+-- Name: training_content id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_content ALTER COLUMN id SET DEFAULT nextval('public.training_content_id_seq'::regclass);
+
+
+--
+-- Name: training_course id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_course ALTER COLUMN id SET DEFAULT nextval('public.training_course_id_seq'::regclass);
+
+
+--
+-- Name: training_solution id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_solution ALTER COLUMN id SET DEFAULT nextval('public.training_solution_id_seq'::regclass);
+
+
+--
+-- Name: training_taskitem id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_taskitem ALTER COLUMN id SET DEFAULT nextval('public.training_taskitem_id_seq'::regclass);
+
+
+--
+-- Name: training_topic id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_topic ALTER COLUMN id SET DEFAULT nextval('public.training_topic_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can add user	2	add_user
+5	Can change user	2	change_user
+6	Can delete user	2	delete_user
+7	Can add group	3	add_group
+8	Can change group	3	change_group
+9	Can delete group	3	delete_group
+10	Can add permission	4	add_permission
+11	Can change permission	4	change_permission
+12	Can delete permission	4	delete_permission
+13	Can add content type	5	add_contenttype
+14	Can change content type	5	change_contenttype
+15	Can delete content type	5	delete_contenttype
+16	Can add session	6	add_session
+17	Can change session	6	change_session
+18	Can delete session	6	delete_session
+19	Can add элемент	7	add_treeitem
+20	Can change элемент	7	change_treeitem
+21	Can delete элемент	7	delete_treeitem
+22	Can add элемент	7	add_treeitemflat
+23	Can change элемент	7	change_treeitemflat
+24	Can delete элемент	7	delete_treeitemflat
+25	Can add блок кода	9	add_code
+26	Can change блок кода	9	change_code
+27	Can delete блок кода	9	delete_code
+28	Can add тест	10	add_codetest
+29	Can change тест	10	change_codetest
+30	Can delete тест	10	delete_codetest
+31	Can add исполнитель кода	11	add_executor
+32	Can change исполнитель кода	11	change_executor
+33	Can delete исполнитель кода	11	delete_executor
+34	Can add пользовательское решение	12	add_usersolution
+35	Can change пользовательское решение	12	change_usersolution
+36	Can delete пользовательское решение	12	delete_usersolution
+37	Can add блок кода	9	add_codeflat
+38	Can change блок кода	9	change_codeflat
+39	Can delete блок кода	9	delete_codeflat
+40	Can add Группу	14	add_group
+41	Can change Группу	14	change_group
+42	Can delete Группу	14	delete_group
+43	Can add group module	15	add_groupmodule
+44	Can change group module	15	change_groupmodule
+45	Can delete group module	15	delete_groupmodule
+46	Can add Модуль	16	add_module
+47	Can change Модуль	16	change_module
+48	Can delete Модуль	16	delete_module
+49		8	add_treeitemflat
+50		8	change_treeitemflat
+51		8	delete_treeitemflat
+52		13	add_codeflat
+53		13	change_codeflat
+54		13	delete_codeflat
+55	Can add источник	17	add_source
+56	Can change источник	17	change_source
+57	Can delete источник	17	delete_source
+58	Can add Новость	18	add_news
+59	Can change Новость	18	change_news
+60	Can delete Новость	18	delete_news
+61	Can add site	19	add_site
+62	Can change site	19	change_site
+63	Can delete site	19	delete_site
+64	Can add email address	20	add_emailaddress
+65	Can change email address	20	change_emailaddress
+66	Can delete email address	20	delete_emailaddress
+67	Can add email confirmation	21	add_emailconfirmation
+68	Can change email confirmation	21	change_emailconfirmation
+69	Can delete email confirmation	21	delete_emailconfirmation
+70	Can add social account	22	add_socialaccount
+71	Can change social account	22	change_socialaccount
+72	Can delete social account	22	delete_socialaccount
+73	Can add social application	23	add_socialapp
+74	Can change social application	23	change_socialapp
+75	Can delete social application	23	delete_socialapp
+76	Can add social application token	24	add_socialtoken
+77	Can change social application token	24	change_socialtoken
+78	Can delete social application token	24	delete_socialtoken
+79	Can add group course	25	add_groupcourse
+80	Can change group course	25	change_groupcourse
+81	Can delete group course	25	delete_groupcourse
+82	Can add язык программирования	26	add_lang
+83	Can change язык программирования	26	change_lang
+84	Can delete язык программирования	26	delete_lang
+85	Can add источник материалов	27	add_source
+86	Can change источник материалов	27	change_source
+87	Can delete источник материалов	27	delete_source
+88	Can add задача	28	add_task
+89	Can change задача	28	change_task
+90	Can delete задача	28	delete_task
+91	Can add блок контента	29	add_content
+92	Can change блок контента	29	change_content
+93	Can delete блок контента	29	delete_content
+94	Can add учебный курс	30	add_course
+95	Can change учебный курс	30	change_course
+96	Can delete учебный курс	30	delete_course
+97	Can add решение задачи	31	add_solution
+98	Can change решение задачи	31	change_solution
+99	Can delete решение задачи	31	delete_solution
+100	Can add задача	32	add_taskitem
+101	Can change задача	32	change_taskitem
+102	Can delete задача	32	delete_taskitem
+103	Can add тема	33	add_topic
+104	Can change тема	33	change_topic
+105	Can delete тема	33	delete_topic
+106	Can add язык программирования	34	add_lang
+107	Can change язык программирования	34	change_lang
+108	Can delete язык программирования	34	delete_lang
+109	Can add участник	35	add_groupmember
+110	Can change участник	35	change_groupmember
+111	Can delete участник	35	delete_groupmember
+112	Can add меню	36	add_menu
+113	Can change меню	36	change_menu
+114	Can delete меню	36	delete_menu
+115	Can add пункт меню	37	add_menuitem
+116	Can change пункт меню	37	change_menuitem
+117	Can delete пункт меню	37	delete_menuitem
+118	Can add настройки сайта	38	add_sitesettings
+119	Can change настройки сайта	38	change_sitesettings
+120	Can delete настройки сайта	38	delete_sitesettings
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-03-31 14:37:08.814538+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+8014	2020-03-24 12:16:33.692702+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0414\\u0440\\u043e\\u0431\\u043d\\u0430\\u044f \\u0447\\u0430\\u0441\\u0442\\u044c"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0427\\u0430\\u0441\\u044b-1"}}]	33	7
+8015	2020-03-24 12:16:51.900722+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0427\\u0430\\u0441\\u044b-2"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0414\\u0435\\u043b\\u0430\\u0435\\u043c \\u0441\\u0440\\u0435\\u0437\\u044b"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0421\\u0442\\u0435\\u043f\\u0435\\u043d\\u044c"}}]	33	7
+8016	2020-03-24 12:18:06.716491+05	2	Ввод и вывод данных	2	[]	33	7
+8017	2020-03-24 12:18:59.885403+05	1	localhost:8000	2	[{"changed": {"fields": ["domain", "name"]}}]	19	7
+8018	2020-03-24 12:20:51.86138+05	96	Степень	2	[{"changed": {"fields": ["output_type"]}}]	28	7
+8019	2020-03-24 12:21:01.491588+05	36	Часы-2	2	[{"changed": {"fields": ["output_type", "content"]}}]	28	7
+8020	2020-03-24 12:21:05.718665+05	35	Часы-1	2	[{"changed": {"fields": ["output_type"]}}]	28	7
+8021	2020-03-24 12:21:13.188697+05	25	Дробная часть	2	[{"changed": {"fields": ["output_type"]}}]	28	7
+8022	2020-03-24 12:21:18.242333+05	3	Делёж яблок	2	[{"changed": {"fields": ["output_type", "content"]}}]	28	7
+8023	2020-03-30 19:40:24.304716+05	3	Делёж яблок	2	[{"changed": {"fields": ["author", "output_type", "tests"]}}]	28	7
+8024	2020-03-30 19:40:45.553626+05	25	Дробная часть	2	[{"changed": {"fields": ["author", "output_type"]}}]	28	7
+8025	2020-03-30 19:41:11.07131+05	35	Часы-1	2	[{"changed": {"fields": ["author", "output_type", "tests"]}}]	28	7
+8026	2020-03-30 19:41:32.566166+05	36	Часы-2	2	[{"changed": {"fields": ["author", "output_type"]}}]	28	7
+8027	2020-03-30 19:44:30.360444+05	50	Делаем срезы	2	[{"changed": {"fields": ["content", "tests"]}}]	28	7
+8028	2020-03-30 19:44:43.789732+05	96	Степень	2	[{"changed": {"fields": ["author", "output_type", "tests"]}}]	28	7
+8029	2020-03-31 14:37:49.688707+05	1	localhost:8000	2	[{"changed": {"fields": ["logo_title", "logo_desc", "copyright"]}}]	38	7
+8030	2020-03-31 14:39:29.109154+05	1	Меню в шапке	1	[{"added": {}}, {"added": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "\\u0412\\u0441\\u0435 \\u043a\\u0443\\u0440\\u0441\\u044b"}}]	36	7
+8031	2020-03-31 14:39:53.757138+05	6	Обновление 2.2. Дизайн, интерфейс и оптимизация	3		18	7
+8032	2020-03-31 14:39:53.775395+05	5	Обновление 2.1. Новые возможности	3		18	7
+8033	2020-03-31 14:39:53.786177+05	4	Авторизация и разработка курса по С++	3		18	7
+8034	2020-03-31 14:39:53.797384+05	3	Дипломы 2 и 3 степени на четвертьфинале студенческого чемпионата мира по программированию	3		18	7
+8035	2020-03-31 14:39:53.809013+05	1	Запущена в опытную эксплуатацию новая версия учебного курса по языку Python	3		18	7
+8036	2020-03-31 14:39:53.81933+05	2	Тестирование идет полным ходом	3		18	7
+8037	2020-03-31 14:40:48.640427+05	7	Заработало!	2	[{"changed": {"fields": ["title", "content", "author"]}}]	18	7
+8038	2020-03-31 14:41:52.819286+05	7	Заработало!	2	[{"changed": {"fields": ["content"]}}]	18	7
+8039	2020-03-31 14:43:12.433232+05	7	Заработало!	2	[{"changed": {"fields": ["content"]}}]	18	7
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	user
+3	auth	group
+4	auth	permission
+5	contenttypes	contenttype
+6	sessions	session
+7	courses	treeitem
+8	courses	treeitemflat
+9	executors	code
+10	executors	codetest
+11	executors	executor
+12	executors	usersolution
+13	executors	codeflat
+14	groups	group
+15	groups	groupmodule
+16	modules	module
+17	sources	source
+18	news	news
+19	sites	site
+20	account	emailaddress
+21	account	emailconfirmation
+22	socialaccount	socialaccount
+23	socialaccount	socialapp
+24	socialaccount	socialtoken
+25	groups	groupcourse
+26	executors	lang
+27	tasks	source
+28	tasks	task
+29	training	content
+30	training	course
+31	training	solution
+32	training	taskitem
+33	training	topic
+34	langs	lang
+35	groups	groupmember
+36	service	menu
+37	service	menuitem
+38	service	sitesettings
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2018-06-04 16:14:11.263801+05
+2	auth	0001_initial	2018-06-04 16:14:12.599777+05
+3	admin	0001_initial	2018-06-04 16:14:12.949012+05
+4	admin	0002_logentry_remove_auto_add	2018-06-04 16:14:12.990391+05
+5	contenttypes	0002_remove_content_type_name	2018-06-04 16:14:13.073847+05
+6	auth	0002_alter_permission_name_max_length	2018-06-04 16:14:13.098919+05
+7	auth	0003_alter_user_email_max_length	2018-06-04 16:14:13.140521+05
+8	auth	0004_alter_user_username_opts	2018-06-04 16:14:13.175191+05
+9	auth	0005_alter_user_last_login_null	2018-06-04 16:14:13.215273+05
+10	auth	0006_require_contenttypes_0002	2018-06-04 16:14:13.223947+05
+11	auth	0007_alter_validators_add_error_messages	2018-06-04 16:14:13.257806+05
+12	auth	0008_alter_user_username_max_length	2018-06-04 16:14:13.382091+05
+13	courses	0001_initial	2018-06-04 16:14:13.950003+05
+14	courses	0002_auto_20180507_2012	2018-06-04 16:14:14.593761+05
+15	courses	0003_auto_20180527_1423	2018-06-04 16:14:14.682813+05
+16	courses	0004_auto_20180527_1825	2018-06-04 16:14:15.016645+05
+17	courses	0005_treeitem_leaf	2018-06-04 16:14:15.619353+05
+18	executors	0001_initial	2018-06-04 16:14:16.026019+05
+19	executors	0002_auto_20180519_1812	2018-06-04 16:14:17.489922+05
+20	executors	0003_auto_20180525_2255	2018-06-04 16:14:18.282824+05
+21	executors	0004_auto_20180527_1423	2018-06-04 16:14:18.814981+05
+22	executors	0005_auto_20180602_0024	2018-06-04 16:14:19.307292+05
+23	modules	0001_initial	2018-06-04 16:14:19.789803+05
+24	modules	0002_auto_20180603_1017	2018-06-04 16:14:20.257364+05
+27	sessions	0001_initial	2018-06-04 16:14:22.340527+05
+28	courses	0006_auto_20180617_1706	2018-06-26 16:33:34.356982+05
+29	courses	0007_auto_20180624_1735	2018-06-26 16:33:34.409717+05
+30	executors	0006_auto_20180617_1706	2018-06-26 16:33:34.428448+05
+31	executors	0007_auto_20180624_1735	2018-06-26 16:33:34.509446+05
+33	modules	0003_auto_20180624_1735	2018-06-26 16:33:34.612362+05
+34	sources	0001_initial	2018-07-05 05:53:10.098984+05
+35	courses	0008_auto_20180704_1930	2018-07-05 05:53:22.995077+05
+36	news	0001_initial	2018-12-12 22:31:23.997496+05
+37	news	0002_auto_20181212_1808	2018-12-12 23:08:56.900883+05
+38	account	0001_initial	2019-06-26 08:30:25.331948+05
+39	account	0002_email_max_length	2019-06-26 08:30:25.434573+05
+40	sites	0001_initial	2019-06-26 08:30:25.449838+05
+41	sites	0002_alter_domain_unique	2019-06-26 08:30:25.466617+05
+42	socialaccount	0001_initial	2019-06-26 08:30:25.779377+05
+43	socialaccount	0002_token_max_lengths	2019-06-26 08:30:25.8552+05
+44	socialaccount	0003_extra_data_default_dict	2019-06-26 08:30:25.886249+05
+45	courses	0009_auto_20190905_1255	2019-09-05 23:36:10.915202+05
+46	executors	0008_auto_20190901_1620	2019-09-05 23:36:10.987624+05
+48	modules	0004_auto_20190901_1620	2019-09-05 23:36:11.367657+05
+49	news	0003_auto_20190901_1620	2019-09-05 23:36:11.423403+05
+50	executors	0009_auto_20190914_1300	2019-09-20 00:45:48.002125+05
+51	executors	0010_auto_20190916_0355	2019-09-20 00:45:49.923226+05
+52	courses	0010_auto_20191117_1332	2019-11-22 00:33:52.212208+05
+53	executors	0011_lang	2019-11-22 00:33:52.304322+05
+54	tasks	0001_initial	2019-11-22 00:33:52.414363+05
+55	tasks	0002_auto_20191117_1332	2019-11-22 00:33:52.454598+05
+56	langs	0001_initial	2019-11-22 00:33:52.477874+05
+57	training	0001_initial	2019-11-22 00:33:52.995494+05
+58	groups	0001_initial	2019-11-22 00:33:53.390963+05
+59	training	0002_auto_20191122_1910	2019-11-24 03:12:48.341491+05
+60	langs	0002_auto_20200216_0932	2020-03-15 19:31:04.285012+05
+63	tasks	0003_auto_20200330_1225	2020-03-30 19:12:37.59649+05
+64	langs	0003_auto_20200216_0939	2020-03-30 19:13:04.097774+05
+65	training	0003_auto_20200330_1227	2020-03-30 19:13:21.528124+05
+66	training	0004_remove_taskitem_progress	2020-03-30 19:28:16.160642+05
+67	service	0001_initial	2020-03-30 19:28:21.322303+05
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+o1nvt26bh7tkl00h12ifh6h7opkufq7a	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-15 18:45:18.831404+05
+ap6dt9bke61h4ztw7ac4ndiqfm0f34y8	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-01-28 10:25:16.485101+05
+xnroiopuljop8jrsl309o1lv8wpjk6vl	NWE3NGVmNTIxZjUyMjQ2Y2FmMmQ0ZmIzOTA3ZTQ3ZTFjMjNjNDRjODp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6IjFlZmQwNTExNjhkNzcyNDRhMmVmZTA0NTVlODZlZDE5YTAyZmQxY2YifQ==	2020-02-02 16:57:40.374142+05
+zxe40ojtrof8z3ubfly8onpfahesn0fn	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-03 22:36:49.538461+05
+tx946djlolbwwu6uu7x0uhs10noz9537	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-15 18:45:18.840168+05
+pb7jycgdd2co1fh1vojjphff944ri7hc	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-15 18:45:18.879196+05
+61mafl5ufp7nv9m1qcqa51ceirsga3nu	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-07 12:17:13.602569+05
+ch2q4dyptg8gl40924xw8z8k7rof5hqq	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-07 12:17:13.619428+05
+4em0bqha3fh3rc0tsj3q2uks40723x0i	NzMyYzM3NWVmZjFjMTk4OTM5OWI1MDM2NGQ2MzY1YmQ5N2U4NDNiMDp7Il9hdXRoX3VzZXJfaWQiOiI0IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6ImM3ZmY3YzgzNTJiNmFlNTgyM2ExYzQ5YTNhNDk5Mjg0Y2NjY2I1ZGYifQ==	2020-01-26 21:58:45.76974+05
+jb2s87lybfotyyypvimhhvpbyccnpvif	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-05 13:24:35.048777+05
+wal4kcha550lpboelesjv5rxykabpaj0	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-11 17:42:55.819913+05
+dnqaxvw0snr4w9x8ofktlgvwyqyivzxr	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-01-30 04:17:05.537432+05
+it9lkt9vh32f6ojaxozqv8u0vvmx739h	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-03 23:50:01.676501+05
+peonp2eutym15kpm26ttu8bdvf0z6ptl	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-03 01:01:37.176944+05
+u29hsfczygrc3w6r24qtaqdaiq6o3ejn	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-07 15:37:08.781225+05
+x037g9jse06cvj5cx8vh0kjcid90hq0t	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-04 12:19:24.500082+05
+hlz05g6mpm3i1tyz36gu41v3jlunn5xr	NWE3NGVmNTIxZjUyMjQ2Y2FmMmQ0ZmIzOTA3ZTQ3ZTFjMjNjNDRjODp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6IjFlZmQwNTExNjhkNzcyNDRhMmVmZTA0NTVlODZlZDE5YTAyZmQxY2YifQ==	2020-02-03 17:46:06.337557+05
+byhdpbghfux5c8koyy6h7cfrqefnvbzp	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-01-31 07:43:51.747222+05
+flq390bspc0wdovp5yk653pds0kgk0zk	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-03 02:39:22.930327+05
+b3cxkmvka6p71x8fm64i265isoyfzgov	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-03 14:57:44.50331+05
+lt58pxnl0l0py6etnw982c0khxdsk8ed	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-03 14:57:44.545096+05
+ee67g8wblzhg1cubgk98l09rrdhugsln	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-03 14:57:44.553648+05
+tdscsydghbpaar3cato8mvlxvuu37mdb	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-03 14:57:44.567381+05
+dylrwcvsift8tn0kpscfd12danii4l5m	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-06 07:15:19.046224+05
+c3c6gieye90mckzgcgc19n6awkfkd574	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-09 08:57:09.844873+05
+b42arwohryhfbqel7xgv0lz83fa1f53f	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-08 15:41:45.565496+05
+ci26xl4647s2honhslxcj3mwyzapq362	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-05 00:36:57.41941+05
+jltzvoc6khlle973304m6kovahpotf4v	NWE3NGVmNTIxZjUyMjQ2Y2FmMmQ0ZmIzOTA3ZTQ3ZTFjMjNjNDRjODp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6IjFlZmQwNTExNjhkNzcyNDRhMmVmZTA0NTVlODZlZDE5YTAyZmQxY2YifQ==	2020-02-09 19:01:59.852745+05
+nno1s3yxxc646p081u9jrfdgr3od682a	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-07 01:42:59.144257+05
+tb381sl1y9eoc1tx4ud6bs1mb5zqet9r	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-15 23:52:54.244602+05
+v4cl6n1javv23cjg41mvb6mj7jjpo69q	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-16 15:34:34.840361+05
+zorobwhlnqrfq4kyhw0886objpt6ocvm	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-12 01:54:36.975693+05
+igkewyny02b0tcnhx06edpzoszbqkij4	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-03-02 19:40:25.501911+05
+tu06j6tmha3hnvcfeodc8qyvtzydbnl6	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-24 19:33:18.77181+05
+ari0n5l0k9gvtch1hastc7rnxr1zyfa5	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-14 06:32:55.981464+05
+jrtzpymbx3zh5u69dc2iub7rbni0at91	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-10 23:10:49.819938+05
+bjyjehx8j3nkuo93n4yqg13p4942lb8i	ZjNhNmQzNTczNTU1YmUxMWNkMDM5OThiZmE2MDM2OGQ1NmY3MTg0NTp7Il9hdXRoX3VzZXJfaWQiOiI3NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIzZTQ1YzFiMmM3NDdlNTJmZThhNGVmMjcwY2I2MjlkZjA3OWJlMzI4In0=	2020-02-26 23:42:55.570428+05
+hu3dd47wbk8v65hyfpzo24799tsmg00c	Y2IwNjA2ZWFkMmZmZjYwYWYyMDRhNDY4NGE0Y2FkOTAxZjYzYzkxYTp7Il9hdXRoX3VzZXJfaWQiOiI0MSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjZDk5YzBlZGU0ZTUyN2RhNzMxNzdiZmFkMzI4MmJlOTBjZWQyZjk3In0=	2020-03-06 15:13:02.476878+05
+l2kvuz2wm0db3fg2ab8mw5hfbai5dqxh	NzMyYzM3NWVmZjFjMTk4OTM5OWI1MDM2NGQ2MzY1YmQ5N2U4NDNiMDp7Il9hdXRoX3VzZXJfaWQiOiI0IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6ImM3ZmY3YzgzNTJiNmFlNTgyM2ExYzQ5YTNhNDk5Mjg0Y2NjY2I1ZGYifQ==	2020-03-04 19:55:41.572296+05
+gw9yywuq2l7jpk520xkop8lthf90dtth	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-18 00:02:33.092188+05
+dse7x578cct6uytgfibdxvjea8ddg0e8	Y2IwNjA2ZWFkMmZmZjYwYWYyMDRhNDY4NGE0Y2FkOTAxZjYzYzkxYTp7Il9hdXRoX3VzZXJfaWQiOiI0MSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjZDk5YzBlZGU0ZTUyN2RhNzMxNzdiZmFkMzI4MmJlOTBjZWQyZjk3In0=	2020-03-01 16:44:02.296877+05
+s34ab8braku2z1cc961vu88i3e24g3ys	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-20 22:33:04.294214+05
+qleg5vl84ymq8bkjdh27p28fnimjmrub	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-15 05:57:11.282491+05
+muvvne5qpm6og4mgbji1mgop7v2uq1n4	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-15 18:45:18.832823+05
+4e6taojvj7uhydhgdhlpmc41wwaluvbb	OTExMjc0NmE4YTBhZjJiNGVhOTkyZjA1OGZkYTExYjUxMDZmYTAxZTp7fQ==	2020-02-15 18:45:18.845124+05
+x7xpjs2fxyqz4l1n19ngo3dleim2r5i8	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-17 23:46:54.988792+05
+xgekl157n7rzlnteyny85be5ahmwov4n	NzMyYzM3NWVmZjFjMTk4OTM5OWI1MDM2NGQ2MzY1YmQ5N2U4NDNiMDp7Il9hdXRoX3VzZXJfaWQiOiI0IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6ImM3ZmY3YzgzNTJiNmFlNTgyM2ExYzQ5YTNhNDk5Mjg0Y2NjY2I1ZGYifQ==	2020-02-16 19:27:20.709426+05
+aoaq50lq5thfkoxbfua2qedjsg66ji2f	NWE3NGVmNTIxZjUyMjQ2Y2FmMmQ0ZmIzOTA3ZTQ3ZTFjMjNjNDRjODp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoicHJvamVjdC5wcm9maWxlLmJhY2tlbmRzLkN1c3RvbU1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6IjFlZmQwNTExNjhkNzcyNDRhMmVmZTA0NTVlODZlZDE5YTAyZmQxY2YifQ==	2020-02-17 19:28:40.694408+05
+mg0h3th1gsimdl8vqk69f3m7dnqqwdnx	ZGRiNDk2MDQ3YzE0YmNiNGE2MDU2MGU4YjQyNDk3MTc5NDU4ODExZTp7Il9hdXRoX3VzZXJfaWQiOiIyNCIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwYTY4Y2IwMWNhZWM1N2U3ZTdiM2EzODg4YzhjOGQyN2Q1OTczM2UzIn0=	2020-03-04 22:31:15.031777+05
+zzvhg1vdbvvinh3hvsctbg7e76rx5g1f	YTUxM2EyZmI1MzMxZjkxYjExYzRkNjgwNTZiNjYxYzE2NmJmMThiMjp7Il9hdXRoX3VzZXJfaWQiOiI4NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiODQxNjM2ZDgxZWMzNzFjN2UyNDZjOWQ1MDI1NzRiNGVmMjE2NmIyIn0=	2020-02-17 13:05:17.689535+05
+xxtesznasldatbpjxughrdcnvjtxbtp0	YTljYzNiNzQ3YTg4YTMzZjUzZDc1OGJjM2QzYjFhZWM2YmEyOGE2Yjp7Il9hdXRoX3VzZXJfaWQiOiI4NSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6InByb2plY3QucHJvZmlsZS5iYWNrZW5kcy5DdXN0b21Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyOWIxNTVlOGJmZmVhNDEwOTNiNjk5NTY0NzIzYzczYjhkOTU5ZjBkIn0=	2020-02-23 23:56:19.88146+05
+drtk3em1rzyo5weps12z9n37x4lmrhpd	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-20 23:38:38.978935+05
+mtv5qwffs8kwg90of6b2f60laio2sbw6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-24 19:21:06.07517+05
+lt01s0pisd3uq0i49f9gv5xpjh1rcrqq	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-30 23:45:49.57428+05
+eawts33rc3qokxu6sdpym3dy3wyjophr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-31 18:43:15.607959+05
+\.
+
+
+--
+-- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.django_site (id, domain, name) FROM stdin;
+1	localhost:8000	localhost
+\.
+
+
+--
+-- Data for Name: groups_group; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.groups_group (id, show, title, status, codeword, content, creation_date, author_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: groups_groupcourse; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.groups_groupcourse (id, course_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: groups_groupmember; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.groups_groupmember (id, group_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: langs_lang; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.langs_lang (id, name, provider_name) FROM stdin;
+1	python 3.6	python
+2	C++	cpp
+3	C#	csharp
+\.
+
+
+--
+-- Data for Name: news_news; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.news_news (id, title, date, content, show, author_id, image) FROM stdin;
+7	Заработало!	2019-12-03	<p>Время бахнуть зеленого чая!</p>	t	7	pHrJ4PX3u0Q.jpg
+\.
+
+
+--
+-- Data for Name: service_menu; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.service_menu (id, name, key) FROM stdin;
+1	Меню в шапке	top
+\.
+
+
+--
+-- Data for Name: service_menuitem; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.service_menuitem (id, order_key, name, url, image, show, menu_id) FROM stdin;
+1	1	Все курсы	/courses/		t	1
+\.
+
+
+--
+-- Data for Name: service_sitesettings; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.service_sitesettings (site_ptr_id, logo_title, logo_desc, copyright) FROM stdin;
+1	Cappa	сервис автоматической проверки программ	CSU Math 2016-
+\.
+
+
+--
+-- Data for Name: tasks_source; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.tasks_source (id, order_key, title, content) FROM stdin;
+1	0	PABC	
+2	0	Задачник Абрамяна	
+3	0	pythontutor.ru	
+4	0	informatics.msk.ru	
+\.
+
+
+--
+-- Data for Name: tasks_task; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.tasks_task (id, order_key, show, last_modified, title, content, source_raw_id, tests, author_id, source_id, output_type) FROM stdin;
+25	0	t	2020-03-30 19:40:45.551485+05	Дробная часть	<p><span>Дано положительное действительное число X. Выведите его дробную часть.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	\N	[{"input": "17.9", "output": "0.9"}, {"input": "10.34", "output": "0.34"}, {"input": "0.001", "output": "0.001"}, {"input": "179", "output": "0.0"}, {"input": "19.99", "output": "0.99"}]	7	3	float
+36	0	t	2020-03-30 19:41:32.56459+05	Часы-2	<p><span>С начала суток часовая стрелка повернулась на угол в &alpha; градусов. Определите на какой угол повернулась минутная стрелка с начала последнего часа. Входные и выходные данные &mdash; действительные числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "25", "output": "300"}, {"input": "231.3452", "output": "256.142"}, {"input": "120.005", "output": "0.06"}, {"input": "119.994", "output": "359.928"}, {"input": "73.2938", "output": "159.526"}, {"input": "0.0001", "output": "0.0012"}, {"input": "0.5", "output": "6"}, {"input": "132", "output": "144"}, {"input": "1", "output": "12"}, {"input": "359", "output": "348"}, {"input": "300", "output": "0"}, {"input": "192", "output": "144"}, {"input": "190", "output": "120"}, {"input": "179", "output": "348"}, {"input": "95", "output": "60"}, {"input": "90", "output": "0"}, {"input": "89", "output": "348"}, {"input": "70", "output": "120"}, {"input": "61", "output": "12"}, {"input": "60", "output": "0"}, {"input": "59", "output": "348"}, {"input": "40", "output": "120"}, {"input": "31", "output": "12"}, {"input": "30", "output": "0"}, {"input": "29", "output": "348"}, {"input": "20", "output": "240"}, {"input": "15", "output": "180"}, {"input": "10", "output": "120"}, {"input": "5", "output": "60"}, {"input": "0", "output": "0"}, {"input": "190", "output": "120"}]	7	3	float
+50	0	t	2020-03-30 19:44:30.358684+05	Делаем срезы	<p>Дана строка.</p>\r\n<p>Сначала выведите третий символ этой строки.</p>\r\n<p>Во второй строке выведите предпоследний символ этой строки.</p>\r\n<p>В третьей строке выведите первые пять символов этой строки.</p>\r\n<p>В четвертой строке выведите всю строку, кроме последних двух символов.</p>\r\n<p>В пятой строке выведите все символы с четными индексами (считая, что индексация начинается с 0, поэтому символы выводятся начиная с первого).</p>\r\n<p>В шестой строке выведите все символы с нечетными индексами, то есть начиная со второго символа строки.</p>\r\n<p>В седьмой строке выведите все символы в обратном порядке.</p>\r\n<p>В восьмой строке выведите все символы строки через один в обратном порядке, начиная с последнего.</p>\r\n<p>В девятой строке выведите длину данной строки.</p>	\N	[{"input": "asdfghjklzxcv", "output": "d\\nc\\nasdfg\\nasdfghjklzx\\nadgjlxv\\nsfhkzc\\nvcxzlkjhgfdsa\\nvxljgda\\n13"}, {"input": "qwertyuiop", "output": "e\\no\\nqwert\\nqwertyui\\nqetuo\\nwryip\\npoiuytrewq\\npiyrw\\n10"}, {"input": "Hello", "output": "l\\nl\\nHello\\nHel\\nHlo\\nel\\nolleH\\nolH\\n5"}, {"input": "Abrakadabra", "output": "r\\nr\\nAbrak\\nAbrakadab\\nArkdba\\nbaaar\\narbadakarbA\\nabdkrA\\n11"}]	\N	3	str
+96	0	t	2020-03-30 19:44:43.787868+05	Степень	<p>Дано действительное положительное число <em>a</em> и <span>целоe</span> число <em>n</em>.</p>\r\n<p>Вычислите <em>a<sup>n</sup></em>. Решение оформите в виде функции <code>power(a, n)</code>.</p>\r\n<p>Стандартной функцией возведения в степень пользоваться нельзя.</p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	\N	[{"input": "1.5\\n-10", "output": "0.0173415"}, {"input": "1.1414\\n-2", "output": "0.767581"}, {"input": "3\\n-6", "output": "0.00137174"}, {"input": "3\\n-10", "output": "1.69351e-05"}, {"input": "3\\n-5", "output": "0.00411523"}, {"input": "3\\n-4", "output": "0.0123457"}, {"input": "3\\n-3", "output": "0.037037"}, {"input": "3\\n-2", "output": "0.111111"}, {"input": "3\\n-1", "output": "0.333333"}, {"input": "2\\n-15", "output": "3.05176e-05"}, {"input": "2\\n-10", "output": "0.000976562"}, {"input": "2\\n-9", "output": "0.00195312"}, {"input": "2\\n-8", "output": "0.00390625"}, {"input": "2\\n-4", "output": "0.0625"}, {"input": "2\\n-2", "output": "0.25"}, {"input": "2\\n-1", "output": "0.5"}, {"input": "1\\n-1", "output": "1"}, {"input": "1.5\\n10", "output": "57.665"}, {"input": "1.1414\\n2", "output": "1.30279"}, {"input": "3\\n0", "output": "1"}, {"input": "3\\n10", "output": "59049"}, {"input": "3\\n3", "output": "27"}, {"input": "3\\n2", "output": "9"}, {"input": "3\\n1", "output": "3"}, {"input": "2\\n0", "output": "1"}, {"input": "2\\n15", "output": "32768"}, {"input": "2\\n10", "output": "1024"}, {"input": "2\\n9", "output": "512"}, {"input": "2\\n4", "output": "16"}, {"input": "2\\n3", "output": "8"}, {"input": "2\\n2", "output": "4"}, {"input": "2\\n1", "output": "2"}, {"input": "2\\n-3", "output": "0.125"}]	7	3	float
+3	0	t	2020-03-30 19:40:24.301296+05	Делёж яблок	<p><span>n школьников делят k яблок поровну, неделящийся остаток остается в корзинке. Сколько яблок достанется каждому школьнику? Сколько яблок останется в корзинке? Программа получает на вход числа n и k и должна вывести искомое количество яблок (два числа).</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "6\\n50", "output": "8\\n2"}, {"input": "1\\n10", "output": "10\\n0"}, {"input": "5\\n25", "output": "5\\n0"}, {"input": "4\\n2", "output": "0\\n2"}]	7	3	int
+35	0	t	2020-03-30 19:41:11.068753+05	Часы-1	<p><span>С начала суток прошло H часов, M минут, S секунд (0 &le; H &lt; 12, 0 &le; M &lt; 60, 0 &le; S &lt; 60). По данным числам H, M, S определите угол (в градусах), на который повернулаcь часовая стрелка с начала суток и выведите его в виде действительного числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "9\\n9\\n37", "output": "274.808"}, {"input": "4\\n54\\n55", "output": "147.458"}, {"input": "7\\n18\\n49", "output": "219.408"}, {"input": "11\\n59\\n59", "output": "359.992"}, {"input": "0\\n0\\n1", "output": "0.00833333"}, {"input": "0\\n2\\n1", "output": "1.00833"}, {"input": "0\\n2\\n0", "output": "1.0"}, {"input": "0\\n1\\n0", "output": "0.5"}, {"input": "1\\n0\\n0", "output": "30.0"}, {"input": "1\\n2\\n6", "output": "31.05"}]	7	3	float
+\.
+
+
+--
+-- Data for Name: training_content; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.training_content (id, input, content, show_input, show_debug, readonly, text, type, order_key, topic_id) FROM stdin;
+3		print(5 + 10)\r\nprint(3 * 7, (17 - 2) * 8)\r\nprint(2 ** 16)  # две звёздочки означают возведение в степень\r\nprint(37 / 3)   # один слэш — это деление с ответом-дробью\r\nprint(37 // 3)  # два слэша считают частное от деления нацело\r\n                # это как операция div в других языках\r\nprint(37 % 3)   # процент считает остаток от деления нацело\r\n                # это как операция mod в других языках	f	t	f	\N	ace	2	2
+5	Batman	print('What is your name?')   # печатаем строку вопроса\r\nname = input()                # считываем строку ответа и кладём её в переменную name\r\nprint('Hello, ' + name + '!') # печатаем строку, склееную из трёх частей	t	t	f	\N	ace	4	2
+7	5\r\n7	a = input()\r\nb = input()\r\ns = a + b\r\nprint(s)	t	t	f	\N	ace	6	2
+9		first = 5\r\nsecond = 7\r\nprint(first * second)\r\nfirst = '5'\r\nsecond = '7'\r\nprint(first * second)	f	t	f	\N	ace	8	2
+11	5\r\n7	a = int(input())\r\nb = int(input())\r\ns = a + b\r\nprint(s)	t	t	f	\N	ace	10	2
+2			f	t	f	<p>Python 3 &mdash; это современный язык, на котором просто и приятно писать программы.</p>\r\n<p>Для печати значений в Питоне есть функция print(). Внутри круглых скобок через запятую мы пишем то, что хотим вывести. Вот программа, которая делает несколько вычислений:</p>	text	1	2
+4			f	t	f	<p>Для ввода данных в программу мы используем функцию <code>input()</code>. Она считывает одну строку.</p>\r\n<p>Вот программа, которая считывает имя пользователя и приветствует его:</p>	text	3	2
+234		#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    cout<<"Hello, World!"<<endl;\r\n    cout<<2<<"+3="<<2+3;\r\n}	f	t	f		ace	4	14
+238	5 7	#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    int a,b,c;\r\n    cin>>a>>b;\r\n    c=a+b;\r\n    cout<<c;\r\n}	t	t	f		ace	8	14
+6			f	t	f	<p>Мы будем писать программы, которые считывают данные, перерабатывают их и выводят какой-то результат. При запуске на компьютере такие программы считывают данные, которые пользователь вводит с клавиатуры, а результат выводят на экран.</p>\r\n<p>Попробуем написать программу, которая считывает два числа и выводит их сумму. Для этого считаем два числа и сохраним их в переменные <code>a</code> и <code>b</code>, пользуясь оператором присваивания <code>=</code>. Слева от оператора присваивания в программах на Питоне ставится имя переменной &mdash; например, строка из латинских букв. Справа от оператора присваивания ставится любое выражение. Имя станет указывать на результат вычисления выражения. Проиграйте эту программу и посмотрите на результаты её работы:</p>	text	5	2
+10			f	t	f	<p>Чтобы преобразовать строку из цифр в целое число, воспользуемся функцией <code>int()</code>. Например, <code>int('23')</code> вернет число <code>23</code>.</p>\r\n<p>Вот пример правильной программы, которая считывает два числа и выводит их сумму:</p>	text	9	2
+435			f	t	f	<p>Пока поработаем с целочисленными переменными, которые могут быть представлены в программе одним из следующих типов:</p>\r\n<table border="1" cellspacing="1" cellpadding="2">\r\n<tbody>\r\n<tr><th>Тип данных</th><th align="center">Допустимые значения</th><th>Память, байт</th></tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>char</strong></span></td>\r\n<td align="center"><span style="color: #000000;">символы или &hellip;-128 ... 127</span></td>\r\n<td align="center"><span style="color: #000000;">1</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned char</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 255</span></td>\r\n<td align="center"><span style="color: #000000;">1</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>short</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-32768 &hellip; 32767</span></td>\r\n<td align="center"><span style="color: #000000;">2</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned short</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 65535</span></td>\r\n<td align="center"><span style="color: #000000;">2</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>int</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-2147483648 &hellip;&nbsp;2147483647</span></td>\r\n<td align="center"><span style="color: #000000;">4</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned int</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 4294967295</span></td>\r\n<td align="center"><span style="color: #000000;">4</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>long long</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-9223372036854775808&nbsp;&hellip; 9223372036854775807</span></td>\r\n<td align="center"><span style="color: #000000;">8</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned long long</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 18446744073709551615</span></td>\r\n<td align="center"><span style="color: #000000;">8</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>Ообычно достаточно использовать всего два целых типа: int и long long.</p>\r\n<p>Среди базовых операций над целыми типами данных в языке C++ можно выделить следующие:</p>\r\n<table border="1">\r\n<tbody>\r\n<tr><th style="font-size: 12pt;">Операция</th><th style="font-size: 12pt;">Описание</th></tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">+</span></td>\r\n<td><span style="color: #000000;">сложение</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">&minus;</span></td>\r\n<td><span style="color: #000000;">вычитание</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">*</span></td>\r\n<td><span style="color: #000000;">умножение</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">/</span></td>\r\n<td><span style="color: #000000;">деление нацело</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">%</span></td>\r\n<td><span style="color: #000000;">вычисление остатка от деления</span></td>\r\n</tr>\r\n</tbody>\r\n</table>	text	13	14
+8			f	t	f	<p>Мы видим, что программа выводит <code>57</code>, хотя в реальной жизни <code>5 + 7</code> будет <code>12</code>. Это произошло потому, что Питон в третьей строчке &laquo;сложил&raquo; две строки, а не два числа. В Питоне две строки складываются так: к первой строке приписывается вторая.</p>\r\n<p><!---Обратите внимание, что в визуализаторе содержимое переменных <code>a</code> и <code>b</code> заключено в кавычки. Это означает, что в <code>a</code> и <code>b</code> лежат строки, а не числа.---></p>\r\n<p>В Питоне все данные называются объектами. Число 2 представляется объектом &laquo;число 2&raquo;, строка <code>'hello'</code> &ndash; это объект &laquo;строка <code>'hello'</code>&raquo;.</p>\r\n<p>Каждый объект относится к какому-то типу. Строки хранятся в объектах типа <code>str</code>, целые числа хранятся в объектах типа <code>int</code>, дробные числа (вещественные числа) &mdash; в объектах типа <code>float</code>. Тип объекта определяет, какие действия можно делать с объектами этого типа. Например, если в переменных <code>first</code> и <code>second</code> лежат объекты типа <code>int</code>, то их можно перемножить, а если в них лежат объекты типа <code>str</code>, то их перемножить нельзя:</p>	text	7	2
+433		#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    // комментарий\r\n}	f	f	t		ace	2	14
+233			f	t	f	<p>C++ &mdash; это мощный популярный язык программирования, сочетающий в себе высокую производительность его предка - чистого С - и высокоуровневые возможности современных языков, оперирующих типовыми алгоритмами и структурами данных, например, Java и Python.</p>\r\n<p>Практически любая программа на С++ начинается с объявления необходимых ей библиотек и соглашений и заголовка функции - в данном случае пока пустой функции main.</p>	text	1	14
+235			f	t	f	<p>Здесь в двойных кавычках содержатся строки, без кавычек - числа, участвующие в арифметическом выражении, служебное слово endl (сокращение от endline) применяется для перехода на новую строку.&nbsp;</p>\r\n<p>Для ввода данных в программу можно использовать функцию потокового ввода cin. Справа от знаков &gt;&gt; нужно указать, где сохранить вводимую информацию. Для этого надо приготовить переменную соответствующего типа.</p>\r\n<p>Вот программа, которая считывает имя пользователя и приветствует его:</p>	text	5	14
+241			f	t	f	<p>Но складывать строки можно. Сравните результаты:</p>	text	11	14
+240		#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    int first=5,second=7;\r\n    cout<<first*second<<endl;\r\n    string First="5",Second="7";\r\n    cout<<First*Second;\r\n}	f	t	f		ace	10	14
+242	5\r\n7	#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    int first=5,second=7;\r\n    cout<<first+second<<endl;\r\n    string First="5",Second="7";\r\n    cout<<First+Second;\r\n}	f	t	f		ace	12	14
+236	Batman	#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    string name;                      // объявляем переменную строкового типа name\r\n    cout<<"What is your name?"<<endl; // печатаем строку вопроса\r\n    cin>>name;                        // считываем строку ответа в переменную name\r\n    cout<<"Hello, "+name+"!";         // печатаем строку, склееную из трёх частей\r\n}	t	t	f		ace	6	14
+434			f	t	f	<p>Библиотека iostream предназначена для хранения описаний функций потоков ввода-вывода, а также ряда других часто употребляемых элементов.</p>\r\n<p>Команда "using namespace std;" говорит об использовании стандартного пространства имен, над смыслом использования которого пока не стоит задумываться. Далее идет описание основной функции main, где между фигурными скобками "{" и "}" описывается последовательность команд, которые будут выполняться после запуска программы.</p>\r\n<p>После двойного слэша // можно писать комментарии.</p>\r\n<p>Для вывода информации в С++ обычно используется функция потокового вывода cout. Справа от знаков &lt;&lt; пишем то, что хотим вывести. Вот программа с примерами вывода строковых и числовых констант:</p>	text	3	14
+237			f	t	f	<p>Мы будем писать программы, которые считывают данные, перерабатывают их и выводят какой-то результат. При запуске на компьютере такие программы считывают данные, которые пользователь вводит с клавиатуры, а результат выводят на экран.</p>\r\n<p>Попробуем написать программу, которая считывает два целых числа и выводит их сумму. Для этого считаем два числа и сохраним их в переменные <code>a</code> и <code>b&nbsp;<span style="font-family: Verdana, Arial, Helvetica, sans-serif;">целого типа</span>&nbsp;int</code>, пользуясь оператором присваивания <code>=</code>. Слева от оператора присваивания в программах на С++ ставится имя переменной &mdash; например, строка из латинских букв. Справа от оператора присваивания ставится любое выражение. Имя станет указывать на результат вычисления выражения. Запустите эту программу с разными входными данными и посмотрите на результаты её работы:</p>	text	7	14
+239			f	t	f	<p>В С++ все данные называются объектами. Число 2 представляется объектом &laquo;число 2&raquo;, строка "<code>hello"</code>&nbsp;&ndash; это объект &laquo;строка "<code>hello"</code>&raquo;.</p>\r\n<p>Каждый объект относится к какому-то типу. Иногда вместо термина "тип" употребляют термин "класс", а вместо термина "объект" - "экземпляр класса".</p>\r\n<p>Строки хранятся в объектах типа <code>string</code>, целые числа хранятся в объектах типа <code>int</code>, дробные числа (вещественные числа) &mdash; в объектах типа <code>float</code>. Тип объекта определяет, какие действия можно делать с объектами этого типа. Например, если в переменных first&nbsp;и second&nbsp;лежат объекты типа <code>int</code>, то их можно перемножить, а если в их почти "тёзках" First и Second лежат объекты типа string, то их перемножить нельзя:</p>	text	9	14
+436		//Пример деления с остатком\r\n#include <iostream>\r\nusing namespace std;          \r\nint main(){\r\n  cout << 13/5 << endl;         // 2\r\n  cout << 13%5 << endl;         // 3\r\n  int a=167, b=6;\r\n  cout << a/b << endl;          // 27\r\n  cout << a%b << endl;          // 5\r\n  }	f	t	f		ace	14	14
+438			f	t	f	<p><strong>Этих знаний нам уже достаточно, чтобы решать простые арифметические задачи.</strong></p>\r\n<p><strong>Кнопка перехода к&nbsp;</strong><strong>оглавлению и&nbsp;</strong><strong>задачам&nbsp;</strong><strong><span style="font-size: x-large;">&equiv;&nbsp;</span>- в правом верхнем углу</strong></p>	text	15	14
+\.
+
+
+--
+-- Data for Name: training_course; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.training_course (id, show, title, slug, about, content, content_bottom, order_key, last_modified, author_id, lang_id) FROM stdin;
+1	t	Python	python	<p>Python 3 &mdash; это современный язык, на котором просто и приятно писать программы.</p>			7	2020-03-20 18:47:22.463358+05	7	1
+3	t	С#	csharp	<p>Курс - в разработке</p>	<h2>Курс находится в разработке</h2>		11	2019-11-24 03:17:01.948562+05	\N	3
+2	t	C++	cplusplus	<p>Все интереснейшие проекты и задачи будут так или иначе связаны с C++.</p>\r\n<p>И это - основной инструмент для решения олимпиадных задач!</p>			10	2020-03-20 18:55:08.97196+05	\N	2
+\.
+
+
+--
+-- Data for Name: training_solution; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.training_solution (id, last_changes, version_best, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score) FROM stdin;
+3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	{"content": "def power(a,n):\\r\\n    m = 1\\r\\n    for i in range(abs(n)):\\r\\n        m = m * a\\r\\n    if (n >= 0):\\r\\n        print(m)\\r\\n    else:\\r\\n        res = 1 / m\\r\\n        print(res)\\r\\na = float(input())\\r\\nn = int(input())\\r\\n\\r\\npower(a,n)", "datetime": "2020-03-24 07:23:06.652443", "tests_score": 5.0}	[]	263	7	\N	\N	0	5
+3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	{"content": "#include <iostream>\\r\\n#include <cstdlib> // для system\\r\\nusing namespace std;\\r\\n\\r\\nint main() \\r\\n{ \\r\\n    cout << \\"Hello, world!\\" << endl;\\r\\n    return 0; \\r\\n}", "datetime": "2020-03-24 10:17:54.626791", "tests_score": 0.0}	[]	132	7	\N	\N	0	0
+3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	{"content": "n = int(input())\\r\\nk = int(input())\\r\\nprint(k//n)\\r\\nprint(k%n)", "datetime": "2020-03-24 07:20:11.491122", "tests_score": 5.0}	[]	3	7	\N	\N	0	5
+3323	word = input()\r\nk = 0\r\nfor ch in word :\r\n    if(ch != '.'):\r\n        k+=1\r\n    else :\r\n        break\r\nprint('0'+word[k:])	{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-03-24 07:21:21.758177", "tests_score": 5.0}	[]	259	7	\N	\N	0	5
+3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	{"content": "h = int(input())\\r\\nm = int(input())\\r\\ns = int(input())\\r\\n\\r\\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)", "datetime": "2020-03-24 07:21:43.726922", "tests_score": 5.0}	[]	260	7	\N	\N	0	5
+3325	a=float(input())\r\nprint(a%30*12)	{"content": "a=float(input())\\r\\nprint(a%30*12)", "datetime": "2020-03-24 07:21:57.985175", "tests_score": 5.0}	[]	261	7	\N	\N	0	5
+3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	{"content": "s = input()\\r\\nprint(s[2])\\r\\nprint(s[-2])\\r\\nprint(s[:5])\\r\\nprint(s[:-2])\\r\\nprint(s[::2])\\r\\nprint(s[1::2])\\r\\nprint(s[::-1])\\r\\nprint(s[::-2])\\r\\nprint(len(s))", "datetime": "2020-03-24 07:22:23.689728", "tests_score": 5.0}	[]	262	7	\N	\N	0	5
+\.
+
+
+--
+-- Data for Name: training_taskitem; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, number, compiler_check, manual_check, max_score) FROM stdin;
+132	t	delezh-yablok	3	3	14	3	t	f	5
+3	t	delezh-yablok	3	3	2	1	t	f	5
+259	t	drobnaia-chast	4	25	2	2	t	f	5
+260	t	chasy-1	5	35	2	3	t	f	5
+261	t	chasy-2	6	36	2	4	t	f	5
+262	t	delaem-srezy	7	50	2	5	t	f	5
+263	t	stepen	8	96	2	6	t	f	5
+\.
+
+
+--
+-- Data for Name: training_topic; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.training_topic (id, show, title, slug, order_key, last_modified, author_id, course_id, number) FROM stdin;
+25	t	Тестовая тема	testovaya-tema	1	2019-11-24 03:17:23.574212+05	\N	3	1
+14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1
+2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-03-24 12:18:06.715156+05	\N	1	1
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 2, true);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 66, true);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 120, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 20, true);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 86, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8039, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 38, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 67, true);
+
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.django_site_id_seq', 1, false);
+
+
+--
+-- Name: groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.groups_group_id_seq', 7, true);
+
+
+--
+-- Name: groups_groupcourse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.groups_groupcourse_id_seq', 7, true);
+
+
+--
+-- Name: groups_groupmember_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.groups_groupmember_id_seq', 104, true);
+
+
+--
+-- Name: langs_lang_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.langs_lang_id_seq', 3, true);
+
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.news_news_id_seq', 7, true);
+
+
+--
+-- Name: service_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.service_menu_id_seq', 1, true);
+
+
+--
+-- Name: service_menuitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.service_menuitem_id_seq', 1, true);
+
+
+--
+-- Name: tasks_source_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.tasks_source_id_seq', 4, true);
+
+
+--
+-- Name: tasks_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.tasks_task_id_seq', 1453, true);
+
+
+--
+-- Name: training_content_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.training_content_id_seq', 438, true);
+
+
+--
+-- Name: training_course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.training_course_id_seq', 7, true);
+
+
+--
+-- Name: training_solution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.training_solution_id_seq', 3328, true);
+
+
+--
+-- Name: training_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.training_taskitem_id_seq', 263, true);
+
+
+--
+-- Name: training_topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.training_topic_id_seq', 26, true);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: django_site django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_site
+    ADD CONSTRAINT django_site_domain_a2e37b91_uniq UNIQUE (domain);
+
+
+--
+-- Name: django_site django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_site
+    ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_group groups_group_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_group
+    ADD CONSTRAINT groups_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_groupcourse groups_groupcourse_group_id_course_id_2eea2d8b_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupcourse
+    ADD CONSTRAINT groups_groupcourse_group_id_course_id_2eea2d8b_uniq UNIQUE (group_id, course_id);
+
+
+--
+-- Name: groups_groupcourse groups_groupcourse_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupcourse
+    ADD CONSTRAINT groups_groupcourse_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_groupmember groups_groupmember_group_id_user_id_0156d33b_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupmember
+    ADD CONSTRAINT groups_groupmember_group_id_user_id_0156d33b_uniq UNIQUE (group_id, user_id);
+
+
+--
+-- Name: groups_groupmember groups_groupmember_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupmember
+    ADD CONSTRAINT groups_groupmember_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: langs_lang langs_lang_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.langs_lang
+    ADD CONSTRAINT langs_lang_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: langs_lang langs_lang_provider_name_2bb81b34_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.langs_lang
+    ADD CONSTRAINT langs_lang_provider_name_2bb81b34_uniq UNIQUE (provider_name);
+
+
+--
+-- Name: news_news news_news_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.news_news
+    ADD CONSTRAINT news_news_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: service_menu service_menu_key_key; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menu
+    ADD CONSTRAINT service_menu_key_key UNIQUE (key);
+
+
+--
+-- Name: service_menu service_menu_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menu
+    ADD CONSTRAINT service_menu_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: service_menuitem service_menuitem_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menuitem
+    ADD CONSTRAINT service_menuitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: service_sitesettings service_sitesettings_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_sitesettings
+    ADD CONSTRAINT service_sitesettings_pkey PRIMARY KEY (site_ptr_id);
+
+
+--
+-- Name: tasks_source tasks_source_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_source
+    ADD CONSTRAINT tasks_source_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tasks_task tasks_task_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task
+    ADD CONSTRAINT tasks_task_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: training_content training_content_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_content
+    ADD CONSTRAINT training_content_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: training_course training_course_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_course
+    ADD CONSTRAINT training_course_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: training_course training_course_slug_key; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_course
+    ADD CONSTRAINT training_course_slug_key UNIQUE (slug);
+
+
+--
+-- Name: training_solution training_solution_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_solution
+    ADD CONSTRAINT training_solution_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: training_taskitem training_taskitem_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_taskitem
+    ADD CONSTRAINT training_taskitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: training_topic training_topic_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_topic
+    ADD CONSTRAINT training_topic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: django_site_domain_a2e37b91_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX django_site_domain_a2e37b91_like ON public.django_site USING btree (domain varchar_pattern_ops);
+
+
+--
+-- Name: groups_group_author_id_82ae1c40; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_group_author_id_82ae1c40 ON public.groups_group USING btree (author_id);
+
+
+--
+-- Name: groups_groupcourse_course_id_dbb32c7d; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupcourse_course_id_dbb32c7d ON public.groups_groupcourse USING btree (course_id);
+
+
+--
+-- Name: groups_groupcourse_group_id_e5ae8eee; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupcourse_group_id_e5ae8eee ON public.groups_groupcourse USING btree (group_id);
+
+
+--
+-- Name: groups_groupmember_group_id_1c1b676d; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupmember_group_id_1c1b676d ON public.groups_groupmember USING btree (group_id);
+
+
+--
+-- Name: groups_groupmember_user_id_f9e9f041; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupmember_user_id_f9e9f041 ON public.groups_groupmember USING btree (user_id);
+
+
+--
+-- Name: langs_lang_provider_name_2bb81b34_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX langs_lang_provider_name_2bb81b34_like ON public.langs_lang USING btree (provider_name varchar_pattern_ops);
+
+
+--
+-- Name: news_news_author_id_9f88be71; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX news_news_author_id_9f88be71 ON public.news_news USING btree (author_id);
+
+
+--
+-- Name: service_menu_key_eca43a13_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX service_menu_key_eca43a13_like ON public.service_menu USING btree (key varchar_pattern_ops);
+
+
+--
+-- Name: service_menuitem_menu_id_5f55d810; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX service_menuitem_menu_id_5f55d810 ON public.service_menuitem USING btree (menu_id);
+
+
+--
+-- Name: tasks_task_author_id_33a50930; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX tasks_task_author_id_33a50930 ON public.tasks_task USING btree (author_id);
+
+
+--
+-- Name: tasks_task_source_id_b71c4722; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX tasks_task_source_id_b71c4722 ON public.tasks_task USING btree (source_id);
+
+
+--
+-- Name: training_content_topic_id_e97d132d; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_content_topic_id_e97d132d ON public.training_content USING btree (topic_id);
+
+
+--
+-- Name: training_course_author_id_3cbb2fb6; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_course_author_id_3cbb2fb6 ON public.training_course USING btree (author_id);
+
+
+--
+-- Name: training_course_lang_id_f81c2a81; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_course_lang_id_f81c2a81 ON public.training_course USING btree (lang_id);
+
+
+--
+-- Name: training_course_slug_a416a469_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_course_slug_a416a469_like ON public.training_course USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: training_solution_taskitem_id_a85bfd98; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_solution_taskitem_id_a85bfd98 ON public.training_solution USING btree (taskitem_id);
+
+
+--
+-- Name: training_solution_user_id_b993ae36; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_solution_user_id_b993ae36 ON public.training_solution USING btree (user_id);
+
+
+--
+-- Name: training_taskitem_slug_2dc22a40; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_taskitem_slug_2dc22a40 ON public.training_taskitem USING btree (slug);
+
+
+--
+-- Name: training_taskitem_slug_2dc22a40_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_taskitem_slug_2dc22a40_like ON public.training_taskitem USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: training_taskitem_task_id_bc49ca04; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_taskitem_task_id_bc49ca04 ON public.training_taskitem USING btree (task_id);
+
+
+--
+-- Name: training_taskitem_topic_id_bb497ed2; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_taskitem_topic_id_bb497ed2 ON public.training_taskitem USING btree (topic_id);
+
+
+--
+-- Name: training_topic_author_id_14fb1b18; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_topic_author_id_14fb1b18 ON public.training_topic USING btree (author_id);
+
+
+--
+-- Name: training_topic_course_id_1f4dc26e; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_topic_course_id_1f4dc26e ON public.training_topic USING btree (course_id);
+
+
+--
+-- Name: training_topic_slug_a2187868; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_topic_slug_a2187868 ON public.training_topic USING btree (slug);
+
+
+--
+-- Name: training_topic_slug_a2187868_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_topic_slug_a2187868_like ON public.training_topic USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_group groups_group_author_id_82ae1c40_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_group
+    ADD CONSTRAINT groups_group_author_id_82ae1c40_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_groupcourse groups_groupcourse_course_id_dbb32c7d_fk_training_course_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupcourse
+    ADD CONSTRAINT groups_groupcourse_course_id_dbb32c7d_fk_training_course_id FOREIGN KEY (course_id) REFERENCES public.training_course(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_groupcourse groups_groupcourse_group_id_e5ae8eee_fk_groups_group_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupcourse
+    ADD CONSTRAINT groups_groupcourse_group_id_e5ae8eee_fk_groups_group_id FOREIGN KEY (group_id) REFERENCES public.groups_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_groupmember groups_groupmember_group_id_1c1b676d_fk_groups_group_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupmember
+    ADD CONSTRAINT groups_groupmember_group_id_1c1b676d_fk_groups_group_id FOREIGN KEY (group_id) REFERENCES public.groups_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_groupmember groups_groupmember_user_id_f9e9f041_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupmember
+    ADD CONSTRAINT groups_groupmember_user_id_f9e9f041_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: news_news news_news_author_id_9f88be71_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.news_news
+    ADD CONSTRAINT news_news_author_id_9f88be71_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: service_menuitem service_menuitem_menu_id_5f55d810_fk_service_menu_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_menuitem
+    ADD CONSTRAINT service_menuitem_menu_id_5f55d810_fk_service_menu_id FOREIGN KEY (menu_id) REFERENCES public.service_menu(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: service_sitesettings service_sitesettings_site_ptr_id_9a57a8dc_fk_django_site_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.service_sitesettings
+    ADD CONSTRAINT service_sitesettings_site_ptr_id_9a57a8dc_fk_django_site_id FOREIGN KEY (site_ptr_id) REFERENCES public.django_site(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: tasks_task tasks_task_author_id_33a50930_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task
+    ADD CONSTRAINT tasks_task_author_id_33a50930_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: tasks_task tasks_task_source_id_b71c4722_fk_tasks_source_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task
+    ADD CONSTRAINT tasks_task_source_id_b71c4722_fk_tasks_source_id FOREIGN KEY (source_id) REFERENCES public.tasks_source(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_content training_content_topic_id_e97d132d_fk_training_topic_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_content
+    ADD CONSTRAINT training_content_topic_id_e97d132d_fk_training_topic_id FOREIGN KEY (topic_id) REFERENCES public.training_topic(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_course training_course_author_id_3cbb2fb6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_course
+    ADD CONSTRAINT training_course_author_id_3cbb2fb6_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_course training_course_lang_id_f81c2a81_fk_langs_lang_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_course
+    ADD CONSTRAINT training_course_lang_id_f81c2a81_fk_langs_lang_id FOREIGN KEY (lang_id) REFERENCES public.langs_lang(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_solution training_solution_taskitem_id_a85bfd98_fk_training_taskitem_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_solution
+    ADD CONSTRAINT training_solution_taskitem_id_a85bfd98_fk_training_taskitem_id FOREIGN KEY (taskitem_id) REFERENCES public.training_taskitem(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_solution training_solution_user_id_b993ae36_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_solution
+    ADD CONSTRAINT training_solution_user_id_b993ae36_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_taskitem training_taskitem_task_id_bc49ca04_fk_tasks_task_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_taskitem
+    ADD CONSTRAINT training_taskitem_task_id_bc49ca04_fk_tasks_task_id FOREIGN KEY (task_id) REFERENCES public.tasks_task(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_taskitem training_taskitem_topic_id_bb497ed2_fk_training_topic_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_taskitem
+    ADD CONSTRAINT training_taskitem_topic_id_bb497ed2_fk_training_topic_id FOREIGN KEY (topic_id) REFERENCES public.training_topic(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_topic training_topic_author_id_14fb1b18_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_topic
+    ADD CONSTRAINT training_topic_author_id_14fb1b18_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_topic training_topic_course_id_1f4dc26e_fk_training_course_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_topic
+    ADD CONSTRAINT training_topic_course_id_1f4dc26e_fk_training_course_id FOREIGN KEY (course_id) REFERENCES public.training_course(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

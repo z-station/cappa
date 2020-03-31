@@ -1,0 +1,3 @@
+{% for menuitem in object.menuitems.all %}
+    <a class="menu__item" href="{{ menuitem.url }}">{{ menuitem.name }}</a>
+{% endfor %}
