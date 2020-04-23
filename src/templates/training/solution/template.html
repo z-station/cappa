@@ -5,7 +5,7 @@
 {% block content %}
     <div class="one-col">
         <div class="white fp-content">
-            <h1>Решение</h1>
+            <h1>Решение {% if not object.is_count %}(вне зачета){% endif %}</h1>
             {% if object.taskitem.manual_check %}
                 {% include 'training/solution/parts/total_by_manual.html' %}
             {% else %}
@@ -15,7 +15,7 @@
         <div class="white fp-content">
             <h3>Листинг решения</h3>
             <div class="js__editor" data-lang="{{ object.taskitem.lang.provider_name }}">
-                <div class="js__editor-ace">{{ object.version_best.content }}</div>
+                <div class="js__editor-ace">{{ object.content }}</div>
             </div>
         </div>
 

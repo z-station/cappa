@@ -17,9 +17,11 @@ SRC_DIR = os.path.join(PROJECT_ROOT, 'src')
 TESTS_DIR = os.path.join(PROJECT_ROOT, 'tests')
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
+PY_TMP_DIR = os.path.join(TMP_DIR, 'python')
 
-access_mode = 0o700
+access_mode = 0o744
 os.makedirs(TMP_DIR, access_mode, exist_ok=True)
+os.makedirs(PY_TMP_DIR, access_mode, exist_ok=True)
 os.makedirs(MEDIA_ROOT, access_mode, exist_ok=True)
 
 MEDIA_URL = '/media/'
@@ -72,6 +74,7 @@ INSTALLED_APPS = [
     'src.profile',
     'tinymce',
     'mptt',
+    'django_admin_listfilter_dropdown',
     'adminsortable2',
     'src',
     'src.news',
@@ -136,10 +139,30 @@ ADMIN_REORDER = (
     },
     {
         'app': 'tasks', 'label': u'Задачник',
-        'models': ('tasks.Task', 'tasks.Source',)
+        'models': ('tasks.Task', 'tasks.Tag', 'tasks.Source')
     },
     {
         'app': 'news', 'label': u'Контент',
         'models': ('news.News', 'service.Menu')
     },
 )
+
+# ~========== DOCKER SANDBOX ===========~
+# Половину от всех ядер отдаем песочнице
+cores_for_docker = ','.join([str(num) for num in range(os.cpu_count()//2)])
+DOCKER_CONF = {
+    "python": {
+        "image_tag": "py-image",
+        "container_name": "py-container",
+        "path": os.path.join(SRC_DIR, 'langs', 'providers', 'python'),
+        "dir": PY_TMP_DIR,
+        "user": "sbox-user",
+        "timeout_duration": 5,      # ограниечение на время выполнения скрипта в песочнице
+        "cpuset_cpus": cores_for_docker,  # cpus - номера ядер, занимаемые конейнером
+        'cpu_quota': -1,            # cpu-quota - максимум нагрузки на занимаемые ядра  (-1 это использование до 100%)
+        "cpu_shares": 512,          # cpu-shares - относительное количество циклов процессора (относительно 1024)
+        "mem_reservation": '256m',  # memory-reservation - мягкое ограничение на память
+        "mem_limit": '512m',        # memory - жесткое ограничение на память
+        "memswap_limit": '512m',    # memory-swap - Ограничение на файл подкачки
+    }
+}

@@ -35,7 +35,6 @@ class SolutionAdmin(admin.ModelAdmin):
     status_name.short_description = 'статус'
 
     model = Solution
-    # exclude = ('last_changes', 'version_list', 'version_best')
-    # readonly_fields = ('status_name', 'tests_score', 'user', 'taskitem')
     list_display = ('get_user', 'taskitem', 'status_name')
-    search_fields = ('user__first_name', 'user__last_name')
+    search_fields = ('user__first_name', 'user__last_name', 'taskitem__task__title')
+    exclude = ('last_changes', 'version_list')

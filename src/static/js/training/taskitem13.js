@@ -144,15 +144,6 @@ var taskItemPage = function(e){
                         }
                         tr.querySelector('.js__form__test-result pre').innerHTML = test.output + test.error
                     })
-                    if(response.tests_result.success){
-                        if(!document.querySelector('h1 .success')){
-                            var span = document.createElement('span')
-                            span.classList.add('success')
-                            span.textContent = 'Решено'
-                            document.querySelector('h1').appendChild(span)
-
-                        }
-                    }
                     if(response.tests_result.id){
                         var sidebarItem = document.querySelector('#js__' + response.tests_result.id)
                         sidebarItem && sidebarItem.classList.remove('status__0', 'status__1', 'status__2', 'status__3')

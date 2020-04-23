@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from src.training.models import Topic, Content
-from src.training.widgets import AceWidget
+from src.widgets.ace import AceWidget
 from .utils import Response
 
 
@@ -46,7 +46,7 @@ class ContentAdminForm(forms.ModelForm):
 
 class ContentForm(forms.Form):
 
-    input = forms.CharField(label="Ввод", required=False)
+    input = forms.CharField(label="Консольный ввод", required=False)
     content = forms.CharField(label='')
     output = forms.CharField(
         label="Вывод", required=False,

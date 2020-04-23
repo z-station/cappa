@@ -4,7 +4,13 @@
     <div class="one-col group-course white">
         <h1>{{ object.group.title }}</h1>
         <h4>Результаты по курсу {{ object.course }}</h4>
-
+        <form class="search__form" id="js__search-form" >
+            <div class="input-group input-group-sm">
+                <input type="text" name="search" class="form-control" id="js__search-input"
+                       placeholder="Поиск участников, через запятую">
+                <input type="submit" value="" title="поиск">
+            </div>
+        </form>
         <div class="course__fake-table-container js__course__fake-table-container">
             <div class="course__fake-table js__course__fake-table"></div>
         </div>
@@ -33,7 +39,7 @@
                 <tbody>
                     {% for member in object.group.members %}
                         <tr id="js__member-{{ member.id }}">
-                            <td title="{{ member }}" class="wide">{{ member.get_full_name }}</td>
+                            <td title="{{ member }}" class="wide js__username">{{ member.get_full_name }}</td>
                             <td class="js__total_solved_tasks wide"></td>
                             <td class="js__total_score wide"></td>
                             {% for topic in course_data.topics %}
@@ -59,11 +65,12 @@
 
          <table class="course__table-legend">
             <tr><td class="status__0"></td><td>Нет попыток</td></tr>
+            <tr><td class="not-checked"></td><td>В процессе решения</td></tr>
             <tr><td class="status__1">-</td><td>Нет решения</td></tr>
             <tr><td class="status__2">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
-            <tr><td class="status__3">+</td><td>Решено</td></tr>
-            <tr><td class="not-checked"></td><td>В процессе решения (для режима ручной проверки)</td></tr>
+            <tr><td class="status__3">+</td><td>Решено на максимальный балл</td></tr>
             <tr><td class="awaiting-check"></td><td>Отправлено на проверку (для режима ручной проверки)</td></tr>
+            <tr><td class="not-count"></td><td>Решение вне зачета (баллы не засчитываются)</td></tr>
          </table>
     </div>
 {% endblock %}

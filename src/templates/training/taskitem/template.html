@@ -21,6 +21,12 @@
                     <div class="text-small">Оценка: {{ solution.score|cut_zero }} баллов</div>
                 {% endif %}
             {% endif %}
+            {% if object.topic.end_time %}
+                <div class="text-small" title="Решения после указанной даты не засчитывается">
+                    <span>Ограничение по времени:</span>
+                    <span class="js__utc-time" data-utc-time="{{ object.topic.end_time|date:'Y-m-d H:i:s.u'}}"></span>
+                </div>
+            {% endif %}
             </p>
 
             <form method="POST" class="editor-form js__editor-form">
@@ -38,12 +44,10 @@
                 <div class="control__bar taskitem">
                     <div class="control__bar-col col__1">
                         {% if request.user.is_active %}
-                            {% if object.manual_check %}
-                                <div class="js__editor-btn js__editor-btn-ready {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить на проверку"></div>
-                            {% endif %}
+                            <div class="js__editor-btn js__editor-btn-ready {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить на проверку"></div>
                             <div class="js__editor-btn js__editor-btn-versions {% if not solution %} not-versions{% endif %}"
                                  title="Страница решения"
-                                 onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
+                                 onclick="window.open('{{ object.get_absolute_url }}solution/?user={{ request.user.id }}', '_blank')"
                             ></div>
                             <div class="js__editor-btn js__editor-btn-version" title="Создать версию решения"></div>
                             <div class="js__editor-btn js__editor-btn-save {% if solution and solution.manual_status != '0' %}disabled{% endif %} " title="Сохранить"></div>
@@ -88,7 +92,7 @@
                         <thead>
                         <tr>
                             <th class="form__test-counter">№</th>
-                            <th class="form__test-input">Ввод</th>
+                            <th class="form__test-input">Консольный ввод</th>
                             <th class="form__test-output">Правильный ответ</th>
                             <th class="js__form__test-result"></th>
                         </tr>

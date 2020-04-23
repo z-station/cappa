@@ -1199,18 +1199,26 @@ main .content.courses__container {
 
 /* user solution*/
 
-.solution-info {
-    margin: 0 0 20px -5px;
+.solution__info {
+    margin: 0 0 0 -5px;
 }
 
-.solution-info tr td {
+.solution__info-comment p {
+    margin: 0;
+}
+
+.solution__info p:last-child {
+    margin-bottom: 0;
+}
+
+.solution__info tr td {
     padding: 5px 20px 5px 5px;
 }
-.solution-info tr td:first-child {
+.solution__info tr td:first-child {
     font-weight: bold;
 }
 
-.solution-info h4 {
+.solution__info h4 {
     margin: 5px;
 }
 
@@ -1269,13 +1277,18 @@ main .content.courses__container {
 }
 
 .awaiting-check {
-    background-color: #e4e3e3;
+    background-color: #63b6fd;
 }
+
+.not-count {
+    background-color: #c1c1c1;
+}
+
 .subtitle {
     margin-bottom: 10px;
 }
 
-.solution-info-container {
+.solution__info-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -1352,25 +1365,28 @@ li.error {
     border-top: none;
     border-bottom: 1px solid #dee2e6;
     white-space: nowrap;
+    padding-left: 10px;
 }
 
 .js__form__tests-table tbody tr td {
     padding: 10px;
     vertical-align: middle;
-    border-bottom: 1px solid #dee2e6;
+    border: 1px solid #fff;
 }
-
+.js__form__tests-table tbody tr td:first-child {
+    min-width: 40px;
+    width: 40px;
+    max-width: 40px;
+}
+.js__form__tests-table tbody tr td:not(:first-child) {
+    min-width: 165px;
+}
 .js__form__tests-table tbody tr.success {
     background-color: #96ff8e;
 }
 
 .js__form__tests-table tbody tr.unluck {
     background-color: #ffae95;
-}
-
-.js__form__tests-table tbody tr.success td,
-.js__form__tests-table tbody tr.unluck td {
-    border-bottom: 5px solid #fff;
 }
 
 .form__test-counter {
@@ -1418,15 +1434,15 @@ li.error {
     background-color: #337ab7;
 }
 
-.groups__table-container {
+.groups .groups__table-container {
     overflow-x: auto;
 }
 
-.groups__table tr + tr {
+.groups .groups__table tr + tr {
     border-top: 1px solid #dee2e6;
 }
 
-.groups__table tr td {
+.groups .groups__table tr td {
     padding: 5px;
 }
 
@@ -1507,6 +1523,46 @@ li.error {
 /* group course */
 
 
+.group-course .search__form {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.group-course .search__form input[type=text] {
+    padding-right: 35px;
+    border-radius: 3px 0 0 3px;
+}
+
+.group-course .search__form input[type=submit] {
+    background: #afafaf url('../img/search.svg') no-repeat center;
+    background-size: 24px;
+    width: 31px;
+    height: 31px;
+    border: none;
+    border-radius: 0 3px 3px 0;
+    transition: all 400ms ease;
+    margin-left: -31px;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.group-course .search__form input[type=submit]:hover {
+    background-color: #337ab7;
+}
+
+.group-course  .groups__table-container {
+    overflow-x: auto;
+}
+
+.group-course .groups__table tr + tr {
+    border-top: 1px solid #dee2e6;
+}
+
+.group-course .groups__table tr td {
+    padding: 5px;
+}
+
 
 .group-course .course__fake-table-container,
 .group-course .course__table-container {
@@ -1515,7 +1571,7 @@ li.error {
 }
 
 .group-course .course__fake-table {
-    height: 20px;
+    height: 1px;
 }
 
 .group-course .course__table {
@@ -1525,12 +1581,17 @@ li.error {
 }
 
 .group-course .course__table tr td.awaiting-check {
-    background: url('../img/awaiting.svg') no-repeat center center #c1c1c1;
+    background: url('../img/awaiting.svg') no-repeat center center #63b6fd;
     background-size: 20px;
 }
 
 .group-course .course__table tr td.not-checked {
     background: url('../img/process.svg') no-repeat center center;
+    background-size: 20px;
+}
+
+.group-course .course__table tr td.not-count {
+    background-color: #c1c1c1 !important;
     background-size: 20px;
 }
 
@@ -1634,7 +1695,7 @@ li.error {
     min-width: 100px;
 }
 .group-course .course__table-legend tr td.awaiting-check {
-    background: url('../img/awaiting.svg') no-repeat center center #c1c1c1;
+    background: url('../img/awaiting.svg') no-repeat center center #63b6fd;
     background-size: 20px;
 }
 
@@ -1643,6 +1704,10 @@ li.error {
     background-size: 20px;
 }
 
+.group-course .course__table-legend tr td.not-count {
+    background-color: #c1c1c1;
+    background-size: 20px;
+}
 .group-course .course__table-legend td:hover {
     outline: 2px solid #40484a;
 }
@@ -1657,8 +1722,9 @@ li.error {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 30px;
 }
 .group-course .loader__bg {
     background-color: #fff;
@@ -1737,7 +1803,6 @@ li.error {
 .login__form .msg {
     color: #dc3545;
     margin-bottom: 5px;
-    height: 20px;
     width: 100%;
 }
 
@@ -1776,11 +1841,11 @@ li.error {
 
 .signup__form .msg {
     color: #dc3545;
+}
+.signup__form small {
     margin-bottom: 5px;
-    height: 20px;
     width: 100%;
 }
-
 /* адаптив */
 
 @media screen and (max-width: 1200px) {

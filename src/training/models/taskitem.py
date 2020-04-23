@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
-from datetime import datetime
+from django.utils import timezone
 from django.urls import reverse
 from src.tasks.models import Task
 from src.training.models import Topic
@@ -95,7 +95,6 @@ class Solution(models.Model):
     MS__READY_TO_CHECK = '1'
     MS__CHECK_IN_PROGRESS = '2'
     MS__CHECKED = '3'
-    MS__BLOCKED_STATUSES = (MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS, MS__CHECKED)
     MS__AWAITING_CHECK = (MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS)
     MS__CHOICES = (
         (MS__NOT_CHECKED, 'нет'),
@@ -115,18 +114,26 @@ class Solution(models.Model):
         (S__SUCCESS, 'решено'),
     )
 
-    taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
+    taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='solutions')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
+    datetime = models.DateTimeField(verbose_name='дата/время отправки', blank=True, null=True)
+    is_count = models.BooleanField(verbose_name="баллы идут в зачет", default=True)
+    is_locked = models.BooleanField(verbose_name="запрещено изменять", default=False)
     manual_status = models.CharField(
         verbose_name='статус проверки преподавателем', max_length=255,
         choices=MS__CHOICES, default=MS__NOT_CHECKED
     )
-    tests_score = models.FloatField(verbose_name='оценка по автотестам', blank=True, null=True)
     manual_score = models.FloatField(verbose_name='оценка преподавателя', blank=True, null=True)
+    tests_score = models.FloatField(verbose_name='оценка по автотестам', blank=True, null=True)
+
     last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
-    version_best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
+    content = models.TextField(verbose_name="листинг решения", blank=True, default='')
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
     comment = HTMLField(verbose_name="комментарий к решению", blank=True, null=True)
+    teacher = models.ForeignKey(
+        UserModel, verbose_name='преподаватель', blank=True, null=True, related_name='controlled_solutions',
+        help_text='заполняется автоматически, когда преподаватель выставляет оценку'
+    )
 
     @property
     def score(self):
@@ -157,7 +164,9 @@ class Solution(models.Model):
 
     @property
     def status_name(self) -> str:
+
         """ Возващает текст статуса """
+
         status = self.status
         for choice in self.S__CHOICES:
             if choice[0] == status:
@@ -169,27 +178,23 @@ class Solution(models.Model):
             if choice[0] == self.manual_status:
                 return choice[1]
 
-    @staticmethod
-    def _get_version_data(content: str, tests_score=None) -> dict:
-        """ Возвращает структуру версии решения для хранения в JSON"""
-        return {
-            "datetime": str(datetime.now()),
-            "content": content,
-            "tests_score": tests_score,
-        }
+    def create_version(self, content):
 
-    def update(self, content, tests_score=None):
-        self.last_changes = content
-        if self.manual_status not in self.MS__BLOCKED_STATUSES:
-            version = self._get_version_data(content=content, tests_score=tests_score)
-            self.version_best = version
-            self.tests_score = version['tests_score']
+        """ Создать верисю решения задачи """
 
-    def create_version(self, content, tests_score=None):
-        version = self._get_version_data(content=content, tests_score=tests_score)
         if len(self.version_list) == 10:
             self.version_list.pop(0)
-        self.version_list.append(version)
+        self.version_list.append({
+            "datetime": str(timezone.now().strftime(format='%Y-%m-%d %H:%M:%S.%f')),
+            "content": content,
+        })
+
+    def set_is_count(self):
+
+        """ Если время на решение задачи истеко то решение вне зачета """
+
+        if self.taskitem.topic.end_time is not None:
+            self.is_count = timezone.now() <= self.taskitem.topic.end_time
 
     def get_breadcrumbs(self):
         return [

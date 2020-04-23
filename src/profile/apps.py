@@ -1,4 +1,6 @@
 from django.apps import AppConfig
+from datetime import datetime
+import pytz
 
 
 class ProfileAppConfig(AppConfig):
@@ -15,10 +17,15 @@ class ProfileAppConfig(AppConfig):
             from src.training.models import Solution
             data = {}
             for solution in Solution.objects.select_related('taskitem').filter(user=self, taskitem__topic__course=course):
+                if solution.datetime is None:
+                    dt = ''
+                else:
+                    dt = solution.datetime.strftime(format='%Y-%m-%d %H:%M:%S.%f')
                 solution_data = {
                     'status': solution.status,
                     'score': solution.score,
-                    'datetime': solution.version_best['datetime'] if solution.version_best else '',
+                    'is_count': solution.is_count,
+                    'datetime': dt,
                     'url': '%s?user=%d' % (solution.get_absolute_url(), self.id),
                 }
                 if solution.taskitem.manual_check:

@@ -38,7 +38,6 @@ class GroupView(View):
 
         group = self.get_object(*args, **kwargs)
         form = None
-        user_is_member = request.user in group.members
         if request.user.is_active:
             if request.user not in group.members:
                 form = GroupInviteForm(instance=group)
@@ -47,7 +46,8 @@ class GroupView(View):
             context={
                 'object': group,
                 'form': form,
-                'user_is_member': user_is_member,
+                'user_is_member': request.user in group.members,
+                'user_is_teacher': request.user == group.author,
             },
             request=request
         )

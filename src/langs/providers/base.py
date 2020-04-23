@@ -10,9 +10,23 @@ class BaseProvider(object):
     @classmethod
     def _compare_str(cls, etalon: str, val: str) -> bool:
 
-        """ Сравнение двух строковых значений """
+        """ Сравнение двух строковых значений построчно """
 
-        return etalon == val
+        result = True
+        new_line = '\n'
+        if new_line not in etalon:
+            result = etalon == val
+        else:
+            e_list = etalon.split(new_line)
+            v_list = val.split(new_line)
+            if len(e_list) != len(v_list):
+                result = False
+            else:
+                for e, v in zip(e_list, v_list):
+                    if e != v:
+                        result = False
+                        break
+        return result
 
     @classmethod
     def _compare_int(cls, etalon: str, val: str) -> bool:
@@ -26,10 +40,21 @@ class BaseProvider(object):
             - проверить, если эталон это несколько значений, каждое с новой строки, то сравнивать построчно
         """
 
+        def compare(etalon: str, val: str) -> bool:
+
+            """ Сравнивает две строки как целые числа
+
+             если строка не является целым числом (а возможно float) то это ошибка """
+
+            if val.isdigit() and etalon.isdigit():
+                return int(etalon) == int(val)
+            else:
+                return False
+
         result = True
         new_line = '\n'
         if new_line not in etalon:
-            result = int(etalon) == int(val)
+            result = compare(etalon, val)
         else:
             e_list = etalon.split(new_line)
             v_list = val.split(new_line)
@@ -37,7 +62,7 @@ class BaseProvider(object):
                 result = False
             else:
                 for e, v in zip(e_list, v_list):
-                    if int(e) != int(v):
+                    if not compare(e, v):
                         result = False
                         break
         return result

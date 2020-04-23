@@ -31,9 +31,10 @@ class LoginView(View):
 
 
 def logout(request, *args, **kwargs):
-    next = parse.urlparse(request.META.get('HTTP_REFERER', '/')).path
+    # TODO оставлять на той же странице, если есть права, иначе на главную
+    # next = parse.urlparse(request.META.get('HTTP_REFERER', '/')).path
     auth_logout(request)
-    return redirect(next)
+    return redirect('/')
 
 
 class SignUpView(View):
@@ -51,8 +52,9 @@ class SignUpView(View):
     def post(self, request, *args, **kwargs):
         form = SignupForm(data=request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
             return redirect(form.cleaned_data.get('next', '/'))
         else:
             return render(

@@ -25,5 +25,22 @@ var initTablesorter = function(){
     })
 }
 
+/* Перевод серверного времени UTC в локальное время */
+document.querySelectorAll('.js__utc-time').forEach(function(elem){
+    var strUtcDate = elem.dataset.utcTime
+    if (strUtcDate){
+        var d = new Date(strUtcDate);
+        var msecOffset = d.getTimezoneOffset() * -60000
+        d.setTime(d.getTime() + msecOffset)
+        var year = d.getFullYear()
+        var month = d.getMonth().toString().length < 2 ? "0"+ (d.getMonth() + 1) :d.getMonth() + 1
+        var date = d.getDate().toString().length < 2 ? "0"+d.getDate().toString() :d.getDate()
+        var hour = d.getHours().toString().length < 2 ? "0"+d.getHours().toString() :d.getHours()
+        var minutes = d.getMinutes().toString().length < 2 ? "0"+d.getMinutes().toString() :d.getMinutes()
+        var strLocalDate = `${year}.${month}.${date} [${hour}:${minutes}]`
+        elem.innerHTML = strLocalDate;
+    }
+})
+
 window.addEventListener('initSidebar', initSidebar)
 window.addEventListener('initTablesorter', initTablesorter)

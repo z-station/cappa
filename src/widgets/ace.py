@@ -2,9 +2,9 @@ from django import forms
 from django.template import loader
 
 
-class JsonWidget(forms.Widget):
+class AceWidget(forms.Widget):
 
-    template_name = 'admin/tasks/widgets/json_field.html'
+    template_name = 'admin/widgets/ace.html'
 
     def value_from_datadict(self, data, files, name):
         return data.get(name)

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
+from django.utils import timezone
 from src.training.models import Solution, TaskItem
 from .utils import Response
 
@@ -20,7 +21,7 @@ class TaskItemAdminForm(forms.ModelForm):
 
 class TaskItemForm(forms.Form):
 
-    input = forms.CharField(label="Ввод", required=False)
+    input = forms.CharField(label="Консольный ввод", required=False)
     content = forms.CharField(label='Редактор')
     output = forms.CharField(
         label="Вывод", required=False,
@@ -79,38 +80,10 @@ class TaskItemForm(forms.Form):
                 return Response(status=300, msg='Тесты не пройдены', tests_result=tests_result)
 
         @classmethod
-        def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
-            if not user.is_active:
-                return Response(status=402, msg='Требуется авторизация')
-            solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
-            if solution.manual_status in Solution.MS__BLOCKED_STATUSES:
-                return Response(status=403, msg='Операция запрещена')
-            else:
-                if taskitem.compiler_check and taskitem.task.tests:
-                    tests_result = taskitem.lang.provider.check_tests(
-                        content=editor_data['content'],
-                        task=taskitem.task,
-                    )
-                    tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
-                else:
-                    tests_score = None
-                solution.update(content=editor_data['content'], tests_score=tests_score)
-                solution.save()
-                return Response(status=200, msg='Решение сохранено')
-
-        @classmethod
         def create_version(cls, editor_data: dict, taskitem: TaskItem, user: User):
             if user.is_active:
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
-                if taskitem.compiler_check and taskitem.task.tests:
-                    tests_result = taskitem.lang.provider.check_tests(
-                        content=editor_data['content'],
-                        task=taskitem.task
-                    )
-                    tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
-                else:
-                    tests_score = None
-                solution.create_version(content=editor_data['content'], tests_score=tests_score)
+                solution.create_version(content=editor_data['content'])
                 solution.save()
                 return Response(status=200, msg='Версия сохранена')
             else:
@@ -127,14 +100,30 @@ class TaskItemForm(forms.Form):
                 return Response(status=402, msg='Требуется авторизация')
 
         @classmethod
+        def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
+            if not user.is_active:
+                return Response(status=402, msg='Требуется авторизация')
+            solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
+            # если задача отправлена на ручную проверку или уже проверена - решение нельзя изменить
+            if solution.is_locked:
+                return Response(status=403, msg='Операция запрещена')
+            else:
+                solution.last_changes = editor_data['content']
+                solution.content = editor_data['content']
+                solution.save()
+                return Response(status=200, msg='Решение сохранено')
+
+        @classmethod
         def ready_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
             if user.is_active:
                 if not editor_data['content']:
                     return Response(status=404, msg='Решение отсутствует')
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
-                if solution.manual_status == Solution.MS__READY_TO_CHECK:
+                # если задача отправлена на проверку или уже проверена - решение нельзя изменить
+                if solution.is_locked:
                     return Response(status=403, msg='Операция запрещена')
                 else:
+                    # если задача с автотестами - прогнать автотесты
                     if taskitem.compiler_check and taskitem.task.tests:
                         tests_result = taskitem.lang.provider.check_tests(
                             content=editor_data['content'],
@@ -143,8 +132,13 @@ class TaskItemForm(forms.Form):
                         tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
                     else:
                         tests_score = None
-                    solution.update(content=editor_data['content'], tests_score=tests_score)
-                    solution.manual_status = Solution.MS__READY_TO_CHECK
+                    solution.tests_score = tests_score
+                    solution.content = editor_data['content']
+                    solution.set_is_count()
+                    solution.is_locked = True
+                    solution.datetime = timezone.now()
+                    if solution.taskitem.manual_check:
+                        solution.manual_status = Solution.MS__READY_TO_CHECK
                     solution.save()
                     return Response(status=200, msg='Решение отправлено')
             else:
@@ -176,7 +170,7 @@ class SolutionForm(forms.ModelForm):
             if manual_score < 0 or manual_score > max_score:
                 raise forms.ValidationError(f'Оценка должна находиться в диапазоне от 0 до {max_score} баллов')
         # проверка что оценка стоит если статус "проверено"
-        if manual_status == Solution.MS__CHECKED and not manual_score:
+        if manual_status == Solution.MS__CHECKED and manual_score is None:
             raise forms.ValidationError(f'Вы забыли поставить оценку')
 
 

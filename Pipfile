@@ -18,6 +18,8 @@ Unidecode = "==1.1.1"
 psycopg2 = "*"
 gunicorn = "*"
 python-memcached = "*"
+django-admin-list-filter-dropdown = "*"
+docker = "*"
 
 [requires]
 python_version = "3.6"

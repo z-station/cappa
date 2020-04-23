@@ -12,6 +12,7 @@ UserModel = get_user_model()
 
 
 class Topic(models.Model):
+
     class Meta:
         verbose_name = "тема"
         verbose_name_plural = "темы"
@@ -21,6 +22,10 @@ class Topic(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
+    end_time = models.DateTimeField(
+        verbose_name="дата/время окончения решения задач в формате UTC",
+        blank=True, null=True
+    )
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
@@ -90,9 +95,9 @@ class Content(models.Model):
         (TEXT, 'текст'),
     )
 
-    input = models.TextField(verbose_name='Ввод', blank=True, null=True)
+    input = models.TextField(verbose_name='Консольный ввод', blank=True, null=True)
     content = models.TextField(verbose_name='Редактор', blank=True, null=True)
-    show_input = models.BooleanField(verbose_name='Отображать ввод', default=False)
+    show_input = models.BooleanField(verbose_name='Отображать консольный ввод', default=False)
     show_debug = models.BooleanField(verbose_name='Отображать отладчик', default=True)
     readonly = models.BooleanField(verbose_name='Только для чтения', default=False)
     text = HTMLField(blank=True, null=True)

@@ -51,7 +51,7 @@ class TopicAdmin(admin.ModelAdmin):
 
     form = TopicAdminForm
     raw_id_fields = ("author",)
-    fields = ('show', 'title', 'slug', 'author', 'course')
+    fields = ('show', 'title', 'slug', 'author', 'end_time', 'course')
     prepopulated_fields = {'slug': ['title']}
     inlines = (ContentInline, TaskItemInline)
 

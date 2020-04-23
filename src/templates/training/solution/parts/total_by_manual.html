@@ -2,7 +2,7 @@
 {% if form %}
 <form method="POST" class="solution__form {% if form.non_field_errors %}error{% endif %}">{% csrf_token %}
 {% endif %}
-    <table class="solution-info">
+    <table class="solution__info">
         <tr>
             <td>Задача:</td>
             <td>{{ object.taskitem.numbered_title }}</td>
@@ -15,14 +15,28 @@
             <td>Язык:</td>
             <td>{{ object.taskitem.lang }}</td>
         </tr>
-        <tr>
-            <td>Дата отправки:</td>
-            <td>{{ object.version_best.datetime|date_format }}</td>
+        {% if topic.end_time %}
+        <tr title="Решение после указанной даты не засчитывается">
+            <td>Ограничение по времени:</td>
+            <td class="js__utc-time" data-utc-time="{{ topic.end_time|date:'Y-m-d H:i:s.u'}}"></td>
         </tr>
+        {% endif %}
+        {% if object.datetime %}
+        <tr>
+            <td>Дата и время отправки:</td>
+            <td class="js__utc-time" data-utc-time="{{ object.datetime|date:'Y-m-d H:i:s.u' }}"></td>
+        </tr>
+        {% endif %}
         {% if object.taskitem.task.tests %}
             <tr>
                 <td>Баллы по тестам:</td>
-                <td>{{ object.tests_score|cut_zero|default:"-" }} / {{ object.taskitem.max_score|cut_zero }}</td>
+                <td>
+                    {% if object.tests_score %}
+                        {{ object.tests_score|cut_zero }} / {{ object.taskitem.max_score|cut_zero }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
         {% endif %}
         {% if form %}
@@ -41,6 +55,12 @@
                     </td>
                 </tr>
             {% endfor %}
+            {% if object.manual_status == '3' and object.teacher %}
+                <tr>
+                    <td>Проверил:</td>
+                    <td>{{ object.teacher.get_full_name }}</td>
+                </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="2">Оценку выставляет преподаватель</td>
@@ -51,24 +71,32 @@
                     <td> {{ object.manual_status_name|default:"-" }}</td>
                 </tr>
             {% else %}
-                <tr class="status__{{ object.status }}" >
+                <tr class="status__{{ object.status }}{% if not object.is_count %} not-count{% endif %}">
                     <td>Оценка:</td>
                     <td>{{ object.score|cut_zero }} / {{ object.taskitem.max_score|cut_zero }}</td>
                 </tr>
+                {% if object.teacher %}
+                <tr>
+                    <td>Проверил:</td>
+                    <td>{{ object.teacher.get_full_name }}</td>
+                </tr>
+                {% endif %}
             {% endif %}
-            {% if object.comment %}
-                <tr><td colspan="2">Комментарий преподавателя</td></tr>
-                <tr><td colspan="2">{{ object.comment|safe }}</td></tr>
+            {% if object.comment and object.comment != '' %}
+                <tr><td colspan="2">Комментарий преподавателя:</td></tr>
             {% endif %}
         {% endif %}
     </table>
-
-    {% if form %}
-    <div>
+{% if form %}
+    <div class="solution__form-comment">
         {{ form.comment.label_tag }}
         {{ form.comment }}
         <input type="submit" class="btn btn-primary" value="Сохранить" />
     </div>
 </form>
+{% else %}
+    {% if object.comment and object.comment != '' %}
+        <div class="solution__info-comment">{{ object.comment|safe }}</div>
+    {% endif %}
 {% endif %}
 

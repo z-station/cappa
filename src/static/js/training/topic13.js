@@ -23,7 +23,6 @@ var topicPage = function(e){
                     }
 
                     // вписать код из textarea в ace-editor
-                    console.log(textarea.textContent)
                     editor.setValue(textarea.textContent, - 1)
 
                     // после записи кода в ace-editor скопировать его в textarea

@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
--- Dumped by pg_dump version 12.2 (Ubuntu 12.2-2.pgdg18.04+1)
+-- Dumped by pg_dump version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,7 +16,23 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
 SET default_tablespace = '';
+
+SET default_with_oids = false;
 
 --
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: cappa
@@ -655,15 +671,49 @@ CREATE TABLE public.service_sitesettings (
 ALTER TABLE public.service_sitesettings OWNER TO cappa;
 
 --
+-- Name: tasks_solutionexample; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.tasks_solutionexample (
+    id integer NOT NULL,
+    lang character varying(255),
+    content text,
+    task_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tasks_solutionexample OWNER TO cappa;
+
+--
+-- Name: tasks_solutionexample_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.tasks_solutionexample_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tasks_solutionexample_id_seq OWNER TO cappa;
+
+--
+-- Name: tasks_solutionexample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.tasks_solutionexample_id_seq OWNED BY public.tasks_solutionexample.id;
+
+
+--
 -- Name: tasks_source; Type: TABLE; Schema: public; Owner: cappa
 --
 
 CREATE TABLE public.tasks_source (
     id integer NOT NULL,
-    order_key integer NOT NULL,
-    title character varying(255) NOT NULL,
-    content text,
-    CONSTRAINT tasks_source_order_key_check CHECK ((order_key >= 0))
+    description text,
+    name character varying(255) NOT NULL
 );
 
 
@@ -691,6 +741,40 @@ ALTER SEQUENCE public.tasks_source_id_seq OWNED BY public.tasks_source.id;
 
 
 --
+-- Name: tasks_tag; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.tasks_tag (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.tasks_tag OWNER TO cappa;
+
+--
+-- Name: tasks_tag_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.tasks_tag_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tasks_tag_id_seq OWNER TO cappa;
+
+--
+-- Name: tasks_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.tasks_tag_id_seq OWNED BY public.tasks_tag.id;
+
+
+--
 -- Name: tasks_task; Type: TABLE; Schema: public; Owner: cappa
 --
 
@@ -701,11 +785,12 @@ CREATE TABLE public.tasks_task (
     last_modified timestamp with time zone NOT NULL,
     title character varying(255) NOT NULL,
     content text,
-    source_raw_id character varying(255),
     tests jsonb,
     author_id integer,
     source_id integer,
     output_type character varying(255) NOT NULL,
+    difficulty character varying(255),
+    lang character varying(255),
     CONSTRAINT tasks_task_order_key_check CHECK ((order_key >= 0))
 );
 
@@ -731,6 +816,41 @@ ALTER TABLE public.tasks_task_id_seq OWNER TO cappa;
 --
 
 ALTER SEQUENCE public.tasks_task_id_seq OWNED BY public.tasks_task.id;
+
+
+--
+-- Name: tasks_task_tags; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.tasks_task_tags (
+    id integer NOT NULL,
+    task_id integer NOT NULL,
+    tag_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tasks_task_tags OWNER TO cappa;
+
+--
+-- Name: tasks_task_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.tasks_task_tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tasks_task_tags_id_seq OWNER TO cappa;
+
+--
+-- Name: tasks_task_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.tasks_task_tags_id_seq OWNED BY public.tasks_task_tags.id;
 
 
 --
@@ -832,7 +952,9 @@ CREATE TABLE public.training_solution (
     comment text,
     manual_score double precision,
     manual_status character varying(255) NOT NULL,
-    tests_score double precision
+    tests_score double precision,
+    teacher_id integer,
+    is_count boolean NOT NULL
 );
 
 
@@ -917,6 +1039,7 @@ CREATE TABLE public.training_topic (
     author_id integer,
     course_id integer NOT NULL,
     number integer,
+    end_time timestamp with time zone,
     CONSTRAINT training_topic_number_check CHECK ((number >= 0)),
     CONSTRAINT training_topic_order_key_check CHECK ((order_key >= 0))
 );
@@ -1065,6 +1188,13 @@ ALTER TABLE ONLY public.service_menuitem ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: tasks_solutionexample id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_solutionexample ALTER COLUMN id SET DEFAULT nextval('public.tasks_solutionexample_id_seq'::regclass);
+
+
+--
 -- Name: tasks_source id; Type: DEFAULT; Schema: public; Owner: cappa
 --
 
@@ -1072,10 +1202,24 @@ ALTER TABLE ONLY public.tasks_source ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: tasks_tag id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_tag ALTER COLUMN id SET DEFAULT nextval('public.tasks_tag_id_seq'::regclass);
+
+
+--
 -- Name: tasks_task id; Type: DEFAULT; Schema: public; Owner: cappa
 --
 
 ALTER TABLE ONLY public.tasks_task ALTER COLUMN id SET DEFAULT nextval('public.tasks_task_id_seq'::regclass);
+
+
+--
+-- Name: tasks_task_tags id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task_tags ALTER COLUMN id SET DEFAULT nextval('public.tasks_task_tags_id_seq'::regclass);
 
 
 --
@@ -1254,6 +1398,12 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 118	Can add настройки сайта	38	add_sitesettings
 119	Can change настройки сайта	38	change_sitesettings
 120	Can delete настройки сайта	38	delete_sitesettings
+121	Can add эталонное решение	39	add_solutionexample
+122	Can change эталонное решение	39	change_solutionexample
+123	Can delete эталонное решение	39	delete_solutionexample
+124	Can add метка	40	add_tag
+125	Can change метка	40	change_tag
+126	Can delete метка	40	delete_tag
 \.
 
 
@@ -1262,7 +1412,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-03-31 14:37:08.814538+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-04-20 14:24:44.745227+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1313,6 +1463,52 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 8037	2020-03-31 14:40:48.640427+05	7	Заработало!	2	[{"changed": {"fields": ["title", "content", "author"]}}]	18	7
 8038	2020-03-31 14:41:52.819286+05	7	Заработало!	2	[{"changed": {"fields": ["content"]}}]	18	7
 8039	2020-03-31 14:43:12.433232+05	7	Заработало!	2	[{"changed": {"fields": ["content"]}}]	18	7
+8040	2020-04-06 22:28:17.758466+05	3	Делёж яблок	2	[{"changed": {"fields": ["tests"]}}]	28	7
+8041	2020-04-06 22:32:56.294402+05	3	Делёж яблок	2	[{"changed": {"fields": ["tests"]}}]	28	7
+8042	2020-04-06 22:45:40.294673+05	3	Делёж яблок	2	[{"changed": {"fields": ["tests"]}}]	28	7
+8043	2020-04-11 18:07:57.218496+05	96	Степень	2	[{"changed": {"fields": ["difficulty", "lang"]}}]	28	7
+8044	2020-04-11 18:08:27.981769+05	96	Степень	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8045	2020-04-11 18:09:05.522378+05	50	Делаем срезы	2	[{"changed": {"fields": ["author", "difficulty", "lang"]}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8046	2020-04-11 18:09:42.347867+05	36	Часы-2	2	[{"changed": {"fields": ["difficulty", "lang"]}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8047	2020-04-11 18:12:16.137151+05	35	Часы-1	2	[{"changed": {"fields": ["difficulty", "lang"]}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8048	2020-04-11 18:12:49.037532+05	3	1	3		27	7
+8049	2020-04-11 18:12:49.057414+05	2	1	3		27	7
+8050	2020-04-11 18:12:49.06848+05	1	1	3		27	7
+8051	2020-04-11 18:12:57.958785+05	4	Задачник Кириенко	2	[{"changed": {"fields": ["name"]}}]	27	7
+8052	2020-04-11 18:13:37.228395+05	5	1	1	[{"added": {}}]	27	7
+8053	2020-04-11 18:13:39.305816+05	6	2	1	[{"added": {}}]	27	7
+8054	2020-04-11 18:13:41.364216+05	7	3	1	[{"added": {}}]	27	7
+8055	2020-04-11 18:13:42.96102+05	8	4	1	[{"added": {}}]	27	7
+8056	2020-04-11 18:14:01.579866+05	5	1	3		27	7
+8057	2020-04-11 18:14:07.620836+05	6	2	3		27	7
+8058	2020-04-11 18:14:16.320294+05	7	3	3		27	7
+8059	2020-04-11 18:14:27.703413+05	8	4	3		27	7
+8060	2020-04-11 18:29:06.527537+05	25	Дробная часть	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8061	2020-04-11 18:29:28.169034+05	3	Делёж яблок	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8062	2020-04-11 18:29:49.232014+05	3	Делёж яблок	2	[{"changed": {"fields": ["difficulty", "source", "lang"]}}]	28	7
+8063	2020-04-11 18:29:59.698402+05	25	Дробная часть	2	[{"changed": {"fields": ["difficulty", "source", "lang"]}}]	28	7
+8064	2020-04-11 18:30:08.70361+05	35	Часы-1	2	[{"changed": {"fields": ["source"]}}]	28	7
+8065	2020-04-11 18:30:17.543334+05	36	Часы-2	2	[{"changed": {"fields": ["source"]}}]	28	7
+8066	2020-04-11 18:30:24.424711+05	50	Делаем срезы	2	[{"changed": {"fields": ["source"]}}]	28	7
+8067	2020-04-11 18:30:31.865752+05	96	Степень	2	[{"changed": {"fields": ["source"]}}]	28	7
+8068	2020-04-20 14:28:33.769249+05	1454	Тест timeout	1	[{"added": {}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8069	2020-04-20 14:29:54.569133+05	1455	Тест deep recursive	1	[{"added": {}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8070	2020-04-20 14:32:21.026899+05	1456	Тест hd write	1	[{"added": {}}, {"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8071	2020-04-20 14:32:45.703463+05	1456	Тест hd write	2	[]	28	7
+8072	2020-04-20 14:37:30.910173+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 timeout"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 deep recursive"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 hd write"}}]	33	7
+8073	2020-04-20 14:39:08.118177+05	1454	Тест timeout	2	[]	28	7
+8074	2020-04-20 14:42:14.90151+05	1	success	1	[{"added": {}}]	40	7
+8075	2020-04-20 14:42:16.634182+05	1	success	2	[]	40	7
+8076	2020-04-20 14:42:32.831186+05	2	unluck	1	[{"added": {}}]	40	7
+8077	2020-04-20 14:43:00.487851+05	1456	Тест hd write	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8078	2020-04-20 14:43:08.475279+05	1455	Тест deep recursive	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8079	2020-04-20 14:43:15.514206+05	1454	Тест timeout	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8080	2020-04-20 14:43:27.092683+05	3	Делёж яблок	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8081	2020-04-20 14:43:34.874782+05	96	Степень	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8082	2020-04-20 14:43:41.12068+05	50	Делаем срезы	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8083	2020-04-20 14:43:49.038099+05	36	Часы-2	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8084	2020-04-20 14:43:55.106607+05	35	Часы-1	2	[{"changed": {"fields": ["tags"]}}]	28	7
+8085	2020-04-20 14:44:01.914916+05	25	Дробная часть	2	[{"changed": {"fields": ["tags"]}}]	28	7
 \.
 
 
@@ -1359,6 +1555,8 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 36	service	menu
 37	service	menuitem
 38	service	sitesettings
+39	tasks	solutionexample
+40	tasks	tag
 \.
 
 
@@ -1428,6 +1626,9 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 65	training	0003_auto_20200330_1227	2020-03-30 19:13:21.528124+05
 66	training	0004_remove_taskitem_progress	2020-03-30 19:28:16.160642+05
 67	service	0001_initial	2020-03-30 19:28:21.322303+05
+68	training	0005_auto_20200406_0735	2020-04-06 22:27:07.951601+05
+69	tasks	0004_auto_20200411_1042	2020-04-11 18:07:06.015763+05
+70	training	0006_auto_20200412_1154	2020-04-20 14:24:12.764863+05
 \.
 
 
@@ -1491,6 +1692,9 @@ drtk3em1rzyo5weps12z9n37x4lmrhpd	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 mtv5qwffs8kwg90of6b2f60laio2sbw6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-24 19:21:06.07517+05
 lt01s0pisd3uq0i49f9gv5xpjh1rcrqq	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-30 23:45:49.57428+05
 eawts33rc3qokxu6sdpym3dy3wyjophr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-03-31 18:43:15.607959+05
+jo1wgmgimkc6svjzfhq9hjq0gj0tf2fj	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-07 02:47:15.828865+05
+z8zx3ilgqlwiicp0h5m7c9e0m08d3jd6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-11 22:30:32.062754+05
+k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-20 18:44:02.143798+05
 \.
 
 
@@ -1575,14 +1779,38 @@ COPY public.service_sitesettings (site_ptr_id, logo_title, logo_desc, copyright)
 
 
 --
+-- Data for Name: tasks_solutionexample; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.tasks_solutionexample (id, lang, content, task_id) FROM stdin;
+1	python	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	96
+2	python	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	50
+3	python	a=float(input())\r\nprint(a%30*12)	36
+4	python	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	35
+5	python	print(float(input())%1)	25
+6	python	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	3
+7	python	while True:\r\n    pass	1454
+8	python	def Fibonacci(n): \r\n    if n<0: \r\n        print("Incorrect input") \r\n    # First Fibonacci number is 0 \r\n    elif n==1: \r\n        return 0\r\n    # Second Fibonacci number is 1 \r\n    elif n==2: \r\n        return 1\r\n    else: \r\n        return Fibonacci(n-1)+Fibonacci(n-2) \r\n  \r\n# Driver Program \r\n  \r\nprint(Fibonacci(50))	1455
+9	python	with open('test.txt', 'w') as file:\r\n    file.write('test')	1456
+\.
+
+
+--
 -- Data for Name: tasks_source; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.tasks_source (id, order_key, title, content) FROM stdin;
-1	0	PABC	
-2	0	Задачник Абрамяна	
-3	0	pythontutor.ru	
-4	0	informatics.msk.ru	
+COPY public.tasks_source (id, description, name) FROM stdin;
+4		Задачник Кириенко
+\.
+
+
+--
+-- Data for Name: tasks_tag; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.tasks_tag (id, name) FROM stdin;
+1	success
+2	unluck
 \.
 
 
@@ -1590,13 +1818,33 @@ COPY public.tasks_source (id, order_key, title, content) FROM stdin;
 -- Data for Name: tasks_task; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.tasks_task (id, order_key, show, last_modified, title, content, source_raw_id, tests, author_id, source_id, output_type) FROM stdin;
-25	0	t	2020-03-30 19:40:45.551485+05	Дробная часть	<p><span>Дано положительное действительное число X. Выведите его дробную часть.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	\N	[{"input": "17.9", "output": "0.9"}, {"input": "10.34", "output": "0.34"}, {"input": "0.001", "output": "0.001"}, {"input": "179", "output": "0.0"}, {"input": "19.99", "output": "0.99"}]	7	3	float
-36	0	t	2020-03-30 19:41:32.56459+05	Часы-2	<p><span>С начала суток часовая стрелка повернулась на угол в &alpha; градусов. Определите на какой угол повернулась минутная стрелка с начала последнего часа. Входные и выходные данные &mdash; действительные числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "25", "output": "300"}, {"input": "231.3452", "output": "256.142"}, {"input": "120.005", "output": "0.06"}, {"input": "119.994", "output": "359.928"}, {"input": "73.2938", "output": "159.526"}, {"input": "0.0001", "output": "0.0012"}, {"input": "0.5", "output": "6"}, {"input": "132", "output": "144"}, {"input": "1", "output": "12"}, {"input": "359", "output": "348"}, {"input": "300", "output": "0"}, {"input": "192", "output": "144"}, {"input": "190", "output": "120"}, {"input": "179", "output": "348"}, {"input": "95", "output": "60"}, {"input": "90", "output": "0"}, {"input": "89", "output": "348"}, {"input": "70", "output": "120"}, {"input": "61", "output": "12"}, {"input": "60", "output": "0"}, {"input": "59", "output": "348"}, {"input": "40", "output": "120"}, {"input": "31", "output": "12"}, {"input": "30", "output": "0"}, {"input": "29", "output": "348"}, {"input": "20", "output": "240"}, {"input": "15", "output": "180"}, {"input": "10", "output": "120"}, {"input": "5", "output": "60"}, {"input": "0", "output": "0"}, {"input": "190", "output": "120"}]	7	3	float
-50	0	t	2020-03-30 19:44:30.358684+05	Делаем срезы	<p>Дана строка.</p>\r\n<p>Сначала выведите третий символ этой строки.</p>\r\n<p>Во второй строке выведите предпоследний символ этой строки.</p>\r\n<p>В третьей строке выведите первые пять символов этой строки.</p>\r\n<p>В четвертой строке выведите всю строку, кроме последних двух символов.</p>\r\n<p>В пятой строке выведите все символы с четными индексами (считая, что индексация начинается с 0, поэтому символы выводятся начиная с первого).</p>\r\n<p>В шестой строке выведите все символы с нечетными индексами, то есть начиная со второго символа строки.</p>\r\n<p>В седьмой строке выведите все символы в обратном порядке.</p>\r\n<p>В восьмой строке выведите все символы строки через один в обратном порядке, начиная с последнего.</p>\r\n<p>В девятой строке выведите длину данной строки.</p>	\N	[{"input": "asdfghjklzxcv", "output": "d\\nc\\nasdfg\\nasdfghjklzx\\nadgjlxv\\nsfhkzc\\nvcxzlkjhgfdsa\\nvxljgda\\n13"}, {"input": "qwertyuiop", "output": "e\\no\\nqwert\\nqwertyui\\nqetuo\\nwryip\\npoiuytrewq\\npiyrw\\n10"}, {"input": "Hello", "output": "l\\nl\\nHello\\nHel\\nHlo\\nel\\nolleH\\nolH\\n5"}, {"input": "Abrakadabra", "output": "r\\nr\\nAbrak\\nAbrakadab\\nArkdba\\nbaaar\\narbadakarbA\\nabdkrA\\n11"}]	\N	3	str
-96	0	t	2020-03-30 19:44:43.787868+05	Степень	<p>Дано действительное положительное число <em>a</em> и <span>целоe</span> число <em>n</em>.</p>\r\n<p>Вычислите <em>a<sup>n</sup></em>. Решение оформите в виде функции <code>power(a, n)</code>.</p>\r\n<p>Стандартной функцией возведения в степень пользоваться нельзя.</p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	\N	[{"input": "1.5\\n-10", "output": "0.0173415"}, {"input": "1.1414\\n-2", "output": "0.767581"}, {"input": "3\\n-6", "output": "0.00137174"}, {"input": "3\\n-10", "output": "1.69351e-05"}, {"input": "3\\n-5", "output": "0.00411523"}, {"input": "3\\n-4", "output": "0.0123457"}, {"input": "3\\n-3", "output": "0.037037"}, {"input": "3\\n-2", "output": "0.111111"}, {"input": "3\\n-1", "output": "0.333333"}, {"input": "2\\n-15", "output": "3.05176e-05"}, {"input": "2\\n-10", "output": "0.000976562"}, {"input": "2\\n-9", "output": "0.00195312"}, {"input": "2\\n-8", "output": "0.00390625"}, {"input": "2\\n-4", "output": "0.0625"}, {"input": "2\\n-2", "output": "0.25"}, {"input": "2\\n-1", "output": "0.5"}, {"input": "1\\n-1", "output": "1"}, {"input": "1.5\\n10", "output": "57.665"}, {"input": "1.1414\\n2", "output": "1.30279"}, {"input": "3\\n0", "output": "1"}, {"input": "3\\n10", "output": "59049"}, {"input": "3\\n3", "output": "27"}, {"input": "3\\n2", "output": "9"}, {"input": "3\\n1", "output": "3"}, {"input": "2\\n0", "output": "1"}, {"input": "2\\n15", "output": "32768"}, {"input": "2\\n10", "output": "1024"}, {"input": "2\\n9", "output": "512"}, {"input": "2\\n4", "output": "16"}, {"input": "2\\n3", "output": "8"}, {"input": "2\\n2", "output": "4"}, {"input": "2\\n1", "output": "2"}, {"input": "2\\n-3", "output": "0.125"}]	7	3	float
-3	0	t	2020-03-30 19:40:24.301296+05	Делёж яблок	<p><span>n школьников делят k яблок поровну, неделящийся остаток остается в корзинке. Сколько яблок достанется каждому школьнику? Сколько яблок останется в корзинке? Программа получает на вход числа n и k и должна вывести искомое количество яблок (два числа).</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "6\\n50", "output": "8\\n2"}, {"input": "1\\n10", "output": "10\\n0"}, {"input": "5\\n25", "output": "5\\n0"}, {"input": "4\\n2", "output": "0\\n2"}]	7	3	int
-35	0	t	2020-03-30 19:41:11.068753+05	Часы-1	<p><span>С начала суток прошло H часов, M минут, S секунд (0 &le; H &lt; 12, 0 &le; M &lt; 60, 0 &le; S &lt; 60). По данным числам H, M, S определите угол (в градусах), на который повернулаcь часовая стрелка с начала суток и выведите его в виде действительного числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	\N	[{"input": "9\\n9\\n37", "output": "274.808"}, {"input": "4\\n54\\n55", "output": "147.458"}, {"input": "7\\n18\\n49", "output": "219.408"}, {"input": "11\\n59\\n59", "output": "359.992"}, {"input": "0\\n0\\n1", "output": "0.00833333"}, {"input": "0\\n2\\n1", "output": "1.00833"}, {"input": "0\\n2\\n0", "output": "1.0"}, {"input": "0\\n1\\n0", "output": "0.5"}, {"input": "1\\n0\\n0", "output": "30.0"}, {"input": "1\\n2\\n6", "output": "31.05"}]	7	3	float
+COPY public.tasks_task (id, order_key, show, last_modified, title, content, tests, author_id, source_id, output_type, difficulty, lang) FROM stdin;
+50	0	t	2020-04-20 14:43:41.112701+05	Делаем срезы	<p>Дана строка.</p>\r\n<p>Сначала выведите третий символ этой строки.</p>\r\n<p>Во второй строке выведите предпоследний символ этой строки.</p>\r\n<p>В третьей строке выведите первые пять символов этой строки.</p>\r\n<p>В четвертой строке выведите всю строку, кроме последних двух символов.</p>\r\n<p>В пятой строке выведите все символы с четными индексами (считая, что индексация начинается с 0, поэтому символы выводятся начиная с первого).</p>\r\n<p>В шестой строке выведите все символы с нечетными индексами, то есть начиная со второго символа строки.</p>\r\n<p>В седьмой строке выведите все символы в обратном порядке.</p>\r\n<p>В восьмой строке выведите все символы строки через один в обратном порядке, начиная с последнего.</p>\r\n<p>В девятой строке выведите длину данной строки.</p>	[{"input": "asdfghjklzxcv", "output": "d\\nc\\nasdfg\\nasdfghjklzx\\nadgjlxv\\nsfhkzc\\nvcxzlkjhgfdsa\\nvxljgda\\n13"}, {"input": "qwertyuiop", "output": "e\\no\\nqwert\\nqwertyui\\nqetuo\\nwryip\\npoiuytrewq\\npiyrw\\n10"}, {"input": "Hello", "output": "l\\nl\\nHello\\nHel\\nHlo\\nel\\nolleH\\nolH\\n5"}, {"input": "Abrakadabra", "output": "r\\nr\\nAbrak\\nAbrakadab\\nArkdba\\nbaaar\\narbadakarbA\\nabdkrA\\n11"}]	7	4	str	1	python
+36	0	t	2020-04-20 14:43:49.031339+05	Часы-2	<p><span>С начала суток часовая стрелка повернулась на угол в &alpha; градусов. Определите на какой угол повернулась минутная стрелка с начала последнего часа. Входные и выходные данные &mdash; действительные числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	[{"input": "25", "output": "300"}, {"input": "231.3452", "output": "256.142"}, {"input": "120.005", "output": "0.06"}, {"input": "119.994", "output": "359.928"}, {"input": "73.2938", "output": "159.526"}, {"input": "0.0001", "output": "0.0012"}, {"input": "0.5", "output": "6"}, {"input": "132", "output": "144"}, {"input": "1", "output": "12"}, {"input": "359", "output": "348"}, {"input": "300", "output": "0"}, {"input": "192", "output": "144"}, {"input": "190", "output": "120"}, {"input": "179", "output": "348"}, {"input": "95", "output": "60"}, {"input": "90", "output": "0"}, {"input": "89", "output": "348"}, {"input": "70", "output": "120"}, {"input": "61", "output": "12"}, {"input": "60", "output": "0"}, {"input": "59", "output": "348"}, {"input": "40", "output": "120"}, {"input": "31", "output": "12"}, {"input": "30", "output": "0"}, {"input": "29", "output": "348"}, {"input": "20", "output": "240"}, {"input": "15", "output": "180"}, {"input": "10", "output": "120"}, {"input": "5", "output": "60"}, {"input": "0", "output": "0"}, {"input": "190", "output": "120"}]	7	4	float	1	python
+35	0	t	2020-04-20 14:43:55.098723+05	Часы-1	<p><span>С начала суток прошло H часов, M минут, S секунд (0 &le; H &lt; 12, 0 &le; M &lt; 60, 0 &le; S &lt; 60). По данным числам H, M, S определите угол (в градусах), на который повернулаcь часовая стрелка с начала суток и выведите его в виде действительного числа.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	[{"input": "9\\n9\\n37", "output": "274.808"}, {"input": "4\\n54\\n55", "output": "147.458"}, {"input": "7\\n18\\n49", "output": "219.408"}, {"input": "11\\n59\\n59", "output": "359.992"}, {"input": "0\\n0\\n1", "output": "0.00833333"}, {"input": "0\\n2\\n1", "output": "1.00833"}, {"input": "0\\n2\\n0", "output": "1.0"}, {"input": "0\\n1\\n0", "output": "0.5"}, {"input": "1\\n0\\n0", "output": "30.0"}, {"input": "1\\n2\\n6", "output": "31.05"}]	7	4	float	1	python
+25	0	t	2020-04-20 14:44:01.909078+05	Дробная часть	<p><span>Дано положительное действительное число X. Выведите его дробную часть.</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	[{"input": "17.9", "output": "0.9"}, {"input": "10.34", "output": "0.34"}, {"input": "0.001", "output": "0.001"}, {"input": "179", "output": "0.0"}, {"input": "19.99", "output": "0.99"}]	7	4	float	1	python
+1456	0	t	2020-04-20 14:43:00.480308+05	Тест hd write	<p>Проверка что операции записи на жесткий запрещены</p>	[{"input": "", "output": "Операции записи на диск запрещены"}]	7	\N	str	0	python
+1455	0	f	2020-04-20 14:43:08.46803+05	Тест deep recursive	<p>Тест глубокой рекурсии вызывающей таймаут</p>	[{"input": "", "output": "Превышен лимит времени на выполнение программы"}]	7	\N	str	0	python
+1454	0	f	2020-04-20 14:43:15.508521+05	Тест timeout	<p>Проверка ограничения по времени</p>	[{"input": "", "output": "Превышен лимит времени на выполнение программы"}]	7	\N	str	1	python
+3	0	t	2020-04-20 14:43:27.08576+05	Делёж яблок	<p><span>n школьников делят k яблок поровну, неделящийся остаток остается в корзинке. Сколько яблок достанется каждому школьнику? Сколько яблок останется в корзинке? Программа получает на вход числа n и k и должна вывести искомое количество яблок (два числа).</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	[{"input": "6\\n50", "output": "8\\n2"}, {"input": "1\\n10", "output": "10\\n0"}, {"input": "5\\n25", "output": "5\\n0"}, {"input": "4\\n2", "output": "0\\n2"}]	7	4	int	1	python
+96	0	t	2020-04-20 14:43:34.865973+05	Степень	<p>Дано действительное положительное число <em>a</em> и <span>целоe</span> число <em>n</em>.</p>\r\n<p>Вычислите <em>a<sup>n</sup></em>. Решение оформите в виде функции <code>power(a, n)</code>.</p>\r\n<p>Стандартной функцией возведения в степень пользоваться нельзя.</p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	[{"input": "1.5\\n-10", "output": "0.0173415"}, {"input": "1.1414\\n-2", "output": "0.767581"}, {"input": "3\\n-6", "output": "0.00137174"}, {"input": "3\\n-10", "output": "1.69351e-05"}, {"input": "3\\n-5", "output": "0.00411523"}, {"input": "3\\n-4", "output": "0.0123457"}, {"input": "3\\n-3", "output": "0.037037"}, {"input": "3\\n-2", "output": "0.111111"}, {"input": "3\\n-1", "output": "0.333333"}, {"input": "2\\n-15", "output": "3.05176e-05"}, {"input": "2\\n-10", "output": "0.000976562"}, {"input": "2\\n-9", "output": "0.00195312"}, {"input": "2\\n-8", "output": "0.00390625"}, {"input": "2\\n-4", "output": "0.0625"}, {"input": "2\\n-2", "output": "0.25"}, {"input": "2\\n-1", "output": "0.5"}, {"input": "1\\n-1", "output": "1"}, {"input": "1.5\\n10", "output": "57.665"}, {"input": "1.1414\\n2", "output": "1.30279"}, {"input": "3\\n0", "output": "1"}, {"input": "3\\n10", "output": "59049"}, {"input": "3\\n3", "output": "27"}, {"input": "3\\n2", "output": "9"}, {"input": "3\\n1", "output": "3"}, {"input": "2\\n0", "output": "1"}, {"input": "2\\n15", "output": "32768"}, {"input": "2\\n10", "output": "1024"}, {"input": "2\\n9", "output": "512"}, {"input": "2\\n4", "output": "16"}, {"input": "2\\n3", "output": "8"}, {"input": "2\\n2", "output": "4"}, {"input": "2\\n1", "output": "2"}, {"input": "2\\n-3", "output": "0.125"}]	7	4	float	1	python
+\.
+
+
+--
+-- Data for Name: tasks_task_tags; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.tasks_task_tags (id, task_id, tag_id) FROM stdin;
+1	1456	2
+2	1455	2
+3	1454	2
+4	3	1
+5	96	1
+6	50	1
+7	36	1
+8	35	1
+9	25	1
 \.
 
 
@@ -1648,14 +1896,15 @@ COPY public.training_course (id, show, title, slug, about, content, content_bott
 -- Data for Name: training_solution; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.training_solution (id, last_changes, version_best, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score) FROM stdin;
-3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	{"content": "def power(a,n):\\r\\n    m = 1\\r\\n    for i in range(abs(n)):\\r\\n        m = m * a\\r\\n    if (n >= 0):\\r\\n        print(m)\\r\\n    else:\\r\\n        res = 1 / m\\r\\n        print(res)\\r\\na = float(input())\\r\\nn = int(input())\\r\\n\\r\\npower(a,n)", "datetime": "2020-03-24 07:23:06.652443", "tests_score": 5.0}	[]	263	7	\N	\N	0	5
-3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	{"content": "#include <iostream>\\r\\n#include <cstdlib> // для system\\r\\nusing namespace std;\\r\\n\\r\\nint main() \\r\\n{ \\r\\n    cout << \\"Hello, world!\\" << endl;\\r\\n    return 0; \\r\\n}", "datetime": "2020-03-24 10:17:54.626791", "tests_score": 0.0}	[]	132	7	\N	\N	0	0
-3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	{"content": "n = int(input())\\r\\nk = int(input())\\r\\nprint(k//n)\\r\\nprint(k%n)", "datetime": "2020-03-24 07:20:11.491122", "tests_score": 5.0}	[]	3	7	\N	\N	0	5
-3323	word = input()\r\nk = 0\r\nfor ch in word :\r\n    if(ch != '.'):\r\n        k+=1\r\n    else :\r\n        break\r\nprint('0'+word[k:])	{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-03-24 07:21:21.758177", "tests_score": 5.0}	[]	259	7	\N	\N	0	5
-3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	{"content": "h = int(input())\\r\\nm = int(input())\\r\\ns = int(input())\\r\\n\\r\\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)", "datetime": "2020-03-24 07:21:43.726922", "tests_score": 5.0}	[]	260	7	\N	\N	0	5
-3325	a=float(input())\r\nprint(a%30*12)	{"content": "a=float(input())\\r\\nprint(a%30*12)", "datetime": "2020-03-24 07:21:57.985175", "tests_score": 5.0}	[]	261	7	\N	\N	0	5
-3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	{"content": "s = input()\\r\\nprint(s[2])\\r\\nprint(s[-2])\\r\\nprint(s[:5])\\r\\nprint(s[:-2])\\r\\nprint(s[::2])\\r\\nprint(s[1::2])\\r\\nprint(s[::-1])\\r\\nprint(s[::-2])\\r\\nprint(len(s))", "datetime": "2020-03-24 07:22:23.689728", "tests_score": 5.0}	[]	262	7	\N	\N	0	5
+COPY public.training_solution (id, last_changes, version_best, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score, teacher_id, is_count) FROM stdin;
+3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	{"content": "def power(a,n):\\r\\n    m = 1\\r\\n    for i in range(abs(n)):\\r\\n        m = m * a\\r\\n    if (n >= 0):\\r\\n        print(m)\\r\\n    else:\\r\\n        res = 1 / m\\r\\n        print(res)\\r\\na = float(input())\\r\\nn = int(input())\\r\\n\\r\\npower(a,n)", "datetime": "2020-03-24 07:23:06.652443", "tests_score": 5.0}	[]	263	7	\N	\N	0	5	\N	t
+3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	{"content": "#include <iostream>\\r\\n#include <cstdlib> // для system\\r\\nusing namespace std;\\r\\n\\r\\nint main() \\r\\n{ \\r\\n    cout << \\"Hello, world!\\" << endl;\\r\\n    return 0; \\r\\n}", "datetime": "2020-03-24 10:17:54.626791", "tests_score": 0.0}	[]	132	7	\N	\N	0	0	\N	t
+3325	a=float(input())\r\nprint(a%30*12)	{"content": "a=float(input())\\r\\nprint(a%30*12)", "datetime": "2020-03-24 07:21:57.985175", "tests_score": 5.0}	[]	261	7	\N	\N	0	5	\N	t
+3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	{"content": "s = input()\\r\\nprint(s[2])\\r\\nprint(s[-2])\\r\\nprint(s[:5])\\r\\nprint(s[:-2])\\r\\nprint(s[::2])\\r\\nprint(s[1::2])\\r\\nprint(s[::-1])\\r\\nprint(s[::-2])\\r\\nprint(len(s))", "datetime": "2020-03-24 07:22:23.689728", "tests_score": 5.0}	[]	262	7	\N	\N	0	5	\N	t
+3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	{"content": "n = int(input())\\r\\nk = int(input())\\r\\nprint(k//n)\\r\\nprint(k%n)", "datetime": "2020-03-24 07:20:11.491122", "tests_score": 5.0}	[]	3	7	\N	\N	0	5	\N	t
+3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	{"content": "h = int(input())\\r\\nm = int(input())\\r\\ns = int(input())\\r\\n\\r\\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)", "datetime": "2020-03-24 07:21:43.726922", "tests_score": 5.0}	[]	260	7	\N	\N	0	5	\N	t
+3323	print(float(input())%1)	{"content": "print(float(input())%1)", "datetime": "2020-04-11 13:28:58.250583", "tests_score": 5.0}	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t
+3329	while True:\r\n    pass	\N	[]	264	7	\N	\N	0	\N	\N	t
 \.
 
 
@@ -1671,6 +1920,9 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 261	t	chasy-2	6	36	2	4	t	f	5
 262	t	delaem-srezy	7	50	2	5	t	f	5
 263	t	stepen	8	96	2	6	t	f	5
+264	t	test-timeout	9	1454	2	7	t	f	5
+265	t	test-deep-recursive	10	1455	2	8	t	f	5
+266	t	test-hd-write	11	1456	2	9	t	f	5
 \.
 
 
@@ -1678,10 +1930,10 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 -- Data for Name: training_topic; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.training_topic (id, show, title, slug, order_key, last_modified, author_id, course_id, number) FROM stdin;
-25	t	Тестовая тема	testovaya-tema	1	2019-11-24 03:17:23.574212+05	\N	3	1
-14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1
-2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-03-24 12:18:06.715156+05	\N	1	1
+COPY public.training_topic (id, show, title, slug, order_key, last_modified, author_id, course_id, number, end_time) FROM stdin;
+25	t	Тестовая тема	testovaya-tema	1	2019-11-24 03:17:23.574212+05	\N	3	1	\N
+14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1	\N
+2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-04-20 14:37:30.803059+05	\N	1	1	\N
 \.
 
 
@@ -1703,7 +1955,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 66, true);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 120, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 126, true);
 
 
 --
@@ -1731,21 +1983,21 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8039, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8085, true);
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 38, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 40, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 67, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 70, true);
 
 
 --
@@ -1805,17 +2057,38 @@ SELECT pg_catalog.setval('public.service_menuitem_id_seq', 1, true);
 
 
 --
+-- Name: tasks_solutionexample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.tasks_solutionexample_id_seq', 9, true);
+
+
+--
 -- Name: tasks_source_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_source_id_seq', 4, true);
+SELECT pg_catalog.setval('public.tasks_source_id_seq', 8, true);
+
+
+--
+-- Name: tasks_tag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.tasks_tag_id_seq', 2, true);
 
 
 --
 -- Name: tasks_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_id_seq', 1453, true);
+SELECT pg_catalog.setval('public.tasks_task_id_seq', 1456, true);
+
+
+--
+-- Name: tasks_task_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 9, true);
 
 
 --
@@ -1836,14 +2109,14 @@ SELECT pg_catalog.setval('public.training_course_id_seq', 7, true);
 -- Name: training_solution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_solution_id_seq', 3328, true);
+SELECT pg_catalog.setval('public.training_solution_id_seq', 3329, true);
 
 
 --
 -- Name: training_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_taskitem_id_seq', 263, true);
+SELECT pg_catalog.setval('public.training_taskitem_id_seq', 266, true);
 
 
 --
@@ -2102,6 +2375,14 @@ ALTER TABLE ONLY public.service_sitesettings
 
 
 --
+-- Name: tasks_solutionexample tasks_solutionexample_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_solutionexample
+    ADD CONSTRAINT tasks_solutionexample_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: tasks_source tasks_source_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
 --
 
@@ -2110,11 +2391,35 @@ ALTER TABLE ONLY public.tasks_source
 
 
 --
+-- Name: tasks_tag tasks_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_tag
+    ADD CONSTRAINT tasks_tag_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: tasks_task tasks_task_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
 --
 
 ALTER TABLE ONLY public.tasks_task
     ADD CONSTRAINT tasks_task_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tasks_task_tags tasks_task_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task_tags
+    ADD CONSTRAINT tasks_task_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tasks_task_tags tasks_task_tags_task_id_tag_id_f35a003e_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task_tags
+    ADD CONSTRAINT tasks_task_tags_task_id_tag_id_f35a003e_uniq UNIQUE (task_id, tag_id);
 
 
 --
@@ -2327,6 +2632,13 @@ CREATE INDEX service_menuitem_menu_id_5f55d810 ON public.service_menuitem USING 
 
 
 --
+-- Name: tasks_solutionexample_task_id_8f042c4d; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX tasks_solutionexample_task_id_8f042c4d ON public.tasks_solutionexample USING btree (task_id);
+
+
+--
 -- Name: tasks_task_author_id_33a50930; Type: INDEX; Schema: public; Owner: cappa
 --
 
@@ -2338,6 +2650,20 @@ CREATE INDEX tasks_task_author_id_33a50930 ON public.tasks_task USING btree (aut
 --
 
 CREATE INDEX tasks_task_source_id_b71c4722 ON public.tasks_task USING btree (source_id);
+
+
+--
+-- Name: tasks_task_tags_tag_id_dc501020; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX tasks_task_tags_tag_id_dc501020 ON public.tasks_task_tags USING btree (tag_id);
+
+
+--
+-- Name: tasks_task_tags_task_id_7f3deefe; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX tasks_task_tags_task_id_7f3deefe ON public.tasks_task_tags USING btree (task_id);
 
 
 --
@@ -2373,6 +2699,13 @@ CREATE INDEX training_course_slug_a416a469_like ON public.training_course USING 
 --
 
 CREATE INDEX training_solution_taskitem_id_a85bfd98 ON public.training_solution USING btree (taskitem_id);
+
+
+--
+-- Name: training_solution_teacher_id_d0c9ccc9; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX training_solution_teacher_id_d0c9ccc9 ON public.training_solution USING btree (teacher_id);
 
 
 --
@@ -2575,6 +2908,14 @@ ALTER TABLE ONLY public.service_sitesettings
 
 
 --
+-- Name: tasks_solutionexample tasks_solutionexample_task_id_8f042c4d_fk_tasks_task_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_solutionexample
+    ADD CONSTRAINT tasks_solutionexample_task_id_8f042c4d_fk_tasks_task_id FOREIGN KEY (task_id) REFERENCES public.tasks_task(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: tasks_task tasks_task_author_id_33a50930_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
 --
 
@@ -2588,6 +2929,22 @@ ALTER TABLE ONLY public.tasks_task
 
 ALTER TABLE ONLY public.tasks_task
     ADD CONSTRAINT tasks_task_source_id_b71c4722_fk_tasks_source_id FOREIGN KEY (source_id) REFERENCES public.tasks_source(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: tasks_task_tags tasks_task_tags_tag_id_dc501020_fk_tasks_tag_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task_tags
+    ADD CONSTRAINT tasks_task_tags_tag_id_dc501020_fk_tasks_tag_id FOREIGN KEY (tag_id) REFERENCES public.tasks_tag(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: tasks_task_tags tasks_task_tags_task_id_7f3deefe_fk_tasks_task_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.tasks_task_tags
+    ADD CONSTRAINT tasks_task_tags_task_id_7f3deefe_fk_tasks_task_id FOREIGN KEY (task_id) REFERENCES public.tasks_task(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -2620,6 +2977,14 @@ ALTER TABLE ONLY public.training_course
 
 ALTER TABLE ONLY public.training_solution
     ADD CONSTRAINT training_solution_taskitem_id_a85bfd98_fk_training_taskitem_id FOREIGN KEY (taskitem_id) REFERENCES public.training_taskitem(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: training_solution training_solution_teacher_id_d0c9ccc9_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.training_solution
+    ADD CONSTRAINT training_solution_teacher_id_d0c9ccc9_fk_auth_user_id FOREIGN KEY (teacher_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --

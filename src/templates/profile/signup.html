@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="center-col">
+<div class="center-col" xmlns="http://www.w3.org/1999/html">
         <h1 class="text-center">Регистрация</h1>
         <form class="signup__form white {% if form.errors %}error{% endif %}" method="POST">
             {% csrf_token %}
@@ -20,6 +20,7 @@
                     <div>{{ error }}</div>
                 {% endfor %}
             </small>
+            <small>Модератор сайта проверит заявку и свяжется с Вами, только после этого Вы сможете авторизоваться на сайте</small>
             <input type="submit" class="btn btn-primary" value="Зарегистрироваться">
             <a class="signup__link" href="{% url 'profile:login' %}">Войти</a>
         </form>

@@ -132,7 +132,8 @@ class SolutionView(View):
             context={
                 'object': solution,
                 'form': form,
-                'course': solution.taskitem.topic.course
+                'course': solution.taskitem.topic.course,
+                'topic': solution.taskitem.topic
             }
         )
 
@@ -143,7 +144,9 @@ class SolutionView(View):
         if request_user_perm == self.CHANGE_PERM and solution.taskitem.manual_check:
             form = SolutionForm(instance=solution, data=request.POST)
             if form.is_valid():
-                solution = form.save()
+                solution = form.save(commit=False)
+                solution.teacher = request.user
+                solution.save()
         else:
             raise Http404
         return render(
@@ -152,7 +155,8 @@ class SolutionView(View):
             context={
                 'object': solution,
                 'form': form,
-                'course': solution.taskitem.topic.course
+                'course': solution.taskitem.topic.course,
+                'topic': solution.taskitem.topic
             }
         )
 
