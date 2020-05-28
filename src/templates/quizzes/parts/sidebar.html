@@ -1,0 +1,36 @@
+<div id="js__{{ data.id }}">
+    <div class="topic__item js__topic-item">
+        <div id="js__{{ topic.id }}-heading" class="topic__item-heading">
+            {% if quiz.taskitems %}
+                <div class="topic__item-toggler collapsed"
+                     id="{{ topic.id }}"
+                     data-toggle="collapse"
+                     data-target="#js__{{ topic.id }}-collapse"
+                     aria-expanded="false"
+                     aria-controls="js__{{ topic.id }}-collapse">
+                </div>
+            {% endif %}
+            {% if request.path == quiz.url %}
+                <span class="topic__item-title current js__current" href="{{ quiz.get_absolute_url }}"> <strong> Перечень задач: </strong></span>
+            {% else %}
+                <a class="topic__item-title js__topic-item-title" href="{{ quiz.get_absolute_url }}"> <strong> Перечень задач: </strong></a>
+            {% endif %}
+        </div>
+        {% if quiz.taskitems %}
+        <ul id="js__{{ topic.id }}-collapse"
+            class="collapse"
+            aria-labelledby="js__{{ topic.id }}-heading"
+            data-parent="#js__{{ data.id }}">
+            {% for taskitem in quiz.taskitems %}
+            <li id="js__{{ taskitem.cache_key }}" class="js__taskitem-item" >
+                {% if request.path == taskitem.get_absolute_url %}
+                    <span class="current js__current">{{ taskitem.number }} {{ taskitem.title }}</span>
+                {% else %}
+                    <a href="{{ taskitem.get_absolute_url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>

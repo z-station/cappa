@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load quizzes_tags %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% show_breadcrumbs object %}
+{% endblock %}
+
+{% block sidebar_title %}{{ quiz.title }}{% endblock %}
+
+{% block sidebar_control %}
+    <div class="sidebar__control-btn sidebar__control-btn-menu js__sidebar-btn"></div>
+    {{ block.super }}
+{% endblock %}
+
+{% block sidebar_body %}
+    {% if quiz %}
+        {% show_sidebar quiz %}
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        window.dispatchEvent(new Event('initSidebar'))
+        window.dispatchEvent(new Event('toggleSidebar'))
+        {% if request.user.is_active and quiz %}
+            window.userSolutionUrl = '{% url 'quizzes:quiz-solutions' quiz=quiz.slug %}?user_id={{ request.user.id }}'
+            window.dispatchEvent(new Event('getUserSolutions'))
+        {% endif %}
+    </script>
+{% endblock %}

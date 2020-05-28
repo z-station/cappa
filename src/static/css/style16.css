@@ -69,8 +69,6 @@ a:hover {
         max-width: 1180px;
     }
 }
-
-
 @media (min-width: 1281px){
     .container {
         max-width: 1240px;

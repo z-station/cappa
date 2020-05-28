@@ -448,8 +448,7 @@ ALTER SEQUENCE public.groups_group_id_seq OWNED BY public.groups_group.id;
 CREATE TABLE public.groups_groupcourse (
     id integer NOT NULL,
     course_id integer NOT NULL,
-    group_id integer NOT NULL,
-    show_table boolean NOT NULL
+    group_id integer NOT NULL
 );
 
 
@@ -946,6 +945,7 @@ ALTER SEQUENCE public.training_course_id_seq OWNED BY public.training_course.id;
 CREATE TABLE public.training_solution (
     id integer NOT NULL,
     last_changes text NOT NULL,
+    version_best jsonb,
     version_list jsonb,
     taskitem_id integer NOT NULL,
     user_id integer NOT NULL,
@@ -954,10 +954,7 @@ CREATE TABLE public.training_solution (
     manual_status character varying(255) NOT NULL,
     tests_score double precision,
     teacher_id integer,
-    is_count boolean NOT NULL,
-    content text NOT NULL,
-    datetime timestamp with time zone,
-    is_locked boolean NOT NULL
+    is_count boolean NOT NULL
 );
 
 
@@ -1415,7 +1412,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-04-28 22:10:04.621428+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-04-20 14:24:44.745227+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1512,9 +1509,6 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 8083	2020-04-20 14:43:49.038099+05	36	Часы-2	2	[{"changed": {"fields": ["tags"]}}]	28	7
 8084	2020-04-20 14:43:55.106607+05	35	Часы-1	2	[{"changed": {"fields": ["tags"]}}]	28	7
 8085	2020-04-20 14:44:01.914916+05	25	Дробная часть	2	[{"changed": {"fields": ["tags"]}}]	28	7
-8086	2020-04-28 22:12:37.570059+05	1457	Тест Float чекера	1	[{"added": {}}]	28	7
-8087	2020-04-28 22:12:53.144355+05	1457	Тест Float чекера	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
-8088	2020-04-28 22:13:20.332043+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 Float \\u0447\\u0435\\u043a\\u0435\\u0440\\u0430"}}]	33	7
 \.
 
 
@@ -1635,9 +1629,6 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 68	training	0005_auto_20200406_0735	2020-04-06 22:27:07.951601+05
 69	tasks	0004_auto_20200411_1042	2020-04-11 18:07:06.015763+05
 70	training	0006_auto_20200412_1154	2020-04-20 14:24:12.764863+05
-71	groups	0002_groupcourse_show_table	2020-04-28 22:09:36.66109+05
-72	training	0007_auto_20200420_1553	2020-04-28 22:09:37.15753+05
-73	training	0008_remove_solution_version_best	2020-04-28 22:09:37.200876+05
 \.
 
 
@@ -1704,7 +1695,6 @@ eawts33rc3qokxu6sdpym3dy3wyjophr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 jo1wgmgimkc6svjzfhq9hjq0gj0tf2fj	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-07 02:47:15.828865+05
 z8zx3ilgqlwiicp0h5m7c9e0m08d3jd6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-11 22:30:32.062754+05
 k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-20 18:44:02.143798+05
-7lxtxolzredqy75r79nv2bsor000rq84	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-29 02:13:29.22103+05
 \.
 
 
@@ -1729,7 +1719,7 @@ COPY public.groups_group (id, show, title, status, codeword, content, creation_d
 -- Data for Name: groups_groupcourse; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.groups_groupcourse (id, course_id, group_id, show_table) FROM stdin;
+COPY public.groups_groupcourse (id, course_id, group_id) FROM stdin;
 \.
 
 
@@ -1802,7 +1792,6 @@ COPY public.tasks_solutionexample (id, lang, content, task_id) FROM stdin;
 7	python	while True:\r\n    pass	1454
 8	python	def Fibonacci(n): \r\n    if n<0: \r\n        print("Incorrect input") \r\n    # First Fibonacci number is 0 \r\n    elif n==1: \r\n        return 0\r\n    # Second Fibonacci number is 1 \r\n    elif n==2: \r\n        return 1\r\n    else: \r\n        return Fibonacci(n-1)+Fibonacci(n-2) \r\n  \r\n# Driver Program \r\n  \r\nprint(Fibonacci(50))	1455
 9	python	with open('test.txt', 'w') as file:\r\n    file.write('test')	1456
-10	python	N = int(input())\r\ninfo = [tuple(input().split()) for _ in range(N)] \r\nprint(info)	1457
 \.
 
 
@@ -1839,7 +1828,6 @@ COPY public.tasks_task (id, order_key, show, last_modified, title, content, test
 1454	0	f	2020-04-20 14:43:15.508521+05	Тест timeout	<p>Проверка ограничения по времени</p>	[{"input": "", "output": "Превышен лимит времени на выполнение программы"}]	7	\N	str	1	python
 3	0	t	2020-04-20 14:43:27.08576+05	Делёж яблок	<p><span>n школьников делят k яблок поровну, неделящийся остаток остается в корзинке. Сколько яблок достанется каждому школьнику? Сколько яблок останется в корзинке? Программа получает на вход числа n и k и должна вывести искомое количество яблок (два числа).</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	[{"input": "6\\n50", "output": "8\\n2"}, {"input": "1\\n10", "output": "10\\n0"}, {"input": "5\\n25", "output": "5\\n0"}, {"input": "4\\n2", "output": "0\\n2"}]	7	4	int	1	python
 96	0	t	2020-04-20 14:43:34.865973+05	Степень	<p>Дано действительное положительное число <em>a</em> и <span>целоe</span> число <em>n</em>.</p>\r\n<p>Вычислите <em>a<sup>n</sup></em>. Решение оформите в виде функции <code>power(a, n)</code>.</p>\r\n<p>Стандартной функцией возведения в степень пользоваться нельзя.</p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	[{"input": "1.5\\n-10", "output": "0.0173415"}, {"input": "1.1414\\n-2", "output": "0.767581"}, {"input": "3\\n-6", "output": "0.00137174"}, {"input": "3\\n-10", "output": "1.69351e-05"}, {"input": "3\\n-5", "output": "0.00411523"}, {"input": "3\\n-4", "output": "0.0123457"}, {"input": "3\\n-3", "output": "0.037037"}, {"input": "3\\n-2", "output": "0.111111"}, {"input": "3\\n-1", "output": "0.333333"}, {"input": "2\\n-15", "output": "3.05176e-05"}, {"input": "2\\n-10", "output": "0.000976562"}, {"input": "2\\n-9", "output": "0.00195312"}, {"input": "2\\n-8", "output": "0.00390625"}, {"input": "2\\n-4", "output": "0.0625"}, {"input": "2\\n-2", "output": "0.25"}, {"input": "2\\n-1", "output": "0.5"}, {"input": "1\\n-1", "output": "1"}, {"input": "1.5\\n10", "output": "57.665"}, {"input": "1.1414\\n2", "output": "1.30279"}, {"input": "3\\n0", "output": "1"}, {"input": "3\\n10", "output": "59049"}, {"input": "3\\n3", "output": "27"}, {"input": "3\\n2", "output": "9"}, {"input": "3\\n1", "output": "3"}, {"input": "2\\n0", "output": "1"}, {"input": "2\\n15", "output": "32768"}, {"input": "2\\n10", "output": "1024"}, {"input": "2\\n9", "output": "512"}, {"input": "2\\n4", "output": "16"}, {"input": "2\\n3", "output": "8"}, {"input": "2\\n2", "output": "4"}, {"input": "2\\n1", "output": "2"}, {"input": "2\\n-3", "output": "0.125"}]	7	4	float	1	python
-1457	0	f	2020-04-28 22:12:53.139875+05	Тест Float чекера	<p>Корректная обработка&nbsp; случаев передачи в чекер строковых значений, которые не могут быть преобразованы к float&nbsp;</p>	[{"input": "3\\nmanager 150000 0 0\\ntechnician 35000 5000 0 B\\ndriver 250 10000 80 A", "output": "230250.0"}]	\N	\N	float	0	python
 \.
 
 
@@ -1857,7 +1845,6 @@ COPY public.tasks_task_tags (id, task_id, tag_id) FROM stdin;
 7	36	1
 8	35	1
 9	25	1
-10	1457	2
 \.
 
 
@@ -1909,15 +1896,15 @@ COPY public.training_course (id, show, title, slug, about, content, content_bott
 -- Data for Name: training_solution; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.training_solution (id, last_changes, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score, teacher_id, is_count, content, datetime, is_locked) FROM stdin;
-3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	[]	263	7	\N	\N	0	5	\N	t		\N	f
-3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	[]	132	7	\N	\N	0	0	\N	t		\N	f
-3325	a=float(input())\r\nprint(a%30*12)	[]	261	7	\N	\N	0	5	\N	t		\N	f
-3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	[]	262	7	\N	\N	0	5	\N	t		\N	f
-3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	[]	3	7	\N	\N	0	5	\N	t		\N	f
-3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	[]	260	7	\N	\N	0	5	\N	t		\N	f
-3323	print(float(input())%1)	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t		\N	f
-3329	while True:\r\n    pass	[]	264	7	\N	\N	0	\N	\N	t		\N	f
+COPY public.training_solution (id, last_changes, version_best, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score, teacher_id, is_count) FROM stdin;
+3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	{"content": "def power(a,n):\\r\\n    m = 1\\r\\n    for i in range(abs(n)):\\r\\n        m = m * a\\r\\n    if (n >= 0):\\r\\n        print(m)\\r\\n    else:\\r\\n        res = 1 / m\\r\\n        print(res)\\r\\na = float(input())\\r\\nn = int(input())\\r\\n\\r\\npower(a,n)", "datetime": "2020-03-24 07:23:06.652443", "tests_score": 5.0}	[]	263	7	\N	\N	0	5	\N	t
+3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	{"content": "#include <iostream>\\r\\n#include <cstdlib> // для system\\r\\nusing namespace std;\\r\\n\\r\\nint main() \\r\\n{ \\r\\n    cout << \\"Hello, world!\\" << endl;\\r\\n    return 0; \\r\\n}", "datetime": "2020-03-24 10:17:54.626791", "tests_score": 0.0}	[]	132	7	\N	\N	0	0	\N	t
+3325	a=float(input())\r\nprint(a%30*12)	{"content": "a=float(input())\\r\\nprint(a%30*12)", "datetime": "2020-03-24 07:21:57.985175", "tests_score": 5.0}	[]	261	7	\N	\N	0	5	\N	t
+3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	{"content": "s = input()\\r\\nprint(s[2])\\r\\nprint(s[-2])\\r\\nprint(s[:5])\\r\\nprint(s[:-2])\\r\\nprint(s[::2])\\r\\nprint(s[1::2])\\r\\nprint(s[::-1])\\r\\nprint(s[::-2])\\r\\nprint(len(s))", "datetime": "2020-03-24 07:22:23.689728", "tests_score": 5.0}	[]	262	7	\N	\N	0	5	\N	t
+3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	{"content": "n = int(input())\\r\\nk = int(input())\\r\\nprint(k//n)\\r\\nprint(k%n)", "datetime": "2020-03-24 07:20:11.491122", "tests_score": 5.0}	[]	3	7	\N	\N	0	5	\N	t
+3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	{"content": "h = int(input())\\r\\nm = int(input())\\r\\ns = int(input())\\r\\n\\r\\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)", "datetime": "2020-03-24 07:21:43.726922", "tests_score": 5.0}	[]	260	7	\N	\N	0	5	\N	t
+3323	print(float(input())%1)	{"content": "print(float(input())%1)", "datetime": "2020-04-11 13:28:58.250583", "tests_score": 5.0}	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t
+3329	while True:\r\n    pass	\N	[]	264	7	\N	\N	0	\N	\N	t
 \.
 
 
@@ -1936,7 +1923,6 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 264	t	test-timeout	9	1454	2	7	t	f	5
 265	t	test-deep-recursive	10	1455	2	8	t	f	5
 266	t	test-hd-write	11	1456	2	9	t	f	5
-267	t	test-float-chekera	12	1457	2	10	t	f	5
 \.
 
 
@@ -1947,7 +1933,7 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 COPY public.training_topic (id, show, title, slug, order_key, last_modified, author_id, course_id, number, end_time) FROM stdin;
 25	t	Тестовая тема	testovaya-tema	1	2019-11-24 03:17:23.574212+05	\N	3	1	\N
 14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1	\N
-2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-04-28 22:13:20.298158+05	\N	1	1	\N
+2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-04-20 14:37:30.803059+05	\N	1	1	\N
 \.
 
 
@@ -1997,7 +1983,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8088, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8085, true);
 
 
 --
@@ -2011,7 +1997,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 40, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 73, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 70, true);
 
 
 --
@@ -2074,7 +2060,7 @@ SELECT pg_catalog.setval('public.service_menuitem_id_seq', 1, true);
 -- Name: tasks_solutionexample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_solutionexample_id_seq', 10, true);
+SELECT pg_catalog.setval('public.tasks_solutionexample_id_seq', 9, true);
 
 
 --
@@ -2095,14 +2081,14 @@ SELECT pg_catalog.setval('public.tasks_tag_id_seq', 2, true);
 -- Name: tasks_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_id_seq', 1457, true);
+SELECT pg_catalog.setval('public.tasks_task_id_seq', 1456, true);
 
 
 --
 -- Name: tasks_task_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 10, true);
+SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 9, true);
 
 
 --
@@ -2130,7 +2116,7 @@ SELECT pg_catalog.setval('public.training_solution_id_seq', 3329, true);
 -- Name: training_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_taskitem_id_seq', 267, true);
+SELECT pg_catalog.setval('public.training_taskitem_id_seq', 266, true);
 
 
 --

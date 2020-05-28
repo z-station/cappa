@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from src.training.models import Course
+from src.quizzes.models import Quiz
 from tinymce.models import HTMLField
 from django.urls import reverse
 
@@ -77,7 +78,7 @@ class GroupCourse(models.Model):
     group = models.ForeignKey(Group, related_name='group_courses')
     course = models.ForeignKey(Course, verbose_name='курс', limit_choices_to={'show': True})
     show_table = models.BooleanField(verbose_name='отображать таблицу результатов', default=False)
-
+    
     def __str__(self):
         return self.course.__str__()
 
@@ -86,3 +87,23 @@ class GroupCourse(models.Model):
             {'title': 'Учебные группы', 'url': reverse('groups:groups')},
             {'title': self.group.title, 'url': reverse('groups:group', kwargs={'group_id': self.group.id})}
         ]
+        
+class GroupQuiz(models.Model):
+
+    class Meta:
+        verbose_name = 'самостоятельная работа'
+        verbose_name_plural = 'самостоятельные работы'
+        unique_together = ['group', 'quiz']
+
+    group = models.ForeignKey(Group, related_name='group_quizzes')
+    quiz = models.ForeignKey(Quiz, verbose_name='самостоятельная работа', limit_choices_to={'show': True})
+    show_table = models.BooleanField(verbose_name='отображать таблицу результатов', default=False)
+    
+    def __str__(self):
+        return self.quiz.__str__()
+
+    def get_breadcrumbs(self):
+        return [
+            {'title': 'Учебные группы', 'url': reverse('groups:groups')},
+            {'title': self.group.title, 'url': reverse('groups:group', kwargs={'group_id': self.group.id})}
+        ]        

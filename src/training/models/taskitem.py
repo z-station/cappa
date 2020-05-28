@@ -115,7 +115,7 @@ class Solution(models.Model):
     )
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='solutions')
-    user = models.ForeignKey(UserModel, verbose_name="пользователь")
+    user = models.ForeignKey(UserModel, verbose_name="пользователь", related_name='_solution')
     datetime = models.DateTimeField(verbose_name='дата/время отправки', blank=True, null=True)
     is_count = models.BooleanField(verbose_name="баллы идут в зачет", default=True)
     is_locked = models.BooleanField(verbose_name="запрещено изменять", default=False)

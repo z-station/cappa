@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^courses/', include('src.training.urls', namespace='training')),
+    url(r'^quizzes/', include('src.quizzes.urls', namespace='quizzes')),
     url(r'^groups/', include('src.groups.urls', namespace='groups')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^', include('src.profile.urls', namespace='profile')),

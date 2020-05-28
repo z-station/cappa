@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
-from src.groups.models import Group, GroupCourse, GroupMember
+from src.groups.models import Group, GroupCourse, GroupMember, GroupQuiz
 from src.groups.forms import GroupSearchForm, GroupInviteForm
 
 
@@ -104,6 +104,36 @@ class GroupCourseView(View):
         else:
             raise Http404
 
+@method_decorator(login_required, name='dispatch')
+class GroupQuizView(View):
+
+    def get_object(self, *args, **kwargs):
+        try:
+            group_quiz = GroupQuiz.objects.select_related('group', 'quiz').get(id=kwargs['group_quiz_id'])
+        except:
+            raise Http404
+        else:
+            if not group_quiz.show_table:
+                raise Http404
+            return group_quiz
+
+    def get(self, request, *args, **kwargs):
+        group_quiz = self.get_object(*args, **kwargs)
+        group = group_quiz.group
+        if(request.user == group.author or request.user in group.members):
+#            print("object: ", group_quiz, "quiz_date: ", group_quiz.quiz.get_cache_data())
+            return render(
+                request=request,
+                template_name='groups/group_quiz.html',
+                context={
+                    'object': group_quiz,
+                    'quiz_data': group_quiz.quiz.get_cache_data()
+                }
+            )
+        else:
+            raise Http404
+
+
 
 @method_decorator(login_required, name='dispatch')
 class GroupCourseSolutionsView(View):
@@ -127,6 +157,36 @@ class GroupCourseSolutionsView(View):
             result['member-%d' % user.id] = {
                 'full_name': user.get_full_name(),
                 'data': user.get_cache_course_solutions_data(course),
+                'show_link': request.user.is_superuser or
+                             request.user == user or
+                             request.user == group.author
+            }
+        return JsonResponse(result)
+    
+    
+    
+@method_decorator(login_required, name='dispatch')
+class GroupQuizSolutionsView(View):
+
+    def get_object(self, *args, **kwargs):
+        try:
+            group_quiz = GroupQuiz.objects.select_related('group', 'quiz').get(id=kwargs['group_quiz_id'])
+        except:
+            raise Http404
+        else:
+            if not group_quiz.show_table:
+                raise Http404
+            return group_quiz        
+
+    def get(self, request, *args, **kwargs):
+        group_quiz = self.get_object(request, *args, **kwargs)
+        group = group_quiz.group
+        quiz = group_quiz.quiz
+        result = {}
+        for user in group.members:
+            result['member-%d' % user.id] = {
+                'full_name': user.get_full_name(),
+                'data': user.get_cache_quiz_solutions_data(quiz),
                 'show_link': request.user.is_superuser or
                              request.user == user or
                              request.user == group.author
