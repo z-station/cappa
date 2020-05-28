@@ -76,6 +76,7 @@ class GroupCourse(models.Model):
 
     group = models.ForeignKey(Group, related_name='group_courses')
     course = models.ForeignKey(Course, verbose_name='курс', limit_choices_to={'show': True})
+    show_table = models.BooleanField(verbose_name='отображать таблицу результатов', default=False)
 
     def __str__(self):
         return self.course.__str__()

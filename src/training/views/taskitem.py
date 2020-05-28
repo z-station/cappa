@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
@@ -13,6 +13,7 @@ from src.training.forms import TaskItemForm, SolutionForm
 UserModel = get_user_model()
 
 
+@method_decorator(login_required, name='dispatch')
 class TaskItemView(View):
 
     def get_object(self, request, *args, **kwargs):
@@ -104,17 +105,19 @@ class SolutionView(View):
         return perm
 
     def get_object(self, user_id, **kwargs) -> Solution:
+        filter = {
+            "taskitem__slug": kwargs['taskitem'],
+            "taskitem__topic__slug": kwargs['topic'],
+            "taskitem__topic__course__slug": kwargs['course'],
+            "user_id": user_id
+        }
         try:
-            solution = Solution.objects.get(
-                taskitem__slug=kwargs['taskitem'],
-                taskitem__topic__slug=kwargs['topic'],
-                taskitem__topic__course__slug=kwargs['course'],
-                user_id=user_id
-            )
+            return Solution.objects.get(**filter)
+        except MultipleObjectsReturned:
+            # TODO Логировать ошибку
+            return Solution.objects.filter(**filter).first()
         except ObjectDoesNotExist:
             raise Http404
-        else:
-            return solution
 
     def get(self, request, *args, **kwargs):
         solution_user_id = self.get_solution_user_id(request)

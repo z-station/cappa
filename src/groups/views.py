@@ -81,9 +81,13 @@ class GroupCourseView(View):
 
     def get_object(self, *args, **kwargs):
         try:
-            return GroupCourse.objects.select_related('group', 'course').get(id=kwargs['group_course_id'])
+            group_course = GroupCourse.objects.select_related('group', 'course').get(id=kwargs['group_course_id'])
         except:
             raise Http404
+        else:
+            if not group_course.show_table:
+                raise Http404
+            return group_course
 
     def get(self, request, *args, **kwargs):
         group_course = self.get_object(*args, **kwargs)
@@ -106,9 +110,13 @@ class GroupCourseSolutionsView(View):
 
     def get_object(self, *args, **kwargs):
         try:
-            return GroupCourse.objects.select_related('group', 'course').get(id=kwargs['group_course_id'])
+            group_course = GroupCourse.objects.select_related('group', 'course').get(id=kwargs['group_course_id'])
         except:
             raise Http404
+        else:
+            if not group_course.show_table:
+                raise Http404
+            return group_course
 
     def get(self, request, *args, **kwargs):
         group_course = self.get_object(request, *args, **kwargs)

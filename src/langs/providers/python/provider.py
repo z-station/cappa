@@ -1,4 +1,5 @@
 import re
+import uuid
 import docker
 from docker import errors
 from django.conf import settings
@@ -8,9 +9,8 @@ from src.tasks.models import Task
 from src.utils import msg as msg_utils
 from src.utils.editor import clear_text
 
-docker_conf = settings.DOCKER_CONF['python']
+conf = settings.DOCKER_CONF['python']
 client = docker.from_env()
-api_client = docker.APIClient()
 
 
 class Provider(BaseProvider):
@@ -45,11 +45,11 @@ class Provider(BaseProvider):
         """ Создает и возвращает docker-образ python песочницы """
 
         try:
-            image = client.images.get(name=docker_conf['image_tag'])
+            image = client.images.get(name=conf['image_tag'])
         except errors.ImageNotFound:
             image, logs = client.images.build(
-                path=docker_conf['path'],
-                tag=docker_conf['image_tag']
+                path=conf['path'],
+                tag=conf['image_tag']
             )
         return image
 
@@ -59,31 +59,71 @@ class Provider(BaseProvider):
         """ Запускает и возвращает docker-контейнер python песочницы """
 
         try:
-            container = client.containers.get(container_id=docker_conf["container_name"])
+            container = client.containers.get(container_id=conf["container_name"])
         except errors.NotFound:
             image = cls._get_docker_image()
-            container = client.containers.run(
-                image=image,
-                name=docker_conf['container_name'],
-                detach=True, auto_remove=True,
-                stdin_open=True, stdout=True, stderr=True,
-                cpuset_cpus=docker_conf['cpuset_cpus'],
-                cpu_quota=docker_conf['cpu_quota'],
-                cpu_shares=docker_conf['cpu_shares'],
-                mem_reservation=docker_conf['mem_reservation'],
-                mem_limit=docker_conf['mem_limit'],
-                memswap_limit=docker_conf['memswap_limit'],
-                volumes={docker_conf['dir']: {'bind': f'/home/{docker_conf["user"]}/', 'mode': 'ro'}}
-            )
+            try:
+                container = client.containers.run(
+                    image=image,
+                    name=conf['container_name'],
+                    detach=True, auto_remove=True,
+                    stdin_open=True, stdout=True, stderr=True,
+                    cpuset_cpus=conf['cpuset_cpus'],
+                    cpu_quota=conf['cpu_quota'],
+                    cpu_shares=conf['cpu_shares'],
+                    mem_reservation=conf['mem_reservation'],
+                    mem_limit=conf['mem_limit'],
+                    memswap_limit=conf['memswap_limit'],
+                    volumes={conf['dir']: {'bind': f'/home/{conf["user"]}/', 'mode': 'ro'}}
+                )
+            except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
+                container = client.containers.get(container_id=conf["container_name"])
         return container
 
     @classmethod
+    def _stop_docker_container(cls):
+
+        """ Мягкая остановка контейнера
+
+            Перерменование и только затем остановка, необходимо для того чтобы
+            другие процессы не успевали подключиться к выключаемому контейнеру.
+            Вместо этого они будут инициировать старт нового контейнера.
+        """
+
+        container = client.containers.get(container_id=conf["container_name"])
+        container.rename(name=f'trash-{uuid.uuid1()}')
+        container.stop()
+
+    @classmethod
+    def _check_zombie_procs(cls):
+
+        """ Проверяет количество мертвых процессов в контейнере и если нужно останавливает его
+
+            Команда timeout контролирует время выполнения кода в песочнице, но
+            пораждает мертвые процессы в контейнере (возможно характерно только для linux Alpine),
+            которые можно убить только остановив контейнер.
+        """
+
+        container = cls._get_docker_container()
+        exit_code, result = container.exec_run(
+            cmd=f'bash -c "ps axu | grep -c timeout"',
+            stream=True, demux=True, user=conf['user']
+        )
+        stdout, stderr = next(result)
+        count_zombie_procs = int(stdout.decode())
+        if count_zombie_procs > conf['max_zombie_procs']:
+            cls._stop_docker_container()
+
+    @classmethod
     def debug(cls, input: str, content: str) -> dict:
+
+        """ Запускает код в docker-песочнице и возвращает результаты """
+
         files = DebugFiles(data_in=clear_text(input), data_py=clear_text(content))
         container = cls._get_docker_container()
         exit_code, result = container.exec_run(
-            cmd=f'bash -c "timeout {docker_conf["timeout_duration"]} python {files.filename_py} < {files.filename_in}"',
-            stream=True, demux=True, user=docker_conf['user']
+            cmd=f'bash -c "timeout {conf["timeout"]} python {files.filename_py} < {files.filename_in}"',
+            stream=True, demux=True, user=conf['user']
         )
         try:
             stdout, stderr = next(result)
@@ -92,6 +132,7 @@ class Provider(BaseProvider):
         else:
             output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
         files.remove()
+        cls._check_zombie_procs()
         return {
             'output': output,
             'error': error
@@ -99,6 +140,9 @@ class Provider(BaseProvider):
 
     @classmethod
     def check_tests(cls, content: str, task: Task) -> dict:
+
+        """ Запускает код на наборе тестов в docker-песочнице и возвращает результаты тестирования """
+
         compare_method_name = f'_compare_{task.output_type}'
         compare_method = getattr(cls, compare_method_name)
         files = TestsFiles(data_py=clear_text(content))
@@ -108,8 +152,8 @@ class Provider(BaseProvider):
         for test in task.tests:
             filename_in = files.create_file_in(data_in=clear_text(test['input']))
             exit_code, result = container.exec_run(
-                cmd=f'bash -c "timeout {docker_conf["timeout_duration"]} python {files.filename_py} < {filename_in}"',
-                stream=True, demux=True, user=docker_conf['user']
+                cmd=f'bash -c "timeout {conf["timeout"]} python {files.filename_py} < {filename_in}"',
+                stream=True, demux=True, user=conf['user']
             )
             try:
                 stdout, stderr = next(result)
@@ -135,6 +179,7 @@ class Provider(BaseProvider):
         files.remove()
 
         tests_num = len(task.tests)
+        cls._check_zombie_procs()
         return {
             'num': tests_num,
             'num_success': tests_num_success,

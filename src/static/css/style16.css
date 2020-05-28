@@ -1474,6 +1474,10 @@ li.error {
     width: 120px;
 }
 
+.group .group__courses tr td:first-child {
+    width: 20px;
+}
+
 .group__invite-form {
     margin-bottom: 20px;
     display: flex;

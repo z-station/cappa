@@ -49,16 +49,22 @@
             {% if user_is_member or user_is_teacher %}
                 {% if object.group_courses.all %}
                 <h3>Учебная программа</h3>
-                <table class="group__info">
-                    {% for group_course in object.group_courses.all %}
-                        <tr>
-                            <td>Курс:</td>
-                            <td>
-                                <a href="{{ group_course.course.get_absolute_url }}">{{ group_course.course }}</a>
-                                <a href="{% url 'groups:group-course' object.id group_course.id %}">[таблица результатов]</a></td>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                <table class="group__courses">
+                    {% with object.group_courses.all as group_courses %}
+                        {% for group_course in group_courses %}
+                            <tr>
+                                {% if group_courses|length > 1 %}
+                                <td>{{ forloop.counter }}</td>
+                                {% endif %}
+                                <td>
+                                    <a href="{{ group_course.course.get_absolute_url }}" target="_blank">{{ group_course.course }}</a>
+                                    {% if group_course.show_table %}
+                                        <a href="{% url 'groups:group-course' object.id group_course.id %}" target="_blank">[таблица результатов]</a></td>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endwith %}
                 </table>
                 {% endif %}
             {% endif %}
