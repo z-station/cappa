@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
--- Dumped by pg_dump version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
+-- Dumped from database version 10.13 (Ubuntu 10.13-1.pgdg18.04+1)
+-- Dumped by pg_dump version 10.13 (Ubuntu 10.13-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -511,6 +511,42 @@ ALTER SEQUENCE public.groups_groupmember_id_seq OWNED BY public.groups_groupmemb
 
 
 --
+-- Name: groups_groupquiz; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.groups_groupquiz (
+    id integer NOT NULL,
+    show_table boolean NOT NULL,
+    group_id integer NOT NULL,
+    quiz_id integer NOT NULL
+);
+
+
+ALTER TABLE public.groups_groupquiz OWNER TO cappa;
+
+--
+-- Name: groups_groupquiz_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.groups_groupquiz_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_groupquiz_id_seq OWNER TO cappa;
+
+--
+-- Name: groups_groupquiz_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.groups_groupquiz_id_seq OWNED BY public.groups_groupquiz.id;
+
+
+--
 -- Name: langs_lang; Type: TABLE; Schema: public; Owner: cappa
 --
 
@@ -580,6 +616,142 @@ ALTER TABLE public.news_news_id_seq OWNER TO cappa;
 --
 
 ALTER SEQUENCE public.news_news_id_seq OWNED BY public.news_news.id;
+
+
+--
+-- Name: quizzes_quiz; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.quizzes_quiz (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    title character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    end_time timestamp with time zone,
+    about text,
+    content text,
+    order_key integer,
+    last_modified timestamp with time zone NOT NULL,
+    author_id integer,
+    lang_id integer NOT NULL,
+    CONSTRAINT quizzes_quiz_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.quizzes_quiz OWNER TO cappa;
+
+--
+-- Name: quizzes_quiz_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.quizzes_quiz_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.quizzes_quiz_id_seq OWNER TO cappa;
+
+--
+-- Name: quizzes_quiz_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.quizzes_quiz_id_seq OWNED BY public.quizzes_quiz.id;
+
+
+--
+-- Name: quizzes_solution; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.quizzes_solution (
+    id integer NOT NULL,
+    datetime timestamp with time zone,
+    is_count boolean NOT NULL,
+    is_locked boolean NOT NULL,
+    manual_status character varying(255) NOT NULL,
+    manual_score double precision,
+    tests_score double precision,
+    last_changes text NOT NULL,
+    content text NOT NULL,
+    version_list jsonb,
+    comment text,
+    taskitem_id integer NOT NULL,
+    teacher_id integer,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.quizzes_solution OWNER TO cappa;
+
+--
+-- Name: quizzes_solution_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.quizzes_solution_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.quizzes_solution_id_seq OWNER TO cappa;
+
+--
+-- Name: quizzes_solution_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.quizzes_solution_id_seq OWNED BY public.quizzes_solution.id;
+
+
+--
+-- Name: quizzes_taskitem; Type: TABLE; Schema: public; Owner: cappa
+--
+
+CREATE TABLE public.quizzes_taskitem (
+    id integer NOT NULL,
+    show boolean NOT NULL,
+    max_score integer NOT NULL,
+    manual_check boolean NOT NULL,
+    compiler_check boolean NOT NULL,
+    slug character varying(255),
+    langg character varying(255),
+    number integer,
+    order_key integer,
+    quiz_id integer NOT NULL,
+    task_id integer NOT NULL,
+    CONSTRAINT quizzes_taskitem_max_score_check CHECK ((max_score >= 0)),
+    CONSTRAINT quizzes_taskitem_number_check CHECK ((number >= 0)),
+    CONSTRAINT quizzes_taskitem_order_key_check CHECK ((order_key >= 0))
+);
+
+
+ALTER TABLE public.quizzes_taskitem OWNER TO cappa;
+
+--
+-- Name: quizzes_taskitem_id_seq; Type: SEQUENCE; Schema: public; Owner: cappa
+--
+
+CREATE SEQUENCE public.quizzes_taskitem_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.quizzes_taskitem_id_seq OWNER TO cappa;
+
+--
+-- Name: quizzes_taskitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: cappa
+--
+
+ALTER SEQUENCE public.quizzes_taskitem_id_seq OWNED BY public.quizzes_taskitem.id;
 
 
 --
@@ -1163,6 +1335,13 @@ ALTER TABLE ONLY public.groups_groupmember ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: groups_groupquiz id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupquiz ALTER COLUMN id SET DEFAULT nextval('public.groups_groupquiz_id_seq'::regclass);
+
+
+--
 -- Name: langs_lang id; Type: DEFAULT; Schema: public; Owner: cappa
 --
 
@@ -1174,6 +1353,27 @@ ALTER TABLE ONLY public.langs_lang ALTER COLUMN id SET DEFAULT nextval('public.l
 --
 
 ALTER TABLE ONLY public.news_news ALTER COLUMN id SET DEFAULT nextval('public.news_news_id_seq'::regclass);
+
+
+--
+-- Name: quizzes_quiz id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_quiz ALTER COLUMN id SET DEFAULT nextval('public.quizzes_quiz_id_seq'::regclass);
+
+
+--
+-- Name: quizzes_solution id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_solution ALTER COLUMN id SET DEFAULT nextval('public.quizzes_solution_id_seq'::regclass);
+
+
+--
+-- Name: quizzes_taskitem id; Type: DEFAULT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_taskitem ALTER COLUMN id SET DEFAULT nextval('public.quizzes_taskitem_id_seq'::regclass);
 
 
 --
@@ -1407,6 +1607,18 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 124	Can add метка	40	add_tag
 125	Can change метка	40	change_tag
 126	Can delete метка	40	delete_tag
+127	Can add самостоятельная работа	41	add_groupquiz
+128	Can change самостоятельная работа	41	change_groupquiz
+129	Can delete самостоятельная работа	41	delete_groupquiz
+130	Can add Самостоятельная работа	42	add_quiz
+131	Can change Самостоятельная работа	42	change_quiz
+132	Can delete Самостоятельная работа	42	delete_quiz
+133	Can add решение задачи	43	add_solution
+134	Can change решение задачи	43	change_solution
+135	Can delete решение задачи	43	delete_solution
+136	Can add задача	44	add_taskitem
+137	Can change задача	44	change_taskitem
+138	Can delete задача	44	delete_taskitem
 \.
 
 
@@ -1415,7 +1627,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-04-28 22:10:04.621428+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-07 23:42:23.30684+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1563,6 +1775,10 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 38	service	sitesettings
 39	tasks	solutionexample
 40	tasks	tag
+41	groups	groupquiz
+42	quizzes	quiz
+43	quizzes	solution
+44	quizzes	taskitem
 \.
 
 
@@ -1638,6 +1854,11 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 71	groups	0002_groupcourse_show_table	2020-04-28 22:09:36.66109+05
 72	training	0007_auto_20200420_1553	2020-04-28 22:09:37.15753+05
 73	training	0008_remove_solution_version_best	2020-04-28 22:09:37.200876+05
+74	tasks	0005_auto_20200607_1840	2020-06-07 23:41:44.979725+05
+75	langs	0004_auto_20200607_1840	2020-06-07 23:41:45.012929+05
+76	quizzes	0001_initial	2020-06-07 23:41:45.891763+05
+77	groups	0003_auto_20200607_1841	2020-06-07 23:41:46.179278+05
+78	training	0009_auto_20200607_1841	2020-06-07 23:41:46.255061+05
 \.
 
 
@@ -1705,6 +1926,7 @@ jo1wgmgimkc6svjzfhq9hjq0gj0tf2fj	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 z8zx3ilgqlwiicp0h5m7c9e0m08d3jd6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-11 22:30:32.062754+05
 k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-20 18:44:02.143798+05
 7lxtxolzredqy75r79nv2bsor000rq84	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-29 02:13:29.22103+05
+6x13qniyg0v57jqn7kws7okewkjacxrw	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-08 03:43:06.423221+05
 \.
 
 
@@ -1742,6 +1964,14 @@ COPY public.groups_groupmember (id, group_id, user_id) FROM stdin;
 
 
 --
+-- Data for Name: groups_groupquiz; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.groups_groupquiz (id, show_table, group_id, quiz_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: langs_lang; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
@@ -1758,6 +1988,30 @@ COPY public.langs_lang (id, name, provider_name) FROM stdin;
 
 COPY public.news_news (id, title, date, content, show, author_id, image) FROM stdin;
 7	Заработало!	2019-12-03	<p>Время бахнуть зеленого чая!</p>	t	7	pHrJ4PX3u0Q.jpg
+\.
+
+
+--
+-- Data for Name: quizzes_quiz; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.quizzes_quiz (id, show, title, slug, end_time, about, content, order_key, last_modified, author_id, lang_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: quizzes_solution; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.quizzes_solution (id, datetime, is_count, is_locked, manual_status, manual_score, tests_score, last_changes, content, version_list, comment, taskitem_id, teacher_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: quizzes_taskitem; Type: TABLE DATA; Schema: public; Owner: cappa
+--
+
+COPY public.quizzes_taskitem (id, show, max_score, manual_check, compiler_check, slug, langg, number, order_key, quiz_id, task_id) FROM stdin;
 \.
 
 
@@ -1969,7 +2223,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 66, true);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 126, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 138, true);
 
 
 --
@@ -2004,14 +2258,14 @@ SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8088, true);
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 40, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 44, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 73, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 78, true);
 
 
 --
@@ -2043,6 +2297,13 @@ SELECT pg_catalog.setval('public.groups_groupmember_id_seq', 104, true);
 
 
 --
+-- Name: groups_groupquiz_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.groups_groupquiz_id_seq', 1, false);
+
+
+--
 -- Name: langs_lang_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
@@ -2054,6 +2315,27 @@ SELECT pg_catalog.setval('public.langs_lang_id_seq', 3, true);
 --
 
 SELECT pg_catalog.setval('public.news_news_id_seq', 7, true);
+
+
+--
+-- Name: quizzes_quiz_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.quizzes_quiz_id_seq', 1, false);
+
+
+--
+-- Name: quizzes_solution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.quizzes_solution_id_seq', 1, false);
+
+
+--
+-- Name: quizzes_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
+--
+
+SELECT pg_catalog.setval('public.quizzes_taskitem_id_seq', 1, false);
 
 
 --
@@ -2333,6 +2615,22 @@ ALTER TABLE ONLY public.groups_groupmember
 
 
 --
+-- Name: groups_groupquiz groups_groupquiz_group_id_quiz_id_abbc4d64_uniq; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupquiz
+    ADD CONSTRAINT groups_groupquiz_group_id_quiz_id_abbc4d64_uniq UNIQUE (group_id, quiz_id);
+
+
+--
+-- Name: groups_groupquiz groups_groupquiz_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupquiz
+    ADD CONSTRAINT groups_groupquiz_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: langs_lang langs_lang_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
 --
 
@@ -2354,6 +2652,38 @@ ALTER TABLE ONLY public.langs_lang
 
 ALTER TABLE ONLY public.news_news
     ADD CONSTRAINT news_news_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: quizzes_quiz quizzes_quiz_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_quiz
+    ADD CONSTRAINT quizzes_quiz_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: quizzes_quiz quizzes_quiz_slug_key; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_quiz
+    ADD CONSTRAINT quizzes_quiz_slug_key UNIQUE (slug);
+
+
+--
+-- Name: quizzes_solution quizzes_solution_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_solution
+    ADD CONSTRAINT quizzes_solution_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: quizzes_taskitem quizzes_taskitem_pkey; Type: CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_taskitem
+    ADD CONSTRAINT quizzes_taskitem_pkey PRIMARY KEY (id);
 
 
 --
@@ -2618,6 +2948,20 @@ CREATE INDEX groups_groupmember_user_id_f9e9f041 ON public.groups_groupmember US
 
 
 --
+-- Name: groups_groupquiz_group_id_8d430ef7; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupquiz_group_id_8d430ef7 ON public.groups_groupquiz USING btree (group_id);
+
+
+--
+-- Name: groups_groupquiz_quiz_id_e0b4c4a3; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX groups_groupquiz_quiz_id_e0b4c4a3 ON public.groups_groupquiz USING btree (quiz_id);
+
+
+--
 -- Name: langs_lang_provider_name_2bb81b34_like; Type: INDEX; Schema: public; Owner: cappa
 --
 
@@ -2629,6 +2973,76 @@ CREATE INDEX langs_lang_provider_name_2bb81b34_like ON public.langs_lang USING b
 --
 
 CREATE INDEX news_news_author_id_9f88be71 ON public.news_news USING btree (author_id);
+
+
+--
+-- Name: quizzes_quiz_author_id_cb0b1f2d; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_quiz_author_id_cb0b1f2d ON public.quizzes_quiz USING btree (author_id);
+
+
+--
+-- Name: quizzes_quiz_lang_id_8786fb71; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_quiz_lang_id_8786fb71 ON public.quizzes_quiz USING btree (lang_id);
+
+
+--
+-- Name: quizzes_quiz_slug_00008600_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_quiz_slug_00008600_like ON public.quizzes_quiz USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: quizzes_solution_taskitem_id_ebd98ea0; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_solution_taskitem_id_ebd98ea0 ON public.quizzes_solution USING btree (taskitem_id);
+
+
+--
+-- Name: quizzes_solution_teacher_id_70de0f62; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_solution_teacher_id_70de0f62 ON public.quizzes_solution USING btree (teacher_id);
+
+
+--
+-- Name: quizzes_solution_user_id_d1b2532e; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_solution_user_id_d1b2532e ON public.quizzes_solution USING btree (user_id);
+
+
+--
+-- Name: quizzes_taskitem_quiz_id_8bfb8dd4; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_taskitem_quiz_id_8bfb8dd4 ON public.quizzes_taskitem USING btree (quiz_id);
+
+
+--
+-- Name: quizzes_taskitem_slug_ed951a1c; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_taskitem_slug_ed951a1c ON public.quizzes_taskitem USING btree (slug);
+
+
+--
+-- Name: quizzes_taskitem_slug_ed951a1c_like; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_taskitem_slug_ed951a1c_like ON public.quizzes_taskitem USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: quizzes_taskitem_task_id_b03f9527; Type: INDEX; Schema: public; Owner: cappa
+--
+
+CREATE INDEX quizzes_taskitem_task_id_b03f9527 ON public.quizzes_taskitem USING btree (task_id);
 
 
 --
@@ -2898,11 +3312,83 @@ ALTER TABLE ONLY public.groups_groupmember
 
 
 --
+-- Name: groups_groupquiz groups_groupquiz_group_id_8d430ef7_fk_groups_group_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupquiz
+    ADD CONSTRAINT groups_groupquiz_group_id_8d430ef7_fk_groups_group_id FOREIGN KEY (group_id) REFERENCES public.groups_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: groups_groupquiz groups_groupquiz_quiz_id_e0b4c4a3_fk_quizzes_quiz_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.groups_groupquiz
+    ADD CONSTRAINT groups_groupquiz_quiz_id_e0b4c4a3_fk_quizzes_quiz_id FOREIGN KEY (quiz_id) REFERENCES public.quizzes_quiz(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: news_news news_news_author_id_9f88be71_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
 --
 
 ALTER TABLE ONLY public.news_news
     ADD CONSTRAINT news_news_author_id_9f88be71_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_quiz quizzes_quiz_author_id_cb0b1f2d_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_quiz
+    ADD CONSTRAINT quizzes_quiz_author_id_cb0b1f2d_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_quiz quizzes_quiz_lang_id_8786fb71_fk_langs_lang_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_quiz
+    ADD CONSTRAINT quizzes_quiz_lang_id_8786fb71_fk_langs_lang_id FOREIGN KEY (lang_id) REFERENCES public.langs_lang(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_solution quizzes_solution_taskitem_id_ebd98ea0_fk_quizzes_taskitem_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_solution
+    ADD CONSTRAINT quizzes_solution_taskitem_id_ebd98ea0_fk_quizzes_taskitem_id FOREIGN KEY (taskitem_id) REFERENCES public.quizzes_taskitem(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_solution quizzes_solution_teacher_id_70de0f62_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_solution
+    ADD CONSTRAINT quizzes_solution_teacher_id_70de0f62_fk_auth_user_id FOREIGN KEY (teacher_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_solution quizzes_solution_user_id_d1b2532e_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_solution
+    ADD CONSTRAINT quizzes_solution_user_id_d1b2532e_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_taskitem quizzes_taskitem_quiz_id_8bfb8dd4_fk_quizzes_quiz_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_taskitem
+    ADD CONSTRAINT quizzes_taskitem_quiz_id_8bfb8dd4_fk_quizzes_quiz_id FOREIGN KEY (quiz_id) REFERENCES public.quizzes_quiz(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: quizzes_taskitem quizzes_taskitem_task_id_b03f9527_fk_tasks_task_id; Type: FK CONSTRAINT; Schema: public; Owner: cappa
+--
+
+ALTER TABLE ONLY public.quizzes_taskitem
+    ADD CONSTRAINT quizzes_taskitem_task_id_b03f9527_fk_tasks_task_id FOREIGN KEY (task_id) REFERENCES public.tasks_task(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
