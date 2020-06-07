@@ -1,0 +1,32 @@
+{% extends 'quizzes/base.html' %}
+{% load menu_tags %}
+
+{% block content %}
+    <div class="one-col">
+        <h1 class="text-center">Самостоятельные работы</h1>
+        <div class="content quizzes__container">
+        {% for course in objects %}
+            <div class="course-item">
+                <div class="course-item-content">
+                    <a {% if user.is_active %}href="{{ course.get_absolute_url }}"{% endif %}>
+                    <div class="title h2">{{ course.title }}</div>
+                    <div class="desc">{{ course.about|safe|truncatewords_html:20 }}</div>
+                    </a>
+                </div>
+                <div class="course-item-content">
+                    {% if course.end_time %}
+                    <div align="center" class="title"> <i> Ограничение по времени: </i> 
+                    <span class="js__utc-time" data-utc-time="{{ course.end_time|date:'Y-m-d H:i:s.u'}}"></span>
+                    </div>
+                    {% endif %}
+                    <div class="course-item-author">{{ course.author.get_full_name }}</div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block sidebar_control %}
+    {% show_menu 'sidebar' %}
+{% endblock %}

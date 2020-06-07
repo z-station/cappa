@@ -4,11 +4,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
+from datetime import datetime
 from django.utils import timezone
 from django.urls import reverse
 from src.tasks.models import Task
-from src.training.models import Topic
+from src.quizzes.models import Quiz
 from src.utils.fields import OrderField, SlugField
+from src.utils.consts import langs
 
 
 UserModel = get_user_model()
@@ -22,19 +24,23 @@ class TaskItem(models.Model):
         ordering = ['order_key']
 
     show = models.BooleanField(verbose_name="отображать", default=True)
-    task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
+    task = models.ForeignKey(Task, verbose_name='задача', related_name='quizzes')
     max_score = models.PositiveIntegerField(verbose_name='балл за решение', default=5)
     manual_check = models.BooleanField(verbose_name='ручная проверка', default=False)
     compiler_check = models.BooleanField(verbose_name='проверка автотестами', default=True)
-    slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
-
+    slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['quiz'])
+    langg = models.CharField(
+        verbose_name='язык', choices=langs.CHOICES,
+        blank=True, null=True, max_length=255
+    )
+    
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
-    order_key = OrderField(verbose_name='порядок', blank=True, null=True, for_fields=['topic'])
-    topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
+    order_key = OrderField(verbose_name='порядок', blank=True, null=True, for_fields=['quiz'])
+    quiz = models.ForeignKey(Quiz, verbose_name='самостоятельная работа', related_name='_taskitems')
 
     @property
     def lang(self):
-        return self.topic.lang
+        return self.quiz.lang
 
     @property
     def title(self):
@@ -52,15 +58,15 @@ class TaskItem(models.Model):
     def get_data(self):
         return {
             'id': self.cache_key,
-            'number': '%s.%s' % (self.topic.number, self.number),
+            'number': '%s.' % (self.number),
             'title': self.title,
-            'url': reverse('training:taskitem', kwargs={
-                    'course': self.topic.course.slug,
-                    'topic': self.topic.slug,
+            'url': reverse('quizzes:taskitem', kwargs={
+                    'quiz': self.quiz.slug,
                     'taskitem': self.slug
                 }
             )
         }
+
 
     def get_cache_data(self):
         json_data = cache.get(self.cache_key)
@@ -73,9 +79,8 @@ class TaskItem(models.Model):
 
     def get_breadcrumbs(self):
         return [
-            {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.topic.course.title,   'url': self.topic.course.get_absolute_url()},
-            {'title': self.topic.numbered_title, 'url': self.topic.get_absolute_url()},
+            {'title': 'Самостоятельные работы', 'url': reverse('quizzes:quizzes')},
+            {'title': self.quiz.title,   'url': self.quiz.get_absolute_url()},
         ]
 
     def get_absolute_url(self):
@@ -115,7 +120,7 @@ class Solution(models.Model):
     )
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='solutions')
-    user = models.ForeignKey(UserModel, verbose_name="пользователь", related_name='_solution')
+    user = models.ForeignKey(UserModel, verbose_name="пользователь", related_name='_solution_quizzes')
     datetime = models.DateTimeField(verbose_name='дата/время отправки', blank=True, null=True)
     is_count = models.BooleanField(verbose_name="баллы идут в зачет", default=True)
     is_locked = models.BooleanField(verbose_name="запрещено изменять", default=False)
@@ -131,9 +136,10 @@ class Solution(models.Model):
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
     comment = HTMLField(verbose_name="комментарий к решению", blank=True, null=True)
     teacher = models.ForeignKey(
-        UserModel, verbose_name='преподаватель', blank=True, null=True, related_name='controlled_solutions',
+        UserModel, verbose_name='преподаватель', blank=True, null=True, related_name='controlled_solutions_quizzes',
         help_text='заполняется автоматически, когда преподаватель выставляет оценку'
     )
+
 
     @property
     def score(self):
@@ -164,9 +170,9 @@ class Solution(models.Model):
 
     @property
     def status_name(self) -> str:
-
+        
         """ Возващает текст статуса """
-
+        
         status = self.status
         for choice in self.S__CHOICES:
             if choice[0] == status:
@@ -191,25 +197,22 @@ class Solution(models.Model):
 
     def set_is_count(self):
 
-        """ Если время на решение задачи истеко то решение вне зачета """
+        """ Если время на решение задачи истекло, то решение вне зачета """
 
-        if self.taskitem.topic.end_time is not None:
-            self.is_count = timezone.now() <= self.taskitem.topic.end_time
+        if self.taskitem.quiz.end_time is not None:
+            self.is_count = timezone.now() <= self.taskitem.quiz.end_time
 
     def get_breadcrumbs(self):
         return [
-            {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.get_absolute_url()},
-            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.get_absolute_url()},
-            {'title': self.taskitem.numbered_title,       'url': self.taskitem.get_absolute_url()},
+            {'title': 'Самостоятельные работы', 'url': reverse('quizzes:quizzes')},
+            {'title': self.taskitem.quiz.title,   'url': self.taskitem.quiz.get_absolute_url()},
         ]
 
     def get_absolute_url(self):
         return reverse(
-            'training:solution',
+            'quizzes:solution',
             kwargs={
-                'course': self.taskitem.topic.course.slug,
-                'topic': self.taskitem.topic.slug,
+                'quiz': self.taskitem.quiz.slug,
                 'taskitem': self.taskitem.slug
             }
         )

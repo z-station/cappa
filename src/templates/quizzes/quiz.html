@@ -1,0 +1,40 @@
+{% extends 'quizzes/base.html' %}
+{% load menu_tags %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.title }}</h1>
+            {% if object.content %}
+                <div class ="text">{{ object.content|safe }}</div> 
+            {% endif %}
+            {% if object.end_time %}
+            <div class ="time"> <strong><font color="red"> Внимание:</font></strong> последний срок сдачи заданий - 
+                <span class="js__utc-time" data-utc-time="{{ object.end_time|date:'Y-m-d H:i:s.u'}}"></span>
+            </div>
+            
+            {% endif %}
+            <div class="topic__list">
+                    <div class="topic__item">
+                        <a class="topic__item-title h3" href="{{ quiz.url }}"> Перечень задач: </a>
+                        <ul>
+                            {% for taskitem in quiz.taskitems %}
+                                <li id="js__{{ taskitem.cache_key }}">
+                                     <a href="{{ taskitem.get_absolute_url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            </div>
+        </div>
+
+        {% if object.content_bottom %}
+            <div class ="white fp-content text">{{ object.content_bottom|safe }}</div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block sidebar_control %}
+    {% show_menu 'sidebar' %}
+{% endblock %}
