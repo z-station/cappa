@@ -9,8 +9,16 @@ urlpatterns = [
         views.GroupCourseView.as_view(),
         name='group-course'
     ),
+    url(r'^(?P<group_id>[0-9]+)/quizzes/(?P<group_quiz_id>[0-9]+)/$',
+        views.GroupQuizView.as_view(),
+        name='group-quiz'
+    ),    
     url(r'^(?P<group_id>[0-9]+)/courses/(?P<group_course_id>[0-9]+)/solutions/$',
         views.GroupCourseSolutionsView.as_view(),
         name='group-course-solutions'
     ),
+    url(r'^(?P<group_id>[0-9]+)/quizzes/(?P<group_quiz_id>[0-9]+)/solutions/$',
+        views.GroupQuizSolutionsView.as_view(),
+        name='group-quiz-solutions'
+    ),        
 ]

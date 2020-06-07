@@ -82,7 +82,8 @@ INSTALLED_APPS = [
     'src.training',
     'src.langs',
     'src.groups',
-    'src.service'
+    'src.service',
+    'src.quizzes'
 ]
 
 MIDDLEWARE = [
@@ -139,11 +140,16 @@ ADMIN_REORDER = (
     },
     {
         'app': 'tasks', 'label': u'Задачник',
-        'models': ('tasks.Task', 'tasks.Tag', 'tasks.Source')
+        'models': ('tasks.Task', 'tasks.Tag', 'tasks.Source',)
     },
     {
         'app': 'news', 'label': u'Контент',
         'models': ('news.News', 'service.Menu')
+    },
+    
+    {
+        'app': 'quizzes', 'label': u'Самостоятельные работы',
+        'models': ('quizzes.Quiz', 'groups.Group', 'quizzes.Solution')
     },
 )
 
