@@ -44,10 +44,12 @@ class Task(models.Model):
     INT = 'int'
     FLOAT = 'float'
     STR = 'str'
+    SQLSELECT='sqlselect'
     OUTPUT_TYPES = (
         (STR, 'строка'),
         (INT, 'целое число'),
-        (FLOAT, 'вещественное число')
+        (FLOAT, 'вещественное число'),
+        (SQLSELECT, 'sql select запрос')
     )
 
     order_key = models.PositiveIntegerField(verbose_name='порядок', default=0)

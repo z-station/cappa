@@ -1,11 +1,19 @@
 from math import frexp
 from src.tasks.models import Task
 from src.utils import msg
-
+import sqlite3
+from src.utils.editor import clear_text
 
 class BaseProvider(object):
 
     """ Реализует обязательные методы провайдера языка программирования """
+
+    @classmethod
+    def _compare_sqlselect(cls, etalon: str, val: str) -> bool:
+        "сравнение результатов select - запросов"
+
+        return cls._compare_str(clear_text(etalon), clear_text(val))
+
 
     @classmethod
     def _compare_str(cls, etalon: str, val: str) -> bool:

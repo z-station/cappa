@@ -57,7 +57,6 @@ class Provider(BaseProvider):
     def _get_docker_container(cls):
 
         """ Запускает и возвращает docker-контейнер python песочницы """
-
         try:
             container = client.containers.get(container_id=docker_conf["container_name"])
         except errors.NotFound:
@@ -78,8 +77,11 @@ class Provider(BaseProvider):
         return container
 
     @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    def debug(cls, input: str, content: str,**kwargs) -> dict:
         files = DebugFiles(data_in=clear_text(input), data_py=clear_text(content))
+        #print(client.containers.list())
+        #print("HAHAHAHAH")
+        #files = DebugFiles(data_in=input, data_py=content)
         container = cls._get_docker_container()
         exit_code, result = container.exec_run(
             cmd=f'bash -c "timeout {docker_conf["timeout_duration"]} python {files.filename_py} < {files.filename_in}"',
@@ -98,8 +100,8 @@ class Provider(BaseProvider):
         }
 
     @classmethod
-    def check_tests(cls, content: str, task: Task) -> dict:
-        compare_method_name = f'_compare_{task.output_type}'
+    def check_tests(cls, content: str, task: Task,**kwargs) -> dict:
+        compare_method_name = f'_compare_{task.output_type}'  """метод сравнения"""
         compare_method = getattr(cls, compare_method_name)
         files = TestsFiles(data_py=clear_text(content))
         container = cls._get_docker_container()

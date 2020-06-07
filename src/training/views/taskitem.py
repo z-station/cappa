@@ -44,9 +44,10 @@ class TaskItemView(View):
         )
 
     def post(self, request, *args, **kwargs):
+        #print(request.session.session_key) -
         taskitem = self.get_object(request, *args, **kwargs)
         form = TaskItemForm(data=request.POST)
-        response = form.perform_operation(request.user, taskitem)
+        response = form.perform_operation(request.user, taskitem,session_key=request.session.session_key)
         return JsonResponse(response.__dict__)
 
 
