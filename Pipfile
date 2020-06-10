@@ -20,8 +20,7 @@ gunicorn = "*"
 python-memcached = "*"
 django-admin-list-filter-dropdown = "*"
 docker = "*"
-pypiwin32 = "*"
-sqldiff = "*"
+
 
 [requires]
 python_version = "3.6"
