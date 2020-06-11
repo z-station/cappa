@@ -1627,7 +1627,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-07 23:42:23.30684+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-11 18:45:42.479956+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1727,6 +1727,15 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 8086	2020-04-28 22:12:37.570059+05	1457	Тест Float чекера	1	[{"added": {}}]	28	7
 8087	2020-04-28 22:12:53.144355+05	1457	Тест Float чекера	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
 8088	2020-04-28 22:13:20.332043+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 Float \\u0447\\u0435\\u043a\\u0435\\u0440\\u0430"}}]	33	7
+8089	2020-06-11 18:33:59.626749+05	1458	Превышен лимит по времени	1	[{"added": {}}]	28	7
+8090	2020-06-11 18:35:22.190236+05	1459	Верхний регистр	1	[{"added": {}}]	28	7
+8091	2020-06-11 18:37:09.544732+05	1460	Часы	1	[{"added": {}}]	28	7
+8092	2020-06-11 18:39:27.711173+05	1461	Остаток от деления	1	[{"added": {}}]	28	7
+8093	2020-06-11 18:40:22.868909+05	1462	Сумма 2 чисел	1	[{"added": {}}]	28	7
+8094	2020-06-11 18:46:17.741948+05	4	PHP	1	[{"added": {}}]	34	7
+8095	2020-06-11 18:46:56.709027+05	8	PHP	1	[{"added": {}}]	30	7
+8096	2020-06-11 18:48:48.238591+05	27	Ввод и вывод данных	1	[{"added": {}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0421\\u0443\\u043c\\u043c\\u0430 2 \\u0447\\u0438\\u0441\\u0435\\u043b"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u041e\\u0441\\u0442\\u0430\\u0442\\u043e\\u043a \\u043e\\u0442 \\u0434\\u0435\\u043b\\u0435\\u043d\\u0438\\u044f"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0427\\u0430\\u0441\\u044b"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0412\\u0435\\u0440\\u0445\\u043d\\u0438\\u0439 \\u0440\\u0435\\u0433\\u0438\\u0441\\u0442\\u0440"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u041f\\u0440\\u0435\\u0432\\u044b\\u0448\\u0435\\u043d \\u043b\\u0438\\u043c\\u0438\\u0442 \\u043f\\u043e \\u0432\\u0440\\u0435\\u043c\\u0435\\u043d\\u0438"}}]	33	7
+8097	2020-06-11 18:49:05.200474+05	27	Ввод и вывод данных	2	[]	33	7
 \.
 
 
@@ -1859,6 +1868,8 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 76	quizzes	0001_initial	2020-06-07 23:41:45.891763+05
 77	groups	0003_auto_20200607_1841	2020-06-07 23:41:46.179278+05
 78	training	0009_auto_20200607_1841	2020-06-07 23:41:46.255061+05
+79	langs	0005_auto_20200610_1911	2020-06-11 18:28:36.09629+05
+80	tasks	0006_auto_20200610_1909	2020-06-11 18:28:36.137237+05
 \.
 
 
@@ -1927,6 +1938,8 @@ z8zx3ilgqlwiicp0h5m7c9e0m08d3jd6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-20 18:44:02.143798+05
 7lxtxolzredqy75r79nv2bsor000rq84	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-29 02:13:29.22103+05
 6x13qniyg0v57jqn7kws7okewkjacxrw	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-08 03:43:06.423221+05
+0znww9k00w7wxpj60im8dwb610koh7ya	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:40:49.740447+05
+42q1ueuzg86v5n6twzxh93fygksuvc6u	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:49:14.003886+05
 \.
 
 
@@ -1979,6 +1992,7 @@ COPY public.langs_lang (id, name, provider_name) FROM stdin;
 1	python 3.6	python
 2	C++	cpp
 3	C#	csharp
+4	PHP	php
 \.
 
 
@@ -2094,6 +2108,11 @@ COPY public.tasks_task (id, order_key, show, last_modified, title, content, test
 3	0	t	2020-04-20 14:43:27.08576+05	Делёж яблок	<p><span>n школьников делят k яблок поровну, неделящийся остаток остается в корзинке. Сколько яблок достанется каждому школьнику? Сколько яблок останется в корзинке? Программа получает на вход числа n и k и должна вывести искомое количество яблок (два числа).</span></p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>\r\n<p>&nbsp;</p>	[{"input": "6\\n50", "output": "8\\n2"}, {"input": "1\\n10", "output": "10\\n0"}, {"input": "5\\n25", "output": "5\\n0"}, {"input": "4\\n2", "output": "0\\n2"}]	7	4	int	1	python
 96	0	t	2020-04-20 14:43:34.865973+05	Степень	<p>Дано действительное положительное число <em>a</em> и <span>целоe</span> число <em>n</em>.</p>\r\n<p>Вычислите <em>a<sup>n</sup></em>. Решение оформите в виде функции <code>power(a, n)</code>.</p>\r\n<p>Стандартной функцией возведения в степень пользоваться нельзя.</p>\r\n<hr />\r\n<p>Во всех задачах считывайте входные данные через <code>input()</code> и выводите ответ через <code>print()</code>.</p>	[{"input": "1.5\\n-10", "output": "0.0173415"}, {"input": "1.1414\\n-2", "output": "0.767581"}, {"input": "3\\n-6", "output": "0.00137174"}, {"input": "3\\n-10", "output": "1.69351e-05"}, {"input": "3\\n-5", "output": "0.00411523"}, {"input": "3\\n-4", "output": "0.0123457"}, {"input": "3\\n-3", "output": "0.037037"}, {"input": "3\\n-2", "output": "0.111111"}, {"input": "3\\n-1", "output": "0.333333"}, {"input": "2\\n-15", "output": "3.05176e-05"}, {"input": "2\\n-10", "output": "0.000976562"}, {"input": "2\\n-9", "output": "0.00195312"}, {"input": "2\\n-8", "output": "0.00390625"}, {"input": "2\\n-4", "output": "0.0625"}, {"input": "2\\n-2", "output": "0.25"}, {"input": "2\\n-1", "output": "0.5"}, {"input": "1\\n-1", "output": "1"}, {"input": "1.5\\n10", "output": "57.665"}, {"input": "1.1414\\n2", "output": "1.30279"}, {"input": "3\\n0", "output": "1"}, {"input": "3\\n10", "output": "59049"}, {"input": "3\\n3", "output": "27"}, {"input": "3\\n2", "output": "9"}, {"input": "3\\n1", "output": "3"}, {"input": "2\\n0", "output": "1"}, {"input": "2\\n15", "output": "32768"}, {"input": "2\\n10", "output": "1024"}, {"input": "2\\n9", "output": "512"}, {"input": "2\\n4", "output": "16"}, {"input": "2\\n3", "output": "8"}, {"input": "2\\n2", "output": "4"}, {"input": "2\\n1", "output": "2"}, {"input": "2\\n-3", "output": "0.125"}]	7	4	float	1	python
 1457	0	f	2020-04-28 22:12:53.139875+05	Тест Float чекера	<p>Корректная обработка&nbsp; случаев передачи в чекер строковых значений, которые не могут быть преобразованы к float&nbsp;</p>	[{"input": "3\\nmanager 150000 0 0\\ntechnician 35000 5000 0 B\\ndriver 250 10000 80 A", "output": "230250.0"}]	\N	\N	float	0	python
+1458	0	f	2020-06-11 18:33:59.621056+05	Превышен лимит по времени	<p>Напишите программу, которая выведет ошибку превышения лимита времени.</p>	[{"input": "", "output": "Превышен лимит времени на выполнение программы"}]	7	\N	str	\N	php
+1459	0	f	2020-06-11 18:35:22.181373+05	Верхний регистр	<p>Напишите программу которая превращает строку в нижнем регистре в строку в верхнем регистре и вывести результат.<br /><br />Использовать при решении функцию&nbsp;<span><em><span style="font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 13px; white-space: pre-wrap;">strtoupper()</span></em></span></p>	[{"input": "$str = 'hello';", "output": "HELLO"}, {"input": "$str = 'TeSt StRinG';", "output": "TEST STRING"}]	7	\N	str	\N	php
+1460	0	f	2020-06-11 18:37:09.536483+05	Часы	<p>С начала суток прошло H часов, M минут, S секунд (0 &le; H &lt; 12, 0 &le; M &lt; 60, 0 &le; S &lt; 60). По данным числам H, M, S определите угол (в градусах), на который повернулаcь часовая стрелка с начала суток и выведите его в виде действительного числа.</p>	[{"input": "$h = 0;\\n$m = 2;\\n$s = 0;", "output": "1"}, {"input": "$h = 0;\\n$m = 1;\\n$s = 0;", "output": "0.5"}, {"input": "$h = 1;\\n$m = 0;\\n$s = 0;", "output": "30"}, {"input": "$h = 1;\\n$m = 2;\\n$s = 6;", "output": "31.05"}, {"input": "$h = 0;\\n$m = 0;\\n$s = 1;", "output": "0.0083333333333333"}, {"input": "$h = 9;\\n$m = 9;\\n$s = 37;", "output": "274.80833333333"}]	7	\N	str	\N	php
+1461	0	f	2020-06-11 18:39:27.704536+05	Остаток от деления	<p>Напишите программу, которая выводит остаток от деления числа a на число b. Вывести только первое число после запятой.</p>	[{"input": "$a = 5;\\n$b = 10;", "output": "5"}, {"input": "$a = 20;\\n$b = 5;", "output": "0"}, {"input": "$a = 6;\\n$b = 9;", "output": "6"}]	7	\N	str	\N	php
+1462	0	f	2020-06-11 18:40:22.860916+05	Сумма 2 чисел	<p>Напишите программу, которая считывает два числа и выводит их сумму. Каждое число записано в отдельной пременной.</p>	[{"input": "$a = 4;\\n$b = 6;", "output": "10"}, {"input": "$a = 8;\\n$b = 250;", "output": "258"}]	7	\N	str	\N	php
 \.
 
 
@@ -2112,6 +2131,11 @@ COPY public.tasks_task_tags (id, task_id, tag_id) FROM stdin;
 8	35	1
 9	25	1
 10	1457	2
+11	1458	2
+12	1459	1
+13	1460	1
+14	1461	1
+15	1462	1
 \.
 
 
@@ -2134,6 +2158,8 @@ COPY public.training_content (id, input, content, show_input, show_debug, readon
 435			f	t	f	<p>Пока поработаем с целочисленными переменными, которые могут быть представлены в программе одним из следующих типов:</p>\r\n<table border="1" cellspacing="1" cellpadding="2">\r\n<tbody>\r\n<tr><th>Тип данных</th><th align="center">Допустимые значения</th><th>Память, байт</th></tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>char</strong></span></td>\r\n<td align="center"><span style="color: #000000;">символы или &hellip;-128 ... 127</span></td>\r\n<td align="center"><span style="color: #000000;">1</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned char</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 255</span></td>\r\n<td align="center"><span style="color: #000000;">1</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>short</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-32768 &hellip; 32767</span></td>\r\n<td align="center"><span style="color: #000000;">2</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned short</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 65535</span></td>\r\n<td align="center"><span style="color: #000000;">2</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>int</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-2147483648 &hellip;&nbsp;2147483647</span></td>\r\n<td align="center"><span style="color: #000000;">4</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned int</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 4294967295</span></td>\r\n<td align="center"><span style="color: #000000;">4</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>long long</strong></span></td>\r\n<td align="center"><span style="color: #000000;">-9223372036854775808&nbsp;&hellip; 9223372036854775807</span></td>\r\n<td align="center"><span style="color: #000000;">8</span></td>\r\n</tr>\r\n<tr class="white2" style="background-color: white; font-family: courier;">\r\n<td><span style="color: #000000;"><strong>unsigned long long</strong></span></td>\r\n<td align="center"><span style="color: #000000;">0 &hellip; 18446744073709551615</span></td>\r\n<td align="center"><span style="color: #000000;">8</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>Ообычно достаточно использовать всего два целых типа: int и long long.</p>\r\n<p>Среди базовых операций над целыми типами данных в языке C++ можно выделить следующие:</p>\r\n<table border="1">\r\n<tbody>\r\n<tr><th style="font-size: 12pt;">Операция</th><th style="font-size: 12pt;">Описание</th></tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">+</span></td>\r\n<td><span style="color: #000000;">сложение</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">&minus;</span></td>\r\n<td><span style="color: #000000;">вычитание</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">*</span></td>\r\n<td><span style="color: #000000;">умножение</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">/</span></td>\r\n<td><span style="color: #000000;">деление нацело</span></td>\r\n</tr>\r\n<tr>\r\n<td align="center"><span style="color: #000000;">%</span></td>\r\n<td><span style="color: #000000;">вычисление остатка от деления</span></td>\r\n</tr>\r\n</tbody>\r\n</table>	text	13	14
 8			f	t	f	<p>Мы видим, что программа выводит <code>57</code>, хотя в реальной жизни <code>5 + 7</code> будет <code>12</code>. Это произошло потому, что Питон в третьей строчке &laquo;сложил&raquo; две строки, а не два числа. В Питоне две строки складываются так: к первой строке приписывается вторая.</p>\r\n<p><!---Обратите внимание, что в визуализаторе содержимое переменных <code>a</code> и <code>b</code> заключено в кавычки. Это означает, что в <code>a</code> и <code>b</code> лежат строки, а не числа.---></p>\r\n<p>В Питоне все данные называются объектами. Число 2 представляется объектом &laquo;число 2&raquo;, строка <code>'hello'</code> &ndash; это объект &laquo;строка <code>'hello'</code>&raquo;.</p>\r\n<p>Каждый объект относится к какому-то типу. Строки хранятся в объектах типа <code>str</code>, целые числа хранятся в объектах типа <code>int</code>, дробные числа (вещественные числа) &mdash; в объектах типа <code>float</code>. Тип объекта определяет, какие действия можно делать с объектами этого типа. Например, если в переменных <code>first</code> и <code>second</code> лежат объекты типа <code>int</code>, то их можно перемножить, а если в них лежат объекты типа <code>str</code>, то их перемножить нельзя:</p>	text	7	2
 433		#include<iostream>\r\nusing namespace std;\r\nint main(){\r\n    // комментарий\r\n}	f	f	t		ace	2	14
+439			f	t	f	<p>В языке программирования PHP для вывода переменных в основном используется echo после чего идет либо переменная либо выражение которое нужно вывести.</p>	text	1	27
+440		echo 'Hello World';	f	t	f		ace	2	27
 233			f	t	f	<p>C++ &mdash; это мощный популярный язык программирования, сочетающий в себе высокую производительность его предка - чистого С - и высокоуровневые возможности современных языков, оперирующих типовыми алгоритмами и структурами данных, например, Java и Python.</p>\r\n<p>Практически любая программа на С++ начинается с объявления необходимых ей библиотек и соглашений и заголовка функции - в данном случае пока пустой функции main.</p>	text	1	14
 235			f	t	f	<p>Здесь в двойных кавычках содержатся строки, без кавычек - числа, участвующие в арифметическом выражении, служебное слово endl (сокращение от endline) применяется для перехода на новую строку.&nbsp;</p>\r\n<p>Для ввода данных в программу можно использовать функцию потокового ввода cin. Справа от знаков &gt;&gt; нужно указать, где сохранить вводимую информацию. Для этого надо приготовить переменную соответствующего типа.</p>\r\n<p>Вот программа, которая считывает имя пользователя и приветствует его:</p>	text	5	14
 241			f	t	f	<p>Но складывать строки можно. Сравните результаты:</p>	text	11	14
@@ -2145,6 +2171,11 @@ COPY public.training_content (id, input, content, show_input, show_debug, readon
 239			f	t	f	<p>В С++ все данные называются объектами. Число 2 представляется объектом &laquo;число 2&raquo;, строка "<code>hello"</code>&nbsp;&ndash; это объект &laquo;строка "<code>hello"</code>&raquo;.</p>\r\n<p>Каждый объект относится к какому-то типу. Иногда вместо термина "тип" употребляют термин "класс", а вместо термина "объект" - "экземпляр класса".</p>\r\n<p>Строки хранятся в объектах типа <code>string</code>, целые числа хранятся в объектах типа <code>int</code>, дробные числа (вещественные числа) &mdash; в объектах типа <code>float</code>. Тип объекта определяет, какие действия можно делать с объектами этого типа. Например, если в переменных first&nbsp;и second&nbsp;лежат объекты типа <code>int</code>, то их можно перемножить, а если в их почти "тёзках" First и Second лежат объекты типа string, то их перемножить нельзя:</p>	text	9	14
 436		//Пример деления с остатком\r\n#include <iostream>\r\nusing namespace std;          \r\nint main(){\r\n  cout << 13/5 << endl;         // 2\r\n  cout << 13%5 << endl;         // 3\r\n  int a=167, b=6;\r\n  cout << a/b << endl;          // 27\r\n  cout << a%b << endl;          // 5\r\n  }	f	t	f		ace	14	14
 438			f	t	f	<p><strong>Этих знаний нам уже достаточно, чтобы решать простые арифметические задачи.</strong></p>\r\n<p><strong>Кнопка перехода к&nbsp;</strong><strong>оглавлению и&nbsp;</strong><strong>задачам&nbsp;</strong><strong><span style="font-size: x-large;">&equiv;&nbsp;</span>- в правом верхнем углу</strong></p>	text	15	14
+441			f	t	f	<p>В этом разделе мы потрениуемся выводить и работать с различными типами переменных в PHP. Основные типы как и вдругих языках это:</p>\r\n<p>Целые<br />Действительные<br />Строки</p>\r\n<p>В следующих разделах рассмотрим и другие типы переменных, а также более подробно изучим те что рассматриваются в этом.<br /><br />Посмотрим на примере типы переменных.</p>	text	3	27
+442		$int = 4; // Целые числа\r\n$fl = 4.6; // Действительные числа\r\n$str = 'HELLO?!'; // Строки	f	t	f		ace	4	27
+443			f	t	f	<p>Все переменные в PHP начинаются со знака $ при создании и присвоении перменной определенного числа или строки она сама определяет тип этой переменной. Также каждая строчка с какой-либо инструкцией должна оканчиваться ;<br /><br />Давайте попробуем вывести, вывод нескольких значений можно сделать через точку. Также добавим пробелы для более понятного вывода.</p>	text	5	27
+444		$int = 4; // Целочисленные числа\r\n$fl = 4.6; // Действительные числа\r\n$str = 'HELLO?!'; // Строки\r\necho $int.' '.$fl.' '.$str;	f	t	f		ace	6	27
+445			f	t	f	<p>Мы поняли как работает ввод и вывод данных. Давайте теперь попробуем отработать знания на практике и перейдем к задачам раздела.</p>	text	7	27
 \.
 
 
@@ -2156,6 +2187,7 @@ COPY public.training_course (id, show, title, slug, about, content, content_bott
 1	t	Python	python	<p>Python 3 &mdash; это современный язык, на котором просто и приятно писать программы.</p>			7	2020-03-20 18:47:22.463358+05	7	1
 3	t	С#	csharp	<p>Курс - в разработке</p>	<h2>Курс находится в разработке</h2>		11	2019-11-24 03:17:01.948562+05	\N	3
 2	t	C++	cplusplus	<p>Все интереснейшие проекты и задачи будут так или иначе связаны с C++.</p>\r\n<p>И это - основной инструмент для решения олимпиадных задач!</p>			10	2020-03-20 18:55:08.97196+05	\N	2
+8	t	PHP	php	<p><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">На данной странице размещается начало учебника PHP.&nbsp;</em><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">Язык PHP предназначен для программирования web-сайтов.</em></p>	<p><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">На данной странице размещается начало учебника PHP.&nbsp;</em><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">Язык PHP предназначен для программирования web-сайтов. Если языки HTML и CSS создают каркас страницы (<em style="box-sizing: border-box;">верстку</em>), то PHP позволяет оживить его: на нем реализуют авторизацию и регистрацию пользователей, хранение страниц в базе данных и извлечение их оттуда, обработку отправленных HTML форм.</em></p>		12	2020-06-11 18:46:56.657733+05	7	4
 \.
 
 
@@ -2191,6 +2223,11 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 265	t	test-deep-recursive	10	1455	2	8	t	f	5
 266	t	test-hd-write	11	1456	2	9	t	f	5
 267	t	test-float-chekera	12	1457	2	10	t	f	5
+268	t	summa-2-chisel	1	1462	27	1	t	f	5
+269	t	ostatok-ot-deleniia	2	1461	27	2	t	f	5
+270	t	chasy	3	1460	27	3	t	f	5
+271	t	verkhnii-registr	4	1459	27	4	t	f	5
+272	t	prevyshen-limit-po-vremeni	5	1458	27	5	t	f	5
 \.
 
 
@@ -2202,6 +2239,7 @@ COPY public.training_topic (id, show, title, slug, order_key, last_modified, aut
 25	t	Тестовая тема	testovaya-tema	1	2019-11-24 03:17:23.574212+05	\N	3	1	\N
 14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1	\N
 2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-04-28 22:13:20.298158+05	\N	1	1	\N
+27	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	1	2020-06-11 18:49:05.198645+05	7	8	1	\N
 \.
 
 
@@ -2251,7 +2289,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8088, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8097, true);
 
 
 --
@@ -2265,7 +2303,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 44, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 78, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 80, true);
 
 
 --
@@ -2307,7 +2345,7 @@ SELECT pg_catalog.setval('public.groups_groupquiz_id_seq', 1, false);
 -- Name: langs_lang_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.langs_lang_id_seq', 3, true);
+SELECT pg_catalog.setval('public.langs_lang_id_seq', 4, true);
 
 
 --
@@ -2377,28 +2415,28 @@ SELECT pg_catalog.setval('public.tasks_tag_id_seq', 2, true);
 -- Name: tasks_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_id_seq', 1457, true);
+SELECT pg_catalog.setval('public.tasks_task_id_seq', 1462, true);
 
 
 --
 -- Name: tasks_task_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 10, true);
+SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 15, true);
 
 
 --
 -- Name: training_content_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_content_id_seq', 438, true);
+SELECT pg_catalog.setval('public.training_content_id_seq', 445, true);
 
 
 --
 -- Name: training_course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_course_id_seq', 7, true);
+SELECT pg_catalog.setval('public.training_course_id_seq', 8, true);
 
 
 --
@@ -2412,14 +2450,14 @@ SELECT pg_catalog.setval('public.training_solution_id_seq', 3329, true);
 -- Name: training_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_taskitem_id_seq', 267, true);
+SELECT pg_catalog.setval('public.training_taskitem_id_seq', 272, true);
 
 
 --
 -- Name: training_topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_topic_id_seq', 26, true);
+SELECT pg_catalog.setval('public.training_topic_id_seq', 27, true);
 
 
 --
