@@ -21,7 +21,7 @@ class Provider(BaseProvider):
         return output, error
 
     @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    def debug(cls, input: str, content: str,**kwargs) -> dict:
         tmp = TmpFiles(content=content)
         p1 = subprocess.Popen(
             args=['c++', tmp.file_cpp_dir, '-o', tmp.filename_out],

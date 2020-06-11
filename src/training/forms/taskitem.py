@@ -34,10 +34,10 @@ class TaskItemForm(forms.Form):
     operation = forms.CharField(widget=forms.Select(choices='Operations.CHOICES'))
     lang = forms.CharField(widget=forms.HiddenInput)
 
-    def perform_operation(self, user: User, taskitem: TaskItem):
+    def perform_operation(self, user: User, taskitem: TaskItem,**kwargs):
         if self.is_valid():
             operation = getattr(self.Operations, self.cleaned_data['operation'])
-            return operation(editor_data=self.cleaned_data, taskitem=taskitem, user=user)
+            return operation(editor_data=self.cleaned_data, taskitem=taskitem, user=user,**kwargs)
         else:
             return Response(status=401, msg='Некорректные данные формы')
 
@@ -57,7 +57,8 @@ class TaskItemForm(forms.Form):
                 return Response(status=404, msg='Операция запрещена')
             result = taskitem.lang.provider.debug(
                 input=editor_data.get('input', ''),
-                content=editor_data['content']
+                content=editor_data['content'],
+                **kwargs
             )
             if result['error']:
                 return Response(status=400, msg='Ошибка отладки', output=result['output'], error=result['error'])
@@ -65,7 +66,7 @@ class TaskItemForm(forms.Form):
                 return Response(status=200, msg='Готово', output=result['output'])
 
         @classmethod
-        def check_tests(cls, editor_data: dict, taskitem: TaskItem, user: User):
+        def check_tests(cls, editor_data: dict, taskitem: TaskItem, user: User, **kwargs):
             if not taskitem.task.tests:
                 return Response(status=300, msg='Тесты отсутствуют')
             if not taskitem.compiler_check:
@@ -73,6 +74,7 @@ class TaskItemForm(forms.Form):
             tests_result = taskitem.lang.provider.check_tests(
                 content=editor_data['content'],
                 task=taskitem.task,
+                **kwargs
             )
             if tests_result['success']:
                 return Response(status=200, msg='Тесты пройдены', tests_result=tests_result)
@@ -80,7 +82,7 @@ class TaskItemForm(forms.Form):
                 return Response(status=300, msg='Тесты не пройдены', tests_result=tests_result)
 
         @classmethod
-        def create_version(cls, editor_data: dict, taskitem: TaskItem, user: User):
+        def create_version(cls, editor_data: dict, taskitem: TaskItem, user: User, **kwargs):
             if user.is_active:
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
                 solution.create_version(content=editor_data['content'])
@@ -90,7 +92,7 @@ class TaskItemForm(forms.Form):
                 return Response(status=402, msg='Требуется авторизация')
 
         @classmethod
-        def save_last_changes(cls, editor_data: dict, taskitem: TaskItem, user: User):
+        def save_last_changes(cls, editor_data: dict, taskitem: TaskItem, user: User, **kwargs):
             if user.is_active:
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
                 solution.last_changes = editor_data['content']
@@ -100,7 +102,7 @@ class TaskItemForm(forms.Form):
                 return Response(status=402, msg='Требуется авторизация')
 
         @classmethod
-        def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
+        def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User, **kwargs):
             if not user.is_active:
                 return Response(status=402, msg='Требуется авторизация')
             solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
@@ -114,7 +116,7 @@ class TaskItemForm(forms.Form):
                 return Response(status=200, msg='Решение сохранено')
 
         @classmethod
-        def ready_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
+        def ready_solution(cls, editor_data: dict, taskitem: TaskItem, user: User, **kwargs):
             if user.is_active:
                 if not editor_data['content']:
                     return Response(status=404, msg='Решение отсутствует')
