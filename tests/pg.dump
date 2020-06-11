@@ -1627,7 +1627,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-11 18:45:42.479956+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-12 00:05:03.554352+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1870,6 +1870,8 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 78	training	0009_auto_20200607_1841	2020-06-07 23:41:46.255061+05
 79	langs	0005_auto_20200610_1911	2020-06-11 18:28:36.09629+05
 80	tasks	0006_auto_20200610_1909	2020-06-11 18:28:36.137237+05
+81	langs	0006_auto_20200611_1903	2020-06-12 00:04:34.43288+05
+82	tasks	0007_auto_20200611_1903	2020-06-12 00:04:34.679821+05
 \.
 
 
@@ -1940,6 +1942,7 @@ k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 6x13qniyg0v57jqn7kws7okewkjacxrw	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-08 03:43:06.423221+05
 0znww9k00w7wxpj60im8dwb610koh7ya	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:40:49.740447+05
 42q1ueuzg86v5n6twzxh93fygksuvc6u	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:49:14.003886+05
+nnrsntlivigirogpdfhzrymy5o5yjbtc	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-12 04:07:15.197126+05
 \.
 
 
@@ -2303,7 +2306,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 44, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 80, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 82, true);
 
 
 --
