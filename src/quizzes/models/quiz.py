@@ -47,7 +47,7 @@ class Quiz(models.Model):
         return {
             'id': self.cache_key,
             'title': self.title,
-            'url': reverse('quizzes:quiz', kwargs={'quiz': self.slug}), # ЧТО ЗДЕСЬ quizzes или quiz ?
+            'url': reverse('quizzes:quiz', kwargs={'quiz': self.slug}), 
             'taskitems': [taskitem.get_data() for taskitem in self.taskitems],
         }
 

@@ -22,7 +22,7 @@
             aria-labelledby="js__{{ topic.id }}-heading"
             data-parent="#js__{{ data.id }}">
             {% for taskitem in quiz.taskitems %}
-            <li id="js__{{ taskitem.cache_key }}" class="js__taskitem-item" >
+            <li id="js__{{ taskitem.old_cache_key }}" class="js__taskitem-item" >
                 {% if request.path == taskitem.get_absolute_url %}
                     <span class="current js__current">{{ taskitem.number }} {{ taskitem.title }}</span>
                 {% else %}
