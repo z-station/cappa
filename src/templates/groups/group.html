@@ -67,8 +67,29 @@
                     {% endwith %}
                 </table>
                 {% endif %}
+            
+            {% if object.group_quizzes.all %}
+            <p> </p>
+            <h3>Самостоятельные и контрольные работы</h3>
+                <table class="group__courses">
+                    {% with object.group_quizzes.all as group_quizzes %}
+                        {% for group_quiz in group_quizzes %}
+                            <tr>
+                                {% if group_quizzes|length > 1 %}
+                                <td>{{ forloop.counter }}</td>
+                                {% endif %}
+                                <td>
+                                    <a href="{{ group_quiz.quiz.get_absolute_url }}" target="_blank">{{ group_quiz.quiz }}</a>
+                                    {% if group_quiz.show_table %}
+                                        <a href="{% url 'groups:group-quiz' object.id group_quiz.id %}" target="_blank">[таблица результатов]</a></td>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endwith %}
+            </table>
+            {% endif %}            
             {% endif %}
-
         </div>
         {% if user_is_member or user_is_teacher %}
         <div class="group__col white">
