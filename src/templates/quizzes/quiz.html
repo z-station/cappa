@@ -20,7 +20,7 @@
                         <a class="topic__item-title h3" href="{{ quiz.url }}"> Перечень задач: </a>
                         <ul>
                             {% for taskitem in quiz.taskitems %}
-                                <li id="js__{{ taskitem.cache_key }}">
+                                <li id="js__{{ taskitem.old_cache_key }}">
                                      <a href="{{ taskitem.get_absolute_url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
                                 </li>
                             {% endfor %}

@@ -53,11 +53,15 @@ class TaskItem(models.Model):
 
     @property
     def cache_key(self):
+        return 'quiz_taskitem__%d' % self.id
+    
+    @property
+    def old_cache_key(self):
         return 'taskitem__%d' % self.id
 
     def get_data(self):
         return {
-            'id': self.cache_key,
+            'id': self.old_cache_key,
             'number': '%s.' % (self.number),
             'title': self.title,
             'url': reverse('quizzes:taskitem', kwargs={
