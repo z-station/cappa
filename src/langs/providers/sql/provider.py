@@ -49,6 +49,10 @@ class Provider(BaseProvider):
             for res in c.fetchall():
                 output += str(res)+"\n"
             c.close()
+        try:
+            os.remove(os.path.join(BASE_DIR, "users_db\\" + kwargs['session_key'] + ".db"))
+        except:
+            pass
         return {
             'output': output,
             'error': error
@@ -60,6 +64,7 @@ class Provider(BaseProvider):
         compare_method = getattr(cls, compare_method_name)
         tests_data = []
         tests_num_success = 0
+        #print(kwargs['session_key'])
         ind = 0                      #индекс б.д. текущего теста
         for test in task.tests:    #почему несколько файлов б.д.
             ind += 1
@@ -67,9 +72,11 @@ class Provider(BaseProvider):
             output = ""
             success = False
             try:
-                create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")      #все б.д. назвать bd_1, bd_2 и т.д.
+                create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")#все б.д. назвать bd_1, bd_2 и т.д.
+                #create_db("bd_"+str(ind)+".db", "kappa" + ".db") для юнит тестов
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")  #путь к б.д. пользователя
+                db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")#путь к б.д. пользователя
+                #db_path = os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db") для юнит тестов
                 conn = sqlite3.connect(db_path)                                     #стандартное выполнение запроса в sqlite3
                 c = conn.cursor()
                 c.execute(content)
@@ -102,7 +109,11 @@ class Provider(BaseProvider):
                 "error": error,
                 "success": success
             })
-
+        try:
+            os.remove(os.path.join(BASE_DIR, "users_db\\" + kwargs['session_key'] + ".db"))
+            #os.remove(os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db"))для юнит тестов
+        except:
+            pass
         tests_num = len(task.tests)
         return {
             'num': tests_num,
