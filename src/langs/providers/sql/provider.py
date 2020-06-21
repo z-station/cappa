@@ -91,12 +91,12 @@ class Provider(BaseProvider):
                         etalon=clear_text(test['output']),
                         val=clear_text(output)
                     )
-                    c.close()
+                    conn.close()
                 else:                                              #изм. б.д. запрос
                     c.execute(test['input'])
                     for res in c.fetchall():
                         output += str(res)+"\n"
-                    c.close()
+                    conn.close()
                     success = compare_method(
                         etalon=test["output"],
                         val=output
