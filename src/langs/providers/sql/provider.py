@@ -9,8 +9,8 @@ import shutil
 
 def create_db(db1: str, db2: str):                             #копирование тестовой б.д. в б.д. пользователя
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    db1_path = os.path.join(current_dir, "tests_db\\" + db1)     #путь к тестовой б.д.
-    db2_path = os.path.join(current_dir, "users_db\\" + db2)     #путь к б.д. пользователя
+    db1_path = os.path.join(current_dir, "tests_db", db1)     #путь к тестовой б.д.
+    db2_path = os.path.join(current_dir, "users_db", db2)     #путь к б.д. пользователя
     try:
         os.remove(db2_path)
     except:
@@ -39,7 +39,7 @@ class Provider(BaseProvider):
         try:
             create_db(stdin,kwargs['session_key']+".db")
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-            db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")
+            db_path = os.path.join(BASE_DIR, "users_db",kwargs['session_key']+".db")
             conn = sqlite3.connect(db_path)
             c = conn.cursor()
             c.execute(content)
@@ -50,7 +50,7 @@ class Provider(BaseProvider):
                 output += str(res)+"\n"
             c.close()
         try:
-            os.remove(os.path.join(BASE_DIR, "users_db\\" + kwargs['session_key'] + ".db"))
+            os.remove(os.path.join(BASE_DIR, "users_db", kwargs['session_key'] + ".db"))
         except:
             pass
         return {
@@ -75,7 +75,7 @@ class Provider(BaseProvider):
                 create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")#все б.д. назвать bd_1, bd_2 и т.д.
                 #create_db("bd_"+str(ind)+".db", "kappa" + ".db") для юнит тестов
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")#путь к б.д. пользователя
+                db_path = os.path.join(BASE_DIR, "users_db",kwargs['session_key']+".db")#путь к б.д. пользователя
                 #db_path = os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db") для юнит тестов
                 conn = sqlite3.connect(db_path)                                     #стандартное выполнение запроса в sqlite3
                 c = conn.cursor()
@@ -110,7 +110,7 @@ class Provider(BaseProvider):
                 "success": success
             })
         try:
-            os.remove(os.path.join(BASE_DIR, "users_db\\" + kwargs['session_key'] + ".db"))
+            os.remove(os.path.join(BASE_DIR, "users_db", kwargs['session_key'] + ".db"))
             #os.remove(os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db"))для юнит тестов
         except:
             pass
