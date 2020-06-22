@@ -1,10 +1,14 @@
+# -*- coding:utf-8 -*-
 from django.views.generic import View
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from src.training.forms import ContentForm
 from src.training.models import Topic
 
 
+@method_decorator(login_required, name='dispatch')
 class TopicView(View):
 
     def get_object(self, request, *args, **kwargs):

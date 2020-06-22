@@ -84,19 +84,23 @@ class BaseProvider(object):
         """
 
         def compare(etalon: str, val: str) -> bool:
-            if 'e' in etalon:
-                etalon = format(float(etalon), 'f')
-            if 'e' in val:
-                val = format(float(val), 'f')
+            try:
+                if 'e' in etalon:
+                    etalon = format(float(etalon), 'f')
+                if 'e' in val:
+                    val = format(float(val), 'f')
 
-            parts = etalon.split('.')
-            if len(parts) == 1:
-                sign_part_len = 0
-            elif len(parts) == 2:
-                sign_part_len = len(parts[1])
-            else:
-                raise ValueError(msg.PROVIDER__03)
-            return round(float(val), sign_part_len) == float(etalon)
+                parts = etalon.split('.')
+                if len(parts) == 1:
+                    sign_part_len = 0
+                elif len(parts) == 2:
+                    sign_part_len = len(parts[1])
+                else:
+                    raise ValueError()
+                result = round(float(val), sign_part_len) == float(etalon)
+            except ValueError:
+                result = False
+            return result
 
         result = True
         new_line = '\n'
