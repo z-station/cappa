@@ -41,3 +41,4 @@ class ProviderTestCase(TestCase):
                 msg=f'id={task.id}, title="{task.title}"'
             )
             print(f'===> UNLUCK: {task}')
+

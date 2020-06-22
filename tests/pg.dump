@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.13 (Ubuntu 10.13-1.pgdg18.04+1)
--- Dumped by pg_dump version 10.13 (Ubuntu 10.13-1.pgdg18.04+1)
+-- Dumped from database version 12.2 (Ubuntu 12.2-2.pgdg18.04+1)
+-- Dumped by pg_dump version 12.2 (Ubuntu 12.2-2.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,23 +16,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: cappa
@@ -1627,7 +1613,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-12 00:05:03.554352+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-06-19 10:23:27+05	t	user	Andrew	Userovich		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1736,6 +1722,24 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 8095	2020-06-11 18:46:56.709027+05	8	PHP	1	[{"added": {}}]	30	7
 8096	2020-06-11 18:48:48.238591+05	27	Ввод и вывод данных	1	[{"added": {}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0431\\u043b\\u043e\\u043a \\u043a\\u043e\\u043d\\u0442\\u0435\\u043d\\u0442\\u0430", "object": "Content object"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0421\\u0443\\u043c\\u043c\\u0430 2 \\u0447\\u0438\\u0441\\u0435\\u043b"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u041e\\u0441\\u0442\\u0430\\u0442\\u043e\\u043a \\u043e\\u0442 \\u0434\\u0435\\u043b\\u0435\\u043d\\u0438\\u044f"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0427\\u0430\\u0441\\u044b"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0412\\u0435\\u0440\\u0445\\u043d\\u0438\\u0439 \\u0440\\u0435\\u0433\\u0438\\u0441\\u0442\\u0440"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u041f\\u0440\\u0435\\u0432\\u044b\\u0448\\u0435\\u043d \\u043b\\u0438\\u043c\\u0438\\u0442 \\u043f\\u043e \\u0432\\u0440\\u0435\\u043c\\u0435\\u043d\\u0438"}}]	33	7
 8097	2020-06-11 18:49:05.200474+05	27	Ввод и вывод данных	2	[]	33	7
+8098	2020-06-19 10:24:56.2296+05	7	Userovich Andrew	2	[{"changed": {"fields": ["first_name", "last_name"]}}]	2	7
+8099	2020-06-19 10:25:44.960547+05	5	sqlite	1	[{"added": {}}]	34	7
+8100	2020-06-19 10:26:05.620453+05	9	sql задачи	1	[{"added": {}}]	30	7
+8101	2020-06-19 10:30:20.965508+05	1463	задача на select	1	[{"added": {}}]	28	7
+8102	2020-06-19 10:30:50.181732+05	28	задачи по sql	1	[{"added": {}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430 \\u043d\\u0430 select"}}]	33	7
+8103	2020-06-19 10:32:45.748005+05	1463	задача на select	2	[{"changed": {"fields": ["content", "tests"]}}]	28	7
+8104	2020-06-19 11:11:49.874904+05	1464	sql delete	1	[{"added": {}}]	28	7
+8105	2020-06-19 11:14:51.918961+05	1465	sql update	1	[{"added": {}}]	28	7
+8106	2020-06-19 11:15:20.589997+05	1463	sql select	2	[{"changed": {"fields": ["title"]}}]	28	7
+8107	2020-06-19 11:21:53.215077+05	1466	sql insert	1	[{"added": {}}]	28	7
+8108	2020-06-19 11:25:01.948452+05	1467	sql неправильное задание для проверки	1	[{"added": {}}]	28	7
+8109	2020-06-19 11:26:20.140882+05	28	задачи по sql	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "sql insert"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "sql update"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "sql delete"}}, {"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "sql \\u043d\\u0435\\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u043e\\u0435 \\u0437\\u0430\\u0434\\u0430\\u043d\\u0438\\u0435 \\u0434\\u043b\\u044f \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u043a\\u0438"}}]	33	7
+8110	2020-06-19 11:32:18.171803+05	1465	sql update	2	[{"changed": {"fields": ["content", "tests"]}}]	28	7
+8111	2020-06-19 11:37:42.228987+05	1466	sql insert	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8112	2020-06-19 11:38:19.093281+05	1465	sql update	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8113	2020-06-19 11:38:54.516512+05	1464	sql delete	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8114	2020-06-19 11:39:31.853145+05	1463	sql select	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
+8115	2020-06-19 11:40:07.724456+05	1467	sql неправильное задание для проверки	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
 \.
 
 
@@ -1943,6 +1947,7 @@ k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 0znww9k00w7wxpj60im8dwb610koh7ya	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:40:49.740447+05
 42q1ueuzg86v5n6twzxh93fygksuvc6u	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-11 22:49:14.003886+05
 nnrsntlivigirogpdfhzrymy5o5yjbtc	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-06-12 04:07:15.197126+05
+3k05x059lsuygqf6eszz2pyagg3w3k2f	MGRmNmFkMDRjMTE4NjgyZDdhODgzMjJjYWE3ZGE3ZGM0NjVmZmUyOTp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiM2U2YjcxNDJmNGY5NzU5OTc4ZGNmMDc0ZmVlN2I2MjlhYzI3OTQ3MyJ9	2020-06-19 15:40:52.699145+05
 \.
 
 
@@ -1996,6 +2001,7 @@ COPY public.langs_lang (id, name, provider_name) FROM stdin;
 2	C++	cpp
 3	C#	csharp
 4	PHP	php
+5	sqlite	sql
 \.
 
 
@@ -2074,6 +2080,11 @@ COPY public.tasks_solutionexample (id, lang, content, task_id) FROM stdin;
 8	python	def Fibonacci(n): \r\n    if n<0: \r\n        print("Incorrect input") \r\n    # First Fibonacci number is 0 \r\n    elif n==1: \r\n        return 0\r\n    # Second Fibonacci number is 1 \r\n    elif n==2: \r\n        return 1\r\n    else: \r\n        return Fibonacci(n-1)+Fibonacci(n-2) \r\n  \r\n# Driver Program \r\n  \r\nprint(Fibonacci(50))	1455
 9	python	with open('test.txt', 'w') as file:\r\n    file.write('test')	1456
 10	python	N = int(input())\r\ninfo = [tuple(input().split()) for _ in range(N)] \r\nprint(info)	1457
+11	sql	insert into prices\r\nvalues (25, '2011-04-13', 777.0), (26, '2011-04-12', 666.0)	1466
+12	sql	update prices\r\nset price=price*10\r\nwhere price>=100	1465
+13	sql	delete from prices\r\nwhere price>=100	1464
+14	sql	select price\r\nfrom prices\r\nwhere price>=100	1463
+15	sql	select *\r\nfrom prices	1467
 \.
 
 
@@ -2116,6 +2127,11 @@ COPY public.tasks_task (id, order_key, show, last_modified, title, content, test
 1460	0	f	2020-06-11 18:37:09.536483+05	Часы	<p>С начала суток прошло H часов, M минут, S секунд (0 &le; H &lt; 12, 0 &le; M &lt; 60, 0 &le; S &lt; 60). По данным числам H, M, S определите угол (в градусах), на который повернулаcь часовая стрелка с начала суток и выведите его в виде действительного числа.</p>	[{"input": "$h = 0;\\n$m = 2;\\n$s = 0;", "output": "1"}, {"input": "$h = 0;\\n$m = 1;\\n$s = 0;", "output": "0.5"}, {"input": "$h = 1;\\n$m = 0;\\n$s = 0;", "output": "30"}, {"input": "$h = 1;\\n$m = 2;\\n$s = 6;", "output": "31.05"}, {"input": "$h = 0;\\n$m = 0;\\n$s = 1;", "output": "0.0083333333333333"}, {"input": "$h = 9;\\n$m = 9;\\n$s = 37;", "output": "274.80833333333"}]	7	\N	str	\N	php
 1461	0	f	2020-06-11 18:39:27.704536+05	Остаток от деления	<p>Напишите программу, которая выводит остаток от деления числа a на число b. Вывести только первое число после запятой.</p>	[{"input": "$a = 5;\\n$b = 10;", "output": "5"}, {"input": "$a = 20;\\n$b = 5;", "output": "0"}, {"input": "$a = 6;\\n$b = 9;", "output": "6"}]	7	\N	str	\N	php
 1462	0	f	2020-06-11 18:40:22.860916+05	Сумма 2 чисел	<p>Напишите программу, которая считывает два числа и выводит их сумму. Каждое число записано в отдельной пременной.</p>	[{"input": "$a = 4;\\n$b = 6;", "output": "10"}, {"input": "$a = 8;\\n$b = 250;", "output": "258"}]	7	\N	str	\N	php
+1467	0	f	2020-06-19 11:40:07.720441+05	sql неправильное задание для проверки	<p>выбрать все данные из таблицы prices</p>	[{"input": "1", "output": "(1, '2011-04-10', 100.0)\\n(2, '2011-04-10', 130.0)"}]	\N	\N	str	\N	sql
+1466	0	f	2020-06-19 11:37:42.224987+05	sql insert	<p>добавить в таблицу prices 2 новых записи (25, '2011-04-13', 777.0),&nbsp;(26, '2011-04-12', 666.0)</p>	[{"input": "select  *\\nfrom prices", "output": "(1, '2011-04-10', 100.0)\\n(2, '2011-04-10', 130.0)\\n(3, '2011-04-10', 90.0)\\n(4, '2011-04-10', 100.0)\\n(5, '2011-04-10', 110.0)\\n(6, '2011-04-10', 85.0)\\n(7, '2011-04-11', 95.0)\\n(8, '2011-04-11', 100.0)\\n(9, '2011-04-11', 79.0)\\n(10, '2011-04-11', 49.0)\\n(11, '2011-04-11', 105.0)\\n(12, '2011-04-12', 85.0)\\n(13, '2011-04-12', 135.0)\\n(14, '2011-04-12', 100.0)\\n(15, '2011-04-12', 90.0)\\n(16, '2011-04-12', 75.0)\\n(17, '2011-04-12', 90.0)\\n(18, '2011-04-10', 150.0)\\n(19, '2011-04-10', 140.0)\\n(20, '2011-04-10', 85.0)\\n(21, '2011-04-11', 105.0)\\n(22, '2011-04-11', 70.0)\\n(23, '2011-04-11', 65.0)\\n(24, '2011-04-11', 130.0)\\n(25, '2011-04-13', 777.0)\\n(26, '2011-04-12', 666.0)"}]	7	\N	sqlselect	\N	sql
+1464	0	f	2020-06-19 11:38:54.511512+05	sql delete	<p>удалить все цены, где prices.price&gt;=100</p>	[{"input": "select *\\nfrom prices", "output": "(3, '2011-04-10', 90.0)\\n(6, '2011-04-10', 85.0)\\n(7, '2011-04-11', 95.0)\\n(9, '2011-04-11', 79.0)\\n(10, '2011-04-11', 49.0)\\n(12, '2011-04-12', 85.0)\\n(15, '2011-04-12', 90.0)\\n(16, '2011-04-12', 75.0)\\n(17, '2011-04-12', 90.0)\\n(20, '2011-04-10', 85.0)\\n(22, '2011-04-11', 70.0)\\n(23, '2011-04-11', 65.0)"}, {"input": "select  *\\nfrom prices", "output": "(3, '2011-04-10', 90.0)\\n(6, '2011-04-10', 85.0)\\n(7, '2011-04-11', 95.0)\\n(9, '2011-04-11', 79.0)\\n(10, '2011-04-11', 49.0)\\n(12, '2011-04-12', 85.0)\\n(15, '2011-04-12', 90.0)\\n(16, '2011-04-12', 75.0)\\n(17, '2011-04-12', 90.0)\\n(20, '2011-04-10', 85.0)\\n(22, '2011-04-11', 70.0)\\n(23, '2011-04-11', 65.0)"}]	7	\N	sqlselect	\N	sql
+1463	0	f	2020-06-19 11:39:31.849126+05	sql select	<p>выбрать все prices.price, где price&gt;=100</p>	[{"input": "1", "output": "(100.0,)\\n(130.0,)\\n(100.0,)\\n(110.0,)\\n(100.0,)\\n(105.0,)\\n(135.0,)\\n(100.0,)\\n(150.0,)\\n(140.0,)\\n(105.0,)\\n(130.0,)"}, {"input": "2", "output": "(100.0,)\\n(130.0,)\\n(100.0,)\\n(110.0,)\\n(100.0,)\\n(105.0,)\\n(135.0,)\\n(100.0,)\\n(150.0,)\\n(140.0,)\\n(105.0,)\\n(130.0,)"}]	7	\N	str	\N	sql
+1465	0	f	2020-06-19 11:38:19.09028+05	sql update	<p>обновить все цены prices.price на значение в 10 больше</p>\r\n<div id="gtx-trans" style="position: absolute; left: 272px; top: 26px;">&nbsp;</div>	[{"input": "select price\\nfrom prices", "output": "(1000.0,)\\n(1300.0,)\\n(90.0,)\\n(1000.0,)\\n(1100.0,)\\n(85.0,)\\n(95.0,)\\n(1000.0,)\\n(79.0,)\\n(49.0,)\\n(1050.0,)\\n(85.0,)\\n(1350.0,)\\n(1000.0,)\\n(90.0,)\\n(75.0,)\\n(90.0,)\\n(1500.0,)\\n(1400.0,)\\n(85.0,)\\n(1050.0,)\\n(70.0,)\\n(65.0,)\\n(1300.0,)"}, {"input": "select price \\nfrom prices", "output": "(1000.0,)\\n(1300.0,)\\n(90.0,)\\n(1000.0,)\\n(1100.0,)\\n(85.0,)\\n(95.0,)\\n(1000.0,)\\n(79.0,)\\n(49.0,)\\n(1050.0,)\\n(85.0,)\\n(1350.0,)\\n(1000.0,)\\n(90.0,)\\n(75.0,)\\n(90.0,)\\n(1500.0,)\\n(1400.0,)\\n(85.0,)\\n(1050.0,)\\n(70.0,)\\n(65.0,)\\n(1300.0,)"}]	7	\N	sqlselect	\N	sql
 \.
 
 
@@ -2139,6 +2155,11 @@ COPY public.tasks_task_tags (id, task_id, tag_id) FROM stdin;
 13	1460	1
 14	1461	1
 15	1462	1
+16	1463	1
+17	1464	1
+18	1465	1
+19	1466	1
+20	1467	2
 \.
 
 
@@ -2191,6 +2212,7 @@ COPY public.training_course (id, show, title, slug, about, content, content_bott
 3	t	С#	csharp	<p>Курс - в разработке</p>	<h2>Курс находится в разработке</h2>		11	2019-11-24 03:17:01.948562+05	\N	3
 2	t	C++	cplusplus	<p>Все интереснейшие проекты и задачи будут так или иначе связаны с C++.</p>\r\n<p>И это - основной инструмент для решения олимпиадных задач!</p>			10	2020-03-20 18:55:08.97196+05	\N	2
 8	t	PHP	php	<p><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">На данной странице размещается начало учебника PHP.&nbsp;</em><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">Язык PHP предназначен для программирования web-сайтов.</em></p>	<p><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">На данной странице размещается начало учебника PHP.&nbsp;</em><em style="box-sizing: border-box; color: #333333; font-family: Arial; font-size: 15px; text-align: justify;">Язык PHP предназначен для программирования web-сайтов. Если языки HTML и CSS создают каркас страницы (<em style="box-sizing: border-box;">верстку</em>), то PHP позволяет оживить его: на нем реализуют авторизацию и регистрацию пользователей, хранение страниц в базе данных и извлечение их оттуда, обработку отправленных HTML форм.</em></p>		12	2020-06-11 18:46:56.657733+05	7	4
+9	t	sql задачи	sql-zadachi	<p>Курс по sql</p>			13	2020-06-19 10:26:05.613454+05	7	5
 \.
 
 
@@ -2207,6 +2229,11 @@ COPY public.training_solution (id, last_changes, version_list, taskitem_id, user
 3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	[]	260	7	\N	\N	0	5	\N	t		\N	f
 3323	print(float(input())%1)	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t		\N	f
 3329	while True:\r\n    pass	[]	264	7	\N	\N	0	\N	\N	t		\N	f
+3331	insert into prices\r\nvalues (25, '2011-04-13', 777.0), (26, '2011-04-12', 666.0)	[]	274	7	\N	\N	0	\N	\N	t		\N	f
+3330	select price\r\nfrom prices\r\nwhere price>=100	[]	273	7	\N	\N	0	\N	\N	t		\N	f
+3332	update prices\r\nset price=price*10\r\nwhere price>=100	[]	275	7	\N	\N	0	\N	\N	t		\N	f
+3333	delete from prices\r\nwhere price>=100	[]	276	7	\N	\N	0	\N	\N	t		\N	f
+3334	select *\r\nfrom prices	[]	277	7	\N	\N	0	\N	\N	t		\N	f
 \.
 
 
@@ -2231,6 +2258,11 @@ COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, num
 270	t	chasy	3	1460	27	3	t	f	5
 271	t	verkhnii-registr	4	1459	27	4	t	f	5
 272	t	prevyshen-limit-po-vremeni	5	1458	27	5	t	f	5
+273	t	zadacha-na-select	1	1463	28	1	t	f	5
+274	t	sql-insert	2	1466	28	2	t	f	5
+275	t	sql-update	3	1465	28	3	t	f	5
+276	t	sql-delete	4	1464	28	4	t	f	5
+277	t	sql-nepravilnoe-zadanie-dlia-proverki	5	1467	28	5	t	f	5
 \.
 
 
@@ -2243,6 +2275,7 @@ COPY public.training_topic (id, show, title, slug, order_key, last_modified, aut
 14	t	Ввод и вывод, целые и строки	vvod-i-vyvod	2	2020-03-20 18:56:13.810413+05	\N	2	1	\N
 2	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	2	2020-04-28 22:13:20.298158+05	\N	1	1	\N
 27	t	Ввод и вывод данных	vvod-i-vyvod-dannyh	1	2020-06-11 18:49:05.198645+05	7	8	1	\N
+28	t	задачи по sql	zadachi-po-sql	1	2020-06-19 11:26:20.113883+05	7	9	1	\N
 \.
 
 
@@ -2292,7 +2325,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8097, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8115, true);
 
 
 --
@@ -2348,7 +2381,7 @@ SELECT pg_catalog.setval('public.groups_groupquiz_id_seq', 1, false);
 -- Name: langs_lang_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.langs_lang_id_seq', 4, true);
+SELECT pg_catalog.setval('public.langs_lang_id_seq', 5, true);
 
 
 --
@@ -2397,7 +2430,7 @@ SELECT pg_catalog.setval('public.service_menuitem_id_seq', 1, true);
 -- Name: tasks_solutionexample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_solutionexample_id_seq', 10, true);
+SELECT pg_catalog.setval('public.tasks_solutionexample_id_seq', 15, true);
 
 
 --
@@ -2418,14 +2451,14 @@ SELECT pg_catalog.setval('public.tasks_tag_id_seq', 2, true);
 -- Name: tasks_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_id_seq', 1462, true);
+SELECT pg_catalog.setval('public.tasks_task_id_seq', 1467, true);
 
 
 --
 -- Name: tasks_task_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 15, true);
+SELECT pg_catalog.setval('public.tasks_task_tags_id_seq', 20, true);
 
 
 --
@@ -2439,28 +2472,28 @@ SELECT pg_catalog.setval('public.training_content_id_seq', 445, true);
 -- Name: training_course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_course_id_seq', 8, true);
+SELECT pg_catalog.setval('public.training_course_id_seq', 9, true);
 
 
 --
 -- Name: training_solution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_solution_id_seq', 3329, true);
+SELECT pg_catalog.setval('public.training_solution_id_seq', 3334, true);
 
 
 --
 -- Name: training_taskitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_taskitem_id_seq', 272, true);
+SELECT pg_catalog.setval('public.training_taskitem_id_seq', 277, true);
 
 
 --
 -- Name: training_topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.training_topic_id_seq', 27, true);
+SELECT pg_catalog.setval('public.training_topic_id_seq', 28, true);
 
 
 --

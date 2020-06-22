@@ -9,8 +9,8 @@ import shutil
 
 def create_db(db1: str, db2: str):                             #копирование тестовой б.д. в б.д. пользователя
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    db1_path = os.path.join(current_dir, "tests_db\\" + db1)     #путь к тестовой б.д.
-    db2_path = os.path.join(current_dir, "users_db\\" + db2)     #путь к б.д. пользователя
+    db1_path = os.path.join(current_dir, "tests_db", db1)     #путь к тестовой б.д.
+    db2_path = os.path.join(current_dir, "users_db", db2)     #путь к б.д. пользователя
     try:
         os.remove(db2_path)
     except:
@@ -39,7 +39,7 @@ class Provider(BaseProvider):
         try:
             create_db(stdin,kwargs['session_key']+".db")
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-            db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")
+            db_path = os.path.join(BASE_DIR, "users_db",kwargs['session_key']+".db")
             conn = sqlite3.connect(db_path)
             c = conn.cursor()
             c.execute(content)
@@ -49,6 +49,10 @@ class Provider(BaseProvider):
             for res in c.fetchall():
                 output += str(res)+"\n"
             c.close()
+        try:
+            os.remove(os.path.join(BASE_DIR, "users_db", kwargs['session_key'] + ".db"))
+        except:
+            pass
         return {
             'output': output,
             'error': error
@@ -60,6 +64,7 @@ class Provider(BaseProvider):
         compare_method = getattr(cls, compare_method_name)
         tests_data = []
         tests_num_success = 0
+        #print(kwargs['session_key'])
         ind = 0                      #индекс б.д. текущего теста
         for test in task.tests:    #почему несколько файлов б.д.
             ind += 1
@@ -67,9 +72,11 @@ class Provider(BaseProvider):
             output = ""
             success = False
             try:
-                create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")      #все б.д. назвать bd_1, bd_2 и т.д.
+                create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")#все б.д. назвать bd_1, bd_2 и т.д.
+                #create_db("bd_"+str(ind)+".db", "kappa" + ".db") для юнит тестов
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                db_path = os.path.join(BASE_DIR, "users_db\\"+kwargs['session_key']+".db")  #путь к б.д. пользователя
+                db_path = os.path.join(BASE_DIR, "users_db",kwargs['session_key']+".db")#путь к б.д. пользователя
+                #db_path = os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db") для юнит тестов
                 conn = sqlite3.connect(db_path)                                     #стандартное выполнение запроса в sqlite3
                 c = conn.cursor()
                 c.execute(content)
@@ -84,12 +91,12 @@ class Provider(BaseProvider):
                         etalon=clear_text(test['output']),
                         val=clear_text(output)
                     )
-                    c.close()
+                    conn.close()
                 else:                                              #изм. б.д. запрос
                     c.execute(test['input'])
                     for res in c.fetchall():
                         output += str(res)+"\n"
-                    c.close()
+                    conn.close()
                     success = compare_method(
                         etalon=test["output"],
                         val=output
@@ -102,7 +109,11 @@ class Provider(BaseProvider):
                 "error": error,
                 "success": success
             })
-
+        try:
+            os.remove(os.path.join(BASE_DIR, "users_db", kwargs['session_key'] + ".db"))
+            #os.remove(os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db"))для юнит тестов
+        except:
+            pass
         tests_num = len(task.tests)
         return {
             'num': tests_num,
