@@ -33,7 +33,6 @@ def remove_db_objects() -> Result:
 def load_dump(dump_name: str = default_dump_name) -> Result:
 
     """ Загружает дамп в пустую базу, использвать для юнит-тестов """
-    #dump_name="/mnt/"+"c"+dump_name.replace("\\","/")[2:]  #для винды
     db = settings.DATABASES['default']
     command = f'export PGPASSWORD={db["PASSWORD"]};' \
               f'psql -h {db["HOST"]} -p {db["PORT"]} -U {db["USER"]} {db["NAME"]} < {dump_name}'
