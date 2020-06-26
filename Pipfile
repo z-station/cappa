@@ -22,7 +22,7 @@ django-admin-list-filter-dropdown = "*"
 docker = "*"
 
 [requires]
-python_version = ">=3.6"
+python_version = "3.8"
 
 [scripts]
 "start:dev" = "python manage.py runserver 0:8000"
