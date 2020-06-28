@@ -157,6 +157,7 @@ ADMIN_REORDER = (
 # Половину от всех ядер отдаем песочнице
 cores_for_docker = ','.join([str(num) for num in range(os.cpu_count()//2)])
 DOCKER_CONF = {
+    "prefix": "prod",
     "python": {
         "image_tag": "py-image",
         "container_name": "py-container",

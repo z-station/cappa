@@ -24,7 +24,7 @@ class ProviderTestCase(TestCase):
         # Задачи, тесты которых должны закончиться успехом
         for task in Task.objects.filter(lang=langs.SQL, tags__name='success'):
             solution = task.solution_examples.filter(lang=langs.SQL).first()
-            tests_result = provider.check_tests(content=solution.content, task=task)
+            tests_result = provider.check_tests(content=solution.content, task=task, session_key='tests')
             self.assertTrue(
                 expr=tests_result['success'],
                 msg=f'id={task.id}, title="{task.title}"'
@@ -34,7 +34,7 @@ class ProviderTestCase(TestCase):
         # Задачи, тесты которых должны провалиться
         for task in Task.objects.filter(lang=langs.SQL, tags__name='unluck'):
             solution = task.solution_examples.filter(lang=langs.SQL).first()
-            tests_result = provider.check_tests(content=solution.content, task=task)
+            tests_result = provider.check_tests(content=solution.content, task=task, session_key='tests')
             self.assertFalse(
                 expr=tests_result['success'],
                 msg=f'id={task.id}, title="{task.title}"'

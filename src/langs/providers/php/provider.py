@@ -21,11 +21,12 @@ class Provider(BaseProvider):
         return output, error
 
     @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    def debug(cls, input: str, content: str, **kwargs) -> dict:
         output = ''
         error = ''
         tmp = TmpFiles(content=content, input=input)
         stdin = input.encode('utf-8')
+        p =None
         try:
             p = subprocess.Popen(['php', tmp.file_php_dir],
                                  stdout=subprocess.PIPE,
@@ -37,7 +38,8 @@ class Provider(BaseProvider):
         except subprocess.TimeoutExpired:
             output, error = '', msg.PHP__02
         finally:
-            p.kill()
+            if p is not None:
+                p.kill()
             tmp.remove_file_php()
         return {
             'output': output,
@@ -45,7 +47,7 @@ class Provider(BaseProvider):
         }
 
     @classmethod
-    def check_tests(cls, content: str, task: Task) -> dict:
+    def check_tests(cls, content: str, task: Task, **kwargs) -> dict:
 
         compare_method_name = f'_compare_{task.output_type}'
         compare_method = getattr(cls, compare_method_name)
@@ -55,7 +57,7 @@ class Provider(BaseProvider):
         tests_num_success = 0
         for test in task.tests:
             tmp = TmpFiles(content=content, input=test['input'])
-
+            p1 = None
             try:
                 p1 = subprocess.Popen(['php', tmp.file_php_dir],
                                       stdin=subprocess.PIPE,
@@ -69,15 +71,14 @@ class Provider(BaseProvider):
                 output, error = '', msg.PHP__02
                 tmp.remove_file_php()
             finally:
-                p1.kill()
-
+                if p1 is not None:
+                    p1.kill()
 
             if error:
                 success = False
             else:
                 success = compare_method(etalon=clear_text(test['output']),
                                          val=clear_text(output))
-
 
             tests_num_success += success
 
@@ -87,9 +88,9 @@ class Provider(BaseProvider):
                 "success": success
             })
 
-        tmp.remove_file_php()
-        tests_num = len(task.tests)
+            tmp.remove_file_php()
 
+        tests_num = len(task.tests)
         return {
             'num': tests_num,
             'num_success': tests_num_success,

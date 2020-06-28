@@ -28,7 +28,7 @@ class Provider(BaseProvider):
         return output, error
 
     @classmethod
-    def debug(cls, input: str, content: str,**kwargs) -> dict:
+    def debug(cls, input: str, content: str, **kwargs) -> dict:
 
         if ".db" in input:           #если б.д. уточнена пользователем
             stdin=input
@@ -75,7 +75,7 @@ class Provider(BaseProvider):
                 create_db("bd_"+str(ind)+".db", kwargs['session_key'] + ".db")#все б.д. назвать bd_1, bd_2 и т.д.
                 #create_db("bd_"+str(ind)+".db", "kappa" + ".db") для юнит тестов
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                db_path = os.path.join(BASE_DIR, "users_db",kwargs['session_key']+".db")#путь к б.д. пользователя
+                db_path = os.path.join(BASE_DIR, "users_db", kwargs['session_key']+".db")#путь к б.д. пользователя
                 #db_path = os.path.join(BASE_DIR, "users_db\\" + "kappa" + ".db") для юнит тестов
                 conn = sqlite3.connect(db_path)                                     #стандартное выполнение запроса в sqlite3
                 c = conn.cursor()

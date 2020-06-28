@@ -23,7 +23,8 @@ class ProviderTestCase(TestCase):
         provider = Lang.objects.get(provider_name=langs.PHP).provider
 
         # Задачи, тесты которых должны закончиться успехом
-        for task in Task.objects.filter(lang=langs.PHP, tags__name='success'):
+        tasks = Task.objects.filter(lang=langs.PHP, tags__name='success')
+        for task in tasks:
             solution = task.solution_examples.filter(lang=langs.PHP).first()
             tests_result = provider.check_tests(content=solution.content, task=task)
             self.assertTrue(

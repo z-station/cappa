@@ -21,7 +21,7 @@ class Provider(BaseProvider):
         return output, error
 
     @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    def debug(cls, input: str, content: str, **kwargs) -> dict:
         tmp = TmpFiles(content=content)
         p1 = subprocess.Popen(
             args=['mcs', tmp.file_cpp_dir],
@@ -60,7 +60,7 @@ class Provider(BaseProvider):
         }
 
     @classmethod
-    def check_tests(cls, content: str, task: Task) -> dict:
+    def check_tests(cls, content: str, task: Task, **kwargs) -> dict:
         tmp = TmpFiles(content=content)
 
         compare_method_name = f'_compare_{task.output_type}'
