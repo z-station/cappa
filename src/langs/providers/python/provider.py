@@ -10,6 +10,7 @@ from src.utils import msg as msg_utils
 from src.utils.editor import clear_text
 
 conf = settings.DOCKER_CONF['python']
+prefix = settings.DOCKER_CONF['prefix']
 client = docker.from_env()
 
 
@@ -44,12 +45,13 @@ class Provider(BaseProvider):
 
         """ Создает и возвращает docker-образ python песочницы """
 
+        image_tag = prefix + conf['image_tag']
         try:
-            image = client.images.get(name=conf['image_tag'])
+            image = client.images.get(name=image_tag)
         except errors.ImageNotFound:
             image, logs = client.images.build(
                 path=conf['path'],
-                tag=conf['image_tag']
+                tag=image_tag
             )
         return image
 
@@ -58,14 +60,15 @@ class Provider(BaseProvider):
 
         """ Запускает и возвращает docker-контейнер python песочницы """
 
+        container_id = prefix + conf["container_name"]
         try:
-            container = client.containers.get(container_id=conf["container_name"])
+            container = client.containers.get(container_id=container_id)
         except errors.NotFound:
             image = cls._get_docker_image()
             try:
                 container = client.containers.run(
                     image=image,
-                    name=conf['container_name'],
+                    name=container_id,
                     detach=True, auto_remove=True,
                     stdin_open=True, stdout=True, stderr=True,
                     cpuset_cpus=conf['cpuset_cpus'],
@@ -77,7 +80,7 @@ class Provider(BaseProvider):
                     volumes={conf['dir']: {'bind': f'/home/{conf["user"]}/', 'mode': 'ro'}}
                 )
             except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
-                container = client.containers.get(container_id=conf["container_name"])
+                container = client.containers.get(container_id=container_id)
         return container
 
     @classmethod
@@ -89,8 +92,8 @@ class Provider(BaseProvider):
             другие процессы не успевали подключиться к выключаемому контейнеру.
             Вместо этого они будут инициировать старт нового контейнера.
         """
-
-        container = client.containers.get(container_id=conf["container_name"])
+        container_id = prefix + conf["container_name"]
+        container = client.containers.get(container_id=container_id)
         container.rename(name=f'trash-{uuid.uuid1()}')
         container.stop()
 
