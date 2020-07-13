@@ -157,7 +157,7 @@ DOCKER_CONF = {
         "container_name": "py-container",
         "path": os.path.join(SRC_DIR, 'langs', 'providers', 'python'),
         "dir": PY_TMP_DIR,
-        "user": "sbox-user",
+        "user": "sandbox",
         "max_zombie_procs": 500,    # макс. кол-во мертвых процессов, при котром нужно перезагружать контейнер
         "timeout": 5,               # ограниечение на время выполнения скрипта в песочнице
         "cpuset_cpus": cores_for_docker,  # cpus - номера ядер, занимаемые конейнером
