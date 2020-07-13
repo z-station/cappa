@@ -26,4 +26,4 @@ python_version = "3.8"
 
 [scripts]
 "start:dev" = "python manage.py runserver 0:8000"
-"start:prod" = "gunicorn --bind unix:/run/gunicorn.sock --access-logfile - --reload --preload --max-requests 100 --workers 4 src.wsgi:application"
+"start:prod" = "gunicorn --bind unix:/run/gunicorn.sock --access-logfile - --reload --preload --max-requests 100 --workers 4 --timeout 60 src.wsgi:application"
