@@ -57,7 +57,7 @@ class Task(models.Model):
     content = HTMLField(verbose_name="текст задания", default="", blank=True, null=True)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     output_type = models.CharField(
-        verbose_name='тип решения для автотестов', max_length=255,
+        verbose_name='чекер', max_length=255,
         choices=OUTPUT_TYPES, default=STR
     )
     difficulty = models.CharField(

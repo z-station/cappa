@@ -9,7 +9,7 @@
 .svn
 .installed.cfg
 .idea/*
-*.sql
+*.gz
 bin/*
 downloads/*
 eggs/*

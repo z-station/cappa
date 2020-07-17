@@ -118,9 +118,17 @@ class TaskItemForm(forms.Form):
             if user.is_active:
                 if not editor_data['content']:
                     return Response(status=404, msg='Решение отсутствует')
-                solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
+                solution, created = Solution.objects.get_or_create(
+                    user=user, taskitem=taskitem,
+                    defaults={
+                        "content": editor_data['content'],
+                        "last_changes": editor_data['content'],
+                        "is_locked": True,
+                        "datetime": timezone.now()
+                    }
+                )
                 # если задача отправлена на проверку или уже проверена - решение нельзя изменить
-                if solution.is_locked:
+                if not created and solution.is_locked:
                     return Response(status=403, msg='Операция запрещена')
                 else:
                     # если задача с автотестами - прогнать автотесты
@@ -133,10 +141,7 @@ class TaskItemForm(forms.Form):
                     else:
                         tests_score = None
                     solution.tests_score = tests_score
-                    solution.content = editor_data['content']
                     solution.set_is_count()
-                    solution.is_locked = True
-                    solution.datetime = timezone.now()
                     if solution.taskitem.manual_check:
                         solution.manual_status = Solution.MS__READY_TO_CHECK
                     solution.save()
