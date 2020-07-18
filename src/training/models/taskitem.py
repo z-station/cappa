@@ -26,6 +26,7 @@ class TaskItem(models.Model):
     max_score = models.PositiveIntegerField(verbose_name='балл за решение', default=5)
     manual_check = models.BooleanField(verbose_name='ручная проверка', default=False)
     compiler_check = models.BooleanField(verbose_name='проверка автотестами', default=True)
+    one_try = models.BooleanField(verbose_name='одна попытка', default=False)
     slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
 
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)

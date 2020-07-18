@@ -44,13 +44,13 @@
                 <div class="control__bar taskitem">
                     <div class="control__bar-col col__1">
                         {% if request.user.is_active %}
-                            <div class="js__editor-btn js__editor-btn-ready {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить на проверку"></div>
+                            <div class="js__editor-btn js__editor-btn-ready {% if object.one_try %}js__confirm{% endif %} {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить решение"></div>
                             <div class="js__editor-btn js__editor-btn-versions {% if not solution %} not-versions{% endif %}"
                                  title="Страница решения"
                                  onclick="window.open('{{ object.get_absolute_url }}solution/?user={{ request.user.id }}', '_blank')"
                             ></div>
                             <div class="js__editor-btn js__editor-btn-version" title="Создать версию решения"></div>
-                            <div class="js__editor-btn js__editor-btn-save {% if solution and solution.manual_status != '0' %}disabled{% endif %} " title="Сохранить"></div>
+                            <div class="js__editor-btn js__editor-btn-save {% if solution and solution.manual_status != '0' %}disabled{% endif %} " title="Сохранить изменения"></div>
                         {% endif %}
                     </div>
 
