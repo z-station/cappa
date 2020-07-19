@@ -118,7 +118,6 @@ class TaskItemForm(forms.Form):
                     "content": editor_data['content'],
                     "last_changes": editor_data['content'],
                     "is_locked": taskitem.one_try,
-                    "datetime": timezone.now()
                 }
             )
             # если у задачи одна попытка и она уже использована - решение нельзя изменить
@@ -137,7 +136,7 @@ class TaskItemForm(forms.Form):
             solution.content = editor_data['content']
             solution.last_changes = editor_data['content']
             solution.is_locked = taskitem.one_try
-            solution.datetime = timezone.now()
+            solution.last_modified = timezone.now()
             solution.set_is_count()
             if solution.taskitem.manual_check:
                 solution.manual_status = Solution.MS__READY_TO_CHECK
