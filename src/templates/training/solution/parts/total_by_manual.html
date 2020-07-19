@@ -21,12 +21,10 @@
             <td class="js__utc-time" data-utc-time="{{ topic.end_time|date:'Y-m-d H:i:s.u'}}"></td>
         </tr>
         {% endif %}
-        {% if object.datetime %}
         <tr>
-            <td>Дата и время отправки:</td>
-            <td class="js__utc-time" data-utc-time="{{ object.datetime|date:'Y-m-d H:i:s.u' }}"></td>
+            <td>Дата отправки:</td>
+            <td class="js__utc-time" data-utc-time="{{ object.last_modified|date:'Y-m-d H:i:s.u' }}"></td>
         </tr>
-        {% endif %}
         {% if object.taskitem.task.tests %}
             <tr>
                 <td>Баллы по тестам:</td>

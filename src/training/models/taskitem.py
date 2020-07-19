@@ -26,6 +26,7 @@ class TaskItem(models.Model):
     max_score = models.PositiveIntegerField(verbose_name='балл за решение', default=5)
     manual_check = models.BooleanField(verbose_name='ручная проверка', default=False)
     compiler_check = models.BooleanField(verbose_name='проверка автотестами', default=True)
+    one_try = models.BooleanField(verbose_name='одна попытка', default=False)
     slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
 
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
@@ -116,7 +117,8 @@ class Solution(models.Model):
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='solutions')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
-    datetime = models.DateTimeField(verbose_name='дата/время отправки', blank=True, null=True)
+    datetime = models.DateTimeField(verbose_name='дата создания', auto_now_add=True)
+    last_modified = models.DateTimeField(verbose_name="дата последней отправки", auto_now_add=True)
     is_count = models.BooleanField(verbose_name="баллы идут в зачет", default=True)
     is_locked = models.BooleanField(verbose_name="запрещено изменять", default=False)
     manual_status = models.CharField(

@@ -91,63 +91,57 @@ class TaskItemForm(forms.Form):
 
         @classmethod
         def save_last_changes(cls, editor_data: dict, taskitem: TaskItem, user: User):
-            if user.is_active:
-                solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
+            if not user.is_active:
+                return Response(status=402, msg='Требуется авторизация')
+            solution, created = Solution.objects.get_or_create(
+                user=user, taskitem=taskitem, defaults={
+                    "last_changes": editor_data['content']
+                })
+            if not created:
                 solution.last_changes = editor_data['content']
                 solution.save()
-                return Response(status=200, msg='Изменения сохранены')
-            else:
-                return Response(status=402, msg='Требуется авторизация')
+            return Response(status=200, msg='Изменения сохранены')
 
         @classmethod
         def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
-            if not user.is_active:
-                return Response(status=402, msg='Требуется авторизация')
-            solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
-            # если задача отправлена на ручную проверку или уже проверена - решение нельзя изменить
-            if solution.is_locked:
-                return Response(status=403, msg='Операция запрещена')
-            else:
-                solution.last_changes = editor_data['content']
-                solution.content = editor_data['content']
-                solution.save()
-                return Response(status=200, msg='Решение сохранено')
+            return cls.save_last_changes(editor_data, taskitem, user)
 
         @classmethod
         def ready_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
-            if user.is_active:
-                if not editor_data['content']:
-                    return Response(status=404, msg='Решение отсутствует')
-                solution, created = Solution.objects.get_or_create(
-                    user=user, taskitem=taskitem,
-                    defaults={
-                        "content": editor_data['content'],
-                        "last_changes": editor_data['content'],
-                        "is_locked": True,
-                        "datetime": timezone.now()
-                    }
-                )
-                # если задача отправлена на проверку или уже проверена - решение нельзя изменить
-                if not created and solution.is_locked:
-                    return Response(status=403, msg='Операция запрещена')
-                else:
-                    # если задача с автотестами - прогнать автотесты
-                    if taskitem.compiler_check and taskitem.task.tests:
-                        tests_result = taskitem.lang.provider.check_tests(
-                            content=editor_data['content'],
-                            task=taskitem.task,
-                        )
-                        tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
-                    else:
-                        tests_score = None
-                    solution.tests_score = tests_score
-                    solution.set_is_count()
-                    if solution.taskitem.manual_check:
-                        solution.manual_status = Solution.MS__READY_TO_CHECK
-                    solution.save()
-                    return Response(status=200, msg='Решение отправлено')
-            else:
+            if not user.is_active:
                 return Response(status=402, msg='Требуется авторизация')
+            if not editor_data['content']:
+                return Response(status=404, msg='Решение отсутствует')
+            solution, created = Solution.objects.get_or_create(
+                user=user, taskitem=taskitem,
+                defaults={
+                    "content": editor_data['content'],
+                    "last_changes": editor_data['content'],
+                    "is_locked": taskitem.one_try,
+                }
+            )
+            # если у задачи одна попытка и она уже использована - решение нельзя изменить
+            if not created and taskitem.one_try and solution.is_locked:
+                return Response(status=403, msg='Операция запрещена')
+            # если задача с автотестами - прогнать автотесты
+            tests_score = None
+            if taskitem.compiler_check and taskitem.task.tests:
+                tests_result = taskitem.lang.provider.check_tests(
+                    content=editor_data['content'],
+                    task=taskitem.task,
+                )
+                tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
+
+            solution.tests_score = tests_score
+            solution.content = editor_data['content']
+            solution.last_changes = editor_data['content']
+            solution.is_locked = taskitem.one_try
+            solution.last_modified = timezone.now()
+            solution.set_is_count()
+            if solution.taskitem.manual_check:
+                solution.manual_status = Solution.MS__READY_TO_CHECK
+            solution.save()
+            return Response(status=200, msg='Решение отправлено')
 
 
 class SolutionForm(forms.ModelForm):
