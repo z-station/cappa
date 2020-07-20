@@ -20,7 +20,7 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
     model = TaskItem
     form = TaskItemAdminForm
     extra = 0
-    fields = ('order_key', 'task', 'max_score', 'compiler_check', 'manual_check', 'show')
+    fields = ('order_key', 'task', 'max_score', 'compiler_check', 'manual_check', 'one_try', 'show')
     raw_id_fields = ("task",)
 
 

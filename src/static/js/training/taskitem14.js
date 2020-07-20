@@ -180,12 +180,15 @@ var taskItemPage = function(e){
             return false
         },
         ready: function(e){
-            if(confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')){
+            var confirmed = true;
+            if(e.target.classList.contains('js__confirm')){
+                confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
+            }
+            if(confirmed){
                 formControl.showLoader('Отправляем на проверку');
                 $.post(form.getAttribute('action'), formControl.serializeForm(operation='ready_solution'), function(response){
                     formControl.showMsg(response)
                     formControl.disableBtn('save');
-                    formControl.disableBtn('ready');
                     formControl.enableVersionsBtn()
                 })
             }

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
--- Dumped by pg_dump version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
+-- Dumped from database version 12.3 (Ubuntu 12.3-1.pgdg18.04+1)
+-- Dumped by pg_dump version 12.3 (Ubuntu 12.3-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,23 +16,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: cappa
@@ -956,8 +942,9 @@ CREATE TABLE public.training_solution (
     teacher_id integer,
     is_count boolean NOT NULL,
     content text NOT NULL,
-    datetime timestamp with time zone,
-    is_locked boolean NOT NULL
+    datetime timestamp with time zone NOT NULL,
+    is_locked boolean NOT NULL,
+    last_modified timestamp with time zone NOT NULL
 );
 
 
@@ -999,6 +986,7 @@ CREATE TABLE public.training_taskitem (
     compiler_check boolean NOT NULL,
     manual_check boolean NOT NULL,
     max_score integer NOT NULL,
+    one_try boolean NOT NULL,
     CONSTRAINT training_taskitem_max_score_check CHECK ((max_score >= 0)),
     CONSTRAINT training_taskitem_number_check CHECK ((number >= 0)),
     CONSTRAINT training_taskitem_order_key_check CHECK ((order_key >= 0))
@@ -1415,7 +1403,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-04-28 22:10:04.621428+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
+7	pbkdf2_sha256$36000$xvVVt1DIntdK$ZKrYFf6Wnzm1IhGwy3+pxd82qN3ToZlVgRjS6PG+zXA=	2020-07-20 06:47:26.251567+05	t	user	Василий	Маргелов		t	t	2018-06-19 20:31:06+05
 \.
 
 
@@ -1515,6 +1503,8 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 8086	2020-04-28 22:12:37.570059+05	1457	Тест Float чекера	1	[{"added": {}}]	28	7
 8087	2020-04-28 22:12:53.144355+05	1457	Тест Float чекера	2	[{"added": {"name": "\\u044d\\u0442\\u0430\\u043b\\u043e\\u043d\\u043d\\u043e\\u0435 \\u0440\\u0435\\u0448\\u0435\\u043d\\u0438\\u0435", "object": ""}}]	28	7
 8088	2020-04-28 22:13:20.332043+05	2	Ввод и вывод данных	2	[{"added": {"name": "\\u0437\\u0430\\u0434\\u0430\\u0447\\u0430", "object": "\\u0422\\u0435\\u0441\\u0442 Float \\u0447\\u0435\\u043a\\u0435\\u0440\\u0430"}}]	33	7
+8089	2020-07-20 06:48:04.849138+05	1	Меню в шапке	2	[{"added": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "\\u0413\\u0440\\u0443\\u043f\\u043f\\u044b"}}, {"added": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "Python"}}]	36	7
+8090	2020-07-20 06:48:12.996822+05	1	Меню в шапке	2	[{"changed": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "\\u0412\\u0441\\u0435 \\u043a\\u0443\\u0440\\u0441\\u044b", "fields": ["order_key"]}}, {"changed": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "\\u0413\\u0440\\u0443\\u043f\\u043f\\u044b", "fields": ["order_key"]}}, {"changed": {"name": "\\u043f\\u0443\\u043d\\u043a\\u0442 \\u043c\\u0435\\u043d\\u044e", "object": "Python", "fields": ["order_key"]}}]	36	7
 \.
 
 
@@ -1638,6 +1628,10 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 71	groups	0002_groupcourse_show_table	2020-04-28 22:09:36.66109+05
 72	training	0007_auto_20200420_1553	2020-04-28 22:09:37.15753+05
 73	training	0008_remove_solution_version_best	2020-04-28 22:09:37.200876+05
+74	tasks	0005_auto_20200717_1025	2020-07-20 06:46:53.584325+05
+75	training	0009_taskitem_one_try	2020-07-20 06:46:53.628612+05
+76	training	0010_auto_20200719_1532	2020-07-20 06:46:53.739595+05
+77	training	0011_auto_20200719_1551	2020-07-20 06:46:53.805938+05
 \.
 
 
@@ -1705,6 +1699,7 @@ jo1wgmgimkc6svjzfhq9hjq0gj0tf2fj	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmU
 z8zx3ilgqlwiicp0h5m7c9e0m08d3jd6	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-11 22:30:32.062754+05
 k86yy3jtm9jhfhga0z8xkcbhmqqpovlr	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-20 18:44:02.143798+05
 7lxtxolzredqy75r79nv2bsor000rq84	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-04-29 02:13:29.22103+05
+uz450ir6v4p5z2xka7icwt65cans50ii	OGU1ZDcwMWNjMDVlZGJjYTI2ZTJiOGMxM2M3ZjQxNDMxYmUwN2FjMDp7Il9hdXRoX3VzZXJfaWQiOiI3IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoic3JjLnByb2ZpbGUuYmFja2VuZHMuQ3VzdG9tTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNmI4NDFkMTIyOTVmY2EzNjk0M2E2NDYwMDYzZGRkZDg3YTQ1YmE5MSJ9	2020-07-20 10:48:39.369976+05
 \.
 
 
@@ -1775,7 +1770,9 @@ COPY public.service_menu (id, name, key) FROM stdin;
 --
 
 COPY public.service_menuitem (id, order_key, name, url, image, show, menu_id) FROM stdin;
-1	1	Все курсы	/courses/		t	1
+1	2	Все курсы	/courses/		t	1
+2	3	Группы	/groups/		t	1
+3	1	Python	/courses/python/		t	1
 \.
 
 
@@ -1909,15 +1906,15 @@ COPY public.training_course (id, show, title, slug, about, content, content_bott
 -- Data for Name: training_solution; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.training_solution (id, last_changes, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score, teacher_id, is_count, content, datetime, is_locked) FROM stdin;
-3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	[]	263	7	\N	\N	0	5	\N	t		\N	f
-3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	[]	132	7	\N	\N	0	0	\N	t		\N	f
-3325	a=float(input())\r\nprint(a%30*12)	[]	261	7	\N	\N	0	5	\N	t		\N	f
-3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	[]	262	7	\N	\N	0	5	\N	t		\N	f
-3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	[]	3	7	\N	\N	0	5	\N	t		\N	f
-3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	[]	260	7	\N	\N	0	5	\N	t		\N	f
-3323	print(float(input())%1)	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t		\N	f
-3329	while True:\r\n    pass	[]	264	7	\N	\N	0	\N	\N	t		\N	f
+COPY public.training_solution (id, last_changes, version_list, taskitem_id, user_id, comment, manual_score, manual_status, tests_score, teacher_id, is_count, content, datetime, is_locked, last_modified) FROM stdin;
+3327	def power(a,n):\r\n    m = 1\r\n    for i in range(abs(n)):\r\n        m = m * a\r\n    if (n >= 0):\r\n        print(m)\r\n    else:\r\n        res = 1 / m\r\n        print(res)\r\na = float(input())\r\nn = int(input())\r\n\r\npower(a,n)	[]	263	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.721634+05	f	2020-07-20 06:46:53.721634+05
+3328	#include <iostream>\r\n#include <cstdlib> // для system\r\nusing namespace std;\r\n\r\nint main() \r\n{ \r\n    cout << "Hello, world!" << endl;\r\n    return 0; \r\n}	[]	132	7	\N	\N	0	0	\N	t		2020-07-20 06:46:53.723521+05	f	2020-07-20 06:46:53.723521+05
+3325	a=float(input())\r\nprint(a%30*12)	[]	261	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.72459+05	f	2020-07-20 06:46:53.72459+05
+3326	s = input()\r\nprint(s[2])\r\nprint(s[-2])\r\nprint(s[:5])\r\nprint(s[:-2])\r\nprint(s[::2])\r\nprint(s[1::2])\r\nprint(s[::-1])\r\nprint(s[::-2])\r\nprint(len(s))	[]	262	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.725641+05	f	2020-07-20 06:46:53.725641+05
+3322	n = int(input())\r\nk = int(input())\r\nprint(k//n)\r\nprint(k%n)	[]	3	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.7267+05	f	2020-07-20 06:46:53.7267+05
+3324	h = int(input())\r\nm = int(input())\r\ns = int(input())\r\n\r\nprint(h * 30 + m * 30 / 60 + s * 30 / 3600)	[]	260	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.727758+05	f	2020-07-20 06:46:53.727758+05
+3323	print(float(input())%1)	[{"content": "word = input()\\r\\nk = 0\\r\\nfor ch in word :\\r\\n    if(ch != '.'):\\r\\n        k+=1\\r\\n    else :\\r\\n        break\\r\\nprint('0'+word[k:])", "datetime": "2020-04-11 13:28:08.420302", "tests_score": 5.0}]	259	7	\N	\N	0	5	\N	t		2020-07-20 06:46:53.728831+05	f	2020-07-20 06:46:53.728831+05
+3329	while True:\r\n    pass	[]	264	7	\N	\N	0	\N	\N	t		2020-07-20 06:46:53.729943+05	f	2020-07-20 06:46:53.729943+05
 \.
 
 
@@ -1925,18 +1922,18 @@ COPY public.training_solution (id, last_changes, version_list, taskitem_id, user
 -- Data for Name: training_taskitem; Type: TABLE DATA; Schema: public; Owner: cappa
 --
 
-COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, number, compiler_check, manual_check, max_score) FROM stdin;
-132	t	delezh-yablok	3	3	14	3	t	f	5
-3	t	delezh-yablok	3	3	2	1	t	f	5
-259	t	drobnaia-chast	4	25	2	2	t	f	5
-260	t	chasy-1	5	35	2	3	t	f	5
-261	t	chasy-2	6	36	2	4	t	f	5
-262	t	delaem-srezy	7	50	2	5	t	f	5
-263	t	stepen	8	96	2	6	t	f	5
-264	t	test-timeout	9	1454	2	7	t	f	5
-265	t	test-deep-recursive	10	1455	2	8	t	f	5
-266	t	test-hd-write	11	1456	2	9	t	f	5
-267	t	test-float-chekera	12	1457	2	10	t	f	5
+COPY public.training_taskitem (id, show, slug, order_key, task_id, topic_id, number, compiler_check, manual_check, max_score, one_try) FROM stdin;
+132	t	delezh-yablok	3	3	14	3	t	f	5	f
+3	t	delezh-yablok	3	3	2	1	t	f	5	f
+259	t	drobnaia-chast	4	25	2	2	t	f	5	f
+260	t	chasy-1	5	35	2	3	t	f	5	f
+261	t	chasy-2	6	36	2	4	t	f	5	f
+262	t	delaem-srezy	7	50	2	5	t	f	5	f
+263	t	stepen	8	96	2	6	t	f	5	f
+264	t	test-timeout	9	1454	2	7	t	f	5	f
+265	t	test-deep-recursive	10	1455	2	8	t	f	5	f
+266	t	test-hd-write	11	1456	2	9	t	f	5	f
+267	t	test-float-chekera	12	1457	2	10	t	f	5	f
 \.
 
 
@@ -1997,7 +1994,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 124, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8088, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8090, true);
 
 
 --
@@ -2011,7 +2008,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 40, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 73, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 77, true);
 
 
 --
@@ -2067,7 +2064,7 @@ SELECT pg_catalog.setval('public.service_menu_id_seq', 1, true);
 -- Name: service_menuitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cappa
 --
 
-SELECT pg_catalog.setval('public.service_menuitem_id_seq', 1, true);
+SELECT pg_catalog.setval('public.service_menuitem_id_seq', 3, true);
 
 
 --

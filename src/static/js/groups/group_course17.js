@@ -64,11 +64,7 @@ var groupCoursePage = function(e){
             for(const [taskitem, data] of Object.entries(val.data)){
                 var td = tr.querySelector('.js__' + taskitem)
                 if(td){
-                    if(data.datetime){
-                        var datetime = getLocalTime(data.datetime)
-                    } else {
-                        var datetime = ''
-                    }
+                    var lastModified = getLocalTime(data.last_modified)
                     var th = document.querySelector(td.getAttribute('data-th'))
                     var topicTitle = th.getAttribute('data-topic-title')
                     var taskitemTitle = th.getAttribute('data-taskitem-title')
@@ -76,9 +72,9 @@ var groupCoursePage = function(e){
                     th.setAttribute('title', `${taskitemTitle}\nТема: ${topicTitle}`)
                     td.classList.add(statusClass)
                     if(data.is_count){
-                        var title = `${userName}\n${datetime}\n${taskitemTitle}\nТема: ${topicTitle}`
+                        var title = `${userName}\n${lastModified}\n${taskitemTitle}\nТема: ${topicTitle}`
                     } else {
-                        var title = `${userName}\n${datetime}\n${taskitemTitle}\nТема: ${topicTitle}\nРешение вне зачета`
+                        var title = `${userName}\n${lastModified}\n${taskitemTitle}\nТема: ${topicTitle}\nРешение вне зачета`
                     }
                     td.setAttribute('title', title)
                     if(val.show_link){
