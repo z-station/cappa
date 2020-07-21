@@ -112,16 +112,9 @@ class TaskItemForm(forms.Form):
                 return Response(status=402, msg='Требуется авторизация')
             if not editor_data['content']:
                 return Response(status=404, msg='Решение отсутствует')
-            solution, created = Solution.objects.get_or_create(
-                user=user, taskitem=taskitem,
-                defaults={
-                    "content": editor_data['content'],
-                    "last_changes": editor_data['content'],
-                    "is_locked": taskitem.one_try,
-                }
-            )
+            solution = Solution.objects.filter(user=user, taskitem=taskitem).first()
             # если у задачи одна попытка и она уже использована - решение нельзя изменить
-            if not created and taskitem.one_try and solution.is_locked:
+            if solution and taskitem.one_try and solution.is_locked:
                 return Response(status=403, msg='Операция запрещена')
             # если задача с автотестами - прогнать автотесты
             tests_score = None
@@ -131,7 +124,8 @@ class TaskItemForm(forms.Form):
                     task=taskitem.task,
                 )
                 tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
-
+            if solution is None:
+                solution = Solution(user=user, taskitem=taskitem)
             solution.tests_score = tests_score
             solution.content = editor_data['content']
             solution.last_changes = editor_data['content']
