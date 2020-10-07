@@ -18,6 +18,7 @@ TESTS_DIR = os.path.join(PROJECT_ROOT, 'tests')
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
 PY_TMP_DIR = os.path.join(TMP_DIR, 'python')
+CPP_TMP_DIR = os.path.join(TMP_DIR, 'cpp')
 
 access_mode = 0o744
 os.makedirs(TMP_DIR, access_mode, exist_ok=True)
@@ -157,6 +158,21 @@ DOCKER_CONF = {
         "container_name": "py-container",
         "path": os.path.join(SRC_DIR, 'langs', 'providers', 'python'),
         "dir": PY_TMP_DIR,
+        "user": "sandbox",
+        "max_zombie_procs": 500,    # макс. кол-во мертвых процессов, при котром нужно перезагружать контейнер
+        "timeout": 5,               # ограниечение на время выполнения скрипта в песочнице
+        "cpuset_cpus": cores_for_docker,  # cpus - номера ядер, занимаемые конейнером
+        'cpu_quota': -1,            # cpu-quota - максимум нагрузки на занимаемые ядра  (-1 это использование до 100%)
+        "cpu_shares": 512,          # cpu-shares - относительное количество циклов процессора (относительно 1024)
+        "mem_reservation": '256m',  # memory-reservation - мягкое ограничение на память
+        "mem_limit": '512m',        # memory - жесткое ограничение на память
+        "memswap_limit": '512m',    # memory-swap - Ограничение на файл подкачки
+    },
+    "cpp": {
+        "image_tag": "cpp-image",
+        "container_name": "py-container",
+        "path": os.path.join(SRC_DIR, 'langs', 'providers', 'cpp'),
+        "dir": CPP_TMP_DIR,
         "user": "sandbox",
         "max_zombie_procs": 500,    # макс. кол-во мертвых процессов, при котром нужно перезагружать контейнер
         "timeout": 5,               # ограниечение на время выполнения скрипта в песочнице
