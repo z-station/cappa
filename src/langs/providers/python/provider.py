@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
+
+from django.conf import settings
+
 from .utils import DebugFiles, TestsFiles
 from ..base import DockerProvider
 from src.tasks.models import Task
@@ -9,9 +12,7 @@ from src.utils.editor import clear_text
 
 class Provider(DockerProvider):
 
-    @property
-    def provider_name(self):
-        return 'python'
+    conf = settings.DOCKER_CONF['python']
 
     @classmethod
     def _process_error_msg(cls, msg: str):

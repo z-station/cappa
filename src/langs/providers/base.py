@@ -167,12 +167,8 @@ class DockerProvider(BaseProvider):
 
     @property
     @abstractmethod
-    def provider_name(self):
+    def conf(cls):
         pass
-
-    @property
-    def conf(self):
-        return settings.DOCKER_CONF[self.provider_name]
 
     @classmethod
     def _get_docker_image(cls):
