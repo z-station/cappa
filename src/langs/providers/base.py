@@ -1,6 +1,9 @@
-from math import frexp
+import docker
+import uuid
+from abc import abstractmethod
+from django.conf import settings
+from docker import errors
 from src.tasks.models import Task
-from src.utils import msg
 
 
 class BaseProvider(object):
@@ -118,8 +121,8 @@ class BaseProvider(object):
                         break
         return result
 
-    @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    @abstractmethod
+    def debug(self, input: str, content: str) -> dict:
 
         """
         return {
@@ -128,9 +131,9 @@ class BaseProvider(object):
         }
 
         """
-        raise NotImplementedError(msg.PROVIDER__01)
+        pass
 
-    @classmethod
+    @abstractmethod
     def check_tests(cls, content: str, task: Task) -> dict:
 
         """
@@ -154,5 +157,96 @@ class BaseProvider(object):
           }
 
         """
+        pass
 
-        raise NotImplementedError(msg.PROVIDER__02)
+
+class DockerProvider(BaseProvider):
+
+    prefix = settings.DOCKER_CONF['prefix']
+    client = docker.from_env()
+
+    @property
+    @abstractmethod
+    def provider_name(self):
+        pass
+
+    @property
+    def conf(self):
+        return settings.DOCKER_CONF[self.provider_name]
+
+    @classmethod
+    def _get_docker_image(cls):
+
+        """ Создает и возвращает docker-образ python песочницы """
+
+        image_tag = cls.prefix + cls.conf['image_tag']
+        try:
+            image = cls.client.images.get(name=image_tag)
+        except errors.ImageNotFound:
+            image, logs = cls.client.images.build(
+                path=cls.conf['path'],
+                tag=image_tag
+            )
+        return image
+
+    @classmethod
+    def _get_docker_container(cls):
+
+        """ Запускает и возвращает docker-контейнер python песочницы """
+
+        container_id = cls.prefix + cls.conf["container_name"]
+        try:
+            container = cls.client.containers.get(container_id=container_id)
+        except errors.NotFound:
+            image = cls._get_docker_image()
+            try:
+                container = cls.client.containers.run(
+                    image=image,
+                    name=container_id,
+                    detach=True, auto_remove=True,
+                    stdin_open=True, stdout=True, stderr=True,
+                    cpuset_cpus=cls.conf['cpuset_cpus'],
+                    cpu_quota=cls.conf['cpu_quota'],
+                    cpu_shares=cls.conf['cpu_shares'],
+                    mem_reservation=cls.conf['mem_reservation'],
+                    mem_limit=cls.conf['mem_limit'],
+                    memswap_limit=cls.conf['memswap_limit'],
+                    volumes={cls.conf['dir']: {'bind': f'/home/{cls.conf["user"]}/', 'mode': 'ro'}}
+                )
+            except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
+                container = cls.client.containers.get(container_id=container_id)
+        return container
+
+    @classmethod
+    def _stop_docker_container(cls):
+
+        """ Мягкая остановка контейнера
+
+            Перерменование и только затем остановка, необходимо для того чтобы
+            другие процессы не успевали подключиться к выключаемому контейнеру.
+            Вместо этого они будут инициировать старт нового контейнера.
+        """
+        container_id = cls.prefix + cls.conf["container_name"]
+        container = cls.client.containers.get(container_id=container_id)
+        container.rename(name=f'trash-{uuid.uuid1()}')
+        container.stop()
+
+    @classmethod
+    def _check_zombie_procs(cls):
+
+        """ Проверяет количество мертвых процессов в контейнере и если нужно останавливает его
+
+            Команда timeout контролирует время выполнения кода в песочнице, но
+            пораждает мертвые процессы в контейнере (возможно характерно только для linux Alpine),
+            которые можно убить только остановив контейнер.
+        """
+
+        container = cls._get_docker_container()
+        exit_code, result = container.exec_run(
+            cmd=f'bash -c "ps axu | grep -c timeout"',
+            stream=True, demux=True, user=cls.conf['user']
+        )
+        stdout, stderr = next(result)
+        count_zombie_procs = int(stdout.decode())
+        if count_zombie_procs > cls.conf['max_zombie_procs']:
+            cls._stop_docker_container()
