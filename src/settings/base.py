@@ -15,15 +15,12 @@ USE_TZ = True
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 SRC_DIR = os.path.join(PROJECT_ROOT, 'src')
 TESTS_DIR = os.path.join(PROJECT_ROOT, 'tests')
+PROVIDERS_DIR = os.path.join(SRC_DIR, 'langs', 'providers')
+TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp')
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
-PY_TMP_DIR = os.path.join(TMP_DIR, 'python')
-CPP_TMP_DIR = os.path.join(TMP_DIR, 'cpp')
 
-access_mode = 0o744
-os.makedirs(TMP_DIR, access_mode, exist_ok=True)
-os.makedirs(PY_TMP_DIR, access_mode, exist_ok=True)
-os.makedirs(MEDIA_ROOT, access_mode, exist_ok=True)
+os.makedirs(TMP_DIR, mode=0o744, exist_ok=True)
+os.makedirs(MEDIA_ROOT, mode=0o744, exist_ok=True)
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
@@ -145,42 +142,10 @@ ADMIN_REORDER = (
     {
         'app': 'news', 'label': u'Контент',
         'models': ('news.News', 'service.Menu')
-    },
+    }
 )
 
-# ~========== DOCKER SANDBOX ===========~
-# Половину от всех ядер отдаем песочнице
-cores_for_docker = ','.join([str(num) for num in range(os.cpu_count()//2)])
-DOCKER_CONF = {
-    "prefix": "prod-",  # префикс для имени контейнеров, чтобы разделять на одной машине
-    "python": {
-        "image_tag": "py-image",
-        "container_name": "py-container",
-        "path": os.path.join(SRC_DIR, 'langs', 'providers', 'python'),
-        "dir": PY_TMP_DIR,
-        "user": "sandbox",
-        "max_zombie_procs": 500,    # макс. кол-во мертвых процессов, при котром нужно перезагружать контейнер
-        "timeout": 5,               # ограниечение на время выполнения скрипта в песочнице
-        "cpuset_cpus": cores_for_docker,  # cpus - номера ядер, занимаемые конейнером
-        'cpu_quota': -1,            # cpu-quota - максимум нагрузки на занимаемые ядра  (-1 это использование до 100%)
-        "cpu_shares": 512,          # cpu-shares - относительное количество циклов процессора (относительно 1024)
-        "mem_reservation": '256m',  # memory-reservation - мягкое ограничение на память
-        "mem_limit": '512m',        # memory - жесткое ограничение на память
-        "memswap_limit": '512m',    # memory-swap - Ограничение на файл подкачки
-    },
-    "cpp": {
-        "image_tag": "cpp-image",
-        "container_name": "cpp-container",
-        "path": os.path.join(SRC_DIR, 'langs', 'providers', 'cpp'),
-        "dir": CPP_TMP_DIR,
-        "user": "sandbox",
-        "max_zombie_procs": 5,    # макс. кол-во мертвых процессов, при котром нужно перезагружать контейнер
-        "timeout": 5,               # ограниечение на время выполнения скрипта в песочнице
-        "cpuset_cpus": cores_for_docker,  # cpus - номера ядер, занимаемые конейнером
-        'cpu_quota': -1,            # cpu-quota - максимум нагрузки на занимаемые ядра  (-1 это использование до 100%)
-        "cpu_shares": 512,          # cpu-shares - относительное количество циклов процессора (относительно 1024)
-        "mem_reservation": '256m',  # memory-reservation - мягкое ограничение на память
-        "mem_limit": '512m',        # memory - жесткое ограничение на память
-        "memswap_limit": '512m',    # memory-swap - Ограничение на файл подкачки
-    }
-}
+# ~========== DOCKER ===========~
+# Выделяем половину всех ядер докеру
+CORES_FOR_DOCKER = ','.join([str(num) for num in range(os.cpu_count()//2)])
+DOCKER_PREFIX = 'prod'

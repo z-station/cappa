@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 import re
 
-from django.conf import settings
-
 from .utils import DebugFiles, TestsFiles
 from ..base import DockerProvider
 from src.tasks.models import Task
 from src.utils import msg as msg_utils
 from src.utils.editor import clear_text
+from src.langs.entity.docker import ContainerConf
 
 
 class Provider(DockerProvider):
 
-    conf = settings.DOCKER_CONF['python']
+    conf = ContainerConf(name='python')
 
     @classmethod
     def _process_error_msg(cls, msg: str):
@@ -43,11 +42,15 @@ class Provider(DockerProvider):
 
         """ Запускает код в docker-песочнице и возвращает результаты """
 
-        files = DebugFiles(data_in=clear_text(input), data_py=clear_text(content))
+        files = DebugFiles(
+            data_in=clear_text(input),
+            data_py=clear_text(content),
+            tmp_dir=cls.conf.tmp_files_dir
+        )
         container = cls._get_docker_container()
         exit_code, result = container.exec_run(
-            cmd=f'bash -c "timeout {cls.conf["timeout"]} python {files.filename_py} < {files.filename_in}"',
-            stream=True, demux=True, user=cls.conf['user']
+            cmd=f'bash -c "timeout {cls.conf.timeout} python {files.filename_py} < {files.filename_in}"',
+            stream=True, demux=True, user=cls.conf.user
         )
         try:
             stdout, stderr = next(result)
@@ -69,15 +72,18 @@ class Provider(DockerProvider):
 
         compare_method_name = f'_compare_{task.output_type}'
         compare_method = getattr(cls, compare_method_name)
-        files = TestsFiles(data_py=clear_text(content))
+        files = TestsFiles(
+            data_py=clear_text(content),
+            tmp_dir=cls.conf.tmp_files_dir
+        )
         container = cls._get_docker_container()
         tests_data = []
         tests_num_success = 0
         for test in task.tests:
             filename_in = files.create_file_in(data_in=clear_text(test['input']))
             exit_code, result = container.exec_run(
-                cmd=f'bash -c "timeout {cls.conf["timeout"]} python {files.filename_py} < {filename_in}"',
-                stream=True, demux=True, user=cls.conf['user']
+                cmd=f'bash -c "timeout {cls.conf.timeout} python {files.filename_py} < {filename_in}"',
+                stream=True, demux=True, user=cls.conf.user
             )
             try:
                 stdout, stderr = next(result)

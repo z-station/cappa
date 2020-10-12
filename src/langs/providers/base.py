@@ -1,9 +1,9 @@
 import docker
 import uuid
 from abc import abstractmethod
-from django.conf import settings
 from docker import errors
 from src.tasks.models import Task
+from src.langs.entity.docker import ContainerConf
 
 
 class BaseProvider(object):
@@ -162,30 +162,20 @@ class BaseProvider(object):
 
 class DockerProvider(BaseProvider):
 
-    prefix = settings.DOCKER_CONF['prefix']
     client = docker.from_env()
-
-    @property
-    @abstractmethod
-    def conf(cls):
-        pass
-
-    @classmethod
-    def get_container_id(cls):
-        return cls.prefix + cls.conf["container_name"]
+    conf: ContainerConf
 
     @classmethod
     def _get_docker_image(cls):
 
         """ Создает и возвращает docker-образ python песочницы """
 
-        image_tag = cls.prefix + cls.conf['image_tag']
         try:
-            image = cls.client.images.get(name=image_tag)
+            image = cls.client.images.get(name=cls.conf.image_tag)
         except errors.ImageNotFound:
             image, logs = cls.client.images.build(
-                path=cls.conf['path'],
-                tag=image_tag
+                path=cls.conf.dockerfile_dir,
+                tag=cls.conf.image_tag
             )
         return image
 
@@ -195,19 +185,19 @@ class DockerProvider(BaseProvider):
         try:
             container = cls.client.containers.run(
                 image=image,
-                name=cls.get_container_id(),
+                name=cls.conf.container_name,
                 detach=True, auto_remove=True,
                 stdin_open=True, stdout=True, stderr=True,
-                cpuset_cpus=cls.conf['cpuset_cpus'],
-                cpu_quota=cls.conf['cpu_quota'],
-                cpu_shares=cls.conf['cpu_shares'],
-                mem_reservation=cls.conf['mem_reservation'],
-                mem_limit=cls.conf['mem_limit'],
-                memswap_limit=cls.conf['memswap_limit'],
-                volumes={cls.conf['dir']: {'bind': f'/home/{cls.conf["user"]}/', 'mode': 'ro'}}
+                cpuset_cpus=cls.conf.cpuset_cpus,
+                cpu_quota=cls.conf.cpu_quota,
+                cpu_shares=cls.conf.cpu_shares,
+                mem_reservation=cls.conf.mem_reservation,
+                mem_limit=cls.conf.mem_limit,
+                memswap_limit=cls.conf.memswap_limit,
+                volumes={cls.conf.tmp_files_dir: {'bind': f'/home/{cls.conf.user}/', 'mode': 'ro'}}
             )
         except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
-            container = cls.client.containers.get(container_id=cls.get_container_id())
+            container = cls.client.containers.get(container_id=cls.conf.container_name)
         finally:
             cls._remove_trash_containers()
         return container
@@ -218,7 +208,7 @@ class DockerProvider(BaseProvider):
         """ Запускает и возвращает docker-контейнер python песочницы """
 
         try:
-            container = cls.client.containers.get(cls.get_container_id())
+            container = cls.client.containers.get(cls.conf.container_name)
         except errors.NotFound:
             container = cls._create_docker_container()
         return container
@@ -236,7 +226,7 @@ class DockerProvider(BaseProvider):
             другие процессы не успевали подключиться к выключаемому контейнеру.
             Вместо этого они будут инициировать старт нового контейнера.
         """
-        container = cls.client.containers.get(container_id=cls.get_container_id())
+        container = cls.client.containers.get(container_id=cls.conf.container_name)
         container.rename(name=f'trash-{uuid.uuid1()}')
         container.stop()
 
@@ -253,7 +243,7 @@ class DockerProvider(BaseProvider):
         container = cls._get_docker_container()
         exit_code, result = container.exec_run(
             cmd=f'bash -c "ps axu | grep -c timeout"',
-            stream=True, demux=True, user=cls.conf['user']
+            stream=True, demux=True, user=cls.conf.user
         )
         try:
             stdout, stderr = next(result)
@@ -263,5 +253,5 @@ class DockerProvider(BaseProvider):
         else:
             count_zombie_procs = stdout.decode().strip()
             if (count_zombie_procs.isdigit() and
-                    int(count_zombie_procs) > cls.conf['max_zombie_procs']):
+                    int(count_zombie_procs) > cls.conf.max_zombie_procs):
                 cls._stop_docker_container()

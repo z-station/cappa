@@ -5,12 +5,12 @@ from django.conf import settings
 
 class DebugFiles:
 
-    def __init__(self, data_in: str, data_cpp: str):
+    def __init__(self, data_in: str, data_cpp: str, tmp_dir: str):
         _uuid = uuid.uuid4()
         self.filename_cpp = f'{_uuid}.cpp'
         self.filename_in = f'{_uuid}.in'
-        self.path_cpp = os.path.join(settings.CPP_TMP_DIR, self.filename_cpp)
-        self.path_in = os.path.join(settings.CPP_TMP_DIR, self.filename_in)
+        self.path_cpp = os.path.join(tmp_dir, self.filename_cpp)
+        self.path_in = os.path.join(tmp_dir, self.filename_in)
         self.path_out = f'/tmp/{_uuid}.out'
 
         with open(self.path_cpp, 'w') as file_cpp, \
@@ -25,10 +25,11 @@ class DebugFiles:
 
 class TestsFiles:
 
-    def __init__(self, data_cpp: str):
+    def __init__(self, data_cpp: str, tmp_dir: str):
+        self.tmp_dir = tmp_dir
         self._uuid = uuid.uuid4()
         self.filename_cpp = f'{self._uuid}.cpp'
-        self.path_cpp = os.path.join(settings.CPP_TMP_DIR, self.filename_cpp)
+        self.path_cpp = os.path.join(self.tmp_dir, self.filename_cpp)
         self.paths_in = []
 
         with open(self.path_cpp, 'w') as file_cpp:
@@ -36,7 +37,7 @@ class TestsFiles:
 
     def create_file_in(self, data_in: str):
         filename = f'{self._uuid}-{len(self.paths_in)}.in'
-        path = os.path.join(settings.CPP_TMP_DIR, filename)
+        path = os.path.join(self.tmp_dir, filename)
         with open(path, 'w') as file:
             file.write(data_in)
         self.paths_in.append(path)
@@ -44,6 +45,5 @@ class TestsFiles:
 
     def remove(self):
         os.remove(self.path_cpp)
-        os.remove(self.path_out)
         while self.paths_in:
             os.remove(self.paths_in.pop())

@@ -2,17 +2,16 @@
 import re
 import time
 
-from django.conf import settings
-
 from .utils import DebugFiles
 from ..base import DockerProvider
 from src.tasks.models import Task
 from src.utils.editor import clear_text
+from src.langs.entity.docker import ContainerConf
 
 
 class Provider(DockerProvider):
 
-    conf = settings.DOCKER_CONF['cpp']
+    conf = ContainerConf(name='cpp')
 
     @classmethod
     def _get_decoded(cls, stdout: bytes, stderr: bytes) -> tuple:
@@ -32,25 +31,25 @@ class Provider(DockerProvider):
             error = ''
         else:
             error = stderr
-        # error = re.sub(pattern='.*.out:', repl="", string=error)
+        error = re.sub(pattern='.*.out:', repl="", string=error)
         return output, error
 
     @classmethod
     def debug(cls, input: str, content: str) -> dict:
-        files = DebugFiles(data_in=clear_text(input), data_cpp=clear_text(content))
+        files = DebugFiles(
+            data_in=clear_text(input),
+            data_cpp=clear_text(content),
+            tmp_dir=cls.conf.tmp_files_dir
+        )
         container = cls._get_docker_container()
-        command = f'bash -c "timeout {cls.conf["timeout"]} c++ {files.filename_cpp} -o {files.path_out}"'
-        print(command)
         exit_code, _ = container.exec_run(
-            cmd=command,
-            user=cls.conf['user'], stream=True, demux=True
+            cmd=f'bash -c "timeout {cls.conf.timeout} c++ {files.filename_cpp} -o {files.path_out}"',
+            user=cls.conf.user, stream=True, demux=True
         )
         time.sleep(1)
-        command = f'bash -c "timeout {cls.conf["timeout"]} {files.path_out} < {files.filename_in}"'
-        print(command)
         exit_code, result = container.exec_run(
-            cmd=command,
-            user=cls.conf['user'], stream=True, demux=True
+            cmd=f'bash -c "timeout {cls.conf.timeout} {files.path_out} < {files.filename_in}"',
+            user=cls.conf.user, stream=True, demux=True
         )
         try:
             stdout, stderr = next(result)
@@ -61,7 +60,7 @@ class Provider(DockerProvider):
         finally:
             exit_code, _ = container.exec_run(
                 cmd=f'bash -c "rm {files.path_out}"',
-                user=cls.conf['user'], stream=True, demux=True
+                user=cls.conf.user, stream=True, demux=True
             )
             files.remove()
         cls._check_zombie_procs()
