@@ -171,6 +171,10 @@ class DockerProvider(BaseProvider):
         pass
 
     @classmethod
+    def get_container_id(cls):
+        return cls.prefix + cls.conf["container_name"]
+
+    @classmethod
     def _get_docker_image(cls):
 
         """ Создает и возвращает docker-образ python песочницы """
@@ -186,32 +190,42 @@ class DockerProvider(BaseProvider):
         return image
 
     @classmethod
+    def _create_docker_container(cls):
+        image = cls._get_docker_image()
+        try:
+            container = cls.client.containers.run(
+                image=image,
+                name=cls.get_container_id(),
+                detach=True, auto_remove=True,
+                stdin_open=True, stdout=True, stderr=True,
+                cpuset_cpus=cls.conf['cpuset_cpus'],
+                cpu_quota=cls.conf['cpu_quota'],
+                cpu_shares=cls.conf['cpu_shares'],
+                mem_reservation=cls.conf['mem_reservation'],
+                mem_limit=cls.conf['mem_limit'],
+                memswap_limit=cls.conf['memswap_limit'],
+                volumes={cls.conf['dir']: {'bind': f'/home/{cls.conf["user"]}/', 'mode': 'ro'}}
+            )
+        except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
+            container = cls.client.containers.get(container_id=cls.get_container_id())
+        finally:
+            cls._remove_trash_containers()
+        return container
+
+    @classmethod
     def _get_docker_container(cls):
 
         """ Запускает и возвращает docker-контейнер python песочницы """
 
-        container_id = cls.prefix + cls.conf["container_name"]
         try:
-            container = cls.client.containers.get(container_id=container_id)
+            container = cls.client.containers.get(cls.get_container_id())
         except errors.NotFound:
-            image = cls._get_docker_image()
-            try:
-                container = cls.client.containers.run(
-                    image=image,
-                    name=container_id,
-                    detach=True, auto_remove=True,
-                    stdin_open=True, stdout=True, stderr=True,
-                    cpuset_cpus=cls.conf['cpuset_cpus'],
-                    cpu_quota=cls.conf['cpu_quota'],
-                    cpu_shares=cls.conf['cpu_shares'],
-                    mem_reservation=cls.conf['mem_reservation'],
-                    mem_limit=cls.conf['mem_limit'],
-                    memswap_limit=cls.conf['memswap_limit'],
-                    volumes={cls.conf['dir']: {'bind': f'/home/{cls.conf["user"]}/', 'mode': 'ro'}}
-                )
-            except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
-                container = cls.client.containers.get(container_id=container_id)
+            container = cls._create_docker_container()
         return container
+
+    @classmethod
+    def _remove_trash_containers(cls):
+        pass
 
     @classmethod
     def _stop_docker_container(cls):
@@ -222,8 +236,7 @@ class DockerProvider(BaseProvider):
             другие процессы не успевали подключиться к выключаемому контейнеру.
             Вместо этого они будут инициировать старт нового контейнера.
         """
-        container_id = cls.prefix + cls.conf["container_name"]
-        container = cls.client.containers.get(container_id=container_id)
+        container = cls.client.containers.get(container_id=cls.get_container_id())
         container.rename(name=f'trash-{uuid.uuid1()}')
         container.stop()
 
@@ -234,7 +247,7 @@ class DockerProvider(BaseProvider):
 
             Команда timeout контролирует время выполнения кода в песочнице, но
             пораждает мертвые процессы в контейнере (возможно характерно только для linux Alpine),
-            которые можно убить только остановив контейнер.
+            которые можно убить только перезапустив контейнер
         """
 
         container = cls._get_docker_container()
@@ -245,8 +258,10 @@ class DockerProvider(BaseProvider):
         try:
             stdout, stderr = next(result)
         except StopIteration:
-            output, error = '', ''
+            pass
+            # Контейнер еще не успел запуститься - проверять нечего
         else:
-            count_zombie_procs = int(stdout.decode())
-        if count_zombie_procs > cls.conf['max_zombie_procs']:
-            cls._stop_docker_container()
+            count_zombie_procs = stdout.decode().strip()
+            if (count_zombie_procs.isdigit() and
+                    int(count_zombie_procs) > cls.conf['max_zombie_procs']):
+                cls._stop_docker_container()

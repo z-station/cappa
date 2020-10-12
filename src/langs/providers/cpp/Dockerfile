@@ -1,7 +1,7 @@
-FROM frolvlad/alpine-gcc
-RUN apk add --no-cache bash
-RUN apk add --no-cache g++
-RUN addgroup -S sandbox
-RUN adduser --disabled-password -G sandbox sandbox
+FROM python:3.8-alpine
+RUN apk --update add --no-cache bash nano g++ build-base bash libstdc++ \
+    && rm -rf /var/cache/apk/* \
+    && addgroup -S sandbox \
+    && adduser --disabled-password -G sandbox sandbox
 USER sandbox
 WORKDIR /home/sandbox/

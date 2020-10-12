@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import time
 
 from django.conf import settings
 
@@ -31,23 +32,24 @@ class Provider(DockerProvider):
             error = ''
         else:
             error = stderr
-        error = re.sub(pattern='.*.out:', repl="", string=error)
+        # error = re.sub(pattern='.*.out:', repl="", string=error)
         return output, error
 
     @classmethod
     def debug(cls, input: str, content: str) -> dict:
         files = DebugFiles(data_in=clear_text(input), data_cpp=clear_text(content))
         container = cls._get_docker_container()
+        command = f'bash -c "timeout {cls.conf["timeout"]} c++ {files.filename_cpp} -o {files.path_out}"'
+        print(command)
         exit_code, _ = container.exec_run(
-            cmd=f'bash -c "cpp {files.filename_cpp} -o {files.path_out}"',
+            cmd=command,
             user=cls.conf['user'], stream=True, demux=True
         )
-        exit_code, _ = container.exec_run(
-            cmd=f'bash -c "chmod 777 {files.path_out}"',
-            user=cls.conf['user'], stream=True, demux=True
-        )
+        time.sleep(1)
+        command = f'bash -c "timeout {cls.conf["timeout"]} {files.path_out} < {files.filename_in}"'
+        print(command)
         exit_code, result = container.exec_run(
-            cmd=f'bash -c "{files.path_out} < {files.filename_in}"',
+            cmd=command,
             user=cls.conf['user'], stream=True, demux=True
         )
         try:
@@ -57,13 +59,12 @@ class Provider(DockerProvider):
         else:
             output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
         finally:
-            files.remove()
             exit_code, _ = container.exec_run(
                 cmd=f'bash -c "rm {files.path_out}"',
                 user=cls.conf['user'], stream=True, demux=True
             )
-        # TODO не работает
-        # cls._check_zombie_procs()
+            files.remove()
+        cls._check_zombie_procs()
         return {
             'output': output,
             'error': error,
