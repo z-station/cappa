@@ -18,41 +18,55 @@ class Provider(DockerProvider):
 
         """ Преобразует bytes (вывод компилятора) в unicode, удаляет лишние смиволы из вывода """
 
-        output = stdout.decode()
-        error = re.sub(r'.*.cpp:', "", stderr.decode()) if stderr else ''
+        if isinstance(stdout, bytes):
+            output = stdout.decode()
+        elif stdout is None:
+            output = ''
+        else:
+            output = stdout
+
+        if isinstance(stderr, bytes):
+            error = stderr.decode()
+        elif stderr is None:
+            error = ''
+        else:
+            error = stderr
+        error = re.sub(pattern='.*.out:', repl="", string=error)
         return output, error
 
     @classmethod
     def debug(cls, input: str, content: str) -> dict:
         files = DebugFiles(data_in=clear_text(input), data_cpp=clear_text(content))
         container = cls._get_docker_container()
-        exit_code, result = container.exec_run(
-            cmd=f'bash -c "timeout {cls.conf["timeout"]} c++ {files.filename_cpp} -o {files.filename_out} < {files.filename_in}"',
-            stream=True, demux=True, user=cls.conf['user']
+        exit_code, _ = container.exec_run(
+            cmd=f'bash -c "cpp {files.filename_cpp} -o {files.path_out}"',
+            user=cls.conf['user'], stream=True, demux=True
         )
-        print('===', exit_code, result)
-        #
-        # if not error:
-        #     p2 = subprocess.Popen(
-        #         args=[tmp.file_out_dir],
-        #         stdin=subprocess.PIPE,
-        #         stdout=subprocess.PIPE,
-        #         stderr=subprocess.PIPE,
-        #         cwd=settings.TMP_DIR,
-        #     )
-        #     try:
-        #         stdout, stderr = p2.communicate(input=stdin)
-        #         output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
-        #     except subprocess.TimeoutExpired:
-        #         output, error = '', msg.CPP__02
-        #     finally:
-        #         p2.kill()
-        #
-        # tmp.remove_file_cpp()
-        # tmp.remove_file_out()
+        exit_code, _ = container.exec_run(
+            cmd=f'bash -c "chmod 777 {files.path_out}"',
+            user=cls.conf['user'], stream=True, demux=True
+        )
+        exit_code, result = container.exec_run(
+            cmd=f'bash -c "{files.path_out} < {files.filename_in}"',
+            user=cls.conf['user'], stream=True, demux=True
+        )
+        try:
+            stdout, stderr = next(result)
+        except StopIteration:
+            output, error = '', ''
+        else:
+            output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
+        finally:
+            files.remove()
+            exit_code, _ = container.exec_run(
+                cmd=f'bash -c "rm {files.path_out}"',
+                user=cls.conf['user'], stream=True, demux=True
+            )
+        # TODO не работает
+        # cls._check_zombie_procs()
         return {
-            'output': 'output',
-            'error': 'error',
+            'output': output,
+            'error': error,
         }
 
     @classmethod

@@ -170,7 +170,7 @@ DOCKER_CONF = {
     },
     "cpp": {
         "image_tag": "cpp-image",
-        "container_name": "py-container",
+        "container_name": "cpp-container",
         "path": os.path.join(SRC_DIR, 'langs', 'providers', 'cpp'),
         "dir": CPP_TMP_DIR,
         "user": "sandbox",

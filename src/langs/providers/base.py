@@ -242,7 +242,11 @@ class DockerProvider(BaseProvider):
             cmd=f'bash -c "ps axu | grep -c timeout"',
             stream=True, demux=True, user=cls.conf['user']
         )
-        stdout, stderr = next(result)
-        count_zombie_procs = int(stdout.decode())
+        try:
+            stdout, stderr = next(result)
+        except StopIteration:
+            output, error = '', ''
+        else:
+            count_zombie_procs = int(stdout.decode())
         if count_zombie_procs > cls.conf['max_zombie_procs']:
             cls._stop_docker_container()

@@ -8,11 +8,10 @@ class DebugFiles:
     def __init__(self, data_in: str, data_cpp: str):
         _uuid = uuid.uuid4()
         self.filename_cpp = f'{_uuid}.cpp'
-        self.filename_out = f'{_uuid}.out'
         self.filename_in = f'{_uuid}.in'
         self.path_cpp = os.path.join(settings.CPP_TMP_DIR, self.filename_cpp)
-        self.path_out = os.path.join(settings.CPP_TMP_DIR, self.filename_out)
         self.path_in = os.path.join(settings.CPP_TMP_DIR, self.filename_in)
+        self.path_out = f'/tmp/{_uuid}.out'
 
         with open(self.path_cpp, 'w') as file_cpp, \
                 open(self.path_in, 'w') as file_in:
@@ -21,7 +20,6 @@ class DebugFiles:
 
     def remove(self):
         os.remove(self.path_cpp)
-        os.remove(self.path_out)
         os.remove(self.path_in)
 
 
