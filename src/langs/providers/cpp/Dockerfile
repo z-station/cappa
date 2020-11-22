@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM gcc:7.5
 
 RUN apt-get update && \
     apt-get install nano && \

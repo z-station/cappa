@@ -1,6 +1,9 @@
-from math import frexp
+from typing import Optional
+import docker
+from abc import abstractmethod
+from docker import errors
 from src.tasks.models import Task
-from src.utils import msg
+from src.langs.entity.docker import ContainerConf
 
 
 class BaseProvider(object):
@@ -118,8 +121,8 @@ class BaseProvider(object):
                         break
         return result
 
-    @classmethod
-    def debug(cls, input: str, content: str) -> dict:
+    @abstractmethod
+    def debug(self, input: str, content: str) -> dict:
 
         """
         return {
@@ -128,9 +131,9 @@ class BaseProvider(object):
         }
 
         """
-        raise NotImplementedError(msg.PROVIDER__01)
+        pass
 
-    @classmethod
+    @abstractmethod
     def check_tests(cls, content: str, task: Task) -> dict:
 
         """
@@ -154,5 +157,60 @@ class BaseProvider(object):
           }
 
         """
+        pass
 
-        raise NotImplementedError(msg.PROVIDER__02)
+
+class DockerProvider(BaseProvider):
+
+    client = docker.from_env()
+    conf: ContainerConf
+
+    @classmethod
+    def _get_docker_image(cls):
+
+        """ Создает и возвращает docker-образ python песочницы """
+
+        try:
+            image = cls.client.images.get(name=cls.conf.image_tag)
+        except errors.ImageNotFound:
+            image, logs = cls.client.images.build(
+                path=cls.conf.dockerfile_dir,
+                tag=cls.conf.image_tag
+            )
+        return image
+
+    @classmethod
+    def _create_docker_container(cls, name: Optional[str] = None):
+        image = cls._get_docker_image()
+        try:
+            container = cls.client.containers.run(
+                image=image,
+                name=name or cls.conf.container_name,
+                detach=True, auto_remove=True,
+                stdin_open=True, stdout=True, stderr=True,
+                cpuset_cpus=cls.conf.cpuset_cpus,
+                cpu_quota=cls.conf.cpu_quota,
+                cpu_shares=cls.conf.cpu_shares,
+                mem_reservation=cls.conf.mem_reservation,
+                mem_limit=cls.conf.mem_limit,
+                memswap_limit=cls.conf.memswap_limit,
+                volumes={cls.conf.tmp_files_dir: {'bind': f'/{cls.conf.user}/', 'mode': 'ro'}}
+            )
+        except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
+            container = cls.client.containers.get(container_id=cls.conf.container_name)
+        else:
+            cls.client.containers.prune()
+        return container
+
+    @classmethod
+    def _get_docker_container(cls):
+
+        """ Возвращает активный контейнер или создает новый """
+
+        try:
+            container = cls.client.containers.get(cls.conf.container_name)
+        except errors.NotFound:
+            container = cls._create_docker_container()
+        return container
+
+
