@@ -86,7 +86,6 @@ class Provider(DockerProvider):
                 user=cls.conf.user, stream=True, demux=True
             )
             files.remove()
-            cls._check_zombie_procs()
         return {
             'output': output,
             'error': error,
@@ -169,5 +168,4 @@ class Provider(DockerProvider):
                 user=cls.conf.user, stream=True, demux=True
             )
             files.remove()
-            cls._check_zombie_procs()
         return result

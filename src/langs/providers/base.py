@@ -213,43 +213,4 @@ class DockerProvider(BaseProvider):
             container = cls._create_docker_container()
         return container
 
-    @classmethod
-    def _restart_docker_container(cls):
 
-        """ Мягкая перезагрузка контейнера """
-
-        try:
-            container = cls.client.containers.get(container_id=cls.conf.container_name)
-        except errors.NotFound:
-            cls._create_docker_container()
-        else:
-            new_container = cls._create_docker_container(name=f"{cls.conf.container_name}-new")
-            container.rename(f"{cls.conf.container_name}-old")
-            new_container.rename(cls.conf.container_name)
-            container.stop()
-
-    @classmethod
-    def _check_zombie_procs(cls):
-
-        """ Проверяет количество мертвых процессов в контейнере и если нужно останавливает его
-
-            Команда timeout контролирует время выполнения кода в песочнице, но
-            пораждает мертвые процессы в контейнере (возможно характерно только для linux Alpine),
-            которые можно убить только перезапустив контейнер
-        """
-
-        container = cls._get_docker_container()
-        exit_code, result = container.exec_run(
-            cmd=f'bash -c "ps axu | grep -c timeout"',
-            stream=True, demux=True, user=cls.conf.user
-        )
-        try:
-            stdout, stderr = next(result)
-        except StopIteration:
-            pass
-            # Контейнер еще не успел запуститься - проверять нечего
-        else:
-            count_zombie_procs = stdout.decode().strip()
-            if (count_zombie_procs.isdigit() and
-                    int(count_zombie_procs) > cls.conf.max_zombie_procs):
-                cls._restart_docker_container()

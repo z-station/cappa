@@ -61,7 +61,6 @@ class Provider(DockerProvider):
         else:
             output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
         files.remove()
-        cls._check_zombie_procs()
         return {
             'output': output,
             'error': error
@@ -111,7 +110,6 @@ class Provider(DockerProvider):
         files.remove()
 
         tests_num = len(task.tests)
-        cls._check_zombie_procs()
         return {
             'num': tests_num,
             'num_success': tests_num_success,
