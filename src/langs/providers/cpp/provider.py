@@ -5,6 +5,7 @@ import time
 from .utils import DebugFiles, TestsFiles
 from ..base import DockerProvider
 from src.tasks.models import Task
+from src.utils import msg as msg_utils
 from src.utils.editor import clear_text
 from src.langs.entity.docker import ContainerConf
 
@@ -14,9 +15,23 @@ class Provider(DockerProvider):
     conf = ContainerConf(name='cpp')
 
     @classmethod
+    def _process_error_msg(cls, msg: str):
+
+        """ Обработка текста сообщения об ошибке """
+
+        result = clear_text(
+            re.sub(pattern='.*.[out|cpp]{1}:', repl="", string=msg)
+        )
+        if 'Terminated' in result:
+            result = msg_utils.CPP__02
+        if 'Read-only file system' in result:
+            result = msg_utils.CPP__01
+        return result
+
+    @classmethod
     def _get_decoded(cls, stdout: bytes, stderr: bytes) -> tuple:
 
-        """ Преобразует bytes (вывод компилятора) в unicode, удаляет лишние смиволы из вывода """
+        """ Преобразует bytes (вывод компилятора) в unicode, удаляет лишние символы из вывода """
 
         if isinstance(stdout, bytes):
             output = stdout.decode()
@@ -31,7 +46,7 @@ class Provider(DockerProvider):
             error = ''
         else:
             error = stderr
-        error = re.sub(pattern='.*.[out|cpp]{1}:', repl="", string=error)
+        error = cls._process_error_msg(msg=error)
         return output, error
 
     @classmethod

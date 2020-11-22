@@ -2,7 +2,6 @@
 from django.test import TestCase
 from src.langs.models import Lang
 from src.tasks.models import Task
-from src.training.models.taskitem import Solution
 from src.utils.db import load_dump, remove_db_objects
 from src.utils.consts import langs
 

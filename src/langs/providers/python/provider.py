@@ -18,7 +18,9 @@ class Provider(DockerProvider):
 
         """ Обработка текста сообщения об ошибке """
 
-        result = clear_text(re.sub(r'\s*File.+.py",', "", msg))
+        result = clear_text(
+            re.sub(pattern=r'\s*File.+.py",',  repl="", string=msg)
+        )
         if 'Terminated' in result:
             result = msg_utils.PYTHON__02
         if 'Read-only file system' in result:
@@ -28,7 +30,7 @@ class Provider(DockerProvider):
     @classmethod
     def _get_decoded(cls, stdout: bytes, stderr: bytes) -> tuple:
 
-        """ Преобразует bytes (вывод интерпретатора) в unicode, удаляет лишние смиволы из вывода """
+        """ Преобразует bytes (вывод интерпретатора) в unicode, удаляет лишние символы из вывода """
 
         output = '' if stdout is None else stdout.decode()
         if stderr is None:
