@@ -26,6 +26,8 @@ class Provider(DockerProvider):
             result = msg_utils.CPP__02
         if 'Read-only file system' in result:
             result = msg_utils.CPP__01
+        if 'the monitored command dumped core' in result:
+            result = msg_utils.CPP__03
         return result
 
     @classmethod

@@ -194,10 +194,12 @@ class DockerProvider(BaseProvider):
                 mem_reservation=cls.conf.mem_reservation,
                 mem_limit=cls.conf.mem_limit,
                 memswap_limit=cls.conf.memswap_limit,
-                volumes={cls.conf.tmp_files_dir: {'bind': f'/home/{cls.conf.user}/', 'mode': 'ro'}}
+                volumes={cls.conf.tmp_files_dir: {'bind': f'/{cls.conf.user}/', 'mode': 'ro'}}
             )
         except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
             container = cls.client.containers.get(container_id=cls.conf.container_name)
+        else:
+            cls.client.containers.prune()
         return container
 
     @classmethod
@@ -225,10 +227,6 @@ class DockerProvider(BaseProvider):
             container.rename(f"{cls.conf.container_name}-old")
             new_container.rename(cls.conf.container_name)
             container.stop()
-            try:
-                container.remove()
-            except:
-                pass
 
     @classmethod
     def _check_zombie_procs(cls):
