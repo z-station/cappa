@@ -11,6 +11,8 @@ class DebugFiles:
         self.filename_in = f'{_uuid}.in'
         self.path_cpp = os.path.join(tmp_dir, self.filename_cpp)
         self.path_in = os.path.join(tmp_dir, self.filename_in)
+        # Нет прав создани файлов в директории монтирования
+        # Генерируемый .out файл нужно разместить в другой директории
         self.path_out = f'/tmp/{_uuid}.out'
 
         with open(self.path_cpp, 'w') as file_cpp, \
@@ -29,7 +31,9 @@ class TestsFiles:
         self.tmp_dir = tmp_dir
         self._uuid = uuid.uuid4()
         self.filename_cpp = f'{self._uuid}.cpp'
+        self.filename_out = f'{self._uuid}.out'
         self.path_cpp = os.path.join(self.tmp_dir, self.filename_cpp)
+        self.path_out = f'/tmp/{self.filename_out}'
         self.paths_in = []
 
         with open(self.path_cpp, 'w') as file_cpp:

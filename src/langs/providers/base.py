@@ -1,5 +1,5 @@
+from typing import Optional
 import docker
-import uuid
 from abc import abstractmethod
 from docker import errors
 from src.tasks.models import Task
@@ -180,12 +180,12 @@ class DockerProvider(BaseProvider):
         return image
 
     @classmethod
-    def _create_docker_container(cls):
+    def _create_docker_container(cls, name: Optional[str] = None):
         image = cls._get_docker_image()
         try:
             container = cls.client.containers.run(
                 image=image,
-                name=cls.conf.container_name,
+                name=name or cls.conf.container_name,
                 detach=True, auto_remove=True,
                 stdin_open=True, stdout=True, stderr=True,
                 cpuset_cpus=cls.conf.cpuset_cpus,
@@ -198,14 +198,12 @@ class DockerProvider(BaseProvider):
             )
         except errors.APIError:  # На случай если другой процесс создал контейнер быстрее
             container = cls.client.containers.get(container_id=cls.conf.container_name)
-        finally:
-            cls._remove_trash_containers()
         return container
 
     @classmethod
     def _get_docker_container(cls):
 
-        """ Запускает и возвращает docker-контейнер python песочницы """
+        """ Возвращает активный контейнер или создает новый """
 
         try:
             container = cls.client.containers.get(cls.conf.container_name)
@@ -214,21 +212,23 @@ class DockerProvider(BaseProvider):
         return container
 
     @classmethod
-    def _remove_trash_containers(cls):
-        pass
+    def _restart_docker_container(cls):
 
-    @classmethod
-    def _stop_docker_container(cls):
+        """ Мягкая перезагрузка контейнера """
 
-        """ Мягкая остановка контейнера
-
-            Перерменование и только затем остановка, необходимо для того чтобы
-            другие процессы не успевали подключиться к выключаемому контейнеру.
-            Вместо этого они будут инициировать старт нового контейнера.
-        """
-        container = cls.client.containers.get(container_id=cls.conf.container_name)
-        container.rename(name=f'trash-{uuid.uuid1()}')
-        container.stop()
+        try:
+            container = cls.client.containers.get(container_id=cls.conf.container_name)
+        except errors.NotFound:
+            cls._create_docker_container()
+        else:
+            new_container = cls._create_docker_container(name=f"{cls.conf.container_name}-new")
+            container.rename(f"{cls.conf.container_name}-old")
+            new_container.rename(cls.conf.container_name)
+            container.stop()
+            try:
+                container.remove()
+            except:
+                pass
 
     @classmethod
     def _check_zombie_procs(cls):
@@ -254,4 +254,4 @@ class DockerProvider(BaseProvider):
             count_zombie_procs = stdout.decode().strip()
             if (count_zombie_procs.isdigit() and
                     int(count_zombie_procs) > cls.conf.max_zombie_procs):
-                cls._stop_docker_container()
+                cls._restart_docker_container()
