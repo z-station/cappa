@@ -8,4 +8,4 @@
     force=yes
     update=yes
     refspec='+refs/heads/{{ git_branch }}:refs/remotes/origin/{{ git_branch }}'
-    key_file=/ansible/.ssh/id_rsa_cappa_deployment_key
+    key_file=/home/ansible/.ssh/id_rsa_cappa_deployment_key
