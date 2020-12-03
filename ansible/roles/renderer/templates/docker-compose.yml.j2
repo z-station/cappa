@@ -1,0 +1,68 @@
+version: "3.3"
+
+services:
+  cappa-db-{{ env }}:
+    build: postgresql
+    container_name: cappa-db-{{ env }}
+    image: cappa-db-{{ env }}
+    networks:
+      - cappa-backend-{{ env }}
+    volumes:
+      - ../db-data-{{ env }}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: {{ db_user }}
+      POSTGRES_PASSWORD: {{ db_password }}
+      POSTGRES_DB: {{ db_name }}
+    restart: always
+
+  cappa-app-{{ env }}:
+    build:
+      context: ..
+      dockerfile: ./docker/app/Dockerfile
+    container_name: cappa-app-{{ env }}
+    image: cappa-app-{{ env }}
+    networks:
+      - cappa-backend-{{ env }}
+      - cappa-nginx-{{ env }}
+    volumes:
+      - cappa-public-{{ env }}:/app/public
+    depends_on:
+      - cappa-db-{{ env }}
+    environment:
+      POSTGRES_USER: {{ db_user }}
+      POSTGRES_PASSWORD: {{ db_password }}
+      POSTGRES_DB: {{ db_name }}
+      POSTGRES_HOST: cappa-db-{{ env }}
+      APP_DOMAIN: {{ nginx_domain }}
+      GUNICORN_WORKERS: {{ gunicorn_workers }}
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", cappa-db-{{ env }}]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cappa-nginx-{{ env }}:
+    build:
+      context: ..
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: cappa-nginx-{{ env }}
+    image: cappa-nginx-{{ env }}
+    volumes:
+      - cappa-public-{{ env }}:/app/public
+    depends_on:
+      - cappa-app-{{ env }}
+    networks:
+      - cappa-proxy-{{ env }}
+    ports:
+      - "{{ nginx_public_port }}:{{ nginx_public_port }}"
+    expose:
+      - "{{ nginx_public_port }}"
+    restart: always
+
+networks:
+  cappa-proxy-{{ env }}:
+  cappa-backend-{{ env }}:
+
+volumes:
+  cappa-public-{{ env }}:

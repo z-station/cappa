@@ -1,0 +1,25 @@
+- name: docker-compose soft reload db and nginx services
+  become: true
+  command: >
+    chdir="{{ app_dir }}/docker"
+    docker-compose -f docker-compose-{{ env }}.yml up
+      -d
+      --no-deps
+      --build
+      --timeout 60
+      {{ item }}
+  with_items:
+    - cappa-db-{{ env }}
+    - cappa-nginx-{{ env }}
+
+- name: docker-compose force reload app service
+  become: true
+  command: >
+    chdir="{{ app_dir }}/docker"
+    docker-compose -f docker-compose-{{ env }}.yml up
+      -d
+      --no-deps
+      --build
+      --force-recreate
+      --timeout 60
+      cappa-app-{{ env }}

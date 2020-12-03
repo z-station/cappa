@@ -17,7 +17,7 @@ develop-eggs/*
 parts/*
 commit.txt
 venv/
-media/*
-tmp/*
-src/settings/local.py
-src/settings/prod.py
+public/*
+src/cappa/settings/local.py
+src/cappa/settings/prod.py
+backups/*
