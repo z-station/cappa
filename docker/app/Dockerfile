@@ -5,6 +5,7 @@ RUN apt-get update && \
     adduser --gecos --disabled-login --disabled-password --home /app app
 
 WORKDIR /app/src
+COPY --chown=app:app ./src/Pipfile ./src/Pipfile.lock /app/src/
 RUN pipenv install --deploy --system
 
 USER app:app
