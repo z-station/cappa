@@ -2,7 +2,6 @@
 *.ps1
 *.orig
 *.pyc
-*.sh
 *.sql
 *.bak
 *.dmp
@@ -22,3 +21,4 @@ src/cappa/settings/local.py
 src/cappa/settings/prod.py
 backups/*
 db-data*
+ansible/start.sh
