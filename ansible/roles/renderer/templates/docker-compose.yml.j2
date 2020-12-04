@@ -10,9 +10,9 @@ services:
     volumes:
       - ../db-data{{ env }}:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: {{ db_user }}
-      POSTGRES_PASSWORD: {{ db_password }}
-      POSTGRES_DB: {{ db_name }}
+      DB_USER: {{ db_user }}
+      DB_PASSWORD: {{ db_password }}
+      DB_NAME: {{ db_name }}
     restart: always
 
   cappa-app{{ env }}:
@@ -29,11 +29,11 @@ services:
     depends_on:
       - cappa-db{{ env }}
     environment:
-      POSTGRES_USER: {{ db_user }}
-      POSTGRES_PASSWORD: {{ db_password }}
-      POSTGRES_DB: {{ db_name }}
-      POSTGRES_HOST: cappa-db{{ env }}
-      APP_DOMAIN: {{ nginx_domain }}
+      DB_USER: {{ db_user }}
+      DB_PASSWORD: {{ db_password }}
+      DB_NAME: {{ db_name }}
+      DB_HOST: cappa-db{{ env }}
+      APP_DOMAINS: {{ nginx_domain }}
       GUNICORN_WORKERS: {{ gunicorn_workers }}
     restart: always
     healthcheck:

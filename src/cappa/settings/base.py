@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 import os
 import tempfile
+from os import environ as env
 
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
-# do not use this SECRET_KEY on production
-SECRET_KEY = '!s0x%u7k9!9l+34ol54z_pofekso)39+iy__5r%bktb-n^56to'
+DEBUG = env.get('APP_DEBUG', True)
+
+DOMAINS = env.get('APP_DOMAINS', '*')
+ALLOWED_HOSTS = DOMAINS.split(',')
+
+DEFAULT_SECRET_KEY = '!s0x%u7k9!9l+34ol54z_pofekso)39+iy__5r%bktb-n^56to'
+SECRET_KEY = env.get('APP_SECRET_KEY', DEFAULT_SECRET_KEY)
+
 LANGUAGE_CODE = 'ru-ru'
-PYTHON_PATH = 'python3'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
@@ -23,7 +27,7 @@ os.makedirs(TMP_DIR, mode=0o774, exist_ok=True)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
-os.makedirs(MEDIA_ROOT, mode=0o774, exist_ok=True)
+# os.makedirs(MEDIA_ROOT, mode=0o774, exist_ok=True)
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
@@ -99,11 +103,11 @@ MIDDLEWARE = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": "localhost",
-        'PORT': '5432',
-        "NAME": "cappa",
-        "USER": "cappa",
-        "PASSWORD": "cappa",
+        'NAME': env.get('DB_NAME', 'cappa'),
+        'USER': env.get('DB_USER', 'cappa'),
+        'PASSWORD': env.get('DB_PASSWORD', 'cappa'),
+        'HOST': env.get('DB_HOST', 'localhost'),
+        'PORT': env.get('DB_PORT', 5432)
     }
 }
 
@@ -126,7 +130,7 @@ TINYMCE_DEFAULT_CONFIG = {
 
 
 SITE_ID = 1
-DEFAULT_FROM_EMAIL = 'info@cappa.ru'
+DEFAULT_FROM_EMAIL = env.get('APP_EMAIL', 'info@cappa.ru')
 
 AUTHENTICATION_BACKENDS = ['cappa.profile.backends.CustomModelBackend']
 
@@ -147,8 +151,3 @@ ADMIN_REORDER = (
         'models': ('news.News', 'service.Menu')
     }
 )
-
-# ~========== DOCKER ===========~
-# Выделяем половину всех ядер докеру
-CORES_FOR_DOCKER = ','.join([str(num) for num in range(os.cpu_count()//2)])
-DOCKER_PREFIX = 'prod'

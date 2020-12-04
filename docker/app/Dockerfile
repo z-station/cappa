@@ -1,6 +1,7 @@
 FROM python:3.8
 
 RUN apt-get update && \
+    pip install --upgrade pip && \
     pip install pipenv && \
     adduser --gecos --disabled-login --disabled-password --home /app app
 

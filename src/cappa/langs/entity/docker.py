@@ -21,11 +21,11 @@ class ContainerConf:
     """
 
     name: str
-    prefix: str = settings.DOCKER_PREFIX
+    prefix: str = 'prod'
     user: str = 'sandbox'
     max_zombie_procs: int = 500
     timeout: int = 5
-    cpuset_cpus: int = settings.CORES_FOR_DOCKER
+    cpuset_cpus: int = 1
     cpu_quota: int = -1
     cpu_shares: int = 512
     mem_reservation: str = '256m'
