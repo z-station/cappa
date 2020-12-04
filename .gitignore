@@ -21,3 +21,4 @@ public/*
 src/cappa/settings/local.py
 src/cappa/settings/prod.py
 backups/*
+db-data*

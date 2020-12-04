@@ -32,7 +32,7 @@ http {
     open_file_cache_errors off;
 
     upstream app {
-        server cappa-app{{ env }}:8001;
+        server cappa-app-{{ env }}:8001;
     }
 
     server {

@@ -1,59 +1,59 @@
 version: "3.3"
 
 services:
-  cappa-db{{ env }}:
+  cappa-db-{{ env }}:
     build: db
-    container_name: cappa-db{{ env }}
-    image: cappa-db{{ env }}
+    container_name: cappa-db-{{ env }}
+    image: cappa-db-{{ env }}
     networks:
-      - cappa-backend{{ env }}
+      - cappa-backend-{{ env }}
     volumes:
-      - ../db-data{{ env }}:/var/lib/postgresql/data
+      - ../db-data-{{ env }}:/var/lib/postgresql/data
     environment:
       DB_USER: {{ db_user }}
       DB_PASSWORD: {{ db_password }}
       DB_NAME: {{ db_name }}
     restart: always
 
-  cappa-app{{ env }}:
+  cappa-app-{{ env }}:
     build:
       context: ..
       dockerfile: ./docker/app/Dockerfile
-    container_name: cappa-app{{ env }}
-    image: cappa-app{{ env }}
+    container_name: cappa-app-{{ env }}
+    image: cappa-app-{{ env }}
     networks:
-      - cappa-backend{{ env }}
-      - cappa-proxy{{ env }}
+      - cappa-backend-{{ env }}
+      - cappa-proxy-{{ env }}
     volumes:
-      - cappa-public{{ env }}:/app/public
+      - cappa-public-{{ env }}:/app/public
     depends_on:
-      - cappa-db{{ env }}
+      - cappa-db-{{ env }}
     environment:
       DB_USER: {{ db_user }}
       DB_PASSWORD: {{ db_password }}
       DB_NAME: {{ db_name }}
-      DB_HOST: cappa-db{{ env }}
+      DB_HOST: cappa-db-{{ env }}
       APP_DOMAINS: {{ nginx_domain }}
       GUNICORN_WORKERS: {{ gunicorn_workers }}
     restart: always
     healthcheck:
-      test: ["CMD", "pg_isready", "-h", cappa-db{{ env }}]
+      test: ["CMD", "pg_isready", "-h", cappa-db-{{ env }}]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  cappa-nginx{{ env }}:
+  cappa-nginx-{{ env }}:
     build:
       context: ..
       dockerfile: ./docker/nginx/Dockerfile
-    container_name: cappa-nginx{{ env }}
-    image: cappa-nginx{{ env }}
+    container_name: cappa-nginx-{{ env }}
+    image: cappa-nginx-{{ env }}
     volumes:
-      - cappa-public{{ env }}:/app/public
+      - cappa-public-{{ env }}:/app/public
     depends_on:
-      - cappa-app{{ env }}
+      - cappa-app-{{ env }}
     networks:
-      - cappa-proxy{{ env }}
+      - cappa-proxy-{{ env }}
     ports:
       - "{{ nginx_public_port }}:{{ nginx_public_port }}"
     expose:
@@ -61,8 +61,8 @@ services:
     restart: always
 
 networks:
-  cappa-proxy{{ env }}:
-  cappa-backend{{ env }}:
+  cappa-proxy-{{ env }}:
+  cappa-backend-{{ env }}:
 
 volumes:
-  cappa-public{{ env }}:
+  cappa-public-{{ env }}:
