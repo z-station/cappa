@@ -9,9 +9,9 @@ services:
     volumes:
       - ../db-data:/var/lib/postgresql/data
     environment:
-      DB_USER: cappa
-      DB_PASSWORD: cappa
-      DB_NAME: cappa
+      POSTGRES_USER: cappa
+      POSTGRES_PASSWORD: cappa
+      POSTGRES_DB: cappa
     restart: always
 
   cappa-app:
@@ -26,7 +26,7 @@ services:
     volumes:
       - cappa-public:/app/public
     environment:
-      DB_HOST: cappa-db
+      POSTGRES_HOST: cappa-db
     depends_on:
       - cappa-db
     restart: always

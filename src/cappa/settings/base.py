@@ -103,11 +103,11 @@ MIDDLEWARE = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        'NAME': env.get('DB_NAME', 'cappa'),
-        'USER': env.get('DB_USER', 'cappa'),
-        'PASSWORD': env.get('DB_PASSWORD', 'cappa'),
-        'HOST': env.get('DB_HOST', 'localhost'),
-        'PORT': env.get('DB_PORT', 5432)
+        'NAME': env.get('POSTGRES_DB', 'cappa'),
+        'USER': env.get('POSTGRES_USER', 'cappa'),
+        'PASSWORD': env.get('POSTGRES_PASSWORD', 'cappa'),
+        'HOST': env.get('POSTGRES_HOST', 'localhost'),
+        'PORT': env.get('POSTGRES_PORT', 5432)
     }
 }
 
