@@ -2,9 +2,8 @@ version: "3.3"
 
 services:
   cappa-db-{{ env }}:
-    build: db
     container_name: cappa-db-{{ env }}
-    image: cappa-db-{{ env }}
+    image: postgres:12
     networks:
       - cappa-backend-{{ env }}
     volumes:
