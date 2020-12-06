@@ -49,7 +49,7 @@ services:
     image: cappa-nginx-{{ env }}
     volumes:
       - cappa-public-{{ env }}:/public
-      - ../media:/media
+      - ../media-{{ env }}:/media
     depends_on:
       - cappa-app-{{ env }}
     networks:
