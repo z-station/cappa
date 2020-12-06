@@ -1,6 +1,6 @@
 - name: create media root
   become: true
-  command: mkdir -p -m 777 {{ app_dir }}/media-{{ env }}
+  command: mkdir -p -m 777 {{ app_dir }}/media
 
 - name: docker-compose soft reload db and nginx services
   become: true
