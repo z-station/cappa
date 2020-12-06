@@ -12,5 +12,6 @@ RUN pipenv install --deploy --system
 USER app:app
 COPY --chown=app:app ./src /app/src
 COPY --chown=app:app ./docker/app/start.sh /app/src
+RUN mkdir -p /app/public && chmod 775 /app/public
 
 ENTRYPOINT ["./start.sh"]
