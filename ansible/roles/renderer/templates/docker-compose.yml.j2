@@ -44,9 +44,7 @@ services:
       retries: 10
 
   cappa-nginx-{{ env }}:
-    build:
-      context: ..
-      dockerfile: ./docker/nginx/Dockerfile
+    build: nginx
     container_name: cappa-nginx-{{ env }}
     image: cappa-nginx-{{ env }}
     volumes:
