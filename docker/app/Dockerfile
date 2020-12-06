@@ -10,8 +10,9 @@ COPY --chown=app:app ./src/Pipfile ./src/Pipfile.lock /app/src/
 RUN pipenv install --deploy --system
 
 USER app:app
+RUN mkdir -p /app/public && chmod 775 /app/public && \
+    mkdir -p /app/media && chmod 775 /app/media
 COPY --chown=app:app ./src /app/src
 COPY --chown=app:app ./docker/app/start.sh /app/src
-RUN mkdir -p /app/public && chmod 775 /app/public
 
 ENTRYPOINT ["./start.sh"]
