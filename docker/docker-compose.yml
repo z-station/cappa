@@ -56,9 +56,30 @@ services:
       - "8000"
     restart: always
 
+  cappa-python-3.8:
+    build: python-3.8
+    container_name: cappa-python-3.8
+    image: cappa-python-3.8
+    volumes:
+      - cappa-tmp:/tmp/files/
+    depends_on:
+      - cappa-app
+    restart: on-failure
+
+  cappa-gcc-7.5:
+    build: gcc-7.5
+    container_name: cappa-gcc-7.5
+    image: cappa-gcc-7.5
+    volumes:
+      - cappa-tmp:/tmp/files/
+    depends_on:
+      - cappa-app
+    restart: on-failure
+
 networks:
   cappa-proxy:
   cappa-backend:
 
 volumes:
   cappa-public:
+  cappa-tmp:
