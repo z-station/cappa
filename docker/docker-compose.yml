@@ -7,7 +7,7 @@ services:
     networks:
       - cappa-backend
     volumes:
-      - ../db-data:/var/lib/postgresql/data
+      - ../postgresql-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: cappa
       POSTGRES_PASSWORD: cappa
@@ -25,8 +25,10 @@ services:
       - cappa-proxy
     volumes:
       - cappa-public:/app/public
+      - ../media:/app/media
     environment:
       POSTGRES_HOST: cappa-db
+      APP_STATIC_ROOT: /app/public/static
     depends_on:
       - cappa-db
     restart: always
@@ -43,7 +45,8 @@ services:
     container_name: cappa-nginx
     image: cappa-nginx
     volumes:
-      - cappa-public:/app/public
+      - cappa-public:/public
+      - ../media:/media
     depends_on:
       - cappa-app
     networks:

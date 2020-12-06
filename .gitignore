@@ -17,8 +17,9 @@ parts/*
 commit.txt
 venv/
 public/*
+media/*
 src/cappa/settings/local.py
 src/cappa/settings/prod.py
 backups/*
-db-data*
+postgresql-data*
 ansible/start.sh

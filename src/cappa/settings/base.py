@@ -25,9 +25,10 @@ PROVIDERS_DIR = os.path.join(PROJECT_DIR, 'langs', 'providers')
 TMP_DIR = os.path.join(tempfile.gettempdir(), 'cappa')
 os.makedirs(TMP_DIR, mode=0o774, exist_ok=True)
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
-# os.makedirs(MEDIA_ROOT, mode=0o774, exist_ok=True)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = env.get('APP_STATIC_ROOT', DEFAULT_STATIC_ROOT)
+os.makedirs(MEDIA_ROOT, mode=0o766, exist_ok=True)
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
