@@ -7,7 +7,7 @@ services:
     networks:
       - cappa-backend-{{ env }}
     volumes:
-      - ../postgresql-data-{{ env }}:/var/lib/postgresql/data
+      - ../postgresql-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: {{ postgres_user }}
       POSTGRES_PASSWORD: {{ postgres_password }}
@@ -25,7 +25,8 @@ services:
       - cappa-proxy-{{ env }}
     volumes:
       - cappa-public-{{ env }}:/app/public
-      - ../media-{{ env }}:/app/media
+      - ../media:/app/media
+      - ../src:/app/src
     depends_on:
       - cappa-db-{{ env }}
     environment:
@@ -49,7 +50,7 @@ services:
     image: cappa-nginx-{{ env }}
     volumes:
       - cappa-public-{{ env }}:/public
-      - ../media-{{ env }}:/media
+      - ../media:/media
     depends_on:
       - cappa-app-{{ env }}
     networks:

@@ -26,6 +26,7 @@ services:
     volumes:
       - cappa-public:/app/public
       - ../media:/app/media
+      - ../src:/app/src
     environment:
       POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
