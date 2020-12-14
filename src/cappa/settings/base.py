@@ -3,6 +3,7 @@ import os
 import tempfile
 from os import environ as env
 
+ENV_SUFFIX = env.get('APP_ENV_SUFFIX')
 DEBUG = env.get('APP_DEBUG', True)
 
 DOMAINS = env.get('APP_DOMAINS', '*')
@@ -22,8 +23,9 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'src', 'cappa')
 
 TESTS_DIR = os.path.join(BASE_DIR, 'tests')
 PROVIDERS_DIR = os.path.join(PROJECT_DIR, 'langs', 'providers')
-TMP_DIR = os.path.join(tempfile.gettempdir(), 'cappa')
-os.makedirs(TMP_DIR, mode=0o774, exist_ok=True)
+DEFAULT_TMP_DIR = os.path.join(tempfile.gettempdir(), 'cappa')
+TMP_DIR = env.get('APP_TMP_DIR', DEFAULT_TMP_DIR)
+os.makedirs(TMP_DIR, mode=0o775, exist_ok=True)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -152,3 +154,5 @@ ADMIN_REORDER = (
         'models': ('news.News', 'service.Menu')
     }
 )
+
+EXEC_TIMEOUT = 5  # seconds

@@ -14,6 +14,22 @@ services:
       POSTGRES_DB: cappa
     restart: always
 
+  cappa-python38:
+    build: python38
+    container_name: cappa-python38
+    image: cappa-python38
+    volumes:
+      - cappa-python38:/sandbox:ro
+    restart: on-failure
+
+  cappa-gcc75:
+    build: gcc75
+    container_name: cappa-gcc75
+    image: cappa-gcc75
+    volumes:
+      - cappa-gcc75:/sandbox:ro
+    restart: on-failure
+
   cappa-app:
     build:
       context: ..
@@ -27,9 +43,13 @@ services:
       - cappa-public:/app/public
       - ../media:/app/media
       - ../src:/app/src
+      - cappa-python38:/app/tmp/python38
+      - cappa-gcc75:/app/tmp/gcc75
+
     environment:
       POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
+      APP_TMP_DIR: /app/tmp
     depends_on:
       - cappa-db
     restart: always
@@ -56,30 +76,11 @@ services:
       - "8000"
     restart: always
 
-  cappa-python-3.8:
-    build: python-3.8
-    container_name: cappa-python-3.8
-    image: cappa-python-3.8
-    volumes:
-      - cappa-tmp:/tmp/files/
-    depends_on:
-      - cappa-app
-    restart: on-failure
-
-  cappa-gcc-7.5:
-    build: gcc-7.5
-    container_name: cappa-gcc-7.5
-    image: cappa-gcc-7.5
-    volumes:
-      - cappa-tmp:/tmp/files/
-    depends_on:
-      - cappa-app
-    restart: on-failure
-
 networks:
   cappa-proxy:
   cappa-backend:
 
 volumes:
   cappa-public:
-  cappa-tmp:
+  cappa-python38:
+  cappa-gcc75:
