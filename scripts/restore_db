@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ -n "$1"]
+then
+docker exec -it cappa-app bash -c "python manage.py restore_db"
+else
+docker exec -it cappa-app bash -c "python manage.py restore_db -f ${1}"
+fi

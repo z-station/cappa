@@ -3,7 +3,7 @@ version: "3.3"
 services:
   cappa-db:
     container_name: cappa-db
-    image: postgres:12
+    image: postgres:13
     networks:
       - cappa-backend
     volumes:
