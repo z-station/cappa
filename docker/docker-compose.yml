@@ -43,10 +43,12 @@ services:
       - cappa-public:/app/public
       - ../media:/app/media
       - ../src:/app/src
+      - ../backup:/app/backup
       - cappa-python38:/app/tmp/python38
       - cappa-gcc75:/app/tmp/gcc75
 
     environment:
+      PGPASSWORD: cappa
       POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
       APP_TMP_DIR: /app/tmp
