@@ -49,6 +49,9 @@ services:
 
     environment:
       PGPASSWORD: cappa
+      POSTGRES_USER: cappa
+      POSTGRES_PASSWORD: cappa
+      POSTGRES_DB: cappa
       POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
       APP_TMP_DIR: /app/tmp
