@@ -1,9 +1,0 @@
-- name: run
-  hosts: all
-  become: true
-  vars_files:
-    - "environments/{{ env }}/main.vars"
-  roles:
-    - role: updater
-    - role: renderer
-    - role: runner

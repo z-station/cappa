@@ -1,7 +1,0 @@
-- name: render docker-compose.yml
-  become: true
-  template: src=docker-compose.yml.j2 dest="{{ app_dir }}/docker/docker-compose-{{ env }}.yml"
-
-- name: render nginx.conf
-  become: true
-  template: src=nginx.conf.j2 dest="{{ app_dir }}/docker/nginx/nginx.conf"
