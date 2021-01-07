@@ -156,3 +156,7 @@ ADMIN_REORDER = (
 )
 
 EXEC_TIMEOUT = 5  # seconds
+
+# ~========== TRANSLATORS HOSTS ===========~
+PYTHON38_HOST = env.get('PYTHON38_HOST', 'http://localhost:8001')
+GCC75_HOST = env.get('GCC75_HOST', 'http://localhost:8002')
