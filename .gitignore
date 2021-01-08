@@ -18,6 +18,7 @@ commit.txt
 venv/
 public/*
 media/*
+static/*
 backup/*
 postgresql-data*
 ansible/start.sh

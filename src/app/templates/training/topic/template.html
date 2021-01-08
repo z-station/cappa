@@ -12,5 +12,12 @@
 
 {% block js %}
     {{ block.super }}
-    <script>window.dispatchEvent(new Event('topicPageLoaded'))</script>
+    <script>
+        window.dispatchEvent(new Event('topicPageLoaded'));
+        window.translators_hosts={
+            {% for translator, host in translators_hosts.items %}
+            '{{ translator }}': '{{ host }}',
+            {% endfor %}
+        }
+    </script>
 {% endblock %}

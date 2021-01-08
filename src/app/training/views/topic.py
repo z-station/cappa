@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from app.training.forms import ContentForm
 from app.training.models import Topic
+from app.translators.consts import translators_hosts
 
 
 @method_decorator(login_required, name='dispatch')
@@ -26,6 +27,7 @@ class TopicView(View):
             context={
                 'object': topic,
                 'course': topic.course,
+                'translators_hosts': translators_hosts
             }
         )
 
