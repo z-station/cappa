@@ -1,3 +1,6 @@
+var PYTHON38 = '1',
+    GCC75 = '2';
+
 var taskItemPage = function(e){
 
     var lastChanges = ''
@@ -13,13 +16,11 @@ var taskItemPage = function(e){
                 editor.setOption("maxLines", "Infinity")       // авто-высота
                 editor.setHighlightActiveLine(false);          // убрать строку вделения
                 editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
-                switch(form.querySelector(".js__lang").value){
-                    case 'python':
+                switch(form.querySelector(".js__translator").value){
+                    case PYTHON38:
                         editor.getSession().setMode("ace/mode/python"); break
-                    case 'cpp':
+                    case GCC75:
                         editor.getSession().setMode("ace/mode/c_cpp"); break
-                    case 'csharp':
-                        editor.getSession().setMode("ace/mode/csharp"); break
                 }
 
                 // вписать код из textarea в ace-editor

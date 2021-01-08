@@ -1,3 +1,6 @@
+var PYTHON38 = '1',
+    GCC75 = '2';
+
 var django = django || {
     "jQuery": jQuery.noConflict(true)
 };
@@ -51,14 +54,12 @@ var aceInit = function(){
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
         editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
-        var lang = JSON.parse(document.querySelector('.ace-config').innerHTML).lang
-        switch(lang){
-            case 'python':
+        var translator = JSON.parse(document.querySelector('.ace-config').innerHTML).translator
+        switch(translator){
+            case PYTHON38:
                 editor.getSession().setMode("ace/mode/python"); break
-            case 'cpp':
+            case GCC75:
                 editor.getSession().setMode("ace/mode/c_cpp"); break
-            case 'csharp':
-                editor.getSession().setMode("ace/mode/csharp"); break
         }
 
         // вписать код из textarea в ace editor

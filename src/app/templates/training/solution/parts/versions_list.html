@@ -5,7 +5,7 @@
             <span class="text-small js__utc-time" data-utc-time="{{ version.datetime|date:'Y-m-d H:i:s.u' }}" title="Дата и время создания"></span>
             <span class="text-small">{{ forloop.counter }} / 10</span>
         </div>
-        <div class="js__editor" data-lang="{{ object.taskitem.lang.provider_name }}">
+        <div class="js__editor" data-translator="{{ object.taskitem.translator }}">
             <div class="js__editor-ace">{{ version.content }}</div>
         </div>
     </div>

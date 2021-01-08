@@ -4,7 +4,7 @@
 
     {% csrf_token %}
 
-    <input class="js__{{ form.lang.name }}" type="hidden" name="lang" value="{{ form.lang.value }}">
+    <input class="js__{{ form.translator.name }}" type="hidden" name="translator" value="{{ form.translator.value }}">
 
     {% if content.show_input %}
        {% show_ace_field form.input %}

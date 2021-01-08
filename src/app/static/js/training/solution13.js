@@ -1,3 +1,6 @@
+var PYTHON38 = '1',
+    GCC75 = '2';
+
 var solutionPage = function(e){
  // инициализировать ace-editor
     document.querySelectorAll('.js__editor').forEach(function(elem, index){
@@ -6,13 +9,11 @@ var solutionPage = function(e){
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
         editor.setReadOnly(true)                       // для чтения
-        switch(elem.getAttribute('data-lang')){
-            case 'python':
+        switch(elem.getAttribute('data-translator')){
+            case PYTHON38:
                 editor.getSession().setMode("ace/mode/python"); break
-            case 'cpp':
+            case GCC75:
                 editor.getSession().setMode("ace/mode/c_cpp"); break
-            case 'csharp':
-                editor.getSession().setMode("ace/mode/csharp"); break
         }
     })
 }

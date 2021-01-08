@@ -1,3 +1,6 @@
+var PYTHON38 = '1',
+    GCC75 = '2';
+
 var topicPage = function(e){
 
     document.querySelectorAll('.js__editor-form').forEach(function(form, index){
@@ -13,13 +16,11 @@ var topicPage = function(e){
                     editor.setOption("maxLines", "Infinity")       // авто-высота
                     editor.setHighlightActiveLine(false);          // убрать строку вделения
                     editor.setReadOnly(Boolean(form.getAttribute('readonly') == 'True'))  // для чтения
-                    switch(form.querySelector(".js__lang").value){
-                        case 'python':
+                    switch(form.querySelector(".js__translator").value){
+                        case PYTHON38:
                             editor.getSession().setMode("ace/mode/python"); break
-                        case 'cpp':
+                        case GCC75:
                             editor.getSession().setMode("ace/mode/c_cpp"); break
-                        case 'csharp':
-                            editor.getSession().setMode("ace/mode/csharp"); break
                     }
 
                     // вписать код из textarea в ace-editor
