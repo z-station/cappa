@@ -13,7 +13,7 @@ class TopicView(View):
 
     def get_object(self, request, *args, **kwargs):
         try:
-            return Topic.objects.select_related('course__lang')\
+            return Topic.objects.select_related('course')\
                 .get(slug=kwargs['topic'], course__slug=kwargs['course'])
         except Topic.DoesNotExist:
             raise Http404

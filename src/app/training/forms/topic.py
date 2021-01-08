@@ -57,24 +57,4 @@ class ContentForm(forms.Form):
         widget=forms.Textarea(attrs={'readonly': True})
     )
     operation = forms.CharField(widget=forms.Select(choices='Operations.CHOICES'))
-    lang = forms.CharField(widget=forms.HiddenInput)
-
-    def perform_operation(self, topic):
-        if self.is_valid():
-            return getattr(self.Operations, self.cleaned_data['operation'])(self.cleaned_data, topic)
-        else:
-            return Response(status=401, msg='Некорректные данные формы')
-
-    class Operations:
-
-        CHOICES = (
-            ('debug', 'debug'),
-        )
-
-        @staticmethod
-        def debug(data, topic):
-            result = topic.lang.provider.debug(data['input'], data['content'])
-            if result['error']:
-                return Response(status=400, msg='Ошибка отладки', output=result['output'], error=result['error'])
-            else:
-                return Response(status=200, msg='Готово', output=result['output'])
+    translator = forms.IntegerField(widget=forms.HiddenInput)

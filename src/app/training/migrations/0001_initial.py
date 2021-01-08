@@ -16,7 +16,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('langs', '0001_initial'),
         ('tasks', '0002_auto_20191117_1332'),
     ]
 
@@ -53,7 +52,6 @@ class Migration(migrations.Migration):
                 ('order_key', app.utils.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения')),
                 ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='автор')),
-                ('lang', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='langs.Lang', verbose_name='язык программирования')),
             ],
             options={
                 'verbose_name': 'учебный курс',

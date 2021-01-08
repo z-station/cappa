@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
 from django.utils import timezone
 from app.training.models import Solution, TaskItem
-from .utils import Response
+from app.training.forms.utils import Response
+from app.translators.main import testing
 
 
 class TaskItemAdminForm(forms.ModelForm):
@@ -32,7 +33,7 @@ class TaskItemForm(forms.Form):
         widget=forms.Textarea(attrs={'readonly': True})
     )
     operation = forms.CharField(widget=forms.Select(choices='Operations.CHOICES'))
-    lang = forms.CharField(widget=forms.HiddenInput)
+    translator = forms.IntegerField(widget=forms.HiddenInput)
 
     def perform_operation(self, user: User, taskitem: TaskItem):
         if self.is_valid():
@@ -44,7 +45,6 @@ class TaskItemForm(forms.Form):
     class Operations:
 
         CHOICES = (
-            ('debug', 'debug'),
             ('check_tests', 'check_tests'),
             ('create_version', 'create_version'),
             ('save_solution', 'save_solution'),
@@ -52,29 +52,19 @@ class TaskItemForm(forms.Form):
         )
 
         @classmethod
-        def debug(cls, editor_data: dict, taskitem: TaskItem, **kwargs):
-            if not taskitem.compiler_check:
-                return Response(status=404, msg='Операция запрещена')
-            result = taskitem.lang.provider.debug(
-                input=editor_data.get('input', ''),
-                content=editor_data['content']
-            )
-            if result['error']:
-                return Response(status=400, msg='Ошибка отладки', output=result['output'], error=result['error'])
-            else:
-                return Response(status=200, msg='Готово', output=result['output'])
+        def check_tests(cls, editor_data: dict, taskitem: TaskItem, **kwargs):
 
-        @classmethod
-        def check_tests(cls, editor_data: dict, taskitem: TaskItem, user: User):
+            """ Прогнать код по тестам задачи и вернуть результаты тестирования """
+
             if not taskitem.task.tests:
                 return Response(status=300, msg='Тесты отсутствуют')
             if not taskitem.compiler_check:
                 return Response(status=404, msg='Операция запрещена')
-            tests_result = taskitem.lang.provider.check_tests(
-                content=editor_data['content'],
-                task=taskitem.task,
+            tests_result = testing(
+                code=editor_data['content'],
+                taskitem=taskitem,
             )
-            if tests_result['success']:
+            if tests_result['ok']:
                 return Response(status=200, msg='Тесты пройдены', tests_result=tests_result)
             else:
                 return Response(status=300, msg='Тесты не пройдены', tests_result=tests_result)
@@ -119,11 +109,11 @@ class TaskItemForm(forms.Form):
             # если задача с автотестами - прогнать автотесты
             tests_score = None
             if taskitem.compiler_check and taskitem.task.tests:
-                tests_result = taskitem.lang.provider.check_tests(
-                    content=editor_data['content'],
-                    task=taskitem.task,
+                tests_result = testing(
+                    code=editor_data['content'],
+                    taskitem=taskitem,
                 )
-                tests_score = round(tests_result['num_success'] / tests_result['num'] * taskitem.max_score, 2)
+                tests_score = round(tests_result['num_ok'] / tests_result['num'] * taskitem.max_score, 2)
             if solution is None:
                 solution = Solution(user=user, taskitem=taskitem)
             solution.tests_score = tests_score

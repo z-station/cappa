@@ -22,7 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__fil
 PROJECT_DIR = os.path.join(BASE_DIR, 'src', 'app')
 
 TESTS_DIR = os.path.join(BASE_DIR, 'tests')
-PROVIDERS_DIR = os.path.join(PROJECT_DIR, 'langs', 'providers')
 DEFAULT_TMP_DIR = os.path.join(tempfile.gettempdir(), 'app')
 TMP_DIR = env.get('APP_TMP_DIR', DEFAULT_TMP_DIR)
 os.makedirs(TMP_DIR, mode=0o775, exist_ok=True)
@@ -88,7 +87,6 @@ INSTALLED_APPS = [
     'app.news',
     'app.tasks',
     'app.training',
-    'app.langs',
     'app.groups',
     'app.service'
 ]
@@ -143,7 +141,7 @@ MIDDLEWARE += ['app.admin.middleware.CustomModelAdminReorder']
 ADMIN_REORDER = (
     {
         'app': 'training', 'label': u'Учебные курсы',
-        'models': ('training.Course', 'groups.Group', 'training.Solution', 'langs.Lang', )
+        'models': ('training.Course', 'groups.Group', 'training.Solution')
     },
     {
         'app': 'tasks', 'label': u'Задачник',
@@ -154,8 +152,6 @@ ADMIN_REORDER = (
         'models': ('news.News', 'service.Menu')
     }
 )
-
-EXEC_TIMEOUT = 5  # seconds
 
 # ~========== TRANSLATORS HOSTS ===========~
 PYTHON38_HOST = env.get('PYTHON38_HOST', 'http://localhost:8001')

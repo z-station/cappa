@@ -12,14 +12,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='solutionexample',
-            name='lang',
-            field=models.CharField(blank=True, choices=[('python', 'Python3'), ('cpp', 'C++'), ('csharp', 'C#'), ('java', 'Java')], max_length=255, null=True, verbose_name='язык'),
-        ),
-        migrations.AlterField(
-            model_name='task',
-            name='lang',
-            field=models.CharField(blank=True, choices=[('python', 'Python3'), ('cpp', 'C++'), ('csharp', 'C#'), ('java', 'Java')], max_length=255, null=True, verbose_name='язык'),
-        ),
     ]

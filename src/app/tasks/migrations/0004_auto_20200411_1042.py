@@ -17,7 +17,6 @@ class Migration(migrations.Migration):
             name='SolutionExample',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('lang', models.CharField(blank=True, choices=[('python', 'Python3'), ('cpp', 'C++'), ('csharp', 'C#')], max_length=255, null=True, verbose_name='язык')),
                 ('content', models.TextField(blank=True, null=True, verbose_name='код рещения')),
             ],
             options={
@@ -72,11 +71,6 @@ class Migration(migrations.Migration):
             model_name='task',
             name='difficulty',
             field=models.CharField(blank=True, choices=[('0', 'очень простой'), ('1', 'простой'), ('2', 'средний'), ('3', 'сложный'), ('4', 'легендарный')], max_length=255, null=True, verbose_name='сложность'),
-        ),
-        migrations.AddField(
-            model_name='task',
-            name='lang',
-            field=models.CharField(blank=True, choices=[('python', 'Python3'), ('cpp', 'C++'), ('csharp', 'C#')], max_length=255, null=True, verbose_name='язык'),
         ),
         migrations.AddField(
             model_name='solutionexample',

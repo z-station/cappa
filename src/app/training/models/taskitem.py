@@ -34,8 +34,8 @@ class TaskItem(models.Model):
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
 
     @property
-    def lang(self):
-        return self.topic.lang
+    def translator(self) -> int:
+        return self.topic.translator
 
     @property
     def title(self):

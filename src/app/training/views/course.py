@@ -21,7 +21,7 @@ class CourseView(View):
 
     def get_object(self, request, *args, **kwargs):
         try:
-            return Course.objects.select_related('lang').get(slug=kwargs['course'])
+            return Course.objects.get(slug=kwargs['course'])
         except Course.DoesNotExist:
             raise Http404
 

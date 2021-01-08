@@ -33,8 +33,8 @@ class Topic(models.Model):
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
 
     @property
-    def lang(self):
-        return self.course.lang
+    def translator(self) -> int:
+        return self.course.translator
 
     @property
     def taskitems(self):
@@ -106,8 +106,8 @@ class Content(models.Model):
     order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
 
     @property
-    def lang(self):
-        return self.topic.course.lang
+    def translator(self) -> int:
+        return self.topic.course.translator
 
 
 __all__ = ['Course', 'Topic', 'Content']

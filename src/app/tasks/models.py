@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
-from app.utils.consts import langs, tasks
+from app.utils.consts import tasks
+from app.translators.consts import translators_choices
 
 UserModel = get_user_model()
 
@@ -65,10 +66,6 @@ class Task(models.Model):
         max_length=255, blank=True, null=True
     )
     source = models.ForeignKey(Source, verbose_name='источник', blank=True, null=True, on_delete=models.SET_NULL)
-    lang = models.CharField(
-        verbose_name='язык', choices=langs.CHOICES,
-        blank=True, null=True, max_length=255
-    )
     tags = models.ManyToManyField(Tag, verbose_name='метки', related_name='tasks', blank=True)
     tests = JSONField(verbose_name='автотесты', default=list, blank=True, null=True)
 
@@ -82,9 +79,8 @@ class SolutionExample(models.Model):
         verbose_name = "эталонное решение"
         verbose_name_plural = "эталонные решения"
 
-    lang = models.CharField(
-        verbose_name='язык', choices=langs.CHOICES,
-        max_length=255, blank=True, null=True
+    translator = models.IntegerField(
+        verbose_name='транслятор кода', choices=translators_choices
     )
     content = models.TextField(verbose_name='код рещения', blank=True, null=True)
     task = models.ForeignKey(Task, related_name='solution_examples')

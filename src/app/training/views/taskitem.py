@@ -19,7 +19,7 @@ class TaskItemView(View):
     def get_object(self, request, *args, **kwargs):
         try:
             return TaskItem.objects \
-                .select_related('task', 'topic__course', 'topic__course__lang') \
+                .select_related('task', 'topic__course') \
                 .get(slug=kwargs['taskitem'], topic__slug=kwargs['topic'], topic__course__slug=kwargs['course'])
         except TaskItem.DoesNotExist:
             raise Http404
@@ -27,7 +27,7 @@ class TaskItemView(View):
     def get(self, request, *args, **kwargs):
         taskitem = self.get_object(request,  *args, **kwargs)
         solution = None
-        form_initial = {'lang': taskitem.lang.provider_name}
+        form_initial = {'translator': taskitem.translator}
         if request.user.is_active:
             solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first()
             if solution:
