@@ -79,8 +79,10 @@ class SolutionExample(models.Model):
         verbose_name = "эталонное решение"
         verbose_name_plural = "эталонные решения"
 
-    translator = models.IntegerField(
-        verbose_name='транслятор кода', choices=translators_choices
+    translator = models.CharField(
+        verbose_name='транслятор кода',
+        choices=translators_choices,
+        max_length=2
     )
     content = models.TextField(verbose_name='код рещения', blank=True, null=True)
     task = models.ForeignKey(Task, related_name='solution_examples')

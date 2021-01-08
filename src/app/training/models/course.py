@@ -19,7 +19,11 @@ class Course(models.Model):
     show = models.BooleanField(verbose_name="отображать", default=True)
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
-    translator = models.IntegerField(verbose_name='транслятор кода', choices=translators_choices)
+    translator = models.CharField(
+        verbose_name='транслятор кода',
+        choices=translators_choices,
+        max_length=2
+    )
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     about = HTMLField(verbose_name="краткое описание", default="", blank=True, null=True)
     content = HTMLField(verbose_name="текстовый контент", default="", blank=True, null=True)

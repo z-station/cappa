@@ -1,7 +1,7 @@
 from django.conf import settings
 
-PYTHON38 = 1
-GCC75 = 2
+PYTHON38 = '1'
+GCC75 = '2'
 
 translators_ids = [
     PYTHON38,
