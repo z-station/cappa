@@ -1,66 +1,97 @@
 # -*- coding: utf-8 -*-
 import re
-import subprocess
-from django.conf import settings
-from .utils import TmpFiles
-from ..base import BaseProvider
+
+from .utils import DebugFiles, TestsFiles
+from ..base import DockerProvider
 from src.tasks.models import Task
+from src.utils import msg as msg_utils
 from src.utils.editor import clear_text
+from src.langs.entity.docker import ContainerConf
 
 
-class Provider(BaseProvider):
+class Provider(DockerProvider):
+
+    conf = ContainerConf(name='java')
+
+    @classmethod
+    def _process_error_msg(cls, msg: str):
+
+        """ Обработка текста сообщения об ошибке """
+
+        result = clear_text(
+            re.sub(pattern='program.java',  repl="", string=msg)
+        )
+        if 'Terminated' in result:
+            result = msg_utils.JAVA__02
+        if 'Read-only file system' in result:
+            result = msg_utils.JAVA__01
+        return result
 
     @classmethod
     def _get_decoded(cls, stdout: bytes, stderr: bytes) -> tuple:
-        output = stdout.decode()
-        error = re.sub(r'.*.java:', "", stderr.decode()) if stderr else ''
+
+        """ Преобразует bytes (вывод интерпретатора) в unicode, удаляет лишние символы из вывода """
+
+        output = '' if stdout is None else stdout.decode()
+        if stderr is None:
+            error = ''
+        else:
+            error = cls._process_error_msg(msg=stderr.decode())
         return output, error
 
     @classmethod
     def debug(cls, input: str, content: str) -> dict:
-        stdin = input.encode('utf-8')
-        tmp = TmpFiles(content=content)
-        p1 = subprocess.Popen(
-            args=['java', tmp.file_java_dir],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            cwd=settings.TMP_DIR
+
+        """ Запускает код в docker-песочнице и возвращает результаты """
+
+        files = DebugFiles(
+            data_in=clear_text(input),
+            data_java=clear_text(content),
+            tmp_dir=cls.conf.tmp_files_dir
         )
-        stdout, stderr = p1.communicate(input=stdin)
-        p1.kill()
-        output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
-
-        tmp.remove_file_java()
-
+        container = cls._get_docker_container()
+        exit_code, result = container.exec_run(
+            cmd=f'bash -c "timeout {cls.conf.timeout} java {files.filename_java} < {files.filename_in}"',
+            stream=True, demux=True, user=cls.conf.user
+        )
+        try:
+            stdout, stderr = next(result)
+        except StopIteration:
+            output, error = '', ''
+        else:
+            output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
+        files.remove()
         return {
             'output': output,
-            'error': error,
+            'error': error
         }
 
     @classmethod
     def check_tests(cls, content: str, task: Task) -> dict:
-        tmp = TmpFiles(clear_text(content))
+
+        """ Запускает код на наборе тестов в docker-песочнице и возвращает результаты тестирования """
 
         compare_method_name = f'_compare_{task.output_type}'
         compare_method = getattr(cls, compare_method_name)
-
+        files = TestsFiles(
+            data_java=clear_text(content),
+            tmp_dir=cls.conf.tmp_files_dir
+        )
+        container = cls._get_docker_container()
         tests_data = []
         tests_num_success = 0
         for test in task.tests:
-            p1 = subprocess.Popen(
-                args=['java', tmp.file_java_dir],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                cwd=settings.TMP_DIR
+            filename_in = files.create_file_in(data_in=clear_text(test['input']))
+            exit_code, result = container.exec_run(
+                cmd=f'bash -c "timeout {cls.conf.timeout} java {files.filename_java} < {filename_in}"',
+                stream=True, demux=True, user=cls.conf.user
             )
-
-            stdin = test['input'].encode('utf-8')
-            stdout, stderr = p1.communicate(input=stdin)
-            p1.kill()
-            output, error = cls._get_decoded(stdout, stderr)
-
+            try:
+                stdout, stderr = next(result)
+            except StopIteration:
+                output, error = '', ''
+            else:
+                output, error = cls._get_decoded(stdout=stdout, stderr=stderr)
             if error:
                 success = False
             else:
@@ -71,18 +102,17 @@ class Provider(BaseProvider):
             tests_num_success += success
 
             tests_data.append({
-                "output": output,
+                "output": clear_text(output),
                 "error": error,
                 "success": success
             })
 
-        tmp.remove_file_java()
+        files.remove()
 
         tests_num = len(task.tests)
-
         return {
             'num': tests_num,
             'num_success': tests_num_success,
             'data': tests_data,
-            'success': tests_num == tests_num_success
+            'success': tests_num == tests_num_success,
         }
