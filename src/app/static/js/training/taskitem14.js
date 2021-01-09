@@ -128,7 +128,6 @@ var taskItemPage = function(e){
                     data: JSON.stringify(data),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
-                    async: false,
                     statusCode:{
                         200: function(response){
                             // Отображение сообщения
@@ -160,6 +159,9 @@ var taskItemPage = function(e){
                         400: function(response){
                             formControl.showErrorMsg('Ошибка запроса (400)');
                         },
+                        403: function(response){
+                            formControl.showErrorMsg('Запрос отклонен (403)');
+                        },
                         404: function(response){
                             formControl.showErrorMsg('Сервис недоступен (404)');
                         },
@@ -178,33 +180,71 @@ var taskItemPage = function(e){
             return false
         },
         tests : function(e){
-            formControl.showLoader('Тестирование')
-            formControl.disableBtns()
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='check_tests'), function(response){
-                formControl.showMsg(response)
-                table = document.querySelector('.js__form__tests-table')
-                if(response.tests_result){
-                    table.querySelector('th.js__form__test-result').innerHTML = 'Вывод программы'
-                    response.tests_result.data.forEach(function(test, index){
-                        var tr = table.querySelector('.js__form__test-'+ index)
-                        if(test.success){
-                            tr.classList.remove('success', 'unluck')
-                            tr.classList.add('success')
-                        } else {
-                            tr.classList.remove('success', 'unluck')
-                            tr.classList.add('unluck')
+            var formData = formControl.serializeForm(operation='check_tests')
+            if(formData.content){
+                formControl.showLoader('Тестирование')
+                formControl.disableBtns();
+                $.ajax({
+                    url: form.getAttribute('action'),
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-Token': formData.csrfmiddlewaretoken
+                    },
+                    statusCode:{
+                        200: function(response){
+                            formControl.showMsg(response)
+                            table = document.querySelector('.js__form__tests-table')
+                            if(response.tests_result){
+                                table.querySelector('th.js__form__test-result').innerHTML = 'Вывод программы'
+                                response.tests_result.tests_data.forEach(function(test, index){
+                                    var tr = table.querySelector('.js__form__test-'+ index)
+                                    if(test.ok){
+                                        tr.classList.remove('success', 'unluck')
+                                        tr.classList.add('success')
+                                    } else {
+                                        tr.classList.remove('success', 'unluck')
+                                        tr.classList.add('unluck')
+                                    }
+                                    var testResult = '';
+                                    if(test.translator_console_output && test.translator_error_msg){
+                                        testResult = `${test.translator_console_output}\n\n${test.translator_error_msg}`
+                                    } else if(test.translator_console_output){
+                                        testResult = test.translator_console_output
+                                    } else if(test.translator_error_msg){
+                                        testResult = test.translator_error_msg
+                                    }
+                                    tr.querySelector('.js__form__test-result pre').innerHTML = testResult
+                                })
+                                // if(response.tests_result.id){
+                                //     var sidebarItem = document.querySelector('#js__' + response.tests_result.id)
+                                //     sidebarItem && sidebarItem.classList.remove('status__0', 'status__1', 'status__2', 'status__3')
+                                //     sidebarItem && sidebarItem.classList.add('status__'+ response.tests_result.status)
+                                // }
+                            }
+                            formControl.aceInit();
+                        },
+                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
+                        },
+                        403: function(response){
+                            formControl.showErrorMsg('Запрос отклонен (403)');
+                        },
+                        404: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (404)');
+                        },
+                        500: function(){
+                            formControl.showErrorMsg('Серверная ошибка (500)');
+                        },
+                        502: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (502)');
                         }
-                        tr.querySelector('.js__form__test-result pre').innerHTML = test.output + test.error
-                    })
-                    if(response.tests_result.id){
-                        var sidebarItem = document.querySelector('#js__' + response.tests_result.id)
-                        sidebarItem && sidebarItem.classList.remove('status__0', 'status__1', 'status__2', 'status__3')
-                        sidebarItem && sidebarItem.classList.add('status__'+ response.tests_result.status)
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        formControl.showErrorMsg('Запрос не выполнен');
                     }
-                }
-                formControl.aceInit();
-
-            });
+                })
+            }
             return false;
         },
         version: function(e){

@@ -33,7 +33,7 @@ def testing(code: str, taskitem: TaskItem) -> ResponseTestingDict:
     url = f'{host}/testing/'
     response = requests.post(
         url=url,
-        json=json.dumps(data, ensure_ascii=False)
+        json=data
     )
     if response.ok:
         return response.json()

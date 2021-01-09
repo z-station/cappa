@@ -137,6 +137,9 @@ var topicPage = function(e){
                             400: function(response){
                                 formControl.showErrorMsg('Ошибка запроса (400)');
                             },
+                            403: function(response){
+                                formControl.showErrorMsg('Запрос отклонен (403)');
+                            },
                             404: function(response){
                                 formControl.showErrorMsg('Сервис недоступен (404)');
                             },
