@@ -134,14 +134,17 @@ var topicPage = function(e){
                                 formControl.aceInit();
                                 formControl.enableBtns();
                             },
-                            500: function(){
-                                formControl.showErrorMsg('Серверная ошибка (500)');
-                            },
                             400: function(response){
                                 formControl.showErrorMsg('Ошибка запроса (400)');
                             },
                             404: function(response){
                                 formControl.showErrorMsg('Сервис недоступен (404)');
+                            },
+                            500: function(){
+                                formControl.showErrorMsg('Серверная ошибка (500)');
+                            },
+                            502: function(response){
+                                formControl.showErrorMsg('Сервис недоступен (502)');
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
