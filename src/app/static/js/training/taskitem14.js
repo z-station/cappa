@@ -89,6 +89,14 @@ var taskItemPage = function(e){
             }
             setTimeout(function(){ formControl.hideMsg() }, 10000);
         },
+        showErrorMsg(msg){
+            formControl.hideMsg();
+            form.querySelector('.js__msg-error').innerHTML = msg
+            form.querySelector('.js__msg-error').style.display = 'block'
+            formControl.aceInit();
+            formControl.enableBtns();
+            setTimeout(function(){ formControl.hideMsg() }, 10000);
+        },
         serializeForm(operation){
             // вернуть данные формы + submitType
             var data = {},
@@ -105,25 +113,65 @@ var taskItemPage = function(e){
         },
         debug : function(e){
             // запрос на отладку кода из редактора
-            formControl.showLoader('Отладка')
-            formControl.disableBtns()
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='debug'), function(response){
-                formControl.showMsg(response);
-                if(response.output){
-                    form.querySelector('.js__output .js__editor-content').innerHTML = response.output
-                    form.querySelector('.js__output').style.display = 'block'
-                } else {
-                    form.querySelector('.js__output').style.display = 'none'
+            var formData = formControl.serializeForm(operation='debug');
+            if(formData.content){
+                formControl.showLoader('Отладка');
+                formControl.disableBtns();
+                var host = window.translators_hosts[formData.translator],
+                    data = {'code': formData.content};
+                if(formData.input){
+                    data['translator_console_input'] = formData.input;
                 }
-                if(response.error){
-                    form.querySelector('.js__error .js__editor-content').innerHTML = response.error
-                    form.querySelector('.js__error').style.display = 'block'
-                } else {
-                    form.querySelector('.js__error').style.display = 'none'
-                }
-                formControl.aceInit()
-                formControl.enableBtns()
-            })
+                $.ajax({
+                    url: `${host}/debug/`,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    async: false,
+                    statusCode:{
+                        200: function(response){
+                            // Отображение сообщения
+                            formControl.hideMsg();
+                            if(response.translator_error_msg){
+                                form.querySelector('.js__msg-warning').innerHTML = 'Ошибка'
+                                form.querySelector('.js__msg-warning').style.display = 'block'
+                            } else {
+                                form.querySelector('.js__msg-success').innerHTML = 'Готово'
+                                form.querySelector('.js__msg-success').style.display = 'block'
+                            }
+                            // Отображение результата работы программы
+                            if(response.translator_console_output){
+                                form.querySelector('.js__output .js__editor-content').innerHTML = response.translator_console_output
+                                form.querySelector('.js__output').style.display = 'block'
+                            } else {
+                                form.querySelector('.js__output').style.display = 'none'
+                            }
+                            // Отображение текста ошибки
+                            if(response.translator_error_msg){
+                                form.querySelector('.js__error .js__editor-content').innerHTML = response.translator_error_msg
+                                form.querySelector('.js__error').style.display = 'block'
+                            } else {
+                                form.querySelector('.js__error').style.display = 'none'
+                            }
+                            formControl.aceInit();
+                            formControl.enableBtns();
+                        },
+                        500: function(){
+                            formControl.showErrorMsg('Серверная ошибка (500)');
+                        },
+                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
+                        },
+                        404: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (404)');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        formControl.showErrorMsg('Запрос не выполнен');
+                    }
+                })
+            }
             return false
         },
         tests : function(e){

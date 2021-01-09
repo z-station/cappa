@@ -2,7 +2,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from app.training.models import Topic, Content
 from app.widgets.ace import AceWidget
-from .utils import Response
 
 
 class TopicAdminForm(forms.ModelForm):

@@ -116,5 +116,12 @@
 
 {% block js %}
     {{ block.super }}
-    <script>window.dispatchEvent(new Event('taskItemPageLoaded'))</script>
+    <script>
+        window.dispatchEvent(new Event('taskItemPageLoaded'))
+        window.translators_hosts={
+            {% for translator, host in translators_hosts.items %}
+            '{{ translator }}': '{{ host }}',
+            {% endfor %}
+        }
+    </script>
 {% endblock %}
