@@ -3,8 +3,14 @@ from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
 from django.utils import timezone
 from app.training.models import Solution, TaskItem
-from app.training.forms.utils import Response
 from app.translators.main import testing
+from app.translators.entities.response import (
+    ERROR,
+    WARNING,
+    OK,
+    OperationResponse,
+    SandboxResponseData
+)
 
 
 class TaskItemAdminForm(forms.ModelForm):
@@ -40,7 +46,10 @@ class TaskItemForm(forms.Form):
             operation = getattr(self.Operations, self.cleaned_data['operation'])
             return operation(editor_data=self.cleaned_data, taskitem=taskitem, user=user)
         else:
-            return Response(status=401, msg='Некорректные данные формы')
+            return OperationResponse(
+                status=ERROR,
+                msg='Некорректные данные формы'
+            )
 
     class Operations:
 
@@ -57,17 +66,34 @@ class TaskItemForm(forms.Form):
             """ Прогнать код по тестам задачи и вернуть результаты тестирования """
 
             if not taskitem.task.tests:
-                return Response(status=300, msg='Тесты отсутствуют')
+                return OperationResponse(status=WARNING, msg='Тесты отсутствуют')
             if not taskitem.compiler_check:
-                return Response(status=404, msg='Операция запрещена')
-            tests_result = testing(
+                return OperationResponse(status=WARNING, msg='Операция запрещена')
+            sandbox_data: SandboxResponseData = testing(
                 code=editor_data['content'],
                 taskitem=taskitem,
             )
-            if tests_result['ok']:
-                return Response(status=200, msg='Тесты пройдены', tests_result=tests_result)
+            # Запрос в песочницу прошел успешно
+            if sandbox_data['ok']:
+                # Тесты пройдены
+                if sandbox_data['data']['ok']:
+                    return OperationResponse(
+                        status=OK,
+                        msg='Тесты пройдены',
+                        sandbox_data=sandbox_data
+                    )
+                else:
+                    return OperationResponse(
+                        status=WARNING,
+                        msg='Тесты не пройдены',
+                        sandbox_data=sandbox_data
+                    )
             else:
-                return Response(status=300, msg='Тесты не пройдены', tests_result=tests_result)
+                # Запрос к песочнице завершился с ошибкой
+                return OperationResponse(
+                    status=ERROR,
+                    msg=sandbox_data['error_msg']
+                )
 
         @classmethod
         def create_version(cls, editor_data: dict, taskitem: TaskItem, user: User):
@@ -75,14 +101,23 @@ class TaskItemForm(forms.Form):
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
                 solution.create_version(content=editor_data['content'])
                 solution.save()
-                return Response(status=200, msg='Версия сохранена')
+                return OperationResponse(
+                    status=OK,
+                    msg='Версия сохранена'
+                )
             else:
-                return Response(status=402, msg='Требуется авторизация')
+                return OperationResponse(
+                    status=WARNING,
+                    msg='Требуется авторизация'
+                )
 
         @classmethod
         def save_last_changes(cls, editor_data: dict, taskitem: TaskItem, user: User):
             if not user.is_active:
-                return Response(status=402, msg='Требуется авторизация')
+                return OperationResponse(
+                    status=WARNING,
+                    msg='Требуется авторизация'
+                )
             solution, created = Solution.objects.get_or_create(
                 user=user, taskitem=taskitem, defaults={
                     "last_changes": editor_data['content']
@@ -90,7 +125,10 @@ class TaskItemForm(forms.Form):
             if not created:
                 solution.last_changes = editor_data['content']
                 solution.save()
-            return Response(status=200, msg='Изменения сохранены')
+            return OperationResponse(
+                status=OK,
+                msg='Изменения сохранены'
+            )
 
         @classmethod
         def save_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
@@ -99,21 +137,45 @@ class TaskItemForm(forms.Form):
         @classmethod
         def ready_solution(cls, editor_data: dict, taskitem: TaskItem, user: User):
             if not user.is_active:
-                return Response(status=402, msg='Требуется авторизация')
+                return OperationResponse(
+                    status=WARNING,
+                    msg='Требуется авторизация'
+                )
             if not editor_data['content']:
-                return Response(status=404, msg='Решение отсутствует')
+                return OperationResponse(
+                    status=WARNING,
+                    msg='Решение отсутствует'
+                )
             solution = Solution.objects.filter(user=user, taskitem=taskitem).first()
             # если у задачи одна попытка и она уже использована - решение нельзя изменить
             if solution and taskitem.one_try and solution.is_locked:
-                return Response(status=403, msg='Операция запрещена')
+                return OperationResponse(
+                    status=WARNING,
+                    msg='Операция запрещена'
+                )
             # если задача с автотестами - прогнать автотесты
             tests_score = None
             if taskitem.compiler_check and taskitem.task.tests:
-                tests_result = testing(
+                sandbox_data: SandboxResponseData = testing(
                     code=editor_data['content'],
                     taskitem=taskitem,
                 )
-                tests_score = round(tests_result['num_ok'] / tests_result['num'] * taskitem.max_score, 2)
+                # Запрос в песочницу прошел успешно
+                if sandbox_data['ok']:
+                    # Тесты пройдены
+                    tests_score = (
+                        round(
+                            sandbox_data['data']['num_ok'] /
+                            sandbox_data['data']['num'] * taskitem.max_score,
+                            2
+                        )
+                    )
+                else:
+                    # Запрос к песочнице завершился с ошибкой
+                    return OperationResponse(
+                        status=ERROR,
+                        msg=sandbox_data['error_msg']
+                    )
             if solution is None:
                 solution = Solution(user=user, taskitem=taskitem)
             solution.tests_score = tests_score
@@ -125,7 +187,10 @@ class TaskItemForm(forms.Form):
             if solution.taskitem.manual_check:
                 solution.manual_status = Solution.MS__READY_TO_CHECK
             solution.save()
-            return Response(status=200, msg='Решение отправлено')
+            return OperationResponse(
+                status=OK,
+                msg='Решение отправлено'
+            )
 
 
 class SolutionForm(forms.ModelForm):

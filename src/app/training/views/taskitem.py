@@ -9,7 +9,7 @@ from django.views.generic import View
 from app.training.models import TaskItem, Solution, Course
 from app.training.forms import TaskItemForm, SolutionForm
 from app.translators.consts import translators_hosts
-
+from app.translators.entities.response import OperationResponse
 
 UserModel = get_user_model()
 
@@ -49,8 +49,8 @@ class TaskItemView(View):
     def post(self, request, *args, **kwargs):
         taskitem = self.get_object(request, *args, **kwargs)
         form = TaskItemForm(data=request.POST)
-        response = form.perform_operation(request.user, taskitem)
-        return JsonResponse(response.__dict__)
+        response: OperationResponse = form.perform_operation(request.user, taskitem)
+        return JsonResponse(response)
 
 
 @method_decorator(login_required, name='dispatch')

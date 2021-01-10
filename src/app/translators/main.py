@@ -6,11 +6,11 @@ from app.translators.entities.request import (
     RequestTestData,
     RequestTestingDict
 )
-from app.translators.entities.response import ResponseTestingDict
+from app.translators.entities.response import SandboxResponseData
 from app.training.models import TaskItem
 
 
-def testing(code: str, taskitem: TaskItem) -> ResponseTestingDict:
+def testing(code: str, taskitem: TaskItem) -> SandboxResponseData:
 
     """ Прогон кода на тестах задачи
         Передает данные для тестирования в сервис-песочницу
@@ -36,4 +36,13 @@ def testing(code: str, taskitem: TaskItem) -> ResponseTestingDict:
         json=data
     )
     if response.ok:
-        return response.json()
+        result = SandboxResponseData(
+            ok=True,
+            data=response.json()
+        )
+    else:
+        result = SandboxResponseData(
+            ok=False,
+            error_msg=f'Транслятор кода недоступен ({response.status_code})'
+        )
+    return result

@@ -1,7 +1,19 @@
-from typing import TypedDict, List, Union
+from typing import TypedDict, List, Union, Optional
+
+ERROR = 'error'
+WARNING = 'warning'
+OK = 'ok'
+
+RESPONSE_STATUSES = {
+    ERROR,
+    WARNING,
+    OK
+}
 
 
-class ResponseTestData(TypedDict):
+class SandboxResponseTestData(TypedDict):
+
+    """ Содержит данные о результатах выполнения теста в песочнице """
 
     test_console_input: str
     test_console_output: str
@@ -10,9 +22,30 @@ class ResponseTestData(TypedDict):
     ok: Union[bool, None]
 
 
-class ResponseTestingDict(TypedDict):
+class SandboxResponseTestingDict(TypedDict):
 
+    """ Ответ песочницы, содержит данные о результатах тестирования """
+
+    ok: bool
     num: int
     num_ok: int
+    tests_data: List[SandboxResponseTestData]
+
+
+class SandboxResponseData(TypedDict):
+
+    """ Содержит данные о результатах запроса к песочнице """
+
     ok: bool
-    tests_data: List[ResponseTestData]
+    error_msg: Optional[str]
+    data: Optional[SandboxResponseTestingDict]
+
+
+class OperationResponse(TypedDict):
+
+    """ Ответ приложения, содержит данные о результатах запроса к приложению """
+
+    msg: str
+    status: str
+    sandbox_data: Optional[SandboxResponseData]
+
