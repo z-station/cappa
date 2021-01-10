@@ -76,14 +76,13 @@ var taskItemPage = function(e){
         },
         showMsg(response){
             formControl.hideMsg();
-            var status = response.status;
-            if(status >= 200 && status < 300){
+            if(response.status == 'ok'){
                 form.querySelector('.js__msg-success').innerHTML = response.msg
                 form.querySelector('.js__msg-success').style.display = 'block'
-            } else if(status >= 300 && status < 400){
+            } else if(response.status == 'warning'){
                 form.querySelector('.js__msg-warning').innerHTML = response.msg
                 form.querySelector('.js__msg-warning').style.display = 'block'
-            } else if (status >= 400 && status < 500){
+            } else {
                 form.querySelector('.js__msg-error').innerHTML = response.msg
                 form.querySelector('.js__msg-error').style.display = 'block'
             }
@@ -195,9 +194,9 @@ var taskItemPage = function(e){
                         200: function(response){
                             formControl.showMsg(response)
                             table = document.querySelector('.js__form__tests-table')
-                            if(response.tests_result){
+                            if(response.sandbox_data && response.sandbox_data.ok){
                                 table.querySelector('th.js__form__test-result').innerHTML = 'Вывод программы'
-                                response.tests_result.tests_data.forEach(function(test, index){
+                                response.sandbox_data.data.tests_data.forEach(function(test, index){
                                     var tr = table.querySelector('.js__form__test-'+ index)
                                     if(test.ok){
                                         tr.classList.remove('success', 'unluck')
@@ -248,41 +247,166 @@ var taskItemPage = function(e){
             return false;
         },
         version: function(e){
-            formControl.showLoader('Сохранение версии')
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='create_version'), function(response){
-                formControl.showMsg(response)
-                formControl.enableVersionsBtn()
-            })
-            return false
+            var formData = formControl.serializeForm(operation='create_version');
+            if (formData.content){
+                formControl.showLoader('Сохранение версии');
+                $.ajax({
+                    url: form.getAttribute('action'),
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-Token': formData.csrfmiddlewaretoken
+                    },
+                    statusCode:{
+                        200: function(response){
+                            formControl.showMsg(response)
+                            formControl.enableVersionsBtn()
+                        },
+                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
+                        },
+                        403: function(response){
+                            formControl.showErrorMsg('Запрос отклонен (403)');
+                        },
+                        404: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (404)');
+                        },
+                        500: function(){
+                            formControl.showErrorMsg('Серверная ошибка (500)');
+                        },
+                        502: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (502)');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        formControl.showErrorMsg('Запрос не выполнен');
+                    }
 
+                })
+            }
+            return false
         },
         save: function(e){
-            formControl.showLoader('Сохранение');
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_solution'), function(response){
-                formControl.showMsg(response)
-                formControl.enableVersionsBtn()
-            })
+            var formData = formControl.serializeForm(operation='save_solution')
+            if(formData.content){
+                formControl.showLoader('Сохранение');
+                $.ajax({
+                    url: form.getAttribute('action'),
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-Token': formData.csrfmiddlewaretoken
+                    },
+                    statusCode:{
+                        200: function(response){
+                            formControl.showMsg(response)
+                            formControl.enableVersionsBtn()
+                        },
+                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
+                        },
+                        403: function(response){
+                            formControl.showErrorMsg('Запрос отклонен (403)');
+                        },
+                        404: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (404)');
+                        },
+                        500: function(){
+                            formControl.showErrorMsg('Серверная ошибка (500)');
+                        },
+                        502: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (502)');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        formControl.showErrorMsg('Запрос не выполнен');
+                    }
+                })
+                formControl.aceInit();
+            }
             return false
         },
         autosave: function(e){
-            formControl.showLoader('Автосохранение')
-            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
-                formControl.showMsg(response)
-            })
-            return false
+            var formData = formControl.serializeForm(operation='save_last_changes')
+            if(formData.content){
+                formControl.showLoader('Автосохранение')
+                $.ajax({
+                    url: form.getAttribute('action'),
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-Token': formData.csrfmiddlewaretoken
+                    },
+                    statusCode:{
+                        200: function(response){
+                            formControl.showMsg(response)
+                        },
+                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
+                        },
+                        403: function(response){
+                            formControl.showErrorMsg('Запрос отклонен (403)');
+                        },
+                        404: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (404)');
+                        },
+                        500: function(){
+                            formControl.showErrorMsg('Серверная ошибка (500)');
+                        },
+                        502: function(response){
+                            formControl.showErrorMsg('Сервис недоступен (502)');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        formControl.showErrorMsg('Запрос не выполнен');
+                    }
+                })
+                return false
+            }
         },
         ready: function(e){
-            var confirmed = true;
-            if(e.target.classList.contains('js__confirm')){
-                confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
-            }
-            if(confirmed){
-                formControl.showLoader('Отправляем на проверку');
-                $.post(form.getAttribute('action'), formControl.serializeForm(operation='ready_solution'), function(response){
-                    formControl.showMsg(response)
-                    formControl.disableBtn('save');
-                    formControl.enableVersionsBtn()
-                })
+            var formData = formControl.serializeForm(operation='ready_solution')
+            if(formData.content){
+                var confirmed = true;
+                if(e.target.classList.contains('js__confirm')){
+                    confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
+                    if(confirmed){
+                        formControl.showLoader('Отправляем на проверку');
+                        $.ajax({
+                            url: form.getAttribute('action'),
+                            type: 'POST',
+                            data: formData,
+                            headers: {
+                                'X-CSRF-Token': formData.csrfmiddlewaretoken
+                            },
+                            statusCode:{
+                                200: function(response){
+                                    formControl.showMsg(response);
+                                    formControl.disableBtn('save');
+                                    formControl.enableVersionsBtn();
+                                },
+                                            400: function(response){
+                                formControl.showErrorMsg('Ошибка запроса (400)');
+                                },
+                                403: function(response){
+                                    formControl.showErrorMsg('Запрос отклонен (403)');
+                                },
+                                404: function(response){
+                                    formControl.showErrorMsg('Сервис недоступен (404)');
+                                },
+                                500: function(){
+                                    formControl.showErrorMsg('Серверная ошибка (500)');
+                                },
+                                502: function(response){
+                                    formControl.showErrorMsg('Сервис недоступен (502)');
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                formControl.showErrorMsg('Запрос не выполнен');
+                            }
+                        })
+                    }
+                }
             }
         }
     }
