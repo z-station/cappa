@@ -368,44 +368,42 @@ var taskItemPage = function(e){
             var formData = formControl.serializeForm(operation='ready_solution')
             if(formData.content){
                 var confirmed = true;
-                if(e.target.classList.contains('js__confirm')){
-                    confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
-                    if(confirmed){
-                        formControl.showLoader('Отправляем на проверку');
-                        $.ajax({
-                            url: form.getAttribute('action'),
-                            type: 'POST',
-                            data: formData,
-                            headers: {
-                                'X-CSRF-Token': formData.csrfmiddlewaretoken
+                confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
+                if(confirmed){
+                    formControl.showLoader('Отправляем на проверку');
+                    $.ajax({
+                        url: form.getAttribute('action'),
+                        type: 'POST',
+                        data: formData,
+                        headers: {
+                            'X-CSRF-Token': formData.csrfmiddlewaretoken
+                        },
+                        statusCode:{
+                            200: function(response){
+                                formControl.showMsg(response);
+                                formControl.disableBtn('save');
+                                formControl.enableVersionsBtn();
                             },
-                            statusCode:{
-                                200: function(response){
-                                    formControl.showMsg(response);
-                                    formControl.disableBtn('save');
-                                    formControl.enableVersionsBtn();
-                                },
-                                            400: function(response){
-                                formControl.showErrorMsg('Ошибка запроса (400)');
-                                },
-                                403: function(response){
-                                    formControl.showErrorMsg('Запрос отклонен (403)');
-                                },
-                                404: function(response){
-                                    formControl.showErrorMsg('Сервис недоступен (404)');
-                                },
-                                500: function(){
-                                    formControl.showErrorMsg('Серверная ошибка (500)');
-                                },
-                                502: function(response){
-                                    formControl.showErrorMsg('Сервис недоступен (502)');
-                                }
+                                        400: function(response){
+                            formControl.showErrorMsg('Ошибка запроса (400)');
                             },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                formControl.showErrorMsg('Запрос не выполнен');
+                            403: function(response){
+                                formControl.showErrorMsg('Запрос отклонен (403)');
+                            },
+                            404: function(response){
+                                formControl.showErrorMsg('Сервис недоступен (404)');
+                            },
+                            500: function(){
+                                formControl.showErrorMsg('Серверная ошибка (500)');
+                            },
+                            502: function(response){
+                                formControl.showErrorMsg('Сервис недоступен (502)');
                             }
-                        })
-                    }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            formControl.showErrorMsg('Запрос не выполнен');
+                        }
+                    })
                 }
             }
         }
