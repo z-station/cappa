@@ -1,19 +1,19 @@
 from django.conf import settings
 
 PYTHON38 = '1'
-GCC75 = '2'
+GCC74 = '2'
 
 translators_ids = [
     PYTHON38,
-    GCC75,
+    GCC74,
 ]
 
 translators_choices = (
     (PYTHON38, 'Python 3.8'),
-    (GCC75, 'GCC 7.5'),
+    (GCC74, 'GCC 7.5'),
 )
 
 translators_hosts = {
     PYTHON38: settings.PYTHON38_HOST,
-    GCC75: settings.GCC75_HOST,
+    GCC74: settings.GCC75_HOST,
 }

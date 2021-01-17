@@ -1,5 +1,5 @@
 var PYTHON38 = '1',
-    GCC75 = '2';
+    GCC74 = '2';
 
 var django = django || {
     "jQuery": jQuery.noConflict(true)
@@ -58,7 +58,7 @@ var aceInit = function(){
         switch(translator){
             case PYTHON38:
                 editor.getSession().setMode("ace/mode/python"); break
-            case GCC75:
+            case GCC74:
                 editor.getSession().setMode("ace/mode/c_cpp"); break
         }
 

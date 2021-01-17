@@ -1,5 +1,5 @@
 var PYTHON38 = '1',
-    GCC75 = '2';
+    GCC74 = '2';
 
 var taskItemPage = function(e){
 
@@ -19,7 +19,7 @@ var taskItemPage = function(e){
                 switch(form.querySelector(".js__translator").value){
                     case PYTHON38:
                         editor.getSession().setMode("ace/mode/python"); break
-                    case GCC75:
+                    case GCC74:
                         editor.getSession().setMode("ace/mode/c_cpp"); break
                 }
 
