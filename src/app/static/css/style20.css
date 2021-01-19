@@ -236,7 +236,9 @@ div.row .btn {
 
 .js__editor-btn.disabled,
 .js__editor-btn.not-versions,
-.js__editor-btn.disabled:hover {
+.js__editor-btn.disabled:hover,
+.js__editor-btn.js__permanent-disabled,
+.js__editor-btn.js__permanent-disabled:hover {
     opacity: 0.4;
     background-color: #afafaf;
     pointer-events: none;

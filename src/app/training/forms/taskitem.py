@@ -151,7 +151,7 @@ class TaskItemForm(forms.Form):
             if solution and taskitem.one_try and solution.is_locked:
                 return OperationResponse(
                     status=WARNING,
-                    msg='Операция запрещена'
+                    msg='Решение более нельзя изменить'
                 )
             # если задача с автотестами - прогнать автотесты
             tests_score = None

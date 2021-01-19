@@ -56,11 +56,15 @@ var taskItemPage = function(e){
            })
         },
         disableBtn: function(btnName){
-           var btn = form.querySelector(`.js__editor-btn.js__editor-btn-${btnName}`);
+           var btn = form.querySelector(`.js__editor-btn.js__editor-btn-${btnName}:not(.js__permanent-disabled)`);
            btn && btn.classList.add('disabled');
         },
+        permanentDisableBtn: function(btnName){
+           var btn = form.querySelector(`.js__editor-btn.js__editor-btn-${btnName}`);
+           btn && btn.classList.add('js__permanent-disabled');
+        },
         enableBtns: function(){
-           form.querySelectorAll('.js__editor-btn').forEach(function(btn){
+           form.querySelectorAll('.js__editor-btn:not(.js__permanent-disabled)').forEach(function(btn){
            btn.classList.remove('disabled')
            })
         },
@@ -378,6 +382,7 @@ var taskItemPage = function(e){
                 var confirmed = formControl.getConfirmation(e, 'После отправки решения на проверку его будет нельзя изменить. Вы согласны?');
                 if(confirmed){
                     formControl.showLoader('Отправляем на проверку');
+                    formControl.disableBtns();
                     $.ajax({
                         url: form.getAttribute('action'),
                         type: 'POST',
@@ -388,11 +393,13 @@ var taskItemPage = function(e){
                         statusCode:{
                             200: function(response){
                                 formControl.showMsg(response);
-                                formControl.disableBtn('save');
-                                formControl.enableVersionsBtn();
+                                if(e.target.classList.contains('js__one_try')){
+                                    formControl.permanentDisableBtn('save');
+                                    formControl.permanentDisableBtn('ready');
+                                }
                             },
-                                        400: function(response){
-                            formControl.showErrorMsg('Ошибка запроса (400)');
+                            400: function(response){
+                                formControl.showErrorMsg('Ошибка запроса (400)');
                             },
                             403: function(response){
                                 formControl.showErrorMsg('Запрос отклонен (403)');
@@ -411,6 +418,7 @@ var taskItemPage = function(e){
                             formControl.showErrorMsg('Запрос не выполнен');
                         }
                     })
+                    formControl.enableBtns();
                 }
             }
         }
