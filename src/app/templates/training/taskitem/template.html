@@ -44,7 +44,7 @@
                 <div class="control__bar taskitem">
                     <div class="control__bar-col col__1">
                         {% if request.user.is_active %}
-                            <div class="js__editor-btn js__editor-btn-ready {% if object.one_try %}js__confirm{% endif %} {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить решение"></div>
+                            <div class="js__editor-btn js__editor-btn-ready {% if object.one_try %}js__one_try{% endif %} {% if solution and solution.manual_status != '0' %}disabled{% endif %}" title="Отправить решение"></div>
                             <div class="js__editor-btn js__editor-btn-versions {% if not solution %} not-versions{% endif %}"
                                  title="Страница решения"
                                  onclick="window.open('{{ object.get_absolute_url }}solution/?user={{ request.user.id }}', '_blank')"

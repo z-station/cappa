@@ -110,6 +110,14 @@ var taskItemPage = function(e){
             data['operation'] = operation
             return data
         },
+        getConfirmation: function(e, msg){
+            if(e.target.classList.contains('js__one_try')){
+                confirmed = confirm(msg)
+            } else {
+                confirmed = true
+            }
+            return confirmed
+        },
         debug : function(e){
             // запрос на отладку кода из редактора
             var formData = formControl.serializeForm(operation='debug');
@@ -367,8 +375,7 @@ var taskItemPage = function(e){
         ready: function(e){
             var formData = formControl.serializeForm(operation='ready_solution')
             if(formData.content){
-                var confirmed = true;
-                confirmed = confirm('После отправки решения на проверку его будет нельзя изменить. Вы согласны?')
+                var confirmed = formControl.getConfirmation(e, 'После отправки решения на проверку его будет нельзя изменить. Вы согласны?');
                 if(confirmed){
                     formControl.showLoader('Отправляем на проверку');
                     $.ajax({
