@@ -1,0 +1,29 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+django-debug-toolbar = "*"
+freeze = "*"
+
+[packages]
+django-mptt = "==0.9.0"
+django-tinymce = "==2.7.0"
+django-modeladmin-reorder = "==0.3.1"
+django-admin-sortable2 = "==0.7.3"
+Django = "==1.11.*"
+Pillow = ">=5.3.0"
+Unidecode = "==1.1.1"
+psycopg2 = "*"
+gunicorn = "*"
+python-memcached = "*"
+django-admin-list-filter-dropdown = "*"
+docker = "*"
+
+[requires]
+python_version = "3.8"
+
+[scripts]
+"start:local" = "python manage.py runserver 0:8000"
+"start:prod" = "gunicorn --bind unix:/run/gunicorn.sock --access-logfile - --reload --workers 4 --timeout 60 app.wsgi:application"

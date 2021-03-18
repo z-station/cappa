@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir -m 775 -p ../public/media
+mkdir -m 775 -p ../public/static
+mkdir -m 775 -p ../backup
+mkdir -m 775 -p ../postgresql-data
+docker-compose -f ../docker/docker-compose.yml up --build --force-recreate -d

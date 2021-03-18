@@ -1,0 +1,23 @@
+{% extends 'training/base.html' %}
+{% load topic_tags %}
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.title }}</h1>
+            {% show_content object %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        window.dispatchEvent(new Event('topicPageLoaded'));
+        window.translators_urls={
+            {% for translator, host in translators_urls.items %}
+            '{{ translator }}': '{{ host }}',
+            {% endfor %}
+        }
+    </script>
+{% endblock %}

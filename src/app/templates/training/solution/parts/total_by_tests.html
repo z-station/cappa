@@ -1,0 +1,38 @@
+{% load training_tags %}
+<table class="solution__info">
+    <tr>
+        <td>Задача:</td>
+        <td>{{ object.taskitem.numbered_title }}</td>
+    </tr>
+    <tr>
+        <td>Пользователь:</td>
+        <td>{{ object.user.get_full_name|default:object.user.username }}</td>
+    </tr>
+    <tr>
+        <td>Язык:</td>
+        <td>{{ object.taskitem.translator }}</td>
+    </tr>
+    {% if topic.end_time %}
+    <tr title="Решение после указанной даты не засчитывается">
+        <td>Ограничение по времени:</td>
+        <td class="js__utc-time" data-utc-time="{{ topic.end_time|date:'Y-m-d H:i:s.u'}}"></td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td>Дата отправки:</td>
+        <td class="js__utc-time" data-utc-time="{{ object.last_modified|date:'Y-m-d H:i:s.u' }}"></td>
+    </tr>
+    <tr>
+        <td colspan="2">Оценка выставляется на основании пройденных тестов</td>
+    </tr>
+    <tr class="status__{{ object.status }}{% if not object.is_count %} not-count{% endif %}">
+        <td>Оценка:</td>
+        <td>
+            {% if object.tests_score %}
+                {{ object.tests_score|cut_zero }} / {{ object.taskitem.max_score|cut_zero }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,36 @@
+{% extends 'training/base.html' %}
+{% load static training_tags %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1>Решение {% if not object.is_count %}(вне зачета){% endif %}</h1>
+            {% if object.taskitem.manual_check %}
+                {% include 'training/solution/parts/total_by_manual.html' %}
+            {% else %}
+                {% include 'training/solution/parts/total_by_tests.html' %}
+            {% endif %}
+        </div>
+        <div class="white fp-content">
+            <h3>Листинг решения</h3>
+            <div class="js__editor" data-translator="{{ object.taskitem.translator }}">
+                <div class="js__editor-ace">{{ object.content }}</div>
+            </div>
+        </div>
+
+        {% if object.version_list %}
+            <div class="fp-content">
+                <h3 class="text-center mt-2">Версии решения</h3>
+            </div>
+            {% include 'training/solution/parts/versions_list.html' %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'tiny_mce/tiny_mce.js' %}"></script>
+    <script src="{% static 'django_tinymce/init_tinymce.js' %}"></script>
+    <script>window.dispatchEvent(new Event('solutionPageLoaded'))</script>
+{% endblock %}

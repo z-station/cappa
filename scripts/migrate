@@ -1,0 +1,2 @@
+#!/bin/bash
+docker exec -it cappa-app bash -c "python manage.py migrate"

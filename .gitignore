@@ -2,7 +2,6 @@
 *.ps1
 *.orig
 *.pyc
-*.sh
 *.sql
 *.bak
 *.dmp
@@ -17,7 +16,11 @@ develop-eggs/*
 parts/*
 commit.txt
 venv/
-media/*
-tmp/*
-src/settings/local.py
-src/settings/prod.py
+public/*
+src/app/media/*
+static/*
+backup/*
+postgresql-data*
+ansible/start.sh
+src/app/settings/local.py
+src/app/settings/prod.py
