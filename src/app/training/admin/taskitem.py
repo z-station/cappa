@@ -35,6 +35,12 @@ class SolutionAdmin(admin.ModelAdmin):
     status_name.short_description = 'статус'
 
     model = Solution
-    list_display = ('get_user', 'taskitem', 'status_name')
+    list_display = (
+        'get_user',
+        'taskitem',
+        'status_name',
+        'last_modified',
+        'datetime',
+    )
     search_fields = ('user__first_name', 'user__last_name', 'taskitem__task__title')
     exclude = ('last_changes', 'version_list')

@@ -141,7 +141,7 @@ ADMIN_REORDER = (
         'models': ('training.Course', 'groups.Group', 'training.Solution')
     },
     {
-        'app': 'tasks', 'label': u'Задачник',
+        'app': 'tasks', 'label': u'Архив задач',
         'models': ('tasks.Task', 'tasks.Tag', 'tasks.Source')
     },
     {

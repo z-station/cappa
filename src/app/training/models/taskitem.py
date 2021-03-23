@@ -91,6 +91,7 @@ class Solution(models.Model):
     class Meta:
         verbose_name = "решение задачи"
         verbose_name_plural = "решения задач"
+        ordering = ('-last_modified',)
 
     MS__NOT_CHECKED = '0'
     MS__READY_TO_CHECK = '1'
