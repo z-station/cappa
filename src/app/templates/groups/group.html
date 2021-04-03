@@ -81,6 +81,7 @@
                                 <th>№</th>
                                 <th>Фамилия</th>
                                 <th>Имя</th>
+                                <th>Дата последнего входа</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,6 +90,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ member.last_name }}</td>
                                     <td>{{ member.first_name }}</td>
+                                    <td>{{ member.last_login|date:'Y-m-d H:i' }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
