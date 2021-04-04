@@ -12,6 +12,7 @@ var taskItemPage = function(e){
             form.querySelectorAll('.js__editor').forEach(function(elem, index){
                 var textarea = elem.querySelector('.js__editor-content')
                 var editor = ace.edit(elem.querySelector('.js__editor-ace'))
+                editor.setOption("wrap", true)                 // добавляет перенос строк
                 editor.setOption("showPrintMargin", false)     // убрать верт черту
                 editor.setOption("maxLines", "Infinity")       // авто-высота
                 editor.setHighlightActiveLine(false);          // убрать строку вделения

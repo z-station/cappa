@@ -1357,10 +1357,18 @@ li.error {
 }
 
 .js__form__tests-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
     width: 100%;
     max-width: 100%;
     background-color: transparent;
     border-collapse: collapse;
+}
+.js__form__tests-table thead,
+.js__form__tests-table tbody {
+    display: table;
+    width: 100%;
 }
 
 .js__form__tests-table thead tr th {
@@ -1375,13 +1383,21 @@ li.error {
     vertical-align: middle;
     border: 1px solid #fff;
 }
+.js__form__tests-table tbody tr td pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 .js__form__tests-table tbody tr td:first-child {
     min-width: 40px;
     width: 40px;
     max-width: 40px;
 }
-.js__form__tests-table tbody tr td:not(:first-child) {
-    min-width: 165px;
+.js__form__tests-table tbody tr td pre {
+    width: 300px;
+    max-width: 300px;
+    min-width: 300px;
+    overflow: hidden;
 }
 .js__form__tests-table tbody tr.success {
     background-color: #96ff8e;
@@ -1869,6 +1885,12 @@ li.error {
         margin-left: 30px;
     }
 
+    .js__form__tests-table tbody tr td pre {
+        width: 250px;
+        max-width: 250px;
+        min-width: 250px;
+    }
+}
 @media screen and (max-width: 1200px) {
 
     .header__menu-col-3 {
@@ -1949,6 +1971,11 @@ li.error {
         background-size: auto 100%;
     }
 
+    .js__form__tests-table tbody tr td pre {
+        width: 150px;
+        max-width: 150px;
+        min-width: 150px;
+    }
 }
 
 @media screen and (max-width: 768px) {
