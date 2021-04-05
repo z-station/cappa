@@ -14,8 +14,7 @@ RUN apt-get -y install lsb-release && \
 RUN apt-get update && \
     apt-get -y install memcached libmemcached-tools systemd net-tools
 
-COPY ./src/Pipfile ./src/Pipfile.lock ./docker/start.sh /tmp/
+COPY ./src/Pipfile ./src/Pipfile.lock /tmp/
 RUN cd /tmp && pipenv install --deploy --system
 
 WORKDIR /app/src
-ENTRYPOINT ["/tmp/start.sh"]

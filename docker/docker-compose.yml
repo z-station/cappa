@@ -44,6 +44,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-
+    command: >
+      sh -c "memcached -d -u memcache &&
+             cd /app/src &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0:9000 app.wsgi:application --reload -w 1"
 networks:
   localhost:
