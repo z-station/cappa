@@ -5,7 +5,7 @@ from os import environ as env
 if env.get('APP_DEBUG', None) is None:
     DEBUG = True
 else:
-    DEBUG = bool(env.get('APP_DEBUG') == 'true')
+    DEBUG = bool(env.get('APP_DEBUG') == 'debug')
 
 ALLOWED_HOSTS = env.get('APP_ALLOWED_HOSTS', '*').split(',')
 
