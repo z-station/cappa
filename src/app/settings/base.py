@@ -109,6 +109,13 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 SESSION_COOKIE_AGE = 4 * 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
 
