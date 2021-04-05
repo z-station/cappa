@@ -2,7 +2,10 @@
 import os
 from os import environ as env
 
-DEBUG = env.get('APP_DEBUG', True)
+if env.get('APP_DEBUG', None) is None:
+    DEBUG = True
+else:
+    DEBUG = bool(env.get('APP_DEBUG') == 'true')
 
 ALLOWED_HOSTS = env.get('APP_ALLOWED_HOSTS', '*').split(',')
 
@@ -106,6 +109,13 @@ DATABASES = {
         'PASSWORD': env.get('PGPASSWORD', 'cappa'),
         'HOST': env.get('POSTGRES_HOST', 'localhost'),
         'PORT': env.get('POSTGRES_PORT', 5432)
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
     }
 }
 
