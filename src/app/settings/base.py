@@ -99,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.profile.middleware.LastSeenUserMiddleware'
 ]
 
 DATABASES = {
@@ -118,6 +119,11 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
+# Хранить в кэше вечно дату последнего онлайна пользователя
+LAST_SEEN_CACHE_TIMEOUT = None
+# Пользователь считается онлайн если посылает запросы
+# не реже чем раз в 300 сек (5 мин)
+USER_ONLINE_TIMEOUT = 300
 
 SESSION_COOKIE_AGE = 4 * 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True

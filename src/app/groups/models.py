@@ -1,4 +1,8 @@
+from typing import List, Dict
 from django.db import models
+from django.core.cache import cache
+from django.conf import settings
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from app.training.models import Course
 from tinymce.models import HTMLField
@@ -36,7 +40,28 @@ class Group(models.Model):
 
     @property
     def members(self):
-        return self._members.all().order_by('last_name')
+        return self._members.filter(
+            is_active=True
+        ).order_by('last_name')
+
+    def get_members_data(self) -> List[Dict]:
+        result = []
+        users__last_seen = cache.get('users__last_seen') or {}
+        datetime_now = timezone.now().timestamp()
+        for user in self.members:
+            user_cached_data = users__last_seen.get(user.id)
+            if user_cached_data is None:
+                last_seen = user.last_login.timestamp()
+            else:
+                last_seen = int(user_cached_data['last_seen'])
+            is_online = (last_seen + settings.USER_ONLINE_TIMEOUT) >= datetime_now
+            result.append({
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'last_seen': last_seen,
+                'is_online': is_online
+            })
+        return result
 
     def get_status(self):
         for choice in self.CHOICES:

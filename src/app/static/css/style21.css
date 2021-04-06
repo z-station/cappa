@@ -317,6 +317,7 @@ div.row .btn {
     background-size: 40px 25px;
     color: #c82333;
     line-height: 1.9;
+    font-size: 15px;
 }
 
 /**/
@@ -1541,6 +1542,9 @@ li.error {
     padding: 5px;
 }
 
+.group__table tr.is_online {
+    background-color: #3fff77;
+}
 
 /* group course */
 

@@ -75,22 +75,30 @@
             <h3 class="text-center">Список участников</h3>
             {% if object.members %}
                 <div class="group__table-container">
-                    <table class="group__table js__tablesorter">
+                    <table class="group__table js__tablesorter"
+                        data-sort-col="3"
+                        data-sort-direction="desc"
+                        data-sortlist="[[3,1],[1,0]]">
                         <thead>
                             <tr>
                                 <th>№</th>
                                 <th>Фамилия</th>
                                 <th>Имя</th>
                                 <th>Дата последнего входа</th>
+                                <th>Статус</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for member in object.members %}
-                                <tr>
+                            {% for member in object.get_members_data %}
+                                <tr class="{% if member.is_online %}is_online{% endif %}">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ member.last_name }}</td>
                                     <td>{{ member.first_name }}</td>
-                                    <td>{{ member.last_login|date:'Y-m-d H:i' }}</td>
+                                    <td class="js__utc-timestamp"
+                                        data-utc-timestamp="{{ member.last_seen }}">
+                                        {{ member.last_seen }}
+                                    </td>
+                                    <td>{% if member.is_online %}онлайн{% endif %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
