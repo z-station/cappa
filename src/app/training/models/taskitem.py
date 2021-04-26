@@ -8,8 +8,8 @@ from django.utils import timezone
 from django.urls import reverse
 from app.tasks.models import Task
 from app.training.models import Topic
+from app.translators.consts import translators_names
 from app.utils.fields import OrderField, SlugField
-
 
 UserModel = get_user_model()
 
@@ -36,6 +36,10 @@ class TaskItem(models.Model):
     @property
     def translator(self) -> int:
         return self.topic.translator
+
+    @property
+    def translator_name(self) -> str:
+        return translators_names[self.translator]
 
     @property
     def title(self):
