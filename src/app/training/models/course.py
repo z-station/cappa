@@ -20,7 +20,7 @@ class Course(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
     translator = models.CharField(
-        verbose_name='транслятор кода',
+        verbose_name='язык',
         choices=translators_choices,
         max_length=2
     )

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course',
             name='translator',
-            field=models.CharField(choices=[('1', 'Python 3.8'), ('2', 'GCC 7.5')], default=1, max_length=2, verbose_name='транслятор кода'),
+            field=models.CharField(choices=[('1', 'Python 3.8'), ('2', 'C++ (GCC 7.5)')], default=1, max_length=2, verbose_name='язык'),
             preserve_default=False,
         ),
     ]

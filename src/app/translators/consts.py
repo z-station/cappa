@@ -10,12 +10,12 @@ translators_ids = [
 
 translators_choices = (
     (PYTHON38, 'Python 3.8'),
-    (GCC74, 'GCC 7.5'),
+    (GCC74, 'С++ (GCC 7.5)'),
 )
 
 translators_names = {
     PYTHON38: 'Python 3.8',
-    GCC74: 'GCC 7.5'
+    GCC74: 'С++ (GCC 7.5)'
 }
 
 translators_external_urls = {

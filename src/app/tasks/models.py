@@ -80,7 +80,7 @@ class SolutionExample(models.Model):
         verbose_name_plural = "эталонные решения"
 
     translator = models.CharField(
-        verbose_name='транслятор кода',
+        verbose_name='язык',
         choices=translators_choices,
         max_length=2
     )
