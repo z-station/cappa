@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from app.training.forms import ContentForm
 from app.training.models import Topic
-from app.translators.consts import translators_external_urls
+from app.translators.consts import Translator
 
 
 @method_decorator(login_required, name='dispatch')
@@ -27,7 +27,7 @@ class TopicView(View):
             context={
                 'object': topic,
                 'course': topic.course,
-                'translators_urls': translators_external_urls
+                'translators_urls': Translator.external_urls
             }
         )
 

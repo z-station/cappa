@@ -1,5 +1,5 @@
 import requests
-from app.translators.consts import translators_internal_urls
+from app.translators.consts import Translator
 from app.translators.checkers import checkers
 from app.translators.entities.request import (
     RequestTestData,
@@ -31,7 +31,7 @@ def testing(code: str, taskitem: TaskItem) -> SandboxResponseData:
         tests_data=tests_data,
         code=code
     )
-    host = translators_internal_urls[translator]
+    host = Translator.internal_urls[translator]
     url = f'{host}/testing/'
     try:
         response = requests.post(

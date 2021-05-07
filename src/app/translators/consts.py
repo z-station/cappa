@@ -1,29 +1,34 @@
 from django.conf import settings
+from dataclasses import dataclass
 
-PYTHON38 = '1'
-GCC74 = '2'
 
-translators_ids = [
-    PYTHON38,
-    GCC74,
-]
+@dataclass
+class Translator:
 
-translators_choices = (
-    (PYTHON38, 'Python 3.8'),
-    (GCC74, 'С++ (GCC 7.5)'),
-)
+    PYTHON38 = '1'
+    GCC74 = '2'
 
-translators_names = {
-    PYTHON38: 'Python 3.8',
-    GCC74: 'С++ (GCC 7.5)'
-}
+    ids = [
+        PYTHON38,
+        GCC74,
+    ]
 
-translators_external_urls = {
-    PYTHON38: settings.SERVICES["PYTHON38"]["EXTERNAL_URL"],
-    GCC74: settings.SERVICES["GCC74"]["EXTERNAL_URL"]
-}
+    choices = (
+        (PYTHON38, 'Python 3.8'),
+        (GCC74, 'С++ (GCC 7.5)'),
+    )
 
-translators_internal_urls = {
-    PYTHON38: settings.SERVICES["PYTHON38"]["INTERNAL_URL"],
-    GCC74: settings.SERVICES["GCC74"]["INTERNAL_URL"]
-}
+    names = {
+        PYTHON38: 'Python 3.8',
+        GCC74: 'С++ (GCC 7.5)'
+    }
+
+    external_urls = {
+        PYTHON38: settings.SERVICES["PYTHON38"]["EXTERNAL_URL"],
+        GCC74: settings.SERVICES["GCC74"]["EXTERNAL_URL"]
+    }
+
+    internal_urls = {
+        PYTHON38: settings.SERVICES["PYTHON38"]["INTERNAL_URL"],
+        GCC74: settings.SERVICES["GCC74"]["INTERNAL_URL"]
+    }

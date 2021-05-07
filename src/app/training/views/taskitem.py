@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from app.training.models import TaskItem, Solution, Course
 from app.training.forms import TaskItemForm, SolutionForm
-from app.translators.consts import translators_external_urls
+from app.translators.consts import Translator
 from app.translators.entities.response import OperationResponse
 
 UserModel = get_user_model()
@@ -42,7 +42,7 @@ class TaskItemView(View):
                 'object': taskitem,
                 'solution': solution,
                 'form': form,
-                'translators_urls': translators_external_urls
+                'translators_urls': Translator.external_urls
             }
         )
 

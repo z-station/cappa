@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from app.utils.fields import OrderField
-from app.translators.consts import translators_choices
+from app.translators.consts import Translator
 
 UserModel = get_user_model()
 
@@ -21,7 +21,7 @@ class Course(models.Model):
     slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
     translator = models.CharField(
         verbose_name='язык',
-        choices=translators_choices,
+        choices=Translator.choices,
         max_length=2
     )
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
