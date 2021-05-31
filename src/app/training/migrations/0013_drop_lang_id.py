@@ -12,5 +12,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('ALTER TABLE training_course DROP COLUMN lang_id')
+        migrations.RunSQL('ALTER TABLE training_course DROP COLUMN IF EXISTS lang_id')
     ]
