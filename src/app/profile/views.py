@@ -1,11 +1,12 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect
-from app.profile.forms import LoginForm, SignupForm
+from app.profile.forms import SignInForm, SignupForm
 from django.contrib.auth import login, logout as auth_logout
+from app.service.models.site import SiteSettings
 from urllib import parse
 
 
-class LoginView(View):
+class SignInView(View):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_active:
@@ -14,11 +15,11 @@ class LoginView(View):
         return render(
             request=request,
             template_name='profile/login.html',
-            context={'form': LoginForm(request=request, initial={'next': next})}
+            context={'form': SignInForm(request=request, initial={'next': next})}
         )
 
     def post(self, request, *args, **kwargs):
-        form = LoginForm(request=request, data=request.POST)
+        form = SignInForm(request=request, data=request.POST)
         if form.is_valid():
             login(request, form.user)
             return redirect(form.cleaned_data.get('next', '/'))
@@ -52,9 +53,14 @@ class SignUpView(View):
     def post(self, request, *args, **kwargs):
         form = SignupForm(data=request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+            site_settings = SiteSettings.objects.last()
+            if site_settings.confirm_signup:
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
+            else:
+                user = form.save()
+                login(request, user)
             return redirect(form.cleaned_data.get('next', '/'))
         else:
             return render(

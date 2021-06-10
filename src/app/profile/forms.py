@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, get_user_model, password_validatio
 UserModel = get_user_model()
 
 
-class LoginForm(forms.Form):
+class SignInForm(forms.Form):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
