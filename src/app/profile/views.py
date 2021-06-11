@@ -3,19 +3,29 @@ from django.shortcuts import render, redirect
 from app.profile.forms import SignInForm, SignupForm
 from django.contrib.auth import login, logout as auth_logout
 from app.service.models.site import SiteSettings
-from urllib import parse
+from app.profile.mixins import NextPathMixin
 
 
-class SignInView(View):
+class SignInView(View, NextPathMixin):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_active:
             return redirect('/')
-        next = parse.urlparse(request.META.get('HTTP_REFERER', '/')).path
+        next_path = self._get_next_path(request)
+        form = SignInForm(
+            request=request,
+            initial={'next': next_path}
+        )
+        signup_path = '/signup/'
+        if next_path != self.HOME_PATH:
+            signup_path += f'?next={next_path}'
         return render(
             request=request,
             template_name='profile/login.html',
-            context={'form': SignInForm(request=request, initial={'next': next})}
+            context={
+                'form': form,
+                'signup_path': signup_path
+            }
         )
 
     def post(self, request, *args, **kwargs):
@@ -31,23 +41,34 @@ class SignInView(View):
             )
 
 
-def logout(request, *args, **kwargs):
-    # TODO оставлять на той же странице, если есть права, иначе на главную
-    # next = parse.urlparse(request.META.get('HTTP_REFERER', '/')).path
-    auth_logout(request)
-    return redirect('/')
+class SignOutView(View, NextPathMixin):
+
+    def get(self, request, *args, **kwargs):
+        auth_logout(request)
+        next_path = self._get_next_path(request)
+        if next_path != self.HOME_PATH:
+            return redirect(next_path)
+        else:
+            return redirect(self.HOME_PATH)
 
 
-class SignUpView(View):
+class SignUpView(View, NextPathMixin):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_active:
-            return redirect('/')
-        next = parse.urlparse(request.META.get('HTTP_REFERER', '/')).path
+            return redirect(self.HOME_PATH)
+        next_path = self._get_next_path(request)
+        form = SignupForm(initial={'next': next_path})
+        signin_path = '/signin/'
+        if next_path != self.HOME_PATH:
+            signin_path += f'?next={next_path}'
         return render(
             request=request,
             template_name='profile/signup.html',
-            context={'form': SignupForm(initial={'next': next})}
+            context={
+                'form': form,
+                'signin_path': signin_path
+            }
         )
 
     def post(self, request, *args, **kwargs):
@@ -61,7 +82,7 @@ class SignUpView(View):
             else:
                 user = form.save()
                 login(request, user)
-            return redirect(form.cleaned_data.get('next', '/'))
+            return redirect(form.cleaned_data.get('next', self.HOME_PATH))
         else:
             return render(
                 request=request,

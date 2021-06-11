@@ -53,10 +53,16 @@ class SignInForm(forms.Form):
                 self.user = authenticate(request=self.request, email=login, password=password)
 
             if self.user is None:
-                self.add_error(field=None, error='Проверьте правильность написания логина и пароля')
+                self.add_error(
+                    field=None,
+                    error='Проверьте правильность написания логина и пароля'
+                )
             else:
                 if not self.user.is_active:
-                    self.add_error(field=None, error='Пользователь заблокирован')
+                    self.add_error(
+                        field=None,
+                        error='Учетная запись не активна'
+                    )
         else:
             self.add_error(field=None, error='Заполните обязательные поля')
 
@@ -67,7 +73,7 @@ class SignupForm(forms.ModelForm):
 
     class Meta:
         model = UserModel
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email', 'next']
 
     username = forms.CharField(
         max_length=255,
@@ -121,6 +127,7 @@ class SignupForm(forms.ModelForm):
         ],
         strip=False,
     )
+    next = forms.CharField(widget=forms.HiddenInput, required=False)
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

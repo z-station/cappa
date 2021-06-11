@@ -40,9 +40,9 @@
 
                         {% endif %}
                         {% if request.user.is_active %}
-                            <a class="profile__bar-logout-icon" title="Выйти" href="{% url 'profile:logout' %}"></a>
+                            <a class="profile__bar-logout-icon" title="Выйти" href="{% url 'profile:signout' %}"></a>
                         {% else %}
-                            <a class="profile__bar-login" href="{% url 'profile:login' %}">Войти</a>
+                            <a class="profile__bar-login" href="{% url 'profile:signin' %}">Войти</a>
                         {% endif %}
                     </div>
                 </div>
