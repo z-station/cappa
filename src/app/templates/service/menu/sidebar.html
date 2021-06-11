@@ -1,7 +1,7 @@
-{% for menuitem in object.menuitems.all %}
-    {% if menuitem.show %}
-    <a href="{{ menuitem.url }}" title="{{ menuitem.name }}"
+{% for item in object.menuitems.all %}
+    {% if item.show %}
+    <a href="{{ item.url }}" title="{{ item.name }}"
        class="sidebar__control-btn"
-       {% if menuitem.image %} style="background-image: url('{{ menuitem.image.url }}')"{% endif %}></a>
+       {% if item.image %} style="background-image: url('{{ item.image.url }}')"{% endif %}></a>
     {% endif %}
 {% endfor %}

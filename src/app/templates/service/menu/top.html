@@ -1,3 +1,5 @@
-{% for menuitem in object.menuitems.all %}
-    <a class="menu__item" href="{{ menuitem.url }}">{{ menuitem.name }}</a>
+{% for item in object.menuitems.all %}
+    {% if item.show %}
+        <a class="menu__item" href="{{ item.url }}">{{ item.name }}</a>
+    {% endif %}
 {% endfor %}
