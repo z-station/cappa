@@ -22,7 +22,7 @@
             </small>
             <small>Модератор сайта проверит заявку и свяжется с Вами, только после этого Вы сможете авторизоваться на сайте</small>
             <input type="submit" class="btn btn-primary" value="Зарегистрироваться">
-            <a class="signup__link" href="{% url 'profile:login' %}">Войти</a>
+            <a class="signup__link" href="{{ signin_path }}">Войти</a>
         </form>
     </div>
 {% endblock %}

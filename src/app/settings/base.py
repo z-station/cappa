@@ -33,6 +33,7 @@ STATIC_ROOT = env.get('APP_STATIC_ROOT', DEFAULT_STATIC_ROOT)
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
+LOGIN_URL = '/signin/'
 ROOT_URLCONF = 'app.urls'
 WSGI_APPLICATION = 'app.wsgi.application'
 
@@ -105,11 +106,11 @@ MIDDLEWARE = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        'NAME': env.get('POSTGRES_DB', 'cappa'),
-        'USER': env.get('POSTGRES_USER', 'cappa'),
-        'PASSWORD': env.get('PGPASSWORD', 'cappa'),
-        'HOST': env.get('POSTGRES_HOST', 'localhost'),
-        'PORT': env.get('POSTGRES_PORT', 5432)
+        "HOST": "localhost",
+        'PORT': '5432',
+        "NAME": "aps",
+        "USER": "aps",
+        "PASSWORD": "aps",
     }
 }
 
