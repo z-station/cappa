@@ -20,7 +20,12 @@
                     <div>{{ error }}</div>
                 {% endfor %}
             </small>
-            <small>Модератор сайта проверит заявку и свяжется с Вами, только после этого Вы сможете авторизоваться на сайте</small>
+            {% if confirm_signup %}
+                <small class="text-center">
+                    Модератор сайта проверит вашу заявку,</br>
+                    после этого Вы сможете авторизоваться на сайте
+                </small>
+            {% endif %}
             <input type="submit" class="btn btn-primary" value="Зарегистрироваться">
             <a class="signup__link" href="{{ signin_path }}">Войти</a>
         </form>
