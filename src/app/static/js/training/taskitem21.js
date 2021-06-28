@@ -398,6 +398,8 @@ var taskItemPage = function(e){
                                     formControl.permanentDisableBtn('save');
                                     formControl.permanentDisableBtn('ready');
                                 }
+                                formControl.enableVersionsBtn();
+
                             },
                             400: function(response){
                                 formControl.showErrorMsg('Ошибка запроса (400)');

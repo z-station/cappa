@@ -42,7 +42,7 @@
                         {% if request.user.is_active %}
                             <div class="js__editor-btn js__editor-btn-ready
                                 {% if object.one_try %}js__one_try {% endif %}
-                                {% if solution and solution.manual_status != '0' or solution and solution.is_locked %}js__permanent-disabled{% endif %}"
+                                {% if disable_ready_btn %} js__permanent-disabled{% endif %}"
                                  title="Отправить решение">
                             </div>
                             <div class="js__editor-btn js__editor-btn-versions
@@ -52,7 +52,7 @@
                             ></div>
                             <div class="js__editor-btn js__editor-btn-version" title="Создать версию решения"></div>
                             <div class="js__editor-btn js__editor-btn-save
-                                {% if solution and solution.manual_status != '0' or solution and solution.is_locked %}js__permanent-disabled{% endif %}"
+                                {% if disable_save_btn %} js__permanent-disabled{% endif %}"
                                  title="Сохранить изменения"></div>
                         {% endif %}
                     </div>

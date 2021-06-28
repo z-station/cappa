@@ -34,6 +34,8 @@ class TaskItemView(View):
             if solution:
                 form_initial['content'] = solution.last_changes
         form = TaskItemForm(initial=form_initial)
+        check_in_progress = solution and solution.manual_status not in Solution.MS__AWAITING_CHECK
+        locked = solution and solution.is_locked
         return render(
             request=request,
             template_name='training/taskitem/template.html',
@@ -42,7 +44,9 @@ class TaskItemView(View):
                 'object': taskitem,
                 'solution': solution,
                 'form': form,
-                'translators_urls': translators_external_urls
+                'translators_urls': translators_external_urls,
+                'disable_ready_btn': check_in_progress or locked,
+                'disable_save_btn': check_in_progress or locked
             }
         )
 
