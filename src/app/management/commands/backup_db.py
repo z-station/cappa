@@ -29,13 +29,13 @@ class Command(BaseCommand):
 
     def _get_filepath(self, **kwargs) -> Tuple[str, str]:
         str_date = datetime.now().strftime('%Y-%m-%d')
-        str_time = datetime.now().strftime('%H:%M:%S')
-        backup_dir = '/app/backup'
+        str_time = datetime.now().strftime('%H-%M-%S')
+        backup_dir = os.path.join(settings.BASE_DIR, 'backup')
         tag = kwargs.get('tag')
         if tag:
-            filename = f'{str_date}-[{str_time}]-{tag}.sql'
+            filename = f'{str_date}-{str_time}-{tag}.sql'
         else:
-            filename = f'{str_date}-[{str_time}].sql'
+            filename = f'{str_date}-{str_time}.sql'
         file_dir = f'{backup_dir}/{str_date}'
         file_path = f'{file_dir}/{filename}'
         return file_dir, file_path
@@ -50,4 +50,4 @@ class Command(BaseCommand):
                   f'export PGPASSWORD={db_pass} && ' \
                   f'pg_dump -U {db_user} -h {db_host} {db_name} > {file_path}'
         os.system(command)
-        self.stdout.write(self.style.SUCCESS(f'completed'))
+        self.stdout.write(self.style.SUCCESS(f'file: {file_path}'))
