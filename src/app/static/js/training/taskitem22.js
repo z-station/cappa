@@ -259,46 +259,6 @@ var taskItemPage = function(e){
             }
             return false;
         },
-        version: function(e){
-            var formData = formControl.serializeForm(operation='create_version');
-            if (formData.content){
-                formControl.showLoader('Сохранение версии');
-                $.ajax({
-                    url: form.getAttribute('action'),
-                    type: 'POST',
-                    data: formData,
-                    headers: {
-                        'X-CSRF-Token': formData.csrfmiddlewaretoken
-                    },
-                    statusCode:{
-                        200: function(response){
-                            formControl.showMsg(response)
-                            formControl.enableVersionsBtn()
-                        },
-                        400: function(response){
-                            formControl.showErrorMsg('Ошибка запроса (400)');
-                        },
-                        403: function(response){
-                            formControl.showErrorMsg('Запрос отклонен (403)');
-                        },
-                        404: function(response){
-                            formControl.showErrorMsg('Сервис недоступен (404)');
-                        },
-                        500: function(){
-                            formControl.showErrorMsg('Серверная ошибка (500)');
-                        },
-                        502: function(response){
-                            formControl.showErrorMsg('Сервис недоступен (502)');
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        formControl.showErrorMsg('Запрос не выполнен');
-                    }
-
-                })
-            }
-            return false
-        },
         save: function(e){
             var formData = formControl.serializeForm(operation='save_solution')
             if(formData.content){
@@ -313,7 +273,6 @@ var taskItemPage = function(e){
                     statusCode:{
                         200: function(response){
                             formControl.showMsg(response)
-                            formControl.enableVersionsBtn()
                         },
                         400: function(response){
                             formControl.showErrorMsg('Ошибка запроса (400)');
@@ -399,7 +358,6 @@ var taskItemPage = function(e){
                                     formControl.permanentDisableBtn('ready');
                                 }
                                 formControl.enableVersionsBtn();
-
                             },
                             400: function(response){
                                 formControl.showErrorMsg('Ошибка запроса (400)');
@@ -444,9 +402,6 @@ var taskItemPage = function(e){
 
     var testsBtn = form.querySelector('.js__editor-btn-tests')
     testsBtn && testsBtn.addEventListener('click', formControl.tests)
-
-    var versionBtn = form.querySelector('.js__editor-btn-version')
-    versionBtn && versionBtn.addEventListener('click', formControl.version)
 
     var saveBtn = form.querySelector('.js__editor-btn-save')
     saveBtn && saveBtn.addEventListener('click', formControl.save)
