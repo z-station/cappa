@@ -25,7 +25,7 @@
                             <input type="submit" class="btn btn-primary" value="Стать участником" />
                         </form>
                     {% else %}
-                    <p><a href="/login/">Авторизуйтесь</a> чтобы продолжить</p>
+                    <p><a href="/signin/">Авторизуйтесь</a> чтобы продолжить</p>
                     {% endif %}
                 {% endif %}
             {% elif object.status == '1' %}
@@ -42,7 +42,7 @@
                         <input type="submit" class="btn btn-primary form__col" value="Отправить" />
                     </form>
                 {% else %}
-                    <p><a href="/login/">Авторизуйтесь</a> чтобы продолжить</p>
+                    <p><a href="/signin/">Авторизуйтесь</a> чтобы продолжить</p>
                 {% endif %}
             {% endif %}
 
