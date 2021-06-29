@@ -33,6 +33,9 @@ class Group(models.Model):
     codeword = models.CharField(verbose_name='кодовое слово', blank=True, null=True, max_length=255)
     content = HTMLField(verbose_name='описание', blank=True, null=True)
     creation_date = models.DateTimeField(verbose_name="дата создания", auto_now_add=True)
+    show_date_last_seen = models.BooleanField(verbose_name='показывать колонку "Дата последнего входа"')
+    show_date_joined = models.BooleanField(verbose_name='показывать колонку "Дата регистрации"')
+    show_status = models.BooleanField(verbose_name='показывать колонку "Статус"')
     _members = models.ManyToManyField(UserModel, through='GroupMember', related_name='training_groups')
 
     def __str__(self):
@@ -59,6 +62,7 @@ class Group(models.Model):
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'last_seen': last_seen,
+                'date_joined': user.date_joined,
                 'is_online': is_online
             })
         return result
@@ -100,7 +104,7 @@ class GroupCourse(models.Model):
         unique_together = ['group', 'course']
 
     group = models.ForeignKey(Group, related_name='group_courses')
-    course = models.ForeignKey(Course, verbose_name='курс', limit_choices_to={'show': True})
+    course = models.ForeignKey(Course, verbose_name='курс')
     show_table = models.BooleanField(verbose_name='отображать таблицу результатов', default=False)
 
     def __str__(self):

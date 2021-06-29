@@ -81,24 +81,32 @@
                         data-sortlist="[[3,1],[1,0]]">
                         <thead>
                             <tr>
-                                <th>№</th>
+                                <th data-sorter="false">№</th>
                                 <th>Фамилия</th>
                                 <th>Имя</th>
-                                <th>Дата последнего входа</th>
-                                <th>Статус</th>
+                                {% if object.show_date_joined %}<th>Дата регистрации</th>{% endif %}
+                                {% if object.show_date_last_seen %}<th>Дата последнего входа</th>{% endif %}
+                                {% if object.show_status %}<th>Статус</th>{% endif %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for member in object.get_members_data %}
                                 <tr class="{% if member.is_online %}is_online{% endif %}">
-                                    <td>{{ forloop.counter }}</td>
+                                    <td class="js__tablesorter-number">{{ forloop.counter }}</td>
                                     <td>{{ member.last_name }}</td>
                                     <td>{{ member.first_name }}</td>
-                                    <td class="js__utc-timestamp"
-                                        data-utc-timestamp="{{ member.last_seen }}">
-                                        {{ member.last_seen }}
-                                    </td>
-                                    <td>{% if member.is_online %}онлайн{% endif %}</td>
+                                    {% if object.show_date_joined %}
+                                        <td>{{ member.date_joined|date:"Y.m.d H:i" }}</td>
+                                    {% endif %}
+                                    {% if object.show_date_last_seen %}
+                                        <td class="js__utc-timestamp"
+                                            data-utc-timestamp="{{ member.last_seen }}">
+                                            {{ member.last_seen }}
+                                        </td>
+                                    {% endif %}
+                                    {% if object.show_status %}
+                                        <td>{% if member.is_online %}онлайн{% endif %}</td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>

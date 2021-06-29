@@ -22,6 +22,17 @@ var initSidebar = function(){
 var initTablesorter = function(){
     document.querySelectorAll(".js__tablesorter").forEach(function(table){
         $(table).tablesorter()
+            .bind(
+                'sortEnd filterEnd',
+                function(e) {
+                    /* Колонка с номерами строк не сортруется */
+                    let i = 1;
+                    $(".js__tablesorter").find("tr:gt(0)").each(function(){
+                        $(this).find("td.js__tablesorter-number").text(i);
+                        i++;
+                    });
+                }
+            )
     })
 }
 

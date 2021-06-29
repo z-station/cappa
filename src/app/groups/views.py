@@ -30,8 +30,11 @@ class GroupListView(View):
 class GroupView(View):
 
     def get_object(self,  *args, **kwargs):
-
-        return Group.objects.prefetch_related('_members').get(id=kwargs['group_id'])
+        try:
+            return Group.objects.prefetch_related('_members').get(
+                id=kwargs['group_id'])
+        except Group.DoesNotExist:
+            raise Http404
 
     def get(self, request, *args, **kwargs):
 
