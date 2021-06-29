@@ -6,7 +6,7 @@ var S_NONE = '0',
 var S_WITH_SCORE = [S_PROGRESS, S_SUCCESS]
 
 // manual statuses
-var MS__NOT_CHECKED = '0',
+var MS__NONE = '0',
     MS__READY_TO_CHECK = '1',
     MS__CHECK_IN_PROGRESS = '2',
     MS__CHECKED = '3';

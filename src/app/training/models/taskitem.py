@@ -97,13 +97,15 @@ class Solution(models.Model):
         verbose_name_plural = "решения задач"
         ordering = ('-last_modified',)
 
-    MS__NOT_CHECKED = '0'
+    MS__NONE = '0'
     MS__READY_TO_CHECK = '1'
     MS__CHECK_IN_PROGRESS = '2'
     MS__CHECKED = '3'
+
     MS__AWAITING_CHECK = (MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS)
+    MS__BLOCKED_STATUS = (MS__CHECK_IN_PROGRESS, MS__CHECKED)
     MS__CHOICES = (
-        (MS__NOT_CHECKED, 'нет'),
+        (MS__NONE, 'нет'),
         (MS__READY_TO_CHECK, 'ожидает проверки'),
         (MS__CHECK_IN_PROGRESS, 'в процессе проверки'),
         (MS__CHECKED, 'проверено'),
@@ -128,14 +130,17 @@ class Solution(models.Model):
     is_locked = models.BooleanField(verbose_name="запрещено изменять", default=False)
     manual_status = models.CharField(
         verbose_name='статус проверки преподавателем', max_length=255,
-        choices=MS__CHOICES, default=MS__NOT_CHECKED
+        choices=MS__CHOICES, default=MS__NONE
     )
     manual_score = models.FloatField(verbose_name='оценка преподавателя', blank=True, null=True)
     tests_score = models.FloatField(verbose_name='оценка по автотестам', blank=True, null=True)
 
     last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
     content = models.TextField(verbose_name="листинг решения", blank=True, default='')
+
+    # TODO deprecated field
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
+
     comment = HTMLField(verbose_name="комментарий к решению", blank=True, null=True)
     teacher = models.ForeignKey(
         UserModel, verbose_name='преподаватель', blank=True, null=True, related_name='controlled_solutions',
@@ -184,17 +189,6 @@ class Solution(models.Model):
         for choice in self.MS__CHOICES:
             if choice[0] == self.manual_status:
                 return choice[1]
-
-    def create_version(self, content):
-
-        """ Создать верисю решения задачи """
-
-        if len(self.version_list) == 10:
-            self.version_list.pop(0)
-        self.version_list.append({
-            "datetime": str(timezone.now().strftime(format='%Y-%m-%d %H:%M:%S.%f')),
-            "content": content,
-        })
 
     def set_is_count(self):
 

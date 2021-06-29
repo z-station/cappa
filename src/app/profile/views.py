@@ -62,12 +62,14 @@ class SignUpView(View, NextPathMixin):
         signin_path = '/signin/'
         if next_path != self.HOME_PATH:
             signin_path += f'?next={next_path}'
+        site_settings = SiteSettings.objects.last()
         return render(
             request=request,
             template_name='profile/signup.html',
             context={
                 'form': form,
-                'signin_path': signin_path
+                'signin_path': signin_path,
+                'confirm_signup': site_settings.confirm_signup
             }
         )
 

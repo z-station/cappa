@@ -43,4 +43,4 @@ class SolutionAdmin(admin.ModelAdmin):
         'datetime',
     )
     search_fields = ('user__first_name', 'user__last_name', 'taskitem__task__title')
-    exclude = ('last_changes', 'version_list')
+    exclude = ('last_changes',)

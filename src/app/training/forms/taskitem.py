@@ -55,7 +55,6 @@ class TaskItemForm(forms.Form):
 
         CHOICES = (
             ('check_tests', 'check_tests'),
-            ('create_version', 'create_version'),
             ('save_solution', 'save_solution'),
             ('save_last_changes', 'save_last_changes'),
         )
@@ -97,22 +96,6 @@ class TaskItemForm(forms.Form):
                 )
 
         @classmethod
-        def create_version(cls, editor_data: dict, taskitem: TaskItem, user: User):
-            if user.is_active:
-                solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
-                solution.create_version(content=editor_data['content'])
-                solution.save()
-                return OperationResponse(
-                    status=OK,
-                    msg='Версия сохранена'
-                )
-            else:
-                return OperationResponse(
-                    status=WARNING,
-                    msg='Требуется авторизация'
-                )
-
-        @classmethod
         def save_last_changes(cls, editor_data: dict, taskitem: TaskItem, user: User):
             if not user.is_active:
                 return OperationResponse(
@@ -128,7 +111,7 @@ class TaskItemForm(forms.Form):
                 solution.save()
             return OperationResponse(
                 status=OK,
-                msg='Изменения сохранены'
+                msg='Сохранено'
             )
 
         @classmethod
@@ -175,7 +158,10 @@ class TaskItemForm(forms.Form):
                     # Запрос к песочнице завершился с ошибкой
                     return OperationResponse(
                         status=ERROR,
-                        msg=sandbox_data['error_msg']
+                        msg=sandbox_data.get(
+                            'error_msg',
+                            'Транслятор кода недоступен (500)'
+                        )
                     )
             if solution is None:
                 solution = Solution(user=user, taskitem=taskitem)
