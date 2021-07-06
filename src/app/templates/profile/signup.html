@@ -6,18 +6,15 @@
         <form class="signup__form white {% if form.errors %}error{% endif %}" method="POST">
             {% csrf_token %}
             {{ form.next }}
-            {{ form.username }}
-            {{ form.email }}
-            {{ form.first_name }}
-            {{ form.last_name }}
-            {{ form.password1 }}
-            {{ form.password2 }}
+            <div {% if form.username.errors %}class="error"{% endif %}>{{ form.username }}</div>
+            <div {% if form.email.errors %}class="error"{% endif %}>{{ form.email }}</div>
+            <div {% if form.first_name.errors %}class="error"{% endif %}>{{ form.first_name }}</div>
+            <div {% if form.last_name.errors %}class="error"{% endif %}>{{ form.last_name }}</div>
+            <div {% if form.password1.errors %}class="error"{% endif %}>{{ form.password1 }}</div>
+            <div {% if form.password2.errors %}class="error"{% endif %}>{{ form.password2 }}</div>
             <small class="msg">
-                {% for error in form.non_field_errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                {% for error in form.password2.errors %}
-                    <div>{{ error }}</div>
+                {% for error in form.errors.values %}
+                    {{ error }}
                 {% endfor %}
             </small>
             {% if confirm_signup %}

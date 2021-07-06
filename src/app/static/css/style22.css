@@ -1857,9 +1857,9 @@ li.error {
     margin-bottom: 10px;
 }
 
-.signup__form.error input[type=text],
-.signup__form.error input[type=email],
-.signup__form.error input[type=password] {
+.signup__form .error input[type=text],
+.signup__form .error input[type=email],
+.signup__form .error input[type=password] {
     color: #dc3545;
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, .25)
@@ -1872,6 +1872,10 @@ li.error {
     margin-bottom: 5px;
     width: 100%;
 }
+.signup__form ul {
+    margin: 0;
+}
+
 /* адаптив */
 
 @media screen and (max-width: 1200px) {

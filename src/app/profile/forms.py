@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.core import validators, exceptions
 from django.contrib.auth import authenticate, get_user_model, password_validation
@@ -84,7 +85,7 @@ class SignupForm(forms.ModelForm):
         }),
     )
 
-    email = forms.CharField(
+    email = forms.EmailField(
         max_length=255,
         widget=forms.EmailInput(attrs={
             'placeholder': 'E-mail',
@@ -109,21 +110,32 @@ class SignupForm(forms.ModelForm):
     )
     password1 = forms.CharField(
         strip=False,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Пароль',
-            'class': 'form-control'
-        }),
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Пароль',
+                'class': 'form-control'
+            },
+            render_value=True
+        ),
         validators=[
-            validators.MinLengthValidator(limit_value=6, message="Пароль должен быть больше 5 символов")
+            validators.MinLengthValidator(
+                limit_value=6, message="Пароль должен быть больше 5 символов"
+            )
         ]
     )
     password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Повторите пароль',
-            'class': 'form-control'
-        }),
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Повторите пароль',
+                'class': 'form-control',
+            },
+            render_value=True
+        ),
         validators=[
-            validators.MinLengthValidator(limit_value=6, message="Пароль должен быть больше 5 символов")
+            validators.MinLengthValidator(
+                limit_value=6,
+                message="Пароль должен быть больше 5 символов"
+            )
         ],
         strip=False,
     )
@@ -140,10 +152,20 @@ class SignupForm(forms.ModelForm):
         return password2
 
     def clean_username(self):
-        username_unavailable = UserModel.objects.filter(username=self.cleaned_data['username']).exists()
+        value = self.cleaned_data.get('username')
+        username_unavailable = UserModel.objects.filter(username=value).exists()
         if username_unavailable:
-            self.add_error(field=None, error='Пользователь с таким логином уже существует')
-        return self.cleaned_data['username']
+            self.add_error(
+                field='username',
+                error='Пользователь с таким логином уже существует'
+            )
+
+        if not re.match(r'^[\w.]+$', value):
+            self.add_error(
+                field='username',
+                error="Логин должен содержать только цифры, буквы, "
+                    "точку или символ подчеркивания")
+        return value
 
     def clean_email(self):
         email_unavailable = UserModel.objects.filter(email=self.cleaned_data['email']).exists()
