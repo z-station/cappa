@@ -24,10 +24,13 @@ class SignInForm(forms.Form):
     )
     password = forms.CharField(
         strip=False,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'пароль',
-            'class': 'form-control'
-        }),
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'пароль',
+                'class': 'form-control'
+            },
+            render_value=True
+        ),
     )
 
     next = forms.CharField(widget=forms.HiddenInput, required=False)
