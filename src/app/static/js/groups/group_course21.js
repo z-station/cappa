@@ -46,7 +46,9 @@ var getLocalTime = function(strUtcDate) {
     var msecOffset = d.getTimezoneOffset() * -60000
     d.setTime(d.getTime() + msecOffset)
     var year = d.getFullYear()
-    var month = d.getMonth().toString().length < 2 ? "0"+ (d.getMonth() + 1) :d.getMonth() + 1
+    // zero indicates the first month of the year, then month = month + 1
+    var month = d.getMonth() + 1
+    var month = month.toString().length < 2 ? "0" + month : month
     var date = d.getDate().toString().length < 2 ? "0" + d.getDate().toString() :d.getDate()
     var hour = d.getHours().toString().length < 2 ? "0"+d.getHours().toString() :d.getHours()
     var minutes = d.getMinutes().toString().length < 2 ? "0"+d.getMinutes().toString() :d.getMinutes()
