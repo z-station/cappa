@@ -54,10 +54,15 @@ class Group(models.Model):
         for user in self.members:
             user_cached_data = users__last_seen.get(user.id)
             if user_cached_data is None:
-                last_seen = user.last_login.timestamp()
+                last_seen = user.last_login.timestamp() if user.last_login else ''
             else:
                 last_seen = int(user_cached_data['last_seen'])
-            is_online = (last_seen + settings.USER_ONLINE_TIMEOUT) >= datetime_now
+
+            if last_seen:
+                is_online = (last_seen + settings.USER_ONLINE_TIMEOUT) >= datetime_now
+            else:
+                is_online = False
+
             result.append({
                 'first_name': user.first_name,
                 'last_name': user.last_name,
