@@ -13,6 +13,11 @@ DEFAULT_SECRET_KEY = '!s0x%u7k9!9l+34ol54z_pofekso)39+iy__5r%bktb-n^56to'
 SECRET_KEY = env.get('APP_SECRET_KEY', DEFAULT_SECRET_KEY)
 
 LANGUAGE_CODE = 'ru-ru'
+
+LANGUAGES = [
+    ('ru', 'Русский'),
+    ('en', 'Английский')
+]
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
@@ -131,17 +136,28 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 # Настройки tinymce
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': 'spellchecker',
+    'plugins': 'table, spellchecker, advlink, contextmenu, advimage, advlink, inlinepopups, preview, media',
     'theme_advanced_buttons1':
-        'undo,redo,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,'
-        'bullist,numlist,blockquote,|,formatselect,|,fontsizeselect,|,forecolor,backcolor,|,'
+        'spellchecker, undo,redo,|,'
+        'bold,italic,underline,strikethrough,|,'
+        'justifyleft,justifycenter,justifyright,justifyfull,|,'
+        'bullist,numlist,blockquote,|,'
+        'formatselect,|,'
+        'fontsizeselect,|,'
+        'forecolor,backcolor,table,|,'
         'removeformat,|,code',
     'width': '100%',
     'height': 100,
     'theme_advanced_resizing': 'True',
     'extended_valid_elements ': '*[*]',
     'content_style': '.mcecontentbody{font-size:14px;}',
+    'external_image_list_url': 'images/',
+    'external_link_list_url': 'links/',
+    'paste_remove_styles': 'true',
+    'paste_remove_styles_if_webkit': 'true',
+    'paste_strip_class_attributes': 'all',
 }
+TINYMCE_SPELLCHECKER = True
 
 
 SITE_ID = 1
