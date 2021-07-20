@@ -904,25 +904,44 @@ main .content.courses__container {
     height: max-content;
 }
 
-.news__item-info {
+.news__item.vertical {
+    flex-direction: column;
+}
+
+.news__item.horizontal .news__item-info {
     margin-left: 20px;
 }
 
-.news__item-title {
-    text-align: left;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.news__item-img {
+.news__item.horizontal .news__item-img {
     width: 200px;
     min-width: 200px;
     height: auto;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: left center;
     background-size: 200px auto;
     border-radius: 3px;
+}
+
+.news__item.vertical .news__item-img {
+    width: 100%;
+    min-width: 200px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: auto;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.news__item-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 5px 0 15px;
+}
+
+.news__item-date {
+    text-align: right;
 }
 
 /* Fp */
@@ -1971,7 +1990,7 @@ li.error {
         justify-content: center;
     }
 
-    .news__item-img {
+    .news__item.horizontal .news__item-img {
         width: 200px;
         min-width: 200px;
         height: auto;
@@ -2028,7 +2047,7 @@ li.error {
         flex-direction: column;
     }
 
-    .news__item-img {
+    .news__item.horizontal .news__item-img {
         width: 100%;
         height: 150px;
         background-size: 100% auto;

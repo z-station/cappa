@@ -1,0 +1,12 @@
+<div class="one-col white news">
+    <div class="news__item horizontal">
+        {% if new.image %}
+            <div class="news__item-img" style="background-image: url('{{ new.image.url }}')"></div>
+        {% endif %}
+        <div class="news__item-info">
+            <div class="news__item-title">{{ new.title }}</div>
+            <div class="news__item-content">{{ new.content|safe }}</div>
+            <div class="news__item-date">{{ new.date|date:"Y.m.d" }}</div>
+        </div>
+    </div>
+</div>
