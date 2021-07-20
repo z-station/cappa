@@ -910,6 +910,7 @@ main .content.courses__container {
 
 .news__item.horizontal .news__item-info {
     margin-left: 20px;
+    width: 100%;
 }
 
 .news__item.horizontal .news__item-img {
