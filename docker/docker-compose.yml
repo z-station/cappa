@@ -22,6 +22,7 @@ services:
     image: cappa-app
     volumes:
       - ../public:/app/public
+      - shared_files:/app/public/shared_files
       - ../src:/app/src:ro
       - ../backup:/app/backup
     ports:
@@ -52,3 +53,9 @@ services:
              gunicorn --bind 0:9000 app.wsgi:application --reload -w 1"
 networks:
   localhost:
+
+volumes:
+  shared_files:
+  # монтирование к ФС невозможно т.к. требуется абсолютный путь
+  # для получения доступа к файлам использовать путь
+  # указанный в Mountpoint команды "docker inspect docker_shared_files"
