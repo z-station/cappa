@@ -87,8 +87,8 @@ class GroupCourseView(View):
         except:
             raise Http404
         else:
-            if not group_course.show_table:
-                raise Http404
+            # if not group_course.show_table:
+            #     raise Http404
             return group_course
 
     def get(self, request, *args, **kwargs):
@@ -116,8 +116,8 @@ class GroupCourseSolutionsView(View):
         except:
             raise Http404
         else:
-            if not group_course.show_table:
-                raise Http404
+            # if not group_course.show_table:
+            #     raise Http404
             return group_course
 
     def get(self, request, *args, **kwargs):
