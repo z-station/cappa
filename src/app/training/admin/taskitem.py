@@ -34,13 +34,20 @@ class SolutionAdmin(admin.ModelAdmin):
         return obj.status_name
     status_name.short_description = 'статус'
 
+    def manual_status_name(self, obj):
+        return obj.manual_status_name
+    manual_status_name.short_description = 'ручная проверка'
+
     model = Solution
     list_display = (
-        'get_user',
         'taskitem',
-        'status_name',
+        'get_user',
         'last_modified',
-        'datetime',
+        'status_name',
+        'tests_score',
+        'manual_status_name',
+        'manual_score',
+        'is_locked',
     )
     search_fields = ('user__first_name', 'user__last_name', 'taskitem__task__title')
     exclude = ('last_changes',)

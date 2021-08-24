@@ -54,6 +54,7 @@ class TaskItemForm(forms.Form):
     class Operations:
 
         CHOICES = (
+            ('ready_solution', 'ready_solution'),
             ('check_tests', 'check_tests'),
             ('save_solution', 'save_solution'),
             ('save_last_changes', 'save_last_changes'),
@@ -107,6 +108,16 @@ class TaskItemForm(forms.Form):
                     "last_changes": editor_data['content']
                 })
             if not created:
+                if solution.is_locked:
+                    return OperationResponse(
+                        status=WARNING,
+                        msg='Решение запрещено изменять'
+                    )
+                elif solution.manual_status in Solution.MS__BLOCKED_STATUS:
+                    return OperationResponse(
+                        status=WARNING,
+                        msg='Решение запрещено изменять'
+                    )
                 solution.last_changes = editor_data['content']
                 solution.save()
             return OperationResponse(
@@ -131,12 +142,18 @@ class TaskItemForm(forms.Form):
                     msg='Решение отсутствует'
                 )
             solution = Solution.objects.filter(user=user, taskitem=taskitem).first()
-            # если у задачи одна попытка и она уже использована - решение нельзя изменить
-            if solution and taskitem.one_try and solution.is_locked:
-                return OperationResponse(
-                    status=WARNING,
-                    msg='Решение более нельзя изменить'
-                )
+            if solution:
+                if solution.is_locked:
+                    return OperationResponse(
+                        status=WARNING,
+                        msg='Решение запрещено изменять'
+                    )
+                elif solution.manual_status in Solution.MS__BLOCKED_STATUS:
+                    return OperationResponse(
+                        status=WARNING,
+                        msg='Решение запрещено изменять'
+                    )
+
             # если задача с автотестами - прогнать автотесты
             tests_score = None
             if taskitem.compiler_check and taskitem.task.tests:
