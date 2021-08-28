@@ -2,14 +2,11 @@
 from django.views.generic import View
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from app.training.forms import ContentForm
 from app.training.models import Topic
 from app.translators.consts import translators_external_urls
 
 
-@method_decorator(login_required, name='dispatch')
 class TopicView(View):
 
     def get_object(self, request, *args, **kwargs):

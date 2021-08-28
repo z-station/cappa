@@ -1,47 +1,46 @@
 version: "3.3"
 
 services:
-  cappa-db:
-    container_name: cappa-db
+  acm-db:
+    container_name: acm-db
     image: postgres:13
     networks:
       - localhost
     volumes:
       - ../postgresql-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: cappa
-      POSTGRES_PASSWORD: cappa
-      POSTGRES_DB: cappa
+      POSTGRES_USER: acm
+      POSTGRES_PASSWORD: acm
+      POSTGRES_DB: acm
     restart: always
 
-  cappa-app:
+  acm-app:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
-    container_name: cappa-app
-    image: cappa-app
+    container_name: acm-app
+    image: acm-app
     volumes:
       - ../public:/app/public
-      - shared_files:/app/public/shared_files
       - ../src:/app/src:ro
       - ../backup:/app/backup
     ports:
-      - 9000:9000
+      - 8999:8999
     networks:
       - localhost
     depends_on:
-      - cappa-db
+      - acm-db
     environment:
-      POSTGRES_USER: cappa
-      PGPASSWORD: cappa
-      POSTGRES_DB: cappa
-      POSTGRES_HOST: cappa-db
+      POSTGRES_USER: acm
+      PGPASSWORD: acm
+      POSTGRES_DB: acm
+      POSTGRES_HOST: acm-db
       APP_STATIC_ROOT: /app/public/static
       PYTHON38_INTERNAL_URL: http://sandbox-python38:9001
       GCC74_INTERNAL_URL: http://sandbox-gcc74:9002
     restart: always
     healthcheck:
-      test: ["CMD", "pg_isready", "-h", cappa-db]
+      test: ["CMD", "pg_isready", "-h", acm-db]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -50,12 +49,6 @@ services:
              cd /app/src &&
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn --bind 0:9000 app.wsgi:application --reload -w 1"
+             gunicorn --bind 0:8999 app.wsgi:application --reload -w 1"
 networks:
   localhost:
-
-volumes:
-  shared_files:
-  # монтирование к ФС невозможно т.к. требуется абсолютный путь
-  # для получения доступа к файлам использовать путь
-  # указанный в Mountpoint команды "docker inspect docker_shared_files"

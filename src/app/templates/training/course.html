@@ -12,7 +12,7 @@
             <div class="topic__list">
                 {% for topic in object.get_cache_data.topics %}
                     <div class="topic__item">
-                        <a class="topic__item-title h3" href="{{ topic.url }}">{{ topic.number }} {{ topic.title }}</a>
+                        <a class="topic__item-title h3" href="{{ topic.url }}"> {{ topic.title }}</a>
                         {% if topic.taskitems %}
                         <ul>
                             {% for taskitem in topic.taskitems %}

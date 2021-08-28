@@ -14,7 +14,6 @@ from app.translators.entities.response import OperationResponse
 UserModel = get_user_model()
 
 
-@method_decorator(login_required, name='dispatch')
 class TaskItemView(View):
 
     def get_object(self, request, *args, **kwargs):

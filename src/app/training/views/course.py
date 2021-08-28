@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, Http404
 from django.views.generic import View
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from app.training.models import Course
 
 
@@ -16,7 +14,6 @@ class CourseListView(View):
         )
 
 
-@method_decorator(login_required, name='dispatch')
 class CourseView(View):
 
     def get_object(self, request, *args, **kwargs):
