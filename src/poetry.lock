@@ -80,7 +80,7 @@ django-js-asset = "*"
 
 [[package]]
 name = "django-tinymce"
-version = "2.7.0"
+version = "3.4.0"
 description = "A Django application that contains a widget to render a form field as a TinyMCE editor."
 category = "main"
 optional = false
@@ -212,7 +212,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.*"
-content-hash = "9a1cd9cb3b5e23592ea026720ac69aec210db89f3c82d4cb6a8e800ffb98821f"
+content-hash = "77e98104c078b0ba1564fffc6da4abdaf5459e70f3b948e45567af7d28d6df16"
 
 [metadata.files]
 certifi = [
@@ -246,8 +246,8 @@ django-mptt = [
     {file = "django_mptt-0.9.0-py2.py3-none-any.whl", hash = "sha256:6aaa0268c0d994d77dda501b64257b5d6f1e170fcdfe2f0674f80861dc30c0f4"},
 ]
 django-tinymce = [
-    {file = "django-tinymce-2.7.0.tar.gz", hash = "sha256:a7594f342786834e4f6585334652c6a37f1e11ccbc3ea83ae76b9ff9b3cf590c"},
-    {file = "django_tinymce-2.7.0-py2.py3-none-any.whl", hash = "sha256:ed1425aa370e20e8b84809feebc2cd42573790cfb74ad19a942affe8f13b9296"},
+    {file = "django-tinymce-3.4.0.tar.gz", hash = "sha256:275653dbf09fbd3347928757d6baf29040b42fe5c5d95396418c36aa4b1517eb"},
+    {file = "django_tinymce-3.4.0-py3-none-any.whl", hash = "sha256:4241eb201c670892aa8980a130652f4ae818ba24702f078336296d25e9e1658b"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.11.2-py3-none-any.whl", hash = "sha256:5cc724dc4b076463497837269107e1995b1fbc917468d1b92d188fd1af9ea789"},
