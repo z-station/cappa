@@ -1,9 +1,9 @@
-FROM python:3.8
+FROM python:3.8.12-buster
 
 RUN apt-get update && \
     apt-get -y install nano && \
     pip install --upgrade pip && \
-    pip install pipenv
+    pip install poetry
 
 # postgresql client for execute psql command
 RUN apt-get -y install lsb-release && \
@@ -19,9 +19,9 @@ RUN apt-get update && \
 # backend for tinymce spellcheck plugin
 RUN apt-get -y install libenchant-dev aspell-ru aspell-en
 
-COPY ./src/Pipfile ./src/Pipfile.lock /tmp/
-RUN cd /tmp && pipenv install --deploy --system
-# pipenv not found plugin in pypi, install from pip
-RUN pip install pyenchant==3.2.1
+COPY ./src/pyproject.toml ./src/poetry.lock /tmp/
+RUN cd /tmp && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-dev --no-root --no-interaction
 
 WORKDIR /app/src
