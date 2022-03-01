@@ -63,13 +63,18 @@ class SignUpView(View, NextPathMixin):
         if next_path != self.HOME_PATH:
             signin_path += f'?next={next_path}'
         site_settings = SiteSettings.objects.last()
+        confirm_signup = (
+            site_settings.confirm_signup
+            if site_settings is not None
+            else False
+        )
         return render(
             request=request,
             template_name='profile/signup.html',
             context={
                 'form': form,
                 'signin_path': signin_path,
-                'confirm_signup': site_settings.confirm_signup
+                'confirm_signup': confirm_signup
             }
         )
 
@@ -77,7 +82,12 @@ class SignUpView(View, NextPathMixin):
         form = SignupForm(data=request.POST)
         if form.is_valid():
             site_settings = SiteSettings.objects.last()
-            if site_settings.confirm_signup:
+            confirm_signup = (
+                site_settings.confirm_signup
+                if site_settings is not None
+                else False
+            )
+            if confirm_signup:
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
