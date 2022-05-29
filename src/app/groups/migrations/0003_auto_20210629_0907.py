@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='group',
             name='show_status',
-            field=models.BooleanField(default=1, verbose_name='показывать колонку "Статус"'),
+            field=models.BooleanField(default=1, verbose_name='показывать колонку "Статус онлайн"'),
             preserve_default=False,
         ),
     ]

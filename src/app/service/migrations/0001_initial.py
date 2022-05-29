@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import app.utils.fields
+import app.common.fields
 
 
 class Migration(migrations.Migration):
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             name='MenuItem',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_key', app.utils.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
+                ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('name', models.CharField(max_length=255, verbose_name='текст')),
                 ('url', models.CharField(max_length=255, verbose_name='ссылка')),
                 ('image', models.FileField(blank=True, null=True, upload_to='upload/menu', verbose_name='файл изображения')),

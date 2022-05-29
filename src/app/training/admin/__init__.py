@@ -1,4 +1,4 @@
-from .taskitem import TaskItemInline, SolutionAdmin
+from .taskitem import TaskItemInline
 from .topic import TopicAdmin, TopicInline
 from .course import CourseAdmin
 

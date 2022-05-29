@@ -1,17 +1,16 @@
-// solution statuses
-var S_NONE = '0',
-    S_UNLUCK = '1',
-    S_PROGRESS = '2',
-    S_SUCCESS = '3';
-var S_WITH_SCORE = [S_PROGRESS, S_SUCCESS]
-
-// manual statuses
-var MS__NONE = '0',
-    MS__READY_TO_CHECK = '1',
-    MS__CHECK_IN_PROGRESS = '2',
-    MS__CHECKED = '3';
-var MS__AWAITING_CHECK = [MS__READY_TO_CHECK, MS__CHECK_IN_PROGRESS];
-
+var reviewStatuses = {
+    ready: 'ready',
+    review: 'review',
+    checked: 'checked',
+    awaitingCheck: ['ready', 'review']
+}
+var checkMethods = {
+    tests: 'tests',
+    review: 'review',
+    testsAndReview: 'tests_and_review',
+    testsMethods: ['tests', 'tests_and_review'],
+    reviewMethods: ['review', 'tests_and_review']
+}
 
 var tableFilter = {
     search: function(event){
@@ -41,81 +40,122 @@ var tableFilter = {
     }
 }
 
-var getLocalTime = function(strUtcDate) {
-    var d = new Date(strUtcDate);
-    var msecOffset = d.getTimezoneOffset() * -60000
-    d.setTime(d.getTime() + msecOffset)
-    var year = d.getFullYear()
-    // zero indicates the first month of the year, then month = month + 1
-    var month = d.getMonth() + 1
-    var month = month.toString().length < 2 ? "0" + month : month
-    var date = d.getDate().toString().length < 2 ? "0" + d.getDate().toString() :d.getDate()
-    var hour = d.getHours().toString().length < 2 ? "0"+d.getHours().toString() :d.getHours()
-    var minutes = d.getMinutes().toString().length < 2 ? "0"+d.getMinutes().toString() :d.getMinutes()
-    return `${year}.${month}.${date} [${hour}:${minutes}]`
-}
-
 var groupCoursePage = function(e){
-    var url = e.target.groupCourseSolutionsUrl
-    $.get(url, function(response){
-        for(const [member, val] of Object.entries(response)){
-            var total_solved_tasks = 0;
-            var total_score = 0;
-            var userName = val.full_name
-            var tr = document.querySelector('#js__' + member)
-            for(const [taskitem, data] of Object.entries(val.data)){
-                var td = tr.querySelector('.js__' + taskitem)
-                if(td){
-                    var lastModified = getLocalTime(data.last_modified)
-                    var th = document.querySelector(td.getAttribute('data-th'))
-                    var topicTitle = th.getAttribute('data-topic-title')
-                    var taskitemTitle = th.getAttribute('data-taskitem-title')
-                    var statusClass = 'status__' + data.status;
-                    th.setAttribute('title', `${taskitemTitle}\nТема: ${topicTitle}`)
-                    td.classList.add(statusClass)
-                    if(data.is_count){
-                        var title = `${userName}\n${lastModified}\n${taskitemTitle}\nТема: ${topicTitle}`
-                    } else {
-                        var title = `${userName}\n${lastModified}\n${taskitemTitle}\nТема: ${topicTitle}\nРешение вне зачета`
-                    }
-                    td.setAttribute('title', title)
-                    if(val.show_link){
-                        var content = document.createElement('a')
-                        content.setAttribute('href', data.url)
-                        content.setAttribute('target', '_blank')
-                    } else {
-                        var content = document.createElement('div')
-                    }
-                    switch(data.status){
-                        case S_UNLUCK: content.innerHTML = '-'; break;
-                        case S_PROGRESS: content.innerHTML = data.score; break;
-                        case S_SUCCESS: content.innerHTML = '+'; break;
-                    }
-                    if(data.manual_check && MS__AWAITING_CHECK.indexOf(data.manual_check.status) != -1){
-                        // Если решение на проверке добавить иконку
-                        td.classList.add('awaiting-check');
-                    } else if(data.status == S_NONE){
-                        // Если решение начато - добавить иконку
-                        td.classList.add('not-checked');
-                    }
-                    // если решение идет в зачет
-                    if(data.is_count){
-                        // если статус "решено"
-                        if(data.status == S_SUCCESS) total_solved_tasks+=1;
-                        // если статус с баллами (решено или в процессе)
-                        if(S_WITH_SCORE.indexOf(data.status) != -1) total_score += data.score;
-                    } else {
-                        td.classList.add('not-count');
-                    }
-                    td.append(content)
-                }
-            }
-            tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks;
-            tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);
-        }
-        $(".js__tablesorter").tablesorter()
-        document.querySelector('.js__loader').style.display = 'none';
 
+    $.ajax({
+        url: window.groupCourseSolutionsUrl,
+        type: 'GET',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        headers: {
+            'Authorization': `Token ${window.authToken}`
+        },
+        statusCode:{
+            200: function(response){
+               for(const [user_id, user_data] of Object.entries(response)){
+                    var total_solved_tasks = 0,
+                        total_score = 0,
+                        tr = document.querySelector('#js__member-' + user_id)
+                    var userName = tr.querySelector('td.js__username').innerText
+
+                    for(const [taskitem, data] of Object.entries(user_data)){
+                        var td = tr.querySelector('.js__taskitem__' + taskitem)
+                        if(td){
+                            if (data.due_date){
+                                overdue = new Date(data.created) > new Date(data.due_date)
+                            } else {
+                                overdue = false
+                            }
+                            var localCreatedTime = new Date(data.created); // время с указанием часового пояса автоматически преобразуется ко времени в часовом поясе клиента
+                            var createdLocalFormattedDate = getFormatedDateTime(localCreatedTime),
+                                th = document.querySelector(td.getAttribute('data-th')),
+                                topicTitle = th.getAttribute('data-topic-title'),
+                                taskitemTitle = th.getAttribute('data-taskitem-title'),
+                                title = `${userName}\n${createdLocalFormattedDate}\n${taskitemTitle}\nТема: ${topicTitle}`;
+                            if(overdue){
+                                title = title + '\nРешение отправлено позже даты сдачи'
+                            }
+                            td.setAttribute('title', title)
+                            // set td link
+                            if(window.userIsTeacher){
+                                var tdContent = document.createElement('a')
+                                tdContent.setAttribute('href', `/solutions/${data.id}/`)
+                                tdContent.setAttribute('target', '_blank')
+                            } else {
+                                var tdContent = document.createElement('div')
+                            }
+                            // set td content and color
+                            if(overdue){
+                                td.classList.add('s-grey')
+                            }
+                            if(checkMethods.reviewMethods.indexOf(data.score_method) != -1){
+                                if (data.review_status == reviewStatuses.checked){
+                                    if (data.review_score == null){ // оценка скрыта
+                                        tdContent.innerHTML = '✔'
+                                        if (!overdue){
+                                            td.classList.add('s-green')
+                                            total_solved_tasks += 1
+                                        }
+                                    } else if (data.review_score == data.max_score){
+                                        tdContent.innerHTML = '+'
+                                        if (!overdue){
+                                            td.classList.add('s-green')
+                                            total_solved_tasks += 1
+                                            total_score += data.review_score
+                                        }
+                                    } else if (data.review_score == 0){
+                                        tdContent.innerHTML = '-'
+                                        if (!overdue){
+                                            td.classList.add('s-red')
+                                        }
+                                    } else if (data.review_score != null){
+                                        tdContent.innerHTML = data.review_score
+                                        if (!overdue){
+                                            td.classList.add('s-yellow')
+                                            total_solved_tasks += 1
+                                            total_score += data.review_score
+                                        }
+                                    }
+                                } else if(reviewStatuses.awaitingCheck.indexOf(data.review_status) != -1){
+                                    td.classList.add('awaiting-check')
+                                    if (!overdue){
+                                        td.classList.add('s-cyan')
+                                    }
+                                }
+                            } else if (data.score_method == checkMethods.tests){
+                                if (data.testing_score == data.max_score){
+                                    tdContent.innerHTML = '+'
+                                    if (!overdue){
+                                        td.classList.add('s-green')
+                                        total_solved_tasks += 1
+                                        total_score += data.testing_score
+                                    }
+                                } else if (data.testing_score == 0){
+                                    if (!overdue){td.classList.add('s-red')}
+                                    tdContent.innerHTML = '-'
+                                } else if (data.testing_score != null){
+                                    tdContent.innerHTML = data.review_score
+                                    if (!overdue){
+                                        td.classList.add('s-yellow')
+                                        total_solved_tasks += 1
+                                        total_score += data.testing_score
+                                    }
+                                }
+                            }
+                            td.append(tdContent)
+                        }
+                    }
+                    tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks;
+                    tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);
+                }
+                $(".js__tablesorter").tablesorter()
+                document.querySelector('.js__loader').style.display = 'none';
+
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.querySelector('.js__loader').style.display = 'none';
+        }
     })
 
     $(".js__course__fake-table").width($(".js__course__table").width() + 20);

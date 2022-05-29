@@ -7,7 +7,7 @@
 *.dmp
 .svn
 .installed.cfg
-.idea/*
+.idea
 *.gz
 bin/*
 downloads/*
@@ -24,3 +24,4 @@ postgresql-data*
 ansible/start.sh
 src/app/settings/local.py
 src/app/settings/prod.py
+.python-version

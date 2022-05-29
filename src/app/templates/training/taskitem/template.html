@@ -1,5 +1,5 @@
 {% extends 'training/base.html' %}
-{% load static taskitem_tags training_tags %}
+{% load static training_tags %}
 
 
 {% block content %}
@@ -8,91 +8,39 @@
             <h1 class="text-center">
                 <span>{{ object.numbered_title }}</span>
             </h1>
-            <h3>Условие</h3><br/>
+            <h3>Условие</h3>
             {{ object.task.content|safe }}
 
             <p>
-            {% if object.manual_check %}
+            {% if object.score_method_is_review or object.score_method_is_tests_and_review %}
                 <div class="text-small">Оценку выставляет преподаватель (по шкале от 0 до {{ object.max_score }} баллов)</div>
-            {% else %}
-                <div  class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
-                {% if solution.status and solution.status != '0' %}
-                    <div class="text-small">Статус: {{ solution.status_name }}</div>
-                    <div class="text-small">Оценка: {{ solution.score|cut_zero }} баллов</div>
-                {% endif %}
+            {% elif object.score_method_is_tests %}
+                <div class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
             {% endif %}
-            {% if object.topic.end_time %}
-                <div class="text-small" title="Решения после указанной даты не засчитывается">
-                    <span>Ограничение по времени:</span>
-                    <span class="js__utc-time" data-utc-time="{{ object.topic.end_time|date:'Y-m-d H:i:s.u'}}"></span>
+            {% if object.topic.due_date %}
+                <div class="text-small">
+                    <span>Срок сдачи решения:</span>
+                    <span class="js__utc-time" data-utc-time="{{ object.topic.due_date|date:'Y-m-d H:i:s.u'}}"></span>
                 </div>
             {% endif %}
             </p>
-
-            <form method="POST" class="editor-form js__editor-form">
-
-                {% csrf_token %}
-
-                <input class="js__{{ form.translator.name }}" type="hidden" name="translator" value="{{ form.translator.value }}">
-
-                {% show_ace_field form.content %}
-
-                <div class="control__bar taskitem">
-                    <div class="control__bar-col col__1">
-                        {% if request.user.is_active %}
-                            <div class="js__editor-btn js__editor-btn-ready
-                                {% if object.one_try %}js__one_try {% endif %}
-                                {% if disable_ready_btn %} js__permanent-disabled{% endif %}"
-                                 title="Отправить решение на проверку">
-                            </div>
-                            <div class="js__editor-btn js__editor-btn-versions
-                                 {% if disable_versions_btn %} not-versions{% endif %}"
-                                 title="Открыть страницу решения"
-                                 onclick="window.open('{{ object.get_absolute_url }}solution/?user={{ request.user.id }}', '_blank')"
-                            ></div>
-                            <div class="js__editor-btn js__editor-btn-save
-                                {% if disable_save_btn %} js__permanent-disabled{% endif %}"
-                                 title="Сохранить в черновик"></div>
-                        {% endif %}
-                    </div>
-
-                    {% if object.compiler_check %}
-                    <div class="control__bar-col col__2">
-                        {% if object.task.tests %}
-                            <div class="js__editor-btn js__editor-btn-tests" title="Протестировать решение"></div>
-                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
-                        {% else %}
-                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-
-                    <div class="control__bar-col col__3">
-                        <span class="js__msg js__msg-loader-text"></span>
-                        <span class="js__msg js__msg-loader">
-                            <span class="pulse"><span>{</span><span>}</span></span>
-                        </span>
-                        <span class="js__msg js__msg-success"></span>
-                        <span class="js__msg js__msg-warning"></span>
-                        <span class="js__msg js__msg-error"></span>
-                    </div>
-                </div>
-
-                {% if object.compiler_check %}
-                    {% show_ace_field form.input %}
-                {% endif %}
-
-                {% show_ace_field form.output %}
-
-                {% show_ace_field form.error %}
-
-            </form>
         </div>
-        {% if object.compiler_check and object.task.tests %}
-            <div class="fp-content">
-                <h3>Тесты</h3>
-            </div>
+        <div class="white fp-content js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
+            <a target="_blank" href="{% url 'solutions:solutions' %}?task_id={{ object.task_id }}">Мои решения</a>
+        </div>
+
+        <div class="white fp-content">
+            <h3>Редактор решения</h3>
+
+            {% show_editor object %}
+
+        </div>
+        {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+            {% if object.task.tests %}
+
             <div class="white fp-content">
+                <h3>Тесты на решение</h3></br>
+
                 <div class="form__tests-container">
                     <table class="js__form__tests-table" id="form__tests-table">
                         <thead>
@@ -100,7 +48,7 @@
                             <th class="form__test-counter">№</th>
                             <th class="form__test-input">Консольный ввод</th>
                             <th class="form__test-output">Правильный ответ</th>
-                            <th class="js__form__test-result"></th>
+                            <th class="js__form__test-result hidden">Вывод программы</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -109,7 +57,7 @@
                                 <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
                                 <td class="form__test-input"><pre>{{ test.input }}</pre></td>
                                 <td class="form__test-output"><pre>{{ test.output }}</pre></td>
-                                <td class="js__form__test-result"><pre></pre></td>
+                                <td class="js__form__test-result hidden"><pre></pre></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -117,17 +65,15 @@
                 </div>
             </div>
         {% endif %}
+    {% endif %}
     </div>
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/editor.js' %}"></script>
     <script>
-        window.dispatchEvent(new Event('taskItemPageLoaded'))
-        window.translators_urls = {
-            {% for translator, host in translators_urls.items %}
-            '{{ translator }}': '{{ host }}',
-            {% endfor %}
-        }
+        new Editor(document.querySelector('.js__editor-form'))
     </script>
 {% endblock %}

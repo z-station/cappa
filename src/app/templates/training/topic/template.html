@@ -1,5 +1,5 @@
 {% extends 'training/base.html' %}
-{% load topic_tags %}
+{% load static training_tags %}
 
 {% block content %}
     <div class="one-col">
@@ -12,12 +12,11 @@
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/editor.js' %}"></script>
     <script>
-        window.dispatchEvent(new Event('topicPageLoaded'));
-        window.translators_urls={
-            {% for translator, host in translators_urls.items %}
-            '{{ translator }}': '{{ host }}',
-            {% endfor %}
-        }
+        document.querySelectorAll('.js__editor-form').forEach((form, index) => {
+            new Editor(form)
+        })
     </script>
 {% endblock %}

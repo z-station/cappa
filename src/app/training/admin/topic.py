@@ -15,8 +15,10 @@ from django.contrib.admin.utils import get_deleted_objects
 from adminsortable2.admin import SortableInlineAdminMixin
 from app.training.models import Topic, Content
 from app.training.admin import TaskItemInline
-from app.training.forms import TopicAdminForm, ContentAdminForm
-
+from app.training.forms.topic import (
+    TopicAdminForm,
+    ContentAdminForm
+)
 
 IS_POPUP_VAR = '_popup'
 TO_FIELD_VAR = '_to_field'
@@ -50,7 +52,7 @@ class TopicAdmin(admin.ModelAdmin):
 
     form = TopicAdminForm
     raw_id_fields = ("author",)
-    fields = ('show', 'title', 'slug', 'author', 'end_time', 'course')
+    fields = ('show', 'title', 'slug', 'author', 'due_date', 'course')
     prepopulated_fields = {'slug': ['title']}
     inlines = (ContentInline, TaskItemInline)
 

@@ -16,7 +16,7 @@
                         {% if topic.taskitems %}
                         <ul>
                             {% for taskitem in topic.taskitems %}
-                                <li id="js__{{ taskitem.id }}">
+                                <li id="js__taskitem__{{ taskitem.id }}">
                                      <a href="{{ taskitem.url }}">{{ taskitem.number }} {{ taskitem.title }}</a>
                                 </li>
                             {% endfor %}

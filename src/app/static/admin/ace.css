@@ -1,0 +1,37 @@
+/* ace */
+.js__editor {
+    padding: 15px 10px;
+    background-color:#f5f2f0;
+    font-size: 12px;
+    border: 1px solid #CCC;
+}
+
+.js__editor.ace-error,
+.js__editor.ace-output {
+    display: none;
+}
+
+.js__editor-ace {
+    position: relative;
+    width: 100%;
+    height: auto;
+    font-size:14px;
+    line-height: 1.5;
+    background-color:#f5f2f0;
+}
+
+.editor-form.static .js__editor {
+    background-color: #eaeaea;
+}
+
+.editor-form.maximized .js__editor {
+    border: solid 1px #eeeeee;
+}
+
+.js__editor-content {
+    display:none;
+}
+
+.form-row.field-content label {
+    padding: 10px;
+}

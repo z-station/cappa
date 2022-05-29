@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from tinymce.models import HTMLField
 from app.news.entities import CardType
+
+UserModel = get_user_model()
 
 
 class News(models.Model):
@@ -17,9 +19,11 @@ class News(models.Model):
     date = models.DateField(verbose_name='дата создания')
     content = HTMLField(verbose_name="описание", blank=True, null=True)
     author = models.ForeignKey(
-        User, on_delete=models.SET_NULL,
+        UserModel,
+        on_delete=models.SET_NULL,
         verbose_name='автор',
-        blank=True, null=True
+        blank=True,
+        null=True
     )
     card_type = models.CharField(
         verbose_name='тип карточки',
@@ -33,7 +37,8 @@ class News(models.Model):
     )
     image = models.ImageField(
         verbose_name='изображение',
-        blank=True, null=True
+        blank=True,
+        null=True
     )
 
     def __str__(self):
