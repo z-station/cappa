@@ -1,3 +1,3 @@
-from .taskitem import TaskItemView, SolutionView, CourseSolutionsView
-from .topic import TopicView
-from .course import CourseView, CourseListView
+from app.training.views.taskitem import TaskItemView
+from app.training.views.topic import TopicView
+from app.training.views.course import CourseView, CourseListView

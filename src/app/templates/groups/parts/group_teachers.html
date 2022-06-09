@@ -1,0 +1,13 @@
+{% with object.teachers as teachers %}
+    {% if teachers|length == 1 %}
+        <p><strong>Преподаватель:</strong> {{ teachers.first.get_full_name }}</p>
+    {% elif teachers|length > 1 %}
+        <p><strong>Преподаватели:</strong></p>
+        <ul>
+            {% for teacher in teachers %}
+                <li>{{ teacher.get_full_name }}</li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+{% endwith %}

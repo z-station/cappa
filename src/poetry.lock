@@ -49,6 +49,17 @@ python-versions = "*"
 Django = ">=1.8,<3"
 
 [[package]]
+name = "django-filter"
+version = "2.2.0"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[[package]]
 name = "django-js-asset"
 version = "1.2.3"
 description = "script tag with additional attributes for django.forms.Media"
@@ -212,7 +223,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.*"
-content-hash = "9a1cd9cb3b5e23592ea026720ac69aec210db89f3c82d4cb6a8e800ffb98821f"
+content-hash = "789c9e997f3c8fe697b931d098c9e2b9c32bc7c4c4c0bee480f83decd7bbc555"
 
 [metadata.files]
 certifi = [
@@ -233,6 +244,10 @@ django-admin-list-filter-dropdown = [
 ]
 django-admin-sortable2 = [
     {file = "django-admin-sortable2-0.7.3.tar.gz", hash = "sha256:003f4c9e1dc28ec3435f907e9bc953a922eea7e1da28a7242644e6dbc3071f2e"},
+]
+django-filter = [
+    {file = "django-filter-2.2.0.tar.gz", hash = "sha256:c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14"},
+    {file = "django_filter-2.2.0-py3-none-any.whl", hash = "sha256:558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b"},
 ]
 django-js-asset = [
     {file = "django-js-asset-1.2.3.tar.gz", hash = "sha256:25811cd67428ebdc5298661a2223a66b39c11696746a06f87f0896b93e1c5423"},

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from app.utils.fields import OrderField
+from app.common.fields import OrderField
 
 
 class Menu(models.Model):

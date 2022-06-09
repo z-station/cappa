@@ -1,5 +1,6 @@
 from django import forms
-from .models import Group
+from app.groups.models import Group, GroupMember
+from app.groups.enums import GroupMemberRole
 
 
 class GroupSearchForm(forms.Form):
@@ -21,20 +22,39 @@ class GroupInviteForm(forms.ModelForm):
     error_css_class = 'error'
 
     code = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Кодовое слово',
-            'class': 'form-control'
-        }), required=False
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Кодовое слово',
+                'class': 'form-control'
+            }
+        ), required=False
     )
 
     def clean(self):
         data = self.cleaned_data
-        if self.instance.status == Group.CLOSE:
+        group = self.instance
+        if group.user_is_learner or group.user_is_teacher:
+            self.add_error(field=None, error='Вы уже являетесь участником группы')
+        if self.instance.is_closed:
             self.add_error(field=None, error='Группа закрыта')
-        elif self.instance.status == Group.CODE:
-            if data['code'] != self.instance.codeword:
+        elif self.instance.by_codeword:
+            if data.get('code') != self.instance.codeword:
                 self.add_error(field='code', error='Неверное кодовое слово')
-        elif self.instance.status == Group.OPEN:
-            pass
         return data
 
+
+class GroupMemberAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = GroupMember
+        fields = '__all__'
+
+    def clean(self):
+        user = self.cleaned_data['user']
+        role = self.cleaned_data['role']
+        if role == GroupMemberRole.TEACHER and not user.is_teacher:
+            self.add_error(
+                field='role',
+                error='Пользователь не являетя преподавателем'
+            )
+        return self.cleaned_data

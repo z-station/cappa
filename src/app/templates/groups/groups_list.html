@@ -1,4 +1,5 @@
 {% extends 'groups/base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="one-col groups">
@@ -12,29 +13,35 @@
                     <input type="submit" value="" title="поиск" />
                 </div>
             </form>
-            {% if objects %}
-                <div class="groups__table-container">
-                    <table class="groups__table js__tablesorter">
+            {% if groups %}
+                <div class="table-container">
+                    <table class="table js__tablesorter">
                         <thead>
                             <tr>
-                                <th>Название</th>
                                 <th>Год</th>
-                                <th>Владелец</th>
-                                <th>Участников</th>
+                                <th>Название</th>
                                 <th>Вступление в группу</th>
-                                {% if request.user.is_active %}<th>Статус</th>{% endif %}
+                                <th>Кол-во учеников</th>
+                                {% if request.user.is_authenticated %}
+                                    <th>Статус</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
-                            {% for group in objects %}
+                            {% for group in groups %}
                                 <tr>
+                                    <td>{{ group.year }}</td>
                                     <td><a href="{% url 'groups:group' group_id=group.id %}" >{{ group.title }}</td>
-                                    <td>{{ group.creation_date.year }}</td>
-                                    <td>{{ group.author }}</td>
-                                    <td>{{ group.members.count }}</td>
-                                    <td>{{ group.get_status }}</td>
-                                    {% if request.user.is_active %}
-                                        <td>{% if request.user in group.members %}Участник{% endif %}</td>
+                                    <td>{{ group.status_name }}</td>
+                                    <td>{{ group.learners_count }}</td>
+                                    {% if request.user.is_authenticated %}
+                                        <td>
+                                            {% if group.user_is_teacher %}
+                                                Преподаватель
+                                            {% elif group.user_is_learner %}
+                                                Ученик
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -50,5 +57,9 @@
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
     <script>window.dispatchEvent(new Event('initTablesorter'))</script>
 {% endblock %}

@@ -1,8 +1,17 @@
 from django import forms
-from .models import Task, SolutionExample
+from app.tasks.models import (
+    Task,
+    Solution,
+    SolutionExample,
+    ExternalSolution,
+)
+from app.tasks.enums import ReviewStatus
 from django.contrib.postgres.forms import JSONField
-from app.widgets.ace import AceWidget
-from app.widgets.json import JsonWidget
+from app.common.widgets import (
+    AceWidget,
+    JsonWidget
+)
+from tinymce.widgets import TinyMCE
 
 
 class TaskAdminForm(forms.ModelForm):
@@ -14,9 +23,72 @@ class TaskAdminForm(forms.ModelForm):
     tests = JSONField(label='Тесты', widget=JsonWidget, required=False)
 
 
+class ExternalSolutionAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = ExternalSolution
+        fields = "__all__"
+        widgets = {
+            'content': AceWidget,
+        }
+
+
+class SolutionAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Solution
+        fields = "__all__"
+        widgets = {
+            'content': AceWidget,
+        }
+
+
 class SolutionExampleAdminForm(forms.ModelForm):
 
     class Meta:
         model = SolutionExample
         fields = '__all__'
         widgets = {'content': AceWidget}
+
+
+class ReviewSolutionForm(forms.ModelForm):
+
+    class Meta:
+        model = Solution
+        fields = (
+            'review_status',
+            'review_score',
+            'reviewer_comment',
+            'hide_review_score',
+            'hide_reviewer_comment',
+        )
+
+    review_status = forms.CharField(
+        label='Статус проверки',
+        widget=forms.Select(
+            attrs={'class': 'form-control'},
+            choices=ReviewStatus.CHOICES
+        )
+    )
+    review_score = forms.FloatField(
+        label='Оценка',
+        required=False,
+        widget=forms.NumberInput(
+            attrs={'step': '0.01', 'class': 'form-control'}
+        )
+    )
+    reviewer_comment = forms.CharField(
+        label='Комментарий преподавателя',
+        widget=TinyMCE,
+        required=False
+    )
+    hide_review_score = forms.BooleanField(
+        label="скрыть оценку",
+        required=False,
+        widget=forms.CheckboxInput()
+    )
+    hide_reviewer_comment = forms.BooleanField(
+        label="скрыть комментарий",
+        required=False,
+        widget=forms.CheckboxInput()
+    )

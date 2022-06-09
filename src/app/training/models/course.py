@@ -1,11 +1,14 @@
 import json
+import hashlib
 from django.core.cache import cache
 from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from app.utils.fields import OrderField
-from app.translators.consts import translators_choices
+from app.common.fields import OrderField
+from app.translators.enums import TranslatorType
+from app.training.utils import get_md5_hash_from_list
+
 
 UserModel = get_user_model()
 
@@ -20,9 +23,9 @@ class Course(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
     translator = models.CharField(
-        verbose_name='язык',
-        choices=translators_choices,
-        max_length=2
+        verbose_name='транслятор кода',
+        choices=TranslatorType.CHOICES,
+        max_length=100
     )
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     about = HTMLField(verbose_name="краткое описание", default="", blank=True, null=True)
@@ -41,9 +44,15 @@ class Course(models.Model):
         return 'course__%d' % self.id
 
     def get_data(self):
+        topics_data = [topic.get_data() for topic in self.topics]
+        taskitems_ids = []
+        for topic in topics_data:
+            for taskitem in topic['taskitems']:
+                taskitems_ids.append(str(taskitem['id']))
         return {
-            'id': self.cache_key,
+            'id': self.id,
             'title': self.title,
+            'version_hash': get_md5_hash_from_list(value=taskitems_ids),
             'url': reverse('training:course', kwargs={'course': self.slug}),
             'topics': [topic.get_data() for topic in self.topics],
         }

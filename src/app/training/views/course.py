@@ -8,7 +8,7 @@ class CourseListView(View):
 
     def get(self, request, *args, **kwargs):
         return render(
-            template_name='training/course_list.html',
+            template_name='training/courses.html',
             context={'objects': Course.objects.filter(show=True)},
             request=request
         )

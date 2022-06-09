@@ -1,0 +1,19 @@
+{% if object.is_open %}
+    <p>Группа открыта для участия</p>
+    <form class="group__invite-form" method="POST">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-primary" value="Стать участником" />
+    </form>
+{% elif object.is_closed %}
+    <p>Закрытая группа</p>
+{% elif object.by_codeword %}
+    <p>Для участия в группе введите кодовое слово</p>
+    <form class="group__invite-form" method="POST">
+        {% csrf_token %}
+        <div class="form__col{% if form.errors %} error{% endif %}">
+            {{ form.code }}
+            <small class="field__msg">{{ form.errors.code.0 }}</small>
+        </div>
+        <input type="submit" class="btn btn-primary form__col" value="Отправить" />
+    </form>
+{% endif %}

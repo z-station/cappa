@@ -1,124 +1,38 @@
 {% extends 'groups/base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="one-col group fp-content">
-        <div class="group__col white">
+    <div class="one-col">
+        <div class="white fp-content">
             <h1 class="text-center">{{ object.title }}</h1>
-
             {% if object.content %}
+                <p>
+                    <strong>Описание:</strong>
+                </p>
                 <div class="text">{{ object.content|safe }}</div>
             {% endif %}
 
-            <table class="group__info">
-                <tr><td>Год:</td><td>{{ object.creation_date.year }}</td></tr>
-                <tr><td>Владелец:</td><td>{{ object.author }}</td></tr>
-                {% if user_is_member %}
-                    <tr><td>Статус:</td><td>Участник</td></tr>
-                {% endif %}
-            </table>
-            {% if object.status == '0' %}
-                {% if not user_is_member %}
-                    {% if request.user.is_active %}
-                        <p>Группа открыта для участия</p>
-                        <form class="group__invite-form" method="POST">
-                            {% csrf_token %}
-                            <input type="submit" class="btn btn-primary" value="Стать участником" />
-                        </form>
-                    {% else %}
-                    <p><a href="/signin/">Авторизуйтесь</a> чтобы продолжить</p>
-                    {% endif %}
-                {% endif %}
-            {% elif object.status == '1' %}
-                <p>Закрытая группа</p>
-            {% elif object.status == '2' %}
-                {% if request.user.is_active %}
-                    <p>Для участия в группе введите кодовое слово</p>
-                    <form class="group__invite-form" method="POST">
-                        {% csrf_token %}
-                        <div class="form__col{% if form.errors %} error{% endif %}">
-                            {{ form.code }}
-                            <small class="field__msg">{{ form.errors.code.0 }}</small>
-                        </div>
-                        <input type="submit" class="btn btn-primary form__col" value="Отправить" />
-                    </form>
+            {% include 'groups/parts/group_teachers.html' %}
+
+            {% if request.user.is_authenticated %}
+                {% if object.user_is_learner or object.user_is_teacher %}
+                    {% include 'groups/parts/group_courses.html' %}
                 {% else %}
-                    <p><a href="/signin/">Авторизуйтесь</a> чтобы продолжить</p>
+                    {% include 'groups/parts/join_form.html' %}
                 {% endif %}
-            {% endif %}
-
-            {% if user_is_member or user_is_teacher %}
-                {% if object.group_courses.all %}
-                <h3>Учебная программа</h3>
-                <table class="group__courses">
-                    {% with object.group_courses.all as group_courses %}
-                        {% for group_course in group_courses %}
-                            <tr>
-                                {% if group_courses|length > 1 %}
-                                <td>{{ forloop.counter }}</td>
-                                {% endif %}
-                                <td>
-                                    <a href="{{ group_course.course.get_absolute_url }}" target="_blank">{{ group_course.course }}</a>
-                                    {% if group_course.show_table %}
-                                        <a href="{% url 'groups:group-course' object.id group_course.id %}" target="_blank">[таблица результатов]</a></td>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endwith %}
-                </table>
-                {% endif %}
-            {% endif %}
-
-        </div>
-        {% if user_is_member or user_is_teacher %}
-        <div class="group__col white">
-            <h3 class="text-center">Список участников</h3>
-            {% if object.members %}
-                <div class="group__table-container">
-                    <table class="group__table js__tablesorter"
-                        data-sort-col="3"
-                        data-sort-direction="desc"
-                        data-sortlist="[[3,1],[1,0]]">
-                        <thead>
-                            <tr>
-                                <th data-sorter="false">№</th>
-                                <th>Фамилия</th>
-                                <th>Имя</th>
-                                {% if object.show_date_joined %}<th>Дата регистрации</th>{% endif %}
-                                {% if object.show_date_last_seen %}<th>Дата последнего входа</th>{% endif %}
-                                {% if object.show_status %}<th>Статус</th>{% endif %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for member in object.get_members_data %}
-                                <tr class="{% if member.is_online %}is_online{% endif %}">
-                                    <td class="js__tablesorter-number">{{ forloop.counter }}</td>
-                                    <td>{{ member.last_name }}</td>
-                                    <td>{{ member.first_name }}</td>
-                                    {% if object.show_date_joined %}
-                                        <td>{{ member.date_joined|date:"Y.m.d H:i" }}</td>
-                                    {% endif %}
-                                    {% if object.show_date_last_seen %}
-                                        <td class="js__utc-timestamp"
-                                            data-utc-timestamp="{{ member.last_seen }}">
-                                            {{ member.last_seen }}
-                                        </td>
-                                    {% endif %}
-                                    {% if object.show_status %}
-                                        <td>{% if member.is_online %}онлайн{% endif %}</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            {% else %}
+                <p><a href="{% url 'auth:signin' %}">Авторизуйтесь</a> чтобы продолжить</p>
             {% endif %}
         </div>
-        {% endif %}
     </div>
+    {% include 'groups/parts/group_learners.html' %}
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
     <script>window.dispatchEvent(new Event('initTablesorter'))</script>
 {% endblock %}

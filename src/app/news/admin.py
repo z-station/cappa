@@ -2,4 +2,10 @@
 from django.contrib import admin
 from app.news.models import News
 
-admin.site.register(News)
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+
+    model = News
+    list_editable = ('show',)
+    list_display = ('title', 'date', 'show')

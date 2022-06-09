@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from app.training.models import Course
-from app.utils.fields import OrderField
+from app.common.fields import OrderField
 
 
 UserModel = get_user_model()
@@ -22,9 +22,10 @@ class Topic(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
-    end_time = models.DateTimeField(
-        verbose_name="дата/время окончения решения задач в формате UTC",
-        blank=True, null=True
+    due_date = models.DateTimeField(
+        verbose_name="Дата сдачи решения",
+        blank=True,
+        null=True
     )
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
@@ -50,11 +51,14 @@ class Topic(models.Model):
 
     def get_data(self):
         return {
-            'id': self.cache_key,
+            'id': self.id,
             'number': self.number,
             'title': self.title,
             'url': reverse(
-                'training:topic',  kwargs={'course': self.course.slug, 'topic': self.slug}
+                'training:topic',  kwargs={
+                    'course': self.course.slug,
+                    'topic': self.slug
+                }
             ),
             'taskitems': [taskitem.get_data() for taskitem in self.taskitems],
         }
@@ -88,7 +92,7 @@ class Content(models.Model):
         verbose_name_plural = "блоки контента"
         ordering = ['order_key']
 
-    ACE  = 'ace'
+    ACE = 'ace'
     TEXT = 'text'
     CHOICES = (
         (ACE, 'код'),

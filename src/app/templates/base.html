@@ -12,7 +12,7 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery.tablesorter.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style23.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style24.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
     {% endblock %}
 </head>
@@ -40,9 +40,9 @@
 
                         {% endif %}
                         {% if request.user.is_active %}
-                            <a class="profile__bar-logout-icon" title="Выйти" href="{% url 'profile:signout' %}"></a>
+                            <a class="profile__bar-logout-icon" title="Выйти" href="{% url 'auth:signout' %}"></a>
                         {% else %}
-                            <a class="profile__bar-login" href="{% url 'profile:signin' %}">Войти</a>
+                            <a class="profile__bar-login" href="{% url 'auth:signin' %}">Войти</a>
                         {% endif %}
                     </div>
                 </div>
@@ -92,18 +92,7 @@
         </div>
     </footer>
     
-{% block js %}
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.js' %}"></script>
-    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
-    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
-    <script src="{% static 'js/main22.js' %}"></script>
-    <script src="{% static 'js/training/main20.js' %}"></script>
-    <script src="{% static 'js/training/taskitem22.js' %}"></script>
-    <script src="{% static 'js/training/topic20.js' %}"></script>
-    <script src="{% static 'js/training/solution20.js' %}"></script>
-    <script src="{% static 'js/groups/group_course21.js' %}"></script>
-{% endblock %}
+{% block js %}{% endblock %}
 
 </body>
 </html>

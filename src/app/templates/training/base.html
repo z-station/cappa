@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load training_tags %}
+{% load static training_tags %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -21,11 +21,16 @@
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/training/main21.js' %}"></script>
     <script>
         window.dispatchEvent(new Event('initSidebar'))
         window.dispatchEvent(new Event('toggleSidebar'))
         {% if request.user.is_active and course %}
-            window.userSolutionUrl = '{% url 'training:course-solutions' course=course.slug %}?user_id={{ request.user.id }}'
+            window.authToken = '{{ request.user.auth_token }}'
+            window.courseStatisticsUrl = '/api/training/courses/{{ course.id }}/statistics/'
             window.dispatchEvent(new Event('getUserSolutions'))
         {% endif %}
     </script>

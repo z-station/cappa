@@ -36,8 +36,9 @@ services:
       POSTGRES_DB: acm
       POSTGRES_HOST: acm-db
       APP_STATIC_ROOT: /app/public/static
-      PYTHON38_INTERNAL_URL: http://sandbox-python38:9001
-      GCC74_INTERNAL_URL: http://sandbox-gcc74:9002
+      PYTHON38_HOST: http://sandbox-python38:9001
+      GCC74_HOST: http://sandbox-gcc74:9002
+      PROLOGD_HOST: http://sandbox-prolog-d:9003
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "-h", acm-db]

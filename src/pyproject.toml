@@ -21,6 +21,7 @@ Django = "1.11.29"
 requests = "2.24.0"
 pyenchant = "3.2.1"
 python-memcached = "1.59"
+django-filter = "2.2.0"
 
 [tool.poetry.dev-dependencies]
 

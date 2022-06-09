@@ -1,14 +1,14 @@
-<div id="js__{{ data.id }}">
-    {% for topic in data.topics %}
+<div id="js__course__{{ course.id }}">
+    {% for topic in course.topics %}
     <div class="topic__item js__topic-item">
-        <div id="js__{{ topic.id }}-heading" class="topic__item-heading">
+        <div id="js__topic__{{ topic.id }}-heading" class="topic__item-heading">
             {% if topic.taskitems %}
                 <div class="topic__item-toggler collapsed"
-                     id="{{ topic.id }}"
+                     id="topic__{{ topic.id }}"
                      data-toggle="collapse"
-                     data-target="#js__{{ topic.id }}-collapse"
+                     data-target="#js__topic__{{ topic.id }}-collapse"
                      aria-expanded="false"
-                     aria-controls="js__{{ topic.id }}-collapse">
+                     aria-controls="js__topic__{{ topic.id }}-collapse">
                 </div>
             {% endif %}
             {% if request.path == topic.url %}
@@ -18,12 +18,12 @@
             {% endif %}
         </div>
         {% if topic.taskitems %}
-        <ul id="js__{{ topic.id }}-collapse"
+        <ul id="js__topic__{{ topic.id }}-collapse"
             class="collapse"
-            aria-labelledby="js__{{ topic.id }}-heading"
-            data-parent="#js__{{ data.id }}">
+            aria-labelledby="js__topic__{{ topic.id }}-heading"
+            data-parent="#js__course{{ course.id }}">
             {% for taskitem in topic.taskitems %}
-            <li id="js__{{ taskitem.id }}" class="js__taskitem-item" >
+            <li id="js__taskitem__{{ taskitem.id }}" class="js__taskitem-item" >
                 {% if request.path == taskitem.url %}
                     <span class="current js__current">{{ taskitem.number }} {{ taskitem.title }}</span>
                 {% else %}

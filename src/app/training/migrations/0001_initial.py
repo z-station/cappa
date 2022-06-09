@@ -6,7 +6,7 @@ from django.conf import settings
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 import django.db.models.deletion
-import app.utils.fields
+import app.common.fields
 import tinymce.models
 
 
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('readonly', models.BooleanField(default=False, verbose_name='Только для чтения')),
                 ('text', tinymce.models.HTMLField(blank=True, null=True)),
                 ('type', models.CharField(choices=[('ace', 'код'), ('text', 'текст')], default='text', max_length=255, verbose_name='тип')),
-                ('order_key', app.utils.fields.OrderField(blank=True, verbose_name='порядок')),
+                ('order_key', app.common.fields.OrderField(blank=True, verbose_name='порядок')),
             ],
             options={
                 'verbose_name': 'блок контента',
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 ('about', tinymce.models.HTMLField(blank=True, default='', null=True, verbose_name='краткое описание')),
                 ('content', tinymce.models.HTMLField(blank=True, default='', null=True, verbose_name='текстовый контент')),
                 ('content_bottom', tinymce.models.HTMLField(blank=True, default='', null=True, verbose_name='текстовый контент под списком тем')),
-                ('order_key', app.utils.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
+                ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения')),
                 ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='автор')),
             ],
@@ -79,8 +79,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('show', models.BooleanField(default=True, verbose_name='отображать')),
-                ('slug', app.utils.fields.SlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
-                ('order_key', app.utils.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
+                ('slug', app.common.fields.SlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
+                ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='topics', to='tasks.Task', verbose_name='задача')),
             ],
             options={
@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
                 ('show', models.BooleanField(default=True, verbose_name='отображать')),
                 ('title', models.CharField(max_length=255, verbose_name='заголовок')),
                 ('slug', models.SlugField(max_length=255, verbose_name='слаг')),
-                ('order_key', app.utils.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
+                ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения')),
                 ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='автор')),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='_topics', to='training.Course', verbose_name='курс')),

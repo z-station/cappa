@@ -1,9 +1,10 @@
 {% extends 'groups/base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="one-col group-course white">
-        <h1>{{ object.group.title }}</h1>
-        <h4>Результаты по курсу {{ object.course }}</h4>
+        <h1>{{ group.title }}</h1>
+        <h4>Результаты по курсу "{{ course.title }}"</h4>
         <form class="search__form" id="js__search-form" >
             <div class="input-group input-group-sm">
                 <input type="text" name="search" class="form-control" id="js__search-input"
@@ -23,7 +24,7 @@
                         <th class="wide">Баллы</th>
                         {% for topic in course_data.topics %}
                             {% for taskitem in topic.taskitems %}
-                                <th data-sorter="false">
+                                <th data-sorter="false" title="{{ taskitem.title }}\n{{ topic.title }}">
                                     {% if forloop.first %}
                                         <div class="caption"><span>{{ topic.number }} {{ topic.title }}</span></div>
                                     {% endif %}
@@ -37,14 +38,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for member in object.group.members %}
-                        <tr id="js__member-{{ member.id }}">
-                            <td title="{{ member }}" class="wide js__username">{{ member.get_full_name }}</td>
+                    {% for user in group.learners %}
+                        <tr id="js__member-{{ user.id }}">
+                            <td class="wide js__username">{{ user.get_full_name }}</td>
                             <td class="js__total_solved_tasks wide"></td>
                             <td class="js__total_score wide"></td>
                             {% for topic in course_data.topics %}
                                 {% for taskitem in topic.taskitems %}
-                                    <td class="js__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
+                                    <td class="js__taskitem__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
                                 {% endfor %}
                             {% endfor %}
                         </tr>
@@ -64,13 +65,13 @@
          <h4 class="mb-4">Обозначения:</h4>
 
          <table class="course__table-legend">
-            <tr><td class="status__0"></td><td>Нет попыток</td></tr>
-            <tr><td class="not-checked"></td><td>В процессе решения</td></tr>
-            <tr><td class="status__1">-</td><td>Нет решения</td></tr>
-            <tr><td class="status__2">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
-            <tr><td class="status__3">+</td><td>Решено на максимальный балл</td></tr>
-            <tr><td class="awaiting-check"></td><td>Отправлено на проверку (для режима ручной проверки)</td></tr>
-            <tr><td class="not-count"></td><td>Решение вне зачета (баллы не засчитываются)</td></tr>
+            <tr><td class=""></td><td>Нет попыток</td></tr>
+            <tr><td class="s-red">-</td><td>Нет решения</td></tr>
+            <tr><td class="s-yellow">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
+            <tr><td class="s-green">+</td><td>Решено на максимальный балл</td></tr>
+            <tr><td class="s-green">✔</td><td>Проверено, но оценка скрыта (для режима проверки преподавателем)</td></tr>
+            <tr><td class="awaiting-check s-cyan"></td><td>Отправлено на проверку (для режима проверки преподавателем)</td></tr>
+            <tr><td class="s-grey"></td><td>Решение отправлено позже даты сдачи</td></tr>
          </table>
     </div>
 {% endblock %}
@@ -78,8 +79,15 @@
 
 {% block js %}
     {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/groups/group_course21.js' %}"></script>
     <script>
-        window.groupCourseSolutionsUrl = "{% url 'groups:group-course-solutions' group_id=object.group.id group_course_id=object.id %}"
-        window.dispatchEvent(new Event('groupCoursePageLoaded'))
+        window.userIsTeacher = {% if user.is_teacher %}true{% else %}false{% endif %};
+        window.authToken = '{{ request.user.auth_token }}';
+        window.groupCourseSolutionsUrl = '/api/groups/{{ group.id }}/statistics/?course_id={{course.id}}';
+        window.dispatchEvent(new Event('groupCoursePageLoaded'));
     </script>
 {% endblock js %}

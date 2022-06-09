@@ -49,22 +49,21 @@ var getFormatedDateTime = function(d){
     return `${year}.${month}.${date} ${hour}:${minutes}`
 }
 
-document.querySelectorAll('.js__utc-timestamp').forEach(function(elem){
-    var ts = elem.dataset.utcTimestamp;
-    if (ts){
-        ts = parseFloat(ts.replace(',', '.')) * 1000;
-        d = new Date(ts)
-        elem.innerHTML = getFormatedDateTime(d);
-    }
-})
+var getLocalTime = function(strUtcDate) {
+
+    // strUtcDate - строка, время в UTC, без указания часового пояса
+
+    var d = new Date(strUtcDate);
+    var msecOffset = d.getTimezoneOffset() * 60000 //  возвращает смещение часового пояса клиента относительно часового пояса UTC в миллисекундах
+    d.setTime(d.getTime() - msecOffset) // устанавливает значение даты в часовом поясе клиента
+    return d
+}
 
 /* Перевод серверного времени UTC в локальное время */
 document.querySelectorAll('.js__utc-time').forEach(function(elem){
     var strUtcDate = elem.dataset.utcTime
     if (strUtcDate){
-        d = new Date(strUtcDate);
-        var msecOffset = d.getTimezoneOffset() * -60000;
-        d.setTime(d.getTime() + msecOffset);
+        d = getLocalTime(strUtcDate)
         elem.innerHTML = getFormatedDateTime(d);
     }
 })
