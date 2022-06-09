@@ -25,7 +25,7 @@
                                 <a target="_blank" href="{% url 'solutions:solution' solution.id  %}">{{ solution.task_name }}</a>
                             </td>
                             <td>{{ solution.type_name_value }}: {{ solution.type_name }}</td>
-                            <td>{{ solution.created }}</td>
+                            <td class="js__utc-time" data-utc-time="{{ solution.created|date:'Y-m-d H:i:s.u' }}"></td>
                             <td>{{ solution.translator_name }}</td>
                             <td>{{ solution.score_method_name }}</td>
                                 {% if solution.review_status_awaiting_check %}
