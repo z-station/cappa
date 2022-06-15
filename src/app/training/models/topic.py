@@ -39,7 +39,7 @@ class Topic(models.Model):
         verbose_name='учебная база данных',
         help_text='обязательна для курсов по базам данных',
         on_delete=models.SET_NULL,
-        null=True
+        null=True, blank=True
     )
 
     @property
