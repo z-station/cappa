@@ -23,7 +23,7 @@ class DatabaseAdmin(admin.ModelAdmin):
         try:
             status = DatabaseManagementService.status(obj)
         except exceptions.ServiceException:
-            return False
+            return None
         else:
             return status == DatabaseStatus.ACTIVE
     get_status.boolean = True
