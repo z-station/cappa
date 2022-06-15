@@ -65,4 +65,5 @@ class ContentForm(forms.Form):
         required=False,
         widget=forms.Textarea(attrs={'readonly': True})
     )
-    translator = forms.IntegerField(widget=forms.HiddenInput)
+    translator = forms.CharField(widget=forms.HiddenInput)
+    db_name = forms.CharField(widget=forms.HiddenInput)

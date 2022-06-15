@@ -1,5 +1,5 @@
 
-_str_checker = """def checker(right_value: str, value: str) -> bool:
+str_checker = """def checker(right_value: str, value: str) -> bool:
     
     # Сравнение двух строковых значений построчно
     
@@ -19,7 +19,7 @@ _str_checker = """def checker(right_value: str, value: str) -> bool:
                     break
     return result """
 
-_int_checker = """def checker(right_value: str, value: str) -> bool:
+int_checker = """def checker(right_value: str, value: str) -> bool:
     
     # Сравнение двух целочисленных значений
     #    :param right_value: str - эталонное значение для сравнения
@@ -57,7 +57,7 @@ _int_checker = """def checker(right_value: str, value: str) -> bool:
                     break
     return result """
 
-_float_checker = """def checker(right_value: str, value: str) -> bool:
+float_checker = """def checker(right_value: str, value: str) -> bool:
   
     # Сравнение двух значений с плавающей точкой
     #
@@ -108,9 +108,3 @@ _float_checker = """def checker(right_value: str, value: str) -> bool:
                     result = False
                     break
     return result """
-
-CHECKERS = {
-    'str': _str_checker,
-    'int': _int_checker,
-    'float': _float_checker
-}

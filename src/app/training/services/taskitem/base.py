@@ -1,4 +1,4 @@
-from typing import List, Type, Optional
+from typing import List, Type
 from django.contrib.auth import get_user_model
 from app.training.services import (
     exceptions,
@@ -13,8 +13,7 @@ from app.translators.services.entities import (
     TestingResult,
 )
 from app.translators import services
-from app.translators.enums import TranslatorType
-from app.translators.checkers import CHECKERS
+from app.translators.enums import TranslatorType, CheckerType
 from app.tasks.models import (
     Solution
 )
@@ -38,6 +37,16 @@ class BaseTaskItemService:
             return services.GCC74Service
         elif cls.translator_type == TranslatorType.PROLOG_D:
             return services.PrologDService
+        elif cls.translator_type == TranslatorType.POSTGRESQL:
+            return services.PostgresqlService
+        elif cls.translator_type == TranslatorType.PASCAL:
+            return services.PascalService
+        elif cls.translator_type == TranslatorType.PHP:
+            return services.PhpService
+        elif cls.translator_type == TranslatorType.CSHARP:
+            return services.CsharpService
+        elif cls.translator_type == TranslatorType.JAVA:
+            return services.JavaService
 
     @classmethod
     def _get_tests(cls, taskitem: TaskItem) -> List[Test]:
@@ -140,7 +149,7 @@ class BaseTaskItemService:
 
         if taskitem.score_method not in ScoreMethod.TESTS_METHODS:
             raise exceptions.OperationNotAllowed()
-        checker_code = CHECKERS[taskitem.task.output_type]
+        checker_code = CheckerType.MAP[taskitem.task.output_type]
         service_cls = cls._get_service_cls()
         return service_cls.testing(
             code=code,

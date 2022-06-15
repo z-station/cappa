@@ -45,6 +45,16 @@ class BaseTaskItemViewSet(GenericViewSet):
             return services.GCC74Service
         elif cls.translator_type == TranslatorType.PROLOG_D:
             return services.PrologDService
+        elif cls.translator_type == TranslatorType.POSTGRESQL:
+            return services.PostgresqlService
+        elif cls.translator_type == TranslatorType.PASCAL:
+            return services.PascalService
+        elif cls.translator_type == TranslatorType.PHP:
+            return services.PhpService
+        elif cls.translator_type == TranslatorType.CSHARP:
+            return services.CsharpService
+        elif cls.translator_type == TranslatorType.JAVA:
+            return services.JavaService
 
     def get_serializer_class(self):
         if self.action == 'create_solution':

@@ -17,3 +17,21 @@ class ServiceException(Exception):
         if details is not None:
             self.details.update(details)
         super().__init__(message)
+
+
+class ServiceConnectionError(ServiceException):
+
+    default_message = messages.MSG_001
+    code = codes.CODE_001
+
+
+class ServiceBadRequest(ServiceException):
+
+    default_message = messages.MSG_002
+    code = codes.CODE_002
+
+
+class ServiceInvalidResponse(ServiceException):
+
+    default_message = messages.MSG_003
+    code = codes.CODE_003

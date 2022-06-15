@@ -114,7 +114,7 @@ var editorShowLoader = (editor, msg) => {
 
 var editorShowRequestError = (editor, request) => {
     editorEnableButtons(editor);
-    if (request.status == 0 || !request.status){
+    if (request.status == 0 || !request.status){ // запрос не достиг сервера
         editorShowMessage(editor, editor.errorMessages[0])
     } else {
         switch (request.status){
@@ -143,11 +143,21 @@ class Editor {
         'Python3.8': 'ace/mode/python',
         'GCC7.4': 'ace/mode/c_cpp',
         'Prolog-D': 'ace/mode/prolog',
+        'PostgreSQL': 'ace/mode/pgsql',
+        'Pascal': 'ace/mode/pascal',
+        'Php': 'ace/mode/php',
+        'CSharp': 'ace/mode/csharp',
+        'Java': 'ace/mode/java',
     }
     urlNames = {
         'Python3.8': 'python38',
         'GCC7.4': 'gcc74',
-        'Prolog-D': 'prolog-d',    
+        'Prolog-D': 'prolog-d',
+        'PostgreSQL': 'postgresql',
+        'Pascal': 'pascal',
+        'Php': 'php',
+        'CSharp': 'csharp',
+        'Java': 'java',
     }
     errorMessages = {
         0: 'Сайт недоступен',
@@ -194,15 +204,20 @@ class Editor {
         var content = this.form.querySelector('textarea.js__editor-content[name=content]').value
         if(content){
             var inputTextarea = this.form.querySelector('textarea.js__editor-content[name=input]'),
-                input = inputTextarea ? inputTextarea.value : null,
                 that = this;
-
+            if(this.translator == 'PostgreSQL'){
+                var dbName = this.form.dataset.dbName
+                var requestData = {code: content, name: dbName}
+            } else {
+                var input = inputTextarea ? inputTextarea.value : null
+                var requestData = {code: content, data_in: input}
+            }
             editorShowLoader(that, 'Отладка');
             editorDisableButtons(that);
             $.ajax({
                 url: `/api/translators/${that.translatorId}/debug/`,
                 type: 'POST',
-                data: JSON.stringify({code: content, data_in: input}),
+                data: JSON.stringify(requestData),
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 headers: {'Authorization': `Token ${window.authToken}`},
@@ -261,28 +276,30 @@ class Editor {
                             editorShowMessage(that, 'Тесты не пройдены', 'warning')
                         }
                         var table = document.querySelector('.js__form__tests-table')
-                        response.tests.forEach(function(test, index){
-                            var tr = table.querySelector('.js__form__test-'+ index)
-                            tr.classList.remove('success', 'unluck')
-                            if(test.ok){
-                                tr.classList.add('success')
-                            } else {
-                                tr.classList.add('unluck')
-                            }
-                            var testResult = '';
-                            if(test.result && test.error){
-                                testResult = `${test.result}\n${test.error}`
-                            } else if(test.result){
-                                testResult = test.result
-                            } else if(test.error){
-                                testResult = test.error
-                            }
-                            var column = tr.querySelector('.js__form__test-result pre')
-                            column.innerHTML = testResult
-                            table.querySelectorAll('.js__form__test-result').forEach((elem) => {
-                                elem.classList.remove('hidden')
+                        if (that.translator != 'PostgreSQL'){
+                            response.tests.forEach(function(test, index){
+                                var tr = table.querySelector('.js__form__test-'+ index)
+                                tr.classList.remove('success', 'unluck')
+                                if(test.ok){
+                                    tr.classList.add('success')
+                                } else {
+                                    tr.classList.add('unluck')
+                                }
+                                var testResult = '';
+                                if(test.result && test.error){
+                                    testResult = `${test.result}\n${test.error}`
+                                } else if(test.result){
+                                    testResult = test.result
+                                } else if(test.error){
+                                    testResult = test.error
+                                }
+                                var column = tr.querySelector('.js__form__test-result pre')
+                                column.innerHTML = testResult
+                                table.querySelectorAll('.js__form__test-result').forEach((elem) => {
+                                    elem.classList.remove('hidden')
+                                })
                             })
-                        })
+                        }
                         editorEnableButtons(that)
                     }
                 },

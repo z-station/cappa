@@ -5,6 +5,7 @@
     data-autosave="false"
     data-readonly="{% if obj.readonly %}true{% else %}false{% endif %}"
     data-translator="{{ form.translator.value }}"
+    data-db-name="{{ form.db_name.value }}"
 >
 
     {% show_ace_field form.content %}

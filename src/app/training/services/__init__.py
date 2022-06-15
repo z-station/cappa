@@ -3,4 +3,9 @@ from app.training.services.taskitem.base import BaseTaskItemService
 from app.training.services.taskitem.python38 import Python38Service
 from app.training.services.taskitem.gcc74 import GCC74Service
 from app.training.services.taskitem.prologd import PrologDService
+from app.training.services.taskitem.postgrsql import PostgresqlService
+from app.training.services.taskitem.pascal import PascalService
+from app.training.services.taskitem.php import PhpService
+from app.training.services.taskitem.csharp import CsharpService
+from app.training.services.taskitem.java import JavaService
 from app.training.services.statistics import UserStatisticsService

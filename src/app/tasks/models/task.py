@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
+from app.translators.enums import CheckerType
 from app.tasks.enums import DifficultyLevel
 from app.tasks.models import (
     Tag,
@@ -18,15 +19,6 @@ class Task(models.Model):
         verbose_name = "задача"
         verbose_name_plural = "задачи"
         ordering = ('order_key',)
-
-    INT = 'int'
-    FLOAT = 'float'
-    STR = 'str'
-    OUTPUT_TYPES = (
-        (STR, 'строка'),
-        (INT, 'целое число'),
-        (FLOAT, 'вещественное число')
-    )
 
     order_key = models.PositiveIntegerField(
         verbose_name='порядок',
@@ -60,8 +52,8 @@ class Task(models.Model):
     output_type = models.CharField(
         verbose_name='чекер',
         max_length=255,
-        choices=OUTPUT_TYPES,
-        default=STR
+        choices=CheckerType.CHOICES,
+        default=CheckerType.STR
     )
     difficulty = models.CharField(
         verbose_name='сложность',

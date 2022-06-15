@@ -1,9 +1,11 @@
 import json
+from typing import Optional
 from django.core.cache import cache
 from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from app.databases.models import Database
 from app.training.models import Course
 from app.common.fields import OrderField
 
@@ -32,6 +34,13 @@ class Topic(models.Model):
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
+    database = models.ForeignKey(
+        Database,
+        verbose_name='учебная база данных',
+        help_text='обязательна для курсов по базам данных',
+        on_delete=models.SET_NULL,
+        null=True
+    )
 
     @property
     def translator(self) -> int:
@@ -71,6 +80,9 @@ class Topic(models.Model):
         else:
             data = json.loads(json_data)
         return data
+
+    def get_db_name(self) -> Optional[str]:
+        return self.database.db_name if self.database else None
 
     def get_breadcrumbs(self):
         return [

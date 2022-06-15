@@ -1,7 +1,15 @@
+var colorSchemes = {
+    'Python3.8': 'ace/mode/python',
+    'GCC7.4': 'ace/mode/c_cpp',
+    'Prolog-D': 'ace/mode/prolog',
+    'PostgreSQL': 'ace/mode/pgsql',
+    'Pascal': 'ace/mode/pascal',
+    'Php': 'ace/mode/php',
+    'CSharp': 'ace/mode/csharp',
+    'Java': 'ace/mode/java',
+}
+
 var aceInit = function(readonly = false){
-    var PYTHON38 = 'Python3.8',
-        GCC74 = 'GCC7.4',
-        PROLOG_D = 'Prolog-D'
 
     document.querySelectorAll('.js__editor').forEach(function(elem, index){
         var textarea = elem.querySelector('.js__editor-content'),
@@ -9,16 +17,13 @@ var aceInit = function(readonly = false){
             aceConfig = document.querySelector('.ace-config')
         aceConfig = aceConfig ? JSON.parse(aceConfig.innerHTML) : {}
 
+        var colorScheme = this.colorSchemes[aceConfig.translator];
+
         editor.setOption("showPrintMargin", false)     // убрать верт черту
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
         editor.setReadOnly(textarea.getAttribute('readonly') || readonly)  // для чтения
-        switch(aceConfig.translator || PYTHON38){
-            case PYTHON38:
-                editor.getSession().setMode("ace/mode/python"); break
-            case GCC74:
-                editor.getSession().setMode("ace/mode/c_cpp"); break
-        }
+        editor.getSession().setMode(colorScheme);
 
         // вписать код из textarea в ace editor
         editor.setValue(textarea.textContent, - 1)

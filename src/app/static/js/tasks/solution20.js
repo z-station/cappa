@@ -1,21 +1,26 @@
-var PYTHON38 = 'Python3.8',
-    GCC74 = 'GCC7.4',
-    PROLOG_D = 'Prolog-D'
+var colorSchemes = {
+    'Python3.8': 'ace/mode/python',
+    'GCC7.4': 'ace/mode/c_cpp',
+    'Prolog-D': 'ace/mode/prolog',
+    'PostgreSQL': 'ace/mode/pgsql',
+    'Pascal': 'ace/mode/pascal',
+    'Php': 'ace/mode/php',
+    'CSharp': 'ace/mode/csharp',
+    'Java': 'ace/mode/java',
+}
 
 var solutionPage = function(e){
  // инициализировать ace-editor
     document.querySelectorAll('.js__editor').forEach(function(elem, index){
-        var editor = ace.edit(elem.querySelector('.js__editor-ace'))
+        var translator = elem.getAttribute('data-translator'),
+            colorScheme = this.colorSchemes[translator],
+            editor = ace.edit(elem.querySelector('.js__editor-ace'));
+
+        editor.getSession().setMode(colorScheme)
         editor.setOption("showPrintMargin", false)     // убрать верт черту
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
         editor.setReadOnly(true)                       // для чтения
-        switch(elem.getAttribute('data-translator')){
-            case PYTHON38:
-                editor.getSession().setMode("ace/mode/python"); break
-            case GCC74:
-                editor.getSession().setMode("ace/mode/c_cpp"); break
-        }
     })
 }
 
