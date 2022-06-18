@@ -19,3 +19,21 @@ class EditorForm(forms.Form):
         widget=forms.Textarea(attrs={'readonly': True})
     )
     translator = forms.CharField(widget=forms.HiddenInput)
+    db_name = forms.CharField(widget=forms.HiddenInput)
+
+
+class SqlEditorForm(forms.Form):
+
+    content = forms.CharField(label='Код запроса')
+    output = forms.CharField(
+        label="Результат запроса",
+        required=False,
+        widget=forms.Textarea(attrs={'readonly': True})
+    )
+    error = forms.CharField(
+        label="Ошибка",
+        required=False,
+        widget=forms.Textarea(attrs={'readonly': True})
+    )
+    translator = forms.CharField(widget=forms.HiddenInput)
+    db_name = forms.CharField(widget=forms.HiddenInput)

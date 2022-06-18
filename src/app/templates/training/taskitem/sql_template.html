@@ -1,0 +1,9 @@
+{% extends 'training/taskitem/base.html' %}
+{% load static training_tags %}
+
+{% block content_1 %}
+    <div class="white fp-content">
+        <h3>Редактор решения</h3>
+        {% show_sql_editor object %}
+    </div>
+{% endblock %}

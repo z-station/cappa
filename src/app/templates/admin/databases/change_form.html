@@ -1,0 +1,16 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+    {% if original.pk %}
+    <div class="submit-row list-group">
+        <p class="deletelink-box">
+            <input type="submit" value="Удалить базу данных" class="btn btn-danger" name="delete_db">
+        </p>
+        <p class="deletelink-box">
+            <input type="submit" value="Создать базу данных" class="btn btn-warning" name="create_db"
+               title="Создать базу данных с данными из файла (Если база существует, она будет пересоздана)">
+        </p>
+    </div>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

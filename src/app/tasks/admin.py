@@ -53,6 +53,7 @@ class TaskAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     inlines = (SolutionExampleInline,)
     list_filter = (
+        'output_type',
         ('tags', RelatedDropdownFilter),
         ('difficulty', ChoiceDropdownFilter),
         ('source', RelatedDropdownFilter),

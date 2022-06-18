@@ -8,7 +8,7 @@ from app.training.models import (
     TaskItem
 )
 from app.training.forms.topic import ContentForm
-from app.training.forms.taskitem import EditorForm
+from app.training.forms.taskitem import EditorForm, SqlEditorForm
 
 
 register = template.Library()
@@ -40,7 +40,8 @@ def show_content(context, topic: Topic):
                 initial={
                     'content': obj.content,
                     'input': obj.input,
-                    'translator': obj.translator
+                    'translator': obj.translator,
+                    'db_name': topic.get_db_name()
                 },
                 prefix=obj.id
             )
@@ -61,19 +62,54 @@ def show_editor(context, taskitem: TaskItem):
         translator=taskitem.translator
     ).first()
 
-    raw_html = ''
     form = EditorForm(
         initial={
             'content': draft.content if draft else '',
             'input': '',
-            'translator': taskitem.translator
+            'translator': taskitem.translator,
         }
     )
-    raw_html += render_to_string(
+    show_testing_actions = (
+        taskitem.score_method_is_tests
+        or taskitem.score_method_is_tests_and_review
+    )
+    raw_html = render_to_string(
         template_name='training/parts/editor.html',
         context={
             'object': taskitem,
-            'form': form
+            'form': form,
+            'show_testing_actions': show_testing_actions
+        },
+        request=context.request
+    )
+    return mark_safe(raw_html)
+
+
+@register.simple_tag(takes_context=True)
+def show_sql_editor(context, taskitem: TaskItem):
+    draft = Draft.objects.filter(
+        task_id=taskitem.task_id,
+        user_id=context.request.user.id,
+        translator=taskitem.translator
+    ).first()
+
+    form = SqlEditorForm(
+        initial={
+            'content': draft.content if draft else '',
+            'translator': taskitem.translator,
+            'db_name': taskitem.get_db_name()
+        }
+    )
+    show_testing_actions = (
+        taskitem.score_method_is_tests
+        or taskitem.score_method_is_tests_and_review
+    )
+    raw_html = render_to_string(
+        template_name='training/parts/sql/editor.html',
+        context={
+            'object': taskitem,
+            'form': form,
+            'show_testing_actions': show_testing_actions
         },
         request=context.request
     )

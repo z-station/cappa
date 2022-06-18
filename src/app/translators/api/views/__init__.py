@@ -2,3 +2,8 @@ from app.translators.api.views.base import BaseViewSet
 from app.translators.api.views.python38 import Python38ViewSet
 from app.translators.api.views.gcc74 import GCC74ViewSet
 from app.translators.api.views.prologd import PrologDViewSet
+from app.translators.api.views.postgresql import PostgresqlViewSet
+from app.translators.api.views.pascal import PascalViewSet
+from app.translators.api.views.php import PhpViewSet
+from app.translators.api.views.csharp import CSharpViewSet
+from app.translators.api.views.java import JavaViewSet

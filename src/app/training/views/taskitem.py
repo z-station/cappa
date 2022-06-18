@@ -5,7 +5,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from app.training.models import TaskItem
-from app.tasks.models import Draft, Solution
+from app.tasks.models import Solution
+from app.translators.enums import TranslatorType
 
 
 UserModel = get_user_model()
@@ -34,9 +35,13 @@ class TaskItemView(View):
         ).by_task(
             taskitem.task_id
         ).exists()
+        if taskitem.translator == TranslatorType.POSTGRESQL:
+            template = 'training/taskitem/sql_template.html'
+        else:
+            template = 'training/taskitem/template.html'
         return render(
             request=request,
-            template_name='training/taskitem/template.html',
+            template_name=template,
             context={
                 'course': taskitem.topic.course,
                 'object': taskitem,

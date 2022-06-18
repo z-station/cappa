@@ -90,6 +90,9 @@ class TaskItem(models.Model):
     def get_absolute_url(self):
         return self.get_cache_data()['url']
 
+    def get_db_name(self) -> str:
+        return self.topic.get_db_name()
+
     def score_method_is_tests(self):
         return self.score_method == ScoreMethod.TESTS
 

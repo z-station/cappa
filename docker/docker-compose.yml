@@ -36,9 +36,6 @@ services:
       POSTGRES_DB: acm
       POSTGRES_HOST: acm-db
       APP_STATIC_ROOT: /app/public/static
-      PYTHON38_HOST: http://sandbox-python38:9001
-      GCC74_HOST: http://sandbox-gcc74:9002
-      PROLOGD_HOST: http://sandbox-prolog-d:9003
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "-h", acm-db]
@@ -53,3 +50,4 @@ services:
              gunicorn --bind 0:8999 app.wsgi:application --reload -w 1"
 networks:
   localhost:
+    external: true

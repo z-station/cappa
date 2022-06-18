@@ -16,7 +16,7 @@
             <div class="js__editor-btn js__editor-btn-ready" title="Отправить решение"></div>
             <div class="js__editor-btn js__editor-btn-save" title="Сохранить в черновик"></div>
         </div>
-        {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+        {% if show_testing_actions %}
         <div class="control__bar-col col__2">
             {% if object.task.tests %}
                 <div class="js__editor-btn js__editor-btn-tests" title="Протестировать решение"></div>
@@ -38,13 +38,9 @@
         </div>
     </div>
 
-    {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+    {% if show_testing_actions %}
         {% show_ace_field form.input %}
+        {% show_ace_field form.output %}
+        {% show_ace_field form.error %}
     {% endif %}
-
-    {% show_ace_field form.output %}
-
-    {% show_ace_field form.error %}
-
-
 </form>

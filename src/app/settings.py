@@ -38,6 +38,8 @@ except PermissionError:
 DEFAULT_STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATIC_ROOT = env.get('APP_STATIC_ROOT', DEFAULT_STATIC_ROOT)
 
+SQL_FILES_DIR = os.path.join(BASE_DIR, 'public', 'sql_files')
+
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 LOGIN_URL = '/auth/signin/'
@@ -96,6 +98,7 @@ INSTALLED_APPS = [
     'app.accounts',
     'app.news',
     'app.tasks',
+    'app.databases',
     'app.training',
     'app.groups',
     'app.service'
@@ -176,17 +179,7 @@ MIDDLEWARE += ['app.admin.middleware.CustomModelAdminReorder']
 ADMIN_REORDER = (
     {
         'app': 'training', 'label': u'Учебные курсы',
-        'models': ('training.Course', 'groups.Group')
-    },
-    {
-        'app': 'tasks', 'label': u'Архив задач',
-        'models': (
-            'tasks.Task',
-            'tasks.Tag',
-            'tasks.Solution',
-            'tasks.ExternalSolution',
-            'tasks.Source',
-        )
+        'models': ('training.Course',)
     },
     {
         'app': 'news', 'label': u'Контент',
@@ -212,5 +205,20 @@ SERVICES_HOSTS = {
     ),
     TranslatorType.PROLOG_D: env.get(
         'PROLOGD_HOST', 'http://localhost:9003'
+    ),
+    TranslatorType.POSTGRESQL: env.get(
+        'POSTGRESQL_HOST', 'http://localhost:9004'
+    ),
+    TranslatorType.PASCAL: env.get(
+        'PASCAL_HOST', 'http://localhost:9005'
+    ),
+    TranslatorType.PHP: env.get(
+        'PHP_HOST', 'http://localhost:9006'
+    ),
+    TranslatorType.CSHARP: env.get(
+        'CSHARP_HOST', 'http://localhost:9007'
+    ),
+    TranslatorType.JAVA: env.get(
+        'JAVA_HOST', 'http://localhost:9008'
     ),
 }

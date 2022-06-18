@@ -1,43 +1,16 @@
-{% extends 'training/base.html' %}
+{% extends 'training/taskitem/base.html' %}
 {% load static training_tags %}
 
+{% block content_1 %}
+    <div class="white fp-content">
+        <h3>Редактор решения</h3>
+        {% show_editor object %}
+    </div>
+{% endblock %}
 
-{% block content %}
-    <div class="one-col">
-        <div class="white fp-content">
-            <h1 class="text-center">
-                <span>{{ object.numbered_title }}</span>
-            </h1>
-            <h3>Условие</h3>
-            {{ object.task.content|safe }}
-
-            <p>
-            {% if object.score_method_is_review or object.score_method_is_tests_and_review %}
-                <div class="text-small">Оценку выставляет преподаватель (по шкале от 0 до {{ object.max_score }} баллов)</div>
-            {% elif object.score_method_is_tests %}
-                <div class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
-            {% endif %}
-            {% if object.topic.due_date %}
-                <div class="text-small">
-                    <span>Срок сдачи решения:</span>
-                    <span class="js__utc-time" data-utc-time="{{ object.topic.due_date|date:'Y-m-d H:i:s.u'}}"></span>
-                </div>
-            {% endif %}
-            </p>
-        </div>
-        <div class="white fp-content js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
-            <a target="_blank" href="{% url 'solutions:solutions' %}?task_id={{ object.task_id }}">Мои решения</a>
-        </div>
-
-        <div class="white fp-content">
-            <h3>Редактор решения</h3>
-
-            {% show_editor object %}
-
-        </div>
-        {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
-            {% if object.task.tests %}
-
+{% block content_2 %}
+    {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+        {% if object.task.tests %}
             <div class="white fp-content">
                 <h3>Тесты на решение</h3></br>
 
@@ -66,14 +39,4 @@
             </div>
         {% endif %}
     {% endif %}
-    </div>
-{% endblock %}
-
-{% block js %}
-    {{ block.super }}
-    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
-    <script src="{% static 'js/editor.js' %}"></script>
-    <script>
-        new Editor(document.querySelector('.js__editor-form'))
-    </script>
 {% endblock %}

@@ -5,10 +5,21 @@
 - Python3.8  
 - GCC7.4   
 - Prolog-D
+- PostgreSQL
+- Pascal 
+- Php
+- CSharp
+- Java
+
 #### В URL запроса
 - python38  
 - gcc74   
-- prolog-d  
+- prolog-d
+- postgresql
+- pascal
+- php
+- csharp
+- java
 
 ### Оценочные методы  
 - tests - оценка на основании прохождения тестов

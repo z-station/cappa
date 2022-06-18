@@ -1433,6 +1433,12 @@ li.error {
     min-width: 100px;
 }
 
+/* sql output */
+
+.js__sql-output-container {
+    display: none;
+}
+
 /* groups */
 
 .groups .search__form {

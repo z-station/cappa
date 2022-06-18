@@ -8,6 +8,7 @@ from rest_framework import status
 from app.translators.api.serializers import DebugSerializer
 from app.common.api.serializers import BadRequestSerializer
 from app.translators import services
+from app.common.services import exceptions
 from app.translators.enums import TranslatorType
 
 
@@ -28,6 +29,14 @@ class BaseViewSet(ViewSet):
             return services.GCC74Service
         elif cls.translator_type == TranslatorType.PROLOG_D:
             return services.PrologDService
+        elif cls.translator_type == TranslatorType.POSTGRESQL:
+            return services.PostgresqlService
+        elif cls.translator_type == TranslatorType.PHP:
+            return services.PhpService
+        elif cls.translator_type == TranslatorType.CSHARP:
+            return services.CsharpService
+        elif cls.translator_type == TranslatorType.JAVA:
+            return services.JavaService
 
     @action(methods=('POST',), detail=False)
     def debug(self, request, *args, **kwargs):
@@ -36,7 +45,7 @@ class BaseViewSet(ViewSet):
         service_cls = self._get_service_cls()
         try:
             data = service_cls.debug(**slz.validated_data)
-        except services.ServiceException as ex:
+        except exceptions.ServiceException as ex:
             slz = BadRequestSerializer(
                 data={
                     'message': ex.message,

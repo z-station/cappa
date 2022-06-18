@@ -1,6 +1,6 @@
-import requests
-from typing import Optional, List
-from app.translators import exceptions
+from typing import List
+from app.common.services import exceptions
+from app.common.services.mixins import RequestMixin
 from app.translators.services.entities import (
     Test,
     DebugResult,
@@ -13,46 +13,21 @@ from app.translators.services.serializers import (
 )
 
 
-class BaseTranslatorService:
+class BaseTranslatorService(RequestMixin):
 
     SERVICE_HOST = None
-
-    @classmethod
-    def _perform_request(
-        cls,
-        url: str,
-        data: dict
-    ) -> requests.Response:
-
-        try:
-            response = requests.post(url=url, json=data)
-        except Exception as e:
-            raise exceptions.ServiceConnectionError(
-                details={
-                    'error': str(e)
-                }
-            )
-        else:
-            if not response.ok:
-                raise exceptions.ServiceBadRequest(
-                    details={
-                        'code': response.status_code,
-                        'error': response.json()
-                    }
-                )
-        return response
 
     @classmethod
     def debug(
         cls,
         code: str,
-        data_in: Optional[str] = None
+        **kwargs
     ) -> DebugResult:
 
         response = cls._perform_request(
             url=f'{cls.SERVICE_HOST}/debug/',
             data={
-                'data_in': data_in,
+                'data_in': kwargs.get('data_in'),
                 'code': code,
             }
         )
@@ -69,15 +44,15 @@ class BaseTranslatorService:
     def testing(
         cls,
         code: str,
-        checker_code: str,
-        tests: List[Test]
+        tests: List[Test],
+        **kwargs
     ) -> TestingResult:
 
         response = cls._perform_request(
             url=f'{cls.SERVICE_HOST}/testing/',
             data={
                 'code': code,
-                'checker': checker_code,
+                'checker': kwargs['checker_code'],
                 'tests': tests
             }
         )
