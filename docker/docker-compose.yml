@@ -42,7 +42,7 @@ services:
       GCC74_HOST: http://sandbox-gcc74:9002
       PROLOGD_HOST: http://sandbox-prolog-d:9003
       POSTGRESQL_HOST: http://sandbox-postgresql:9004
-      PASCAL_HOST: http://sandbox-pascal:9005
+      PASCAL_HOST: http://sandbox-pascal-abc:9005
       PHP_HOST: http://sandbox-php:9006
       CSHARP_HOST: http://sandbox-csharp:9007
       JAVA_HOST: http://sandbox-java:9008

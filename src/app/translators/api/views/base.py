@@ -31,6 +31,8 @@ class BaseViewSet(ViewSet):
             return services.PrologDService
         elif cls.translator_type == TranslatorType.POSTGRESQL:
             return services.PostgresqlService
+        elif cls.translator_type == TranslatorType.PASCAL:
+            return services.PascalService
         elif cls.translator_type == TranslatorType.PHP:
             return services.PhpService
         elif cls.translator_type == TranslatorType.CSHARP:
