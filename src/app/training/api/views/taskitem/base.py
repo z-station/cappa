@@ -87,13 +87,6 @@ class BaseTaskItemViewSet(GenericViewSet):
                 data=slz.validated_data
             )
         else:
-            course = taskitem.topic.course
-            UserStatisticsService.create_or_update_taskitem_statistics(
-                user_id=request.user.id,
-                course_id=course.id,
-                version_hash=course.get_cache_data()['version_hash'],
-                taskitem_id=taskitem.id
-            )
             return Response({'solution_id': solution.id})
 
     @action(methods=('POST',), detail=True)

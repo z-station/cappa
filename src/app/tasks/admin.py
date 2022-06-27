@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db import transaction
+from django.utils.encoding import force_text
 from django_admin_listfilter_dropdown.filters import (
     RelatedDropdownFilter,
     ChoiceDropdownFilter
@@ -22,6 +24,8 @@ from app.tasks.forms import (
     ExternalSolutionAdminForm,
 )
 from app.translators.enums import TranslatorType
+from app.training.services.statistics import UserStatisticsService
+from app.common.admin.mixins import DeleteSelectedMixin
 
 
 class SolutionExampleInline(admin.StackedInline):
@@ -61,7 +65,10 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 @admin.register(Solution)
-class SolutionAdmin(admin.ModelAdmin):
+class SolutionAdmin(
+    DeleteSelectedMixin,
+    admin.ModelAdmin
+):
 
     class Media:
         js = [
@@ -264,6 +271,41 @@ class SolutionAdmin(admin.ModelAdmin):
         'translator',
         'score_method',
     )
+
+    @staticmethod
+    def perform_delete_selected(modeladmin, request, queryset):
+
+        """ When delete multiple solutions - delete course statistics
+            for each course and user """
+
+        """ Perform delete many records """
+
+        pairs = set()
+        for obj in queryset:
+            obj_display = force_text(obj)
+            modeladmin.log_deletion(request, obj, obj_display)
+            if obj.type == SolutionType.COURSE:
+                pairs.add((obj.type_id, obj.user_id))
+
+        with transaction.atomic():
+            queryset.delete()
+            for (course_id, user_id) in pairs:
+                UserStatisticsService.delete_course_statistics(
+                    course_id=course_id,
+                    user_id=user_id
+                )
+
+    def delete_model(self, request, obj: Solution):
+
+        """ When delete solution - delete course statistics """
+
+        with transaction.atomic():
+            if obj.type == SolutionType.COURSE and obj.user:
+                UserStatisticsService.delete_course_statistics(
+                    course_id=obj.type_id,
+                    user_id=obj.user.id
+                )
+            obj.delete()
 
 
 @admin.register(ExternalSolution)

@@ -101,3 +101,18 @@ class UserStatisticsService:
             obj = CourseUserStatistics.objects.raw(*query.get_sql())
             obj = obj[0]
         return obj.data
+
+    @classmethod
+    def delete_course_statistics(
+        cls,
+        course_id: int,
+        user_id: Optional[int] = None,
+    ):
+
+        """ Удаляет статистику курса, для всех пользователей
+            если не указан id пользователя """
+
+        filter_kwargs = {'course_id': course_id}
+        if user_id:
+            filter_kwargs['user_id'] = user_id
+        CourseUserStatistics.objects.filter(**filter_kwargs).delete()

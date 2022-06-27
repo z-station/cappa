@@ -134,7 +134,7 @@ var groupCoursePage = function(e){
                                     if (!overdue){td.classList.add('s-red')}
                                     tdContent.innerHTML = '-'
                                 } else if (data.testing_score != null){
-                                    tdContent.innerHTML = data.review_score
+                                    tdContent.innerHTML = data.testing_score
                                     if (!overdue){
                                         td.classList.add('s-yellow')
                                         total_solved_tasks += 1
