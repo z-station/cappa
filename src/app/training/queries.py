@@ -154,10 +154,10 @@ class CreateOrUpdateUserTaskItemStatisticQuery(
 
         ON CONFLICT (user_id, course_id) 
           DO UPDATE 
-            SET data = (
+            SET data = training_courseuserstatistics.data || (
             SELECT statistics_json
             FROM course_statistics
-          )
+          )::jsonb
         """
 
 
