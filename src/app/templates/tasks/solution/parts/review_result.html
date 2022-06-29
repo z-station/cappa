@@ -1,0 +1,22 @@
+{% load base_tags %}
+
+<table class="solution__info">
+    <tr>
+        <td>Проверил:</td>
+        <td>{{ object.reviewer_full_name }}</td>
+    </tr>
+    <tr>
+        <td>Статус проверки:</td>
+        <td> {{ object.review_status_name }}</td>
+    </tr>
+    {% if not object.hide_review_score %}
+    <tr>
+        <td>Оценка:</td>
+        <td>{{ object.review_score|cut_zero }}</td>
+    </tr>
+    {% endif %}
+</table>
+{% if object.reviewer_comment and not object.hide_reviewer_comment %}
+    <div class="pt-1" ><strong>Комментарий преподавателя:</strong></div>
+    <div class="pt-2">{{ object.reviewer_comment|safe }}</div>
+{% endif %}

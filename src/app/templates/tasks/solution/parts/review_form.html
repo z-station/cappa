@@ -1,0 +1,36 @@
+{% load base_tags l10n %}
+
+<table class="solution__info">
+    <tr class="form-tr">
+        <td>Преподаватель:</td>
+        <td>{{ object.reviewer_full_name }}</td>
+    </tr>
+    <tr class="form-tr">
+        <td>{{ form.review_status.label_tag }}</td>
+        <td>{{ form.review_status }}</td>
+    </tr>
+    <tr class="form-tr">
+        <td>{{ form.review_score.label_tag }}</td>
+        <td>{{ form.review_score|unlocalize }}</td>
+    </tr>
+    {% for error in form.non_field_errors %}
+        <tr class="form-tr">
+            <td colspan="2">
+                <small class="solution__form-msg">{{ error }}</small>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="pt-1">
+    <strong>{{ form.reviewer_comment.label_tag }}</strong>
+    {{ form.reviewer_comment }}
+</div>
+<div class="pt-3" title="Пользователь не увидит оценку, только то что решение проверено">
+    {{ form.hide_review_score }}
+    <label for="id_hide_review_score">{{ form.hide_review_score.label }}</label>
+</div>
+<div title="Пользователь не увидит комментарий">
+    {{ form.hide_reviewer_comment }}
+    <label for="id_hide_reviewer_comment">{{ form.hide_reviewer_comment.label }}</label>
+</div>
+<input type="submit" class="btn btn-primary" value="Сохранить" />

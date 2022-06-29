@@ -48,10 +48,10 @@ async function checkPlagForTaskItem(taskitem){
         },
         statusCode:{
             200: function(response){
-                console.log(response)
+                console.log(1)
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest)
+                console.log(2)
             }
         }
     })

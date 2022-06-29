@@ -1,0 +1,61 @@
+{% extends 'tasks/base.html' %}
+{% load static base_tags %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <div class="one-col">
+        <div class="page-content">
+            <h1 class="text-center">Сравнение решений</h1>
+        </div>
+        <div class="white page-content">
+            <div class="page-row">
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/info_table.html' %}
+                </div>
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/info_table.html' with object=pair %}
+                </div>
+            </div>
+        </div>
+        <div class="white page-content">
+            <div class="page-row">
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/diff_results.html' %}
+                </div>
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/diff_results.html' with object=pair %}
+                </div>
+            </div>
+        </div>
+        <div class="white page-content">
+            <div class="page-row">
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/listing.html' %}
+                </div>
+                <div class="page-col">
+                    {% include 'tasks/solution/parts/listing.html' with object=pair %}
+                </div>
+            </div>
+        </div>
+        <div class="white page-content">
+            <div class="page-row">
+                <div class="page-col">
+                    <a href="{% url 'solutions:solution' object.pk %}" target="_blank">Ссылка на страницу решения</a>
+                </div>
+                <div class="page-col">
+                    <a href="{% url 'solutions:solution' pair.pk %}" target="_blank">Ссылка на страницу решения</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/tasks/solution20.js' %}"></script>
+    <script>window.dispatchEvent(new Event('solutionPageLoaded'))</script>
+{% endblock %}

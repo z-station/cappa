@@ -1,0 +1,12 @@
+{% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+    <div class="page-content">
+        <h3>Результаты тестирования кода</h3>
+        {% include 'tasks/solution/parts/tests_result.html' %}
+    </div>
+{% endif %}
+{% if object.score_method_is_review or object.score_method_is_tests_and_review %}
+    <div class="page-content">
+        <h3>Результаты проверки преподавателем</h3>
+        {% include 'tasks/solution/parts/review_result.html' %}
+    </div>
+{% endif %}

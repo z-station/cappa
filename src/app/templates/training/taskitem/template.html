@@ -2,7 +2,7 @@
 {% load static training_tags %}
 
 {% block content_1 %}
-    <div class="white fp-content">
+    <div class="white page-content ">
         <h3>Редактор решения</h3>
         {% show_editor object %}
     </div>
@@ -11,7 +11,7 @@
 {% block content_2 %}
     {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
         {% if object.task.tests %}
-            <div class="white fp-content">
+            <div class="white page-content ">
                 <h3>Тесты на решение</h3></br>
 
                 <div class="form__tests-container">

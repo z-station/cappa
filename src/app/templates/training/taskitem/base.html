@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="one-col">
-        <div class="white fp-content">
+        <div class="white page-content ">
             <h1 class="text-center">
                 <span>{{ object.numbered_title }}</span>
             </h1>
@@ -25,7 +25,7 @@
             {% endif %}
             </p>
         </div>
-        <div class="white fp-content js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
+        <div class="white page-content  js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
             <a target="_blank" href="{% url 'solutions:solutions' %}?task_id={{ object.task_id }}">Мои решения</a>
         </div>
 

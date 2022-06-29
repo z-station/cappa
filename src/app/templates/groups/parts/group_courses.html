@@ -4,9 +4,6 @@
         <table class="group__courses">
             {% for group_course in group_courses %}
                 <tr>
-                    {% if group_courses|length > 1 %}
-                        <td>{{ forloop.counter }}</td>
-                    {% endif %}
                     <td>
                         <a href="{% url 'training:course' group_course.course.slug %}"
                            target="_blank">
@@ -17,13 +14,15 @@
                         {% if object.user_is_teacher and group_course.statistics_allow_for_teacher or object.user_is_learner and group_course.statistics_allow_for_learner %}
                             <a href="{% url 'groups:group-course-statistics' object.id %}?course_id={{ group_course.course_id }}"
                                target="_blank">
-                                [таблица результатов]
+                                Таблица результатов
                             </a>
                         {% endif %}
+                    </td>
+                    <td>
                         {% if object.user_is_teacher %}
                             <a href="{% url 'groups:group-course-plag-statistics' object.id %}?course_id={{ group_course.course_id }}"
                                target="_blank">
-                                [поиск плагиата]
+                                Анализ плагиата
                             </a>
                         {% endif %}
                     </td>

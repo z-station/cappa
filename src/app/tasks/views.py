@@ -12,6 +12,7 @@ from app.tasks.services import SolutionService
 from app.tasks.filters import SoluionsFilterSet
 from app.training.services import UserStatisticsService
 from app.common.services.exceptions import ServiceException
+from app.common.decorators import teacher_access
 
 UserModel = get_user_model()
 
@@ -101,5 +102,27 @@ class SolutionsView(View):
             template_name='tasks/solutions/template.html',
             context={
                 'solutions': solutions,
+            }
+        )
+
+
+@method_decorator(teacher_access, name='dispatch')
+class SolutionsDiffView(View):
+
+    def get_object(self) -> Solution:
+        pk = self.kwargs['pk']
+        return get_object_or_404(Solution, pk=pk)
+
+    def get_pair_solution(self) -> Solution:
+        pk = self.kwargs['pair']
+        return get_object_or_404(Solution, pk=pk)
+
+    def get(self, request, *args, **kwargs):
+        return render(
+            request,
+            template_name='tasks/solution/diff.html',
+            context={
+                'object': self.get_object(),
+                'pair': self.get_pair_solution(),
             }
         )

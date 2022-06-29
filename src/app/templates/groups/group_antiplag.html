@@ -4,7 +4,7 @@
 {% block content %}
     <div class="one-col group-course white">
         <h1>{{ group.title }}</h1>
-        <h4>Данные о плагиате по курсу "{{ course.title }}"</h4>
+        <h4>Анализ плагиата по курсу "{{ course.title }}"</h4>
 
         <form class="search__form" id="js__search-form" >
             <div class="input-group input-group-sm">
@@ -22,7 +22,7 @@
                 <thead>
                     <tr>
                         <th class="wide-120">Участник</th>
-                        <th class="wide-90">Проверить<br>на плагиат</th>
+                        <th></th>
                         {% for topic in course_data.topics %}
                             {% for taskitem in topic.taskitems %}
                                 <th title="{{ taskitem.title }}\n{{ topic.title }}">
@@ -39,7 +39,7 @@
                     {% for user in group.learners %}
                         <tr id="js__member js__member-{{ user.id }}" data-user-id="{{ user.id }}" >
                             <td class="wide-120 username js__username">{{ user.get_full_name }}</td>
-                            <td class="wide-90 refresh js__refresh" title="Запустить проверку"></td>
+                            <td class="refresh js__refresh" title="Проверить решения на плагиат"></td>
                             {% for topic in course_data.topics %}
                                 {% for taskitem in topic.taskitems %}
                                     <td class="js__taskitem js__taskitem__{{ taskitem.id }}"

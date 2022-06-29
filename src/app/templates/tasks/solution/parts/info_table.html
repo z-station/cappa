@@ -1,0 +1,53 @@
+<h3>Общая информация</h3>
+<table class="solution__info">
+    <tr>
+        <td>Задача:</td>
+        <td>{{ object.task_name }}</td>
+    </tr>
+    <tr>
+        <td>Язык:</td>
+        <td>{{ object.translator_name }}</td>
+    </tr>
+    {% if object.is_internal %}
+        <tr>
+            <td>Пользователь:</td>
+            <td>{{ object.user_last_name }} {{ object.user_first_name }}</td>
+        </tr>
+        <tr>
+            <td>Источник решения:</td>
+            <td>{{ object.type_name_value }}: {{ object.type_name }}</td>
+        </tr>
+        {% if object.due_date %}
+        <tr>
+            <td>Срок сдачи:</td>
+            <td class="js__utc-time" data-utc-time="{{ object.due_date|date:'Y-m-d H:i:s.u' }}"></td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td>Дата отправки:</td>
+            <td>
+                <span class="js__utc-time" data-utc-time="{{ object.created|date:'Y-m-d H:i:s.u' }}"></span>
+                {% if object.due_date != None and object.created > object.due_date %}
+                    <span> (отправлено позже срока сдачи)</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Оценочный метод:</td>
+            <td>{{ object.score_method_name }}</td>
+        </tr>
+        <tr>
+            <td>Максимальный балл:</td>
+            <td>{{ object.max_score }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>Внешний источник:</td>
+            <td>{{ object.external_source_name }}</td>
+        </tr>
+        <tr>
+            <td>Описание:</td>
+            <td>{{ object.description|safe }}</td>
+        </tr>
+    {% endif %}
+</table>

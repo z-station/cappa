@@ -936,150 +936,34 @@ main .content.courses__container {
     text-align: right;
 }
 
-/* Fp */
+/* Page */
 
-.fp-title {
-    font-weight: 600;
-    text-align: center;
-    padding: 20px;
-    width: 100%;
-}
-
-.fp-content {
+.page-content {
     text-align: left;
     margin-bottom: 15px;
     position: relative;
     overflow: hidden;
 }
 
-.fp-content h3 {
+.page-content h3 {
     font-weight: 600;
     margin-bottom: 15px;
 }
 
-.fp-content h4 {
+.page-content h4 {
     font-weight: 600;
     margin-bottom: 10px
 }
 
-.fp-container {
+.page-row {
     display: flex;
-    position: relative;
-    width: 100%;
-}
-
-.fp-left-col {
-    max-width: 800px;
-    width: calc(100% - 200px);
-    flex: 1 0 auto;
-}
-
-.fp-right-col {
-    min-width: 200px;
-    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%
     position: relative;
 }
-
-.fp-help-text {
-    color: #82b915;
-    font-size: 16px;
-    font-weight: 600;
-    position: absolute;
-    width: 100%;
-    max-width: 200px;
-    z-index: 10;
-}
-
-.fp-help-text.red {
-    color: #b01b21;
-}
-
-.fp-help-text + img {
-    width: 64px;
-    position: absolute;
-    z-index: 10;
-}
-
-.fp-help-1 {
-    top: 380px;
-    left: 15px;
-}
-
-.fp-help-1 + img {
-    top: 415px;
-    left: -30px;
-}
-
-.fp-help-2 {
-    top: 285px;
-    left: 386px;
-    max-width: 300px;
-
-}
-
-.fp-help-2 + img {
-    top: 312px;
-    left: 320px;
-}
-
-.fp-help-3 {
-    top: 400px;
-    right: -209px;
-}
-
-.fp-help-3 + img {
-    top: 424px;
-    right: -22px;
-}
-
-.fp-help-4 {
-    top: 430px;
-    right: -176px;
-    width: 150px;
-}
-
-.fp-help-5 {
-    top: 616px;
-    right: -210px;
-}
-
-.fp-help-5 + img {
-    top: 640px;
-    right: -28px
-}
-
-.fp-help-6 {
-    top: 216px;
-    right: -210px;
-}
-
-.fp-help-6 + img {
-    top: 240px;
-    right: -5px;
-}
-
-/* command */
-
-.command {
-    width: 100%;
-}
-
-.command img {
-    height: 280px;
-    width: auto;
-    margin-right: 25px;
-}
-
-.command img:last-child {
-    margin-right: 0;
-}
-
-.command .one-col {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    position: relative;
-    flex-wrap: wrap;
+.page-col {
+    width: 49%;
 }
 
 /* course item */
@@ -1508,8 +1392,11 @@ li.error {
     width: 120px;
 }
 
-.group .group__courses tr td:first-child {
-    width: 20px;
+.group__courses tr td:first-child {
+    font-weight: bold;
+}
+.group__courses tr td {
+    padding: 5px 20px 5px 5px;
 }
 
 .group__invite-form {

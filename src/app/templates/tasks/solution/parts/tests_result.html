@@ -1,0 +1,16 @@
+{% load base_tags l10n %}
+
+<table class="solution__info">
+    <tr>
+        <td>Кол-во тестов:</td>
+        <td>{{ object.count_tests }}</td>
+    </tr>
+    <tr>
+        <td>Кол-во пройденных тестов:</td>
+        <td>{{ object.count_passed_tests }}</td>
+    </tr>
+    <tr>
+        <td>Оценка:</td>
+        <td>{{ object.testing_score|cut_zero|unlocalize }}</td>
+    </tr>
+</table>

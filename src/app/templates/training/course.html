@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="one-col">
-        <div class="white fp-content">
+        <div class="white page-content ">
             <h1 class="text-center">{{ object.title }}</h1>
             {% if object.content %}
                 <div class ="text">{{ object.content|safe }}</div>
@@ -28,7 +28,7 @@
         </div>
 
         {% if object.content_bottom %}
-            <div class ="white fp-content text">{{ object.content_bottom|safe }}</div>
+            <div class ="white page-content  text">{{ object.content_bottom|safe }}</div>
         {% endif %}
     </div>
 {% endblock %}
