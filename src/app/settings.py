@@ -236,3 +236,7 @@ SERVICES_HOSTS = {
         'JAVA_HOST', 'http://localhost:9008'
     ),
 }
+
+ANTIPLAG_HOST = env.get(
+    'ANTIPLAG_HOST', 'http://localhost:9020'
+)

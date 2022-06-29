@@ -128,3 +128,39 @@ class GroupCourseStatisticsView(View):
         else:
             raise Http404
 
+
+@method_decorator(login_required, name='dispatch')
+class GroupCoursePlagStatisticsView(View):
+
+    def get_object(self, *args, **kwargs):
+        try:
+            course_id = int(self.request.GET['course_id'])
+            group_id = kwargs['group_id']
+            group_course = GroupCourse.objects.select_related(
+                'group',
+                'course'
+            ).get(
+                group_id=group_id,
+                group__is_active=True,
+                course_id=course_id
+            )
+        except (ObjectDoesNotExist, TypeError, IndexError):
+            raise Http404
+        else:
+            return group_course
+
+    def get(self, request, *args, **kwargs):
+        group_course = self.get_object(*args, **kwargs)
+        if request.user:
+            return render(
+                request=request,
+                template_name='groups/group_antiplag.html',
+                context={
+                    'object': group_course,
+                    'group': group_course.group,
+                    'course': group_course.course,
+                    'course_data': group_course.course.get_cache_data()
+                }
+            )
+        else:
+            raise Http404

@@ -8,3 +8,4 @@ from app.training.api.views.taskitem.php import PhpViewSet
 from app.training.api.views.taskitem.csharp import CSharpViewSet
 from app.training.api.views.taskitem.java import JavaViewSet
 from app.training.api.views.course import CourseViewSet
+from app.training.api.views.taskitem.main import TaskItemViewSet

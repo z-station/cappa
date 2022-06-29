@@ -18,6 +18,12 @@ class ServiceException(Exception):
             self.details.update(details)
         super().__init__(message)
 
+    def as_dict(self):
+        return {
+            'message': self.message,
+            'details': self.details
+        }
+
 
 class ServiceConnectionError(ServiceException):
 

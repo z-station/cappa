@@ -1,8 +1,10 @@
 from rest_framework.serializers import (
+    ModelSerializer,
     Serializer,
     CharField,
     BooleanField
 )
+from app.training.models.taskitem import TaskItem
 
 
 class TestSerializer(Serializer):
@@ -22,3 +24,10 @@ class TestingSerializer(Serializer):
 class CreateSolutionSerializer(Serializer):
 
     code = CharField(write_only=True)
+
+
+class TaskItemSerializer(ModelSerializer):
+
+    class Meta:
+        model = TaskItem
+        fields = '__all__'

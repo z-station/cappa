@@ -8,50 +8,52 @@ from app.training.api.views import (
     PhpViewSet,
     CSharpViewSet,
     JavaViewSet,
-    CourseViewSet
+    CourseViewSet,
+    TaskItemViewSet,
 )
 
-task_router = DefaultRouter()
-task_router.register(
+router = DefaultRouter()
+router.register(
     'taskitem/python38',
     Python38ViewSet,
     basename='taskitem-python38'
 )
-task_router.register(
+router.register(
     'taskitem/gcc74',
     GCC74ViewSet,
     basename='taskitem-gcc74'
 )
-task_router.register(
+router.register(
     'taskitem/prolog-d',
     PrologDViewSet,
     basename='taskitem-prolog-d'
 )
-task_router.register(
+router.register(
     'taskitem/postgresql',
     PostgresqlViewSet,
     basename='taskitem-postgresql'
 )
-task_router.register(
+router.register(
     'taskitem/pascal',
     PascalViewSet,
     basename='taskitem-pascal'
 )
-task_router.register(
+router.register(
     'taskitem/php',
     PhpViewSet,
     basename='taskitem-php'
 )
-task_router.register(
+router.register(
     'taskitem/csharp',
     CSharpViewSet,
     basename='taskitem-csharp'
 )
-task_router.register(
+router.register(
     'taskitem/java',
     JavaViewSet,
     basename='taskitem-java'
 )
-task_router.register('courses', CourseViewSet, basename='courses')
+router.register('courses', CourseViewSet, basename='courses')
+router.register('taskitem', TaskItemViewSet, basename='taskitem')
 
-urlpatterns = task_router.urls
+urlpatterns = router.urls

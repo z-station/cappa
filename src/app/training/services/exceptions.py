@@ -19,3 +19,9 @@ class SolutionIsLocked(ServiceException):
     default_message = messages.MSG_006
     code = codes.CODE_006
 
+
+class CheckPlagException(ServiceException):
+
+    default_message = messages.MSG_013
+    code = codes.CODE_013
+

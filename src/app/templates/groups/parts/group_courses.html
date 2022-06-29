@@ -20,6 +20,12 @@
                                 [таблица результатов]
                             </a>
                         {% endif %}
+                        {% if object.user_is_teacher %}
+                            <a href="{% url 'groups:group-course-plag-statistics' object.id %}?course_id={{ group_course.course_id }}"
+                               target="_blank">
+                                [поиск плагиата]
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

@@ -14,3 +14,16 @@ class TaskItemStatistics(TypedDict):
     review_score: Optional[str]
     testing_score: Optional[str]
     due_in: Optional[str]
+
+
+class PlagCheckUser(TypedDict):
+
+    id: int
+    solution_id: int
+
+
+class PlagCheckResult(TypedDict):
+
+    percent: float
+    reference: Optional[PlagCheckUser]
+    candidate: Optional[PlagCheckUser]

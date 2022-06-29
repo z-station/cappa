@@ -9,5 +9,10 @@ urlpatterns = [
         r'^(?P<group_id>[0-9]+)/statistics/$',
         views.GroupCourseStatisticsView.as_view(),
         name='group-course-statistics'
+    ),
+    url(
+        r'^(?P<group_id>[0-9]+)/plag-statistics/$',
+        views.GroupCoursePlagStatisticsView.as_view(),
+        name='group-course-plag-statistics'
     )
 ]

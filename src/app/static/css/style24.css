@@ -1630,20 +1630,26 @@ li.error {
 
 }
 
-.group-course .course__table tr th:first-child,
-.group-course .course__table tr td:first-child {
+.group-course .course__table tr th.wide-120,
+.group-course .course__table tr td.wide-120 {
     padding: 0 5px 0 10px;
     min-width: 150px;
     width: 120px;
     text-align: left;
 }
 
-.group-course .course__table tr th:nth-child(2),
-.group-course .course__table tr td:nth-child(2),
-.group-course .course__table tr th:nth-child(3),
-.group-course .course__table tr td:nth-child(3) {
+.group-course .course__table tr th.wide-90,
+.group-course .course__table tr td.wide-90 {
     min-width: 90px;
     width: 90px;
+}
+
+.group-course .course__table tr td.refresh {
+    background: url('../img/refresh.svg') no-repeat center center;
+    cursor: pointer;
+}
+.group-course .course__table tr td.username {
+    cursor: pointer;
 }
 .group-course .course__table th .caption {
     position: relative;

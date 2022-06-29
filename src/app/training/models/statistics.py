@@ -40,3 +40,16 @@ class CourseUserStatistics(Model):
     data = JSONField(default=dict)
     course = ForeignKey(Course)
     user = ForeignKey(UserModel)
+
+
+class CourseUserPlagStatistics(Model):
+
+    """ Данные пользователя по уровню плагиата в рамках курса """
+
+    class Meta:
+        unique_together = ('user', 'course')
+
+    version_hash = CharField(max_length=128)
+    data = JSONField(default=dict)
+    course = ForeignKey(Course)
+    user = ForeignKey(UserModel)
