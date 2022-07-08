@@ -59,6 +59,20 @@ var getLocalTime = function(strUtcDate) {
     return d
 }
 
+var getFormattedNumber = function(value) {
+    var strValue = String(value),
+        parts = strValue.split('.')
+    if(parts.length == 2){
+        if (parts[1].length > 1){
+            return value.toFixed(1)
+        } else {
+            return value
+        }
+    } else {
+        return strValue
+    }
+}
+
 /* Перевод серверного времени UTC в локальное время */
 document.querySelectorAll('.js__utc-time').forEach(function(elem){
     var strUtcDate = elem.dataset.utcTime

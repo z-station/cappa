@@ -69,6 +69,7 @@
     {{ block.super }}
     <script src="{% static 'js/jquery.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/groups/groups.js' %}"></script>
     <script src="{% static 'js/groups/group_plag.js' %}"></script>
     <script>
         window.userIsTeacher = {% if user.is_teacher %}true{% else %}false{% endif %};

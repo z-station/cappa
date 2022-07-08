@@ -90,4 +90,4 @@ class PlagStatisticsService(RequestMixin):
                             solution_id=candidates_map[user_id]
                         )
                     )
-            return result
+        return result
