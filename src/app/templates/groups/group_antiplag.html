@@ -75,6 +75,9 @@
         window.userIsTeacher = {% if user.is_teacher %}true{% else %}false{% endif %};
         window.authToken = '{{ request.user.auth_token }}';
         window.candidateIds = [{% for user in group.learners %}{{ user.id }},{% endfor %}];
+        window.candidates = {
+            {% for user in group.learners %}{{ user.id }}:'{{ user.get_full_name }}',{% endfor %}
+        };
         window.groupCoursePlagStatisticsUrl = '/api/groups/{{ group.id }}/plag-statistics/?course_id={{course.id}}';
         window.dispatchEvent(new Event('groupCoursePlagPageLoaded'));
     </script>

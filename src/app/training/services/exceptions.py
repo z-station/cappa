@@ -25,3 +25,14 @@ class CheckPlagException(ServiceException):
     default_message = messages.MSG_013
     code = codes.CODE_013
 
+
+class SolutionNotFound(ServiceException):
+
+    default_message = messages.MSG_014
+    code = codes.CODE_014
+
+
+class CheckPlagImpossible(ServiceException):
+
+    default_message = messages.MSG_015
+    code = codes.CODE_015

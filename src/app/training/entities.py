@@ -1,5 +1,5 @@
 from typing import TypedDict, Optional
-from app.tasks.enums import ScoreMethod
+from app.tasks.enums import ScoreMethod, SolutionType
 from app.translators.enums import TranslatorType
 
 
@@ -20,6 +20,7 @@ class PlagCheckUser(TypedDict):
 
     id: int
     solution_id: int
+    solution_type: SolutionType
 
 
 class PlagCheckResult(TypedDict):

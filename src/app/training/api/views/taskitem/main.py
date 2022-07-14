@@ -10,7 +10,11 @@ from app.training.api.serializers.statisitics import (
 )
 from app.training.services.statistics import PlagStatisticsService
 from app.training.models.taskitem import TaskItem
-from app.training.services.exceptions import CheckPlagException
+from app.training.services.exceptions import (
+    CheckPlagException,
+    SolutionNotFound,
+    CheckPlagImpossible,
+)
 
 
 class TaskItemViewSet(GenericViewSet):
@@ -44,7 +48,9 @@ class TaskItemViewSet(GenericViewSet):
                 reference_user_id=slz.validated_data['reference_user_id'],
                 candidate_ids=slz.validated_data['candidates']
             )
-        except CheckPlagException as ex:
+        except (CheckPlagException, CheckPlagImpossible) as ex:
             return Response(data=ex.as_dict(), status=500)
+        except SolutionNotFound:
+            return Response(data={}, status=204)
         else:
             return Response(data=data, status=200)

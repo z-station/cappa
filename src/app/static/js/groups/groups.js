@@ -25,3 +25,10 @@ var tableFilter = {
         })
     }
 }
+
+var showLoader = () => {
+    document.querySelector('.js__loader').style.display = 'flex';
+}
+var hideLoader = () => {
+    document.querySelector('.js__loader').style.display = 'none';
+}

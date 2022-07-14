@@ -59,12 +59,16 @@ var getLocalTime = function(strUtcDate) {
     return d
 }
 
-var getFormattedNumber = function(value) {
+var getFormattedNumber = function(value, fractionDigits) {
+
+    /* Возвращает строковое представление числа
+       с fractionDigits чисел после запятой */
+
     var strValue = String(value),
         parts = strValue.split('.')
     if(parts.length == 2){
-        if (parts[1].length > 1){
-            return value.toFixed(1)
+        if (parts[1].length > fractionDigits){
+            return value.toFixed(fractionDigits)
         } else {
             return value
         }

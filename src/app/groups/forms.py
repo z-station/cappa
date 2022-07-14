@@ -50,9 +50,9 @@ class GroupMemberAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def clean(self):
-        user = self.cleaned_data['user']
+        user = self.cleaned_data.get('user')
         role = self.cleaned_data['role']
-        if role == GroupMemberRole.TEACHER and not user.is_teacher:
+        if user and role == GroupMemberRole.TEACHER and not user.is_teacher:
             self.add_error(
                 field='role',
                 error='Пользователь не являетя преподавателем'
