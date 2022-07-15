@@ -32,6 +32,12 @@ class TranslatorType:
         PASCAL: 'PascalABC.NET',
     }
 
+    ANTIPLAG_ALLOWED = {
+        PYTHON38,
+        GCC74,
+        JAVA
+    }
+
 
 class CheckerType:
 

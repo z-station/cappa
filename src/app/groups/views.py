@@ -9,6 +9,7 @@ from app.groups.models import (
     GroupCourse
 )
 from app.groups.forms import GroupSearchForm, GroupInviteForm
+from app.translators.enums import TranslatorType
 
 
 class GroupListView(View):
@@ -70,6 +71,7 @@ class GroupView(View):
             context={
                 'object': group,
                 'form': form,
+                'translators_antiplag_allowed': TranslatorType.ANTIPLAG_ALLOWED
             },
             request=request
         )
@@ -151,7 +153,7 @@ class GroupCoursePlagStatisticsView(View):
 
     def get(self, request, *args, **kwargs):
         group_course = self.get_object(*args, **kwargs)
-        if request.user:
+        if group_course.course.translator in TranslatorType.ANTIPLAG_ALLOWED:
             return render(
                 request=request,
                 template_name='groups/group_antiplag.html',

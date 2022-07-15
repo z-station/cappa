@@ -19,7 +19,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if object.user_is_teacher %}
+                        {% if object.user_is_teacher and group_course.course.translator in translators_antiplag_allowed %}
                             <a href="{% url 'groups:group-course-plag-statistics' object.id %}?course_id={{ group_course.course_id }}"
                                target="_blank">
                                 Анализ плагиата
