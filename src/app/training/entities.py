@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TypedDict, Optional
 from app.tasks.enums import ScoreMethod, SolutionType
 from app.translators.enums import TranslatorType
@@ -26,5 +27,6 @@ class PlagCheckUser(TypedDict):
 class PlagCheckResult(TypedDict):
 
     percent: float
+    datetime: datetime
     reference: Optional[PlagCheckUser]
     candidate: Optional[PlagCheckUser]

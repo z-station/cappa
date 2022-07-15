@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
             name='CourseUserPlagStatistics',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version_hash', models.CharField(max_length=128)),
                 ('data', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='training.Course')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),

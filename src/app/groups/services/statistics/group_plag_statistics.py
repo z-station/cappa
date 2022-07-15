@@ -36,9 +36,15 @@ class GroupPlagStatisticsService:
                 user_id_1: {
                     taskitem_id_1: {
                        percent: float,
+                       datetime: str,
+                       reference: ?{
+                           id: int,
+                           solution_type: str,
+                           solution_id: int
+                       },
                        candidate: ?{
                            id: int,
-                           full_name: str,
+                           solution_type: str,
                            solution_id: int
                        }
                     },

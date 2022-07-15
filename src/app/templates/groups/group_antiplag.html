@@ -37,7 +37,7 @@
                 </thead>
                 <tbody>
                     {% for user in group.learners %}
-                        <tr id="js__member js__member-{{ user.id }}" data-user-id="{{ user.id }}" >
+                        <tr class="js__member js__member-{{ user.id }}" data-user-id="{{ user.id }}" >
                             <td class="wide-120 username js__username">{{ user.get_full_name }}</td>
                             <td class="refresh js__refresh" title="Проверить решения на плагиат"></td>
                             {% for topic in course_data.topics %}

@@ -1,10 +1,17 @@
 from typing import List
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.utils import timezone
 from app.tasks.models import Solution
 from app.tasks.enums import SolutionType
-from app.training.entities import PlagCheckResult, PlagCheckUser
-from app.training.models import TaskItem
+from app.training.entities import (
+    PlagCheckResult,
+    PlagCheckUser
+)
+from app.training.models import (
+    TaskItem,
+    CourseUserPlagStatistics
+)
 from app.translators.enums import TranslatorType
 from app.common.services.exceptions import (
     ServiceConnectionError,
@@ -16,7 +23,9 @@ from app.training.services.exceptions import (
     CheckPlagException,
     SolutionNotFound,
 )
-
+from app.training.api.serializers.statisitics import (
+    PlagCheckResultSerializer
+)
 
 UserModel = get_user_model()
 
@@ -30,7 +39,7 @@ class PlagStatisticsService(RequestMixin):
     }
 
     @classmethod
-    def get_candidates_solutions(
+    def _get_candidates_solutions(
         cls,
         reference_user_id: int,
         taskitem: TaskItem,
@@ -54,7 +63,7 @@ class PlagStatisticsService(RequestMixin):
         )
 
     @classmethod
-    def get_external_solutions(
+    def _get_external_solutions(
         cls,
         taskitem: TaskItem,
     ):
@@ -71,7 +80,7 @@ class PlagStatisticsService(RequestMixin):
         )
 
     @classmethod
-    def get_reference_solution(
+    def _get_reference_solution(
         cls,
         taskitem: TaskItem,
         reference_user_id: int,
@@ -85,7 +94,7 @@ class PlagStatisticsService(RequestMixin):
         ).first()
 
     @classmethod
-    def get_solution_uuid(cls, solution: Solution) -> str:
+    def _get_solution_uuid(cls, solution: Solution) -> str:
         if solution.type == SolutionType.EXTERNAL:
             user_id = solution.external_source_id
         else:
@@ -93,32 +102,32 @@ class PlagStatisticsService(RequestMixin):
         return f'{solution.type}-{user_id}-{solution.id}'
 
     @classmethod
-    def get_candidates_data(
+    def _get_candidates_data(
         cls,
         taskitem: TaskItem,
         reference_user_id: int,
         candidate_ids: List[int]
     ) -> list:
 
-        candidates_solutions = cls.get_candidates_solutions(
+        candidates_solutions = cls._get_candidates_solutions(
             reference_user_id=reference_user_id,
             taskitem=taskitem,
             candidate_ids=candidate_ids
         )
-        external_solutions = cls.get_external_solutions(
+        external_solutions = cls._get_external_solutions(
             taskitem=taskitem,
         )
         all_solutions = candidates_solutions.union(external_solutions)
         candidates_data = []
         for solution in all_solutions:
             candidates_data.append({
-                "uuid": cls.get_solution_uuid(solution),
+                "uuid": cls._get_solution_uuid(solution),
                 "code": solution.content
             })
         return candidates_data
 
     @classmethod
-    def get_plag_data(
+    def _get_plag_data(
         cls,
         taskitem: TaskItem,
         ref_code: str,
@@ -140,6 +149,23 @@ class PlagStatisticsService(RequestMixin):
             return response.json()
 
     @classmethod
+    def create_or_update_taskitem_statistics(
+        cls,
+        user_id: int,
+        taskitem: TaskItem,
+        data: PlagCheckResult
+    ):
+        serialized_data = PlagCheckResultSerializer(instance=data).data
+        statistics, created = CourseUserPlagStatistics.objects.get_or_create(
+            user_id=user_id,
+            course_id=taskitem.topic.course_id,
+            defaults={'data': {taskitem.id: serialized_data}}
+        )
+        if not created:
+            statistics.data[taskitem.id] = serialized_data
+            statistics.save()
+
+    @classmethod
     def check_by_taskitem(
         cls,
         taskitem: TaskItem,
@@ -149,21 +175,30 @@ class PlagStatisticsService(RequestMixin):
 
         """ TODO prototype """
 
-        ref_solution = cls.get_reference_solution(
+        ref_solution = cls._get_reference_solution(
             reference_user_id=reference_user_id,
             taskitem=taskitem,
         )
         if not ref_solution or not ref_solution.content:
             raise SolutionNotFound()
 
-        result = PlagCheckResult(percent=0, reference=None, candidate=None)
-        candidates_data = cls.get_candidates_data(
+        result = PlagCheckResult(
+            percent=0,
+            datetime=timezone.now(),
+            reference=PlagCheckUser(
+                id=reference_user_id,
+                solution_type=SolutionType.COURSE,
+                solution_id=ref_solution.id
+            ),
+            candidate=None
+        )
+        candidates_data = cls._get_candidates_data(
             taskitem=taskitem,
             reference_user_id=reference_user_id,
             candidate_ids=candidate_ids
         )
         if candidates_data:
-            plag_data = cls.get_plag_data(
+            plag_data = cls._get_plag_data(
                 taskitem=taskitem,
                 ref_code=ref_solution.content,
                 candidates_data=candidates_data
@@ -174,17 +209,15 @@ class PlagStatisticsService(RequestMixin):
             solution_type, user_id, solution_id = (
                 plag_data['uuid'].split('-')
             )
-            result = PlagCheckResult(
-                percent=percent,
-                reference=PlagCheckUser(
-                    id=reference_user_id,
-                    solution_type=SolutionType.COURSE,
-                    solution_id=ref_solution.id
-                ),
-                candidate=PlagCheckUser(
-                    id=user_id,
-                    solution_type=solution_type,
-                    solution_id=solution_id
-                )
+            result['percent'] = percent
+            result['candidate'] = PlagCheckUser(
+                id=user_id,
+                solution_type=solution_type,
+                solution_id=solution_id
             )
+        cls.create_or_update_taskitem_statistics(
+            user_id=reference_user_id,
+            taskitem=taskitem,
+            data=result
+        )
         return result

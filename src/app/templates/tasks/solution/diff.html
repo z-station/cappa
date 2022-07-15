@@ -18,16 +18,22 @@
                 </div>
             </div>
         </div>
-        <div class="white page-content">
-            <div class="page-row">
-                <div class="page-col">
-                    {% include 'tasks/solution/parts/diff_results.html' %}
-                </div>
-                <div class="page-col">
-                    {% include 'tasks/solution/parts/diff_results.html' with object=pair %}
+        {% if object.is_internal or pair.is_internal %}
+            <div class="white page-content">
+                <div class="page-row">
+                    <div class="page-col">
+                        {% if object.is_internal %}
+                            {% include 'tasks/solution/parts/diff_results.html' %}
+                        {% endif %}
+                    </div>
+                    <div class="page-col">
+                        {% if pair.is_internal %}
+                            {% include 'tasks/solution/parts/diff_results.html' with object=pair %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
         <div class="white page-content">
             <div class="page-row">
                 <div class="page-col">

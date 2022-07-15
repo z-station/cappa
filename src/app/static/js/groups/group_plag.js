@@ -107,29 +107,33 @@ var refreshListener = async (event) => {
     hideLoader()
 }
 
-var groupCoursePlagPage = (e) => {
-
-    $.ajax({
-        url: window.groupCoursePlagStatisticsUrl,
-        type: 'GET',
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        headers: {
-            'Authorization': `Token ${window.authToken}`
-        },
-        statusCode:{
-            200: function(response){
-                for(const [user_id, user_data] of Object.entries(response)){
-                    // pass
-                }
-                hideLoader()
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                // show error
-                hideLoader()
+var loadGroupStatistics = async () => {
+    var response = await fetch(
+         window.groupCoursePlagStatisticsUrl,
+         {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${window.authToken}`,
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+         }
+    )
+    if (response.ok){
+        var data = await response.json()
+        for(const [userId, userData] of Object.entries(data)){
+            var tr = document.querySelector(`.js__member-${userId}`)
+            for(const [taskitemId, plagData] of Object.entries(userData)){
+                var taskitem = tr.querySelector(`.js__taskitem__${taskitemId}`)
+                showPlagByTaskItem(taskitem, plagData)
             }
         }
-    })
+        hideLoader()
+    }
+}
+
+var groupCoursePlagPage = (e) => {
+
+    loadGroupStatistics()
 
     $(".js__course__fake-table").width($(".js__course__table").width() + 20);
 
