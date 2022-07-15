@@ -188,10 +188,11 @@ class Command(BaseCommand):
             ).exists():
                 self.stdout.write('Внешнее решение задачи уже существует')
             else:
+                link = titles_and_links.get(task.title, '')
                 SolutionService.create_external(
                     external_source=pyanswer_source,
                     task=task,
-                    description='Плагиатное решение, взятое с сайта PyAnswer',
+                    description=f'<a target="_blank" href="{link}">{link}</a>' if link else '',
                     content=titles_and_codes[task.title],
                     translator=TranslatorType.PYTHON38
                 )
