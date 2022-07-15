@@ -22,6 +22,7 @@
                 <thead>
                     <tr>
                         <th class="wide-120">Участник</th>
+<!--                        <th class="refresh js__refresh-all" title="Проверить решения всех пользователей на плагиат"></th>-->
                         <th></th>
                         {% for topic in course_data.topics %}
                             {% for taskitem in topic.taskitems %}
@@ -39,7 +40,7 @@
                     {% for user in group.learners %}
                         <tr class="js__member js__member-{{ user.id }}" data-user-id="{{ user.id }}" >
                             <td class="wide-120 username js__username">{{ user.get_full_name }}</td>
-                            <td class="refresh js__refresh" title="Проверить решения на плагиат"></td>
+                            <td class="refresh js__refresh-user" title="Проверить решения пользователя на плагиат"></td>
                             {% for topic in course_data.topics %}
                                 {% for taskitem in topic.taskitems %}
                                     <td class="js__taskitem js__taskitem__{{ taskitem.id }}"
@@ -69,7 +70,7 @@
     {{ block.super }}
     <script src="{% static 'js/jquery.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
-    <script src="{% static 'js/groups/groups.js' %}"></script>
+    <script src="{% static 'js/groups/groups1.js' %}"></script>
     <script src="{% static 'js/groups/group_plag.js' %}"></script>
     <script>
         window.userIsTeacher = {% if user.is_teacher %}true{% else %}false{% endif %};

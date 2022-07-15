@@ -1531,7 +1531,7 @@ li.error {
     width: 90px;
 }
 
-.group-course .course__table tr td.refresh {
+.group-course .course__table .refresh {
     background: url('../img/refresh.svg') no-repeat center center;
     cursor: pointer;
 }

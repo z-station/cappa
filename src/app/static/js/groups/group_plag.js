@@ -2,9 +2,11 @@ var getTaskitemTitle = (data) => {
     if(data.percent == 0){
         var title = ''
     } else {
-        var candidateName = window.candidates[data.candidate.id]
-        var referenceName = window.candidates[data.reference.id]
-        var title = `Пользователь: ${referenceName}\nКандидат: ${candidateName}\nСовпадение: ${getFormattedNumber(data.percent * 100, 0)}%`
+        var localCreatedTime = new Date(data.datetime), // время с указанием часового пояса автоматически преобразуется ко времени в часовом поясе клиента
+            createdLocalFormattedDate = getFormatedDateTime(localCreatedTime),
+            candidateName = window.candidates[data.candidate.id],
+            referenceName = window.candidates[data.reference.id];
+        var title = `Пользователь: ${referenceName}\nКандидат: ${candidateName}\nСовпадение: ${getFormattedNumber(data.percent * 100, 0)}%\nДата проверки: ${createdLocalFormattedDate}`
     }
     return title
 }
@@ -49,7 +51,7 @@ var getPlagByTaskItem = async (taskitem) => {
             }
         ).then(
             (data) => resolve(data)
-        )
+        ).catch((error) => {reject(error)})
     })
 }
 
@@ -85,27 +87,38 @@ var showTaskItemError = (taskitem, data) => {
 
 }
 
-var refreshListener = async (event) => {
-    showLoader()
-    var taskitems = event.target.parentElement.querySelectorAll('.js__taskitem');
-    for (taskitem of taskitems) {
-        clearTaskitemContent()
-        await getPlagByTaskItem(taskitem).then(
-            (data) => {
-                // 204 статус ответа и пустое тело если нет решения по задаче
-                if (Object.keys(data).length){
-                    if(data.percent){
-                        showPlagByTaskItem(taskitem, data)
-                    } else if (data.message) {
-                        showTaskItemError(taskitem, data)
+var refreshUserListener = async (tr) => {
+        showLoader()
+        var taskitems = tr.querySelectorAll('.js__taskitem');
+        for (taskitem of taskitems) {
+            clearTaskitemContent()
+            await getPlagByTaskItem(taskitem).then(
+                (data) => {
+                    // 204 статус ответа и пустое тело если нет решения по задаче
+                    if (Object.keys(data).length){
+                        if(data.percent){
+                            showPlagByTaskItem(taskitem, data)
+                        } else if (data.message) {
+                            showTaskItemError(taskitem, data)
+                        }
                     }
-                }
-            },
-            (error) => console.log(error)
-        )
-    }
-    hideLoader()
+                },
+                (error) => console.log(error)
+            )
+        }
+        hideLoader()
 }
+
+
+//var refreshAllUsersListener = async () => {
+//    return new Promise(function(resolve, reject) {
+//        var users = document.querySelectorAll('.js__member')
+//        for (user of users) {
+//            var result = async refreshUserListener(users)
+//        })
+//        return resolve()
+//    })
+//}
 
 var loadGroupStatistics = async () => {
     var response = await fetch(
@@ -148,9 +161,18 @@ var groupCoursePlagPage = (e) => {
     var searchForm = document.getElementById('js__search-form')
     searchForm && searchForm.addEventListener('submit', (event) => tableFilter.search(event))
 
-    document.querySelectorAll('.js__refresh').forEach((elem) => {
-        elem.addEventListener('click', refreshListener)
+    document.querySelectorAll('.js__refresh-user').forEach((elem) => {
+        elem.addEventListener('click', (event) => {
+            let tr = event.target.parentElement
+            refreshUserListener(tr)
+        })
     })
+
+//    document.querySelector('.js__refresh-all').addEventListener('click', (event) => {
+//        showLoader()
+//        refreshAllUsersListener()
+//        hideLoader()
+//    })
 
 }
 
