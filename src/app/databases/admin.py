@@ -46,8 +46,7 @@ class DatabaseAdmin(admin.ModelAdmin):
 
         opts = self.model._meta
         preserved_filters = self.get_preserved_filters(request)
-
-        if "create_db" or "delete_db" in request.POST:
+        if "create_db" in request.POST or "delete_db" in request.POST:
             try:
                 if "create_db" in request.POST:
                     DatabaseManagementService.create(obj)
@@ -55,11 +54,12 @@ class DatabaseAdmin(admin.ModelAdmin):
                 elif "delete_db" in request.POST:
                     DatabaseManagementService.delete(obj)
                     msg = 'Database deleted successfully!'
+                else:
+                    msg = None
                 msg_level = messages.SUCCESS
             except exceptions.ServiceException as ex:
                 msg = f'{ex.message}\n{ex.details}'
                 msg_level = messages.ERROR
-
             self.message_user(
                 request=request,
                 message=msg,
