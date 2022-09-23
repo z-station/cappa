@@ -1789,6 +1789,20 @@ li.error {
         min-width: 115px;
         width: 115px;
     }
+    .profile__bar-username {
+        display: none;
+    }
+    .profile__bar-username-icon {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: url('../img/user.svg') no-repeat center;
+        margin: -3px 10px 0 0;
+    }
+
+    .header__menu-nav .menu__item {
+       font-size: 16px;
+    }
 
 }
 
@@ -1891,21 +1905,6 @@ li.error {
 
     .header__menu-col-2 .menu__item:not(:first-child) {
        display: none;
-    }
-
-    .profile__bar-username {
-        display: none;
-    }
-    .profile__bar-username-icon {
-        display: inline-block;
-        width: 35px;
-        height: 35px;
-        background: url('../img/user.svg') no-repeat center;
-        margin: -3px 10px 0 0;
-    }
-
-    .header__menu-nav .menu__item {
-       font-size: 16px;
     }
 
     .news__item {

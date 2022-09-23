@@ -61,5 +61,10 @@ class User(AbstractUser):
     def get_full_name(self):
         return f'{self.last_name} {self.first_name} {self.father_name}'
 
+    def get_short_full_name(self):
+        first_name = f'{self.first_name[0].upper()}.' if self.first_name else ''
+        father_name = f'{self.father_name[0].upper()}.' if self.father_name else ''
+        return f'{self.last_name} {first_name} {father_name}'
+
     def __str__(self):
         return self.get_full_name()
