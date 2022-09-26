@@ -12,7 +12,7 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery.tablesorter.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style24.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style25.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
     {% endblock %}
 </head>
@@ -32,10 +32,10 @@
                         {% if request.user.is_active %}
                             {% if request.user.is_staff %}
                                 <a class="profile__bar-username-icon" target="_blank" href="/admin/"></a>
-                                <a class="profile__bar-username" target="_blank" href="/admin/">{{ request.user.get_full_name }}</a>
+                                <a class="profile__bar-username" target="_blank" href="/admin/">{{ request.user.get_short_full_name }}</a>
                             {% else %}
                                 <span class="profile__bar-username-icon"></span>
-                                <span class="profile__bar-username">{{ request.user.get_full_name }}</span>
+                                <span class="profile__bar-username">{{ request.user.get_short_full_name }}</span>
                             {% endif %}
 
                         {% endif %}
