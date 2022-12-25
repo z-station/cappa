@@ -8,10 +8,18 @@ from app.tasks.views import (
 
 urlpatterns = [
     url(
-        '^(?P<pk>[0-9]+)/diff/(?P<pair>[0-9]+)/$',
-        SolutionsDiffView.as_view(),
+        regex='^(?P<pk>[0-9]+)/diff/(?P<pair>[0-9]+)/$',
+        view=SolutionsDiffView.as_view(),
         name='diff'
     ),
-    url('^(?P<pk>[0-9]+)/$', SolutionView.as_view(), name='solution'),
-    url('^$', SolutionsView.as_view(), name='solutions'),
+    url(
+        regex='^(?P<pk>[0-9]+)/$',
+        view=SolutionView.as_view(),
+        name='solution'
+    ),
+    url(
+        regex='^$',
+        view=SolutionsView.as_view(),
+        name='solutions'
+    ),
 ]

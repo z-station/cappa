@@ -1,8 +1,20 @@
 from django.conf.urls import url, include
 
 urlpatterns = [
-    url(r'^translators/', include('app.translators.api.urls')),
-    url(r'^training/', include('app.training.api.urls')),
-    url(r'^groups/', include('app.groups.api.urls')),
-    url(r'^tasks/', include('app.tasks.api.urls')),
+    url(
+        regex=r'^translators/',
+        view=include('app.translators.api.urls')
+    ),
+    url(
+        regex=r'^training/',
+        view=include('app.training.api.urls')
+    ),
+    url(
+        regex=r'^groups/',
+        view=include('app.groups.api.urls')
+    ),
+    url(
+        regex=r'^tasks/',
+        view=include('app.tasks.api.urls')
+    ),
 ]
