@@ -3,7 +3,19 @@ from . import views
 
 
 urlpatterns = [
-    url('^signin/$', views.SignInView.as_view(), name='signin'),
-    url('^signout/$', views.SignOutView.as_view(), name='signout'),
-    url('^signup/$', views.SignUpView.as_view(), name='signup'),
+    url(
+        regex='^signin/$',
+        view=views.SignInView.as_view(),
+        name='signin'
+    ),
+    url(
+        regex='^signout/$',
+        view=views.SignOutView.as_view(),
+        name='signout'
+    ),
+    url(
+        regex='^signup/$',
+        view=views.SignUpView.as_view(),
+        name='signup'
+    ),
 ]
