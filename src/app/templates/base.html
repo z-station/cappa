@@ -18,14 +18,13 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="header__menu">
-            <nav class="header__menu-nav container">
+        <div class="header__menu top">
+            <div class="header__menu-nav container">
                 <div class="header__menu-col-1">
                     {% if site.logo_title %}<a class="menu__item-home" href="/">{{ site.logo_title }}</a>{% endif %}
-<!--                    {% if site.logo_desc %}<span class="menu__item-desc">{{ site.logo_desc }}</span>{% endif %}-->
                 </div>
                 <div class="header__menu-col-2">
-                    {% show_menu 'top' %}
+                    {% if site.logo_desc %}<span class="menu__item-desc">{{ site.logo_desc }}</span>{% endif %}
                 </div>
                 <div class="header__menu-col-3">
                     <div class="profile__bar">
@@ -46,8 +45,16 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="header__menu">
+            <nav class="header__menu-nav container">
+                <div class="header__menu-col-2">
+                    {% show_menu 'top' %}
+                </div>
             </nav>
         </div>
+    </div>
         <main>
         {% block main %}
             <div class="container">
