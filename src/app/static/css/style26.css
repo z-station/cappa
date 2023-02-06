@@ -417,7 +417,7 @@ body > * {
     -webkit-flex: 1 0 auto;
     -ms-flex: 1 0 auto;
     flex: 1 0 auto;
-    padding-top: 60px;
+    padding-top: 95px;
 }
 
 pre {
@@ -428,7 +428,7 @@ pre {
 /* header menu */
 .header__menu {
     position: fixed;
-    top: 0;
+    top: 50px;
     left: 0;
     right: 0;
     z-index: 99;
@@ -437,10 +437,18 @@ pre {
     transition: all 600ms ease;
 }
 
+.header__menu.top {
+    top: 0px;
+}
 .header__menu-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 35px;
+    padding-left: 20px;
+}
+
+.header__menu.top .header__menu-nav {
     height: 50px;
 }
 
@@ -448,7 +456,6 @@ pre {
     color: #5fcf80;
     font-size: 26px;
     font-family: 'Lemon', cursive;
-    padding-left: 10px;
 }
 
 .header__menu-nav .menu__item-home:hover {
@@ -456,8 +463,7 @@ pre {
 }
 
 .header__menu-nav .menu__item-desc {
-    width: 165px;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1;
     color: #40484a;
 }
@@ -476,8 +482,8 @@ pre {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-width: 150px;
-    width: 150px;
+    min-width: 120px;
+    width: 120px;
     position: relative;
 }
 
@@ -493,7 +499,7 @@ pre {
 
 .header__menu-col-2 {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     flex: 1 1;
 }
 
@@ -1820,10 +1826,6 @@ li.error {
         font-size: 18px;
     }
 
-    .header__menu-col-2 {
-        display: none;
-    }
-
     .header__menu-col-3 {
         min-width: 80px;
         width: 80px;
@@ -1837,6 +1839,9 @@ li.error {
         margin-left: 15px;
     }
 
+    .header__menu-nav .menu__item {
+       font-size: 14px;
+    }
 
     .control__bar.taskitem {
         flex-wrap: wrap;
@@ -1892,7 +1897,7 @@ li.error {
     }
 
     .header__menu-nav .menu__item {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .header__menu-nav .menu__item-home {
@@ -1901,10 +1906,6 @@ li.error {
 
     .breadcrumbs__item {
         font-size: 14px;
-    }
-
-    .header__menu-col-2 .menu__item:not(:first-child) {
-       display: none;
     }
 
     .news__item {
@@ -1945,5 +1946,9 @@ li.error {
     .js__editor-btn-tests,
     .js__editor-btn-debug {
         width: 60px;
+    }
+
+    .header__menu-nav .menu__item-desc{
+        font-size: 12px;
     }
 }
