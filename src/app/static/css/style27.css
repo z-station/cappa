@@ -652,7 +652,7 @@ main .content {
     position: fixed;
     width: 450px;
     height: 100vh;
-    top: 50px;
+    top: 85px;
     display: flex;
     z-index: 10;
     -webkit-transition: .5s linear;
