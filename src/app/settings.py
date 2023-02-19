@@ -173,6 +173,8 @@ DEFAULT_FROM_EMAIL = env.get('APP_EMAIL', 'info@app.ru')
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = ['app.auth.backends.CustomModelBackend']
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5Mb
+
 # ~========== ADMIN REORDER ===========~
 INSTALLED_APPS += ['admin_reorder']
 MIDDLEWARE += ['app.admin.middleware.CustomModelAdminReorder']
