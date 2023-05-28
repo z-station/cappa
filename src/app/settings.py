@@ -101,7 +101,8 @@ INSTALLED_APPS = [
     'app.databases',
     'app.training',
     'app.groups',
-    'app.service'
+    'app.service',
+    'app.taskbook'
 ]
 
 MIDDLEWARE = [
