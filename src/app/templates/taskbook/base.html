@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load taskbook_tags %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% show_breadcrumbs object %}
+{% endblock %}
+
