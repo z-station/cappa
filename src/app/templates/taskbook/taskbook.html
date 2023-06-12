@@ -8,6 +8,50 @@
 {% block content %}
     <div class="one-col white">
         <h1>Задачник</h1>
-
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_ul }}
+            <input type="submit" value="OK">
+        </form>
+        <table>
+            <thead>
+                <th>
+                    Номер
+                </th>
+                <th>
+                    Название
+                </th>
+                <th>
+                    Сложность
+                </th>
+                <th>
+                    Рейтинг
+                </th>
+                <th>
+                    Решение
+                </th>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>
+                        {{ task.number }}
+                    </td>
+                    <td>
+                        {{ task.name }}
+                    </td>
+                    <td>
+                        {{ task.difficulty }}
+                    </td>
+                    <td>
+                        {{ task.rate }}
+                    </td>
+                    <td>
+                        {{ task.solved }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

@@ -5,12 +5,12 @@ from app.taskbook import views
 urlpatterns = [
     url(
         regex=r'^$',
-        view=views.TaskbookView.as_view(),
+        view=views.TaskBookView.as_view(),
         name='taskbook'
     ),
     url(
         regex=r'^taskitem/',
-        view=views.TaskbookTaskitemView.as_view(),
+        view=views.TaskBookTaskitemView.as_view(),
         name='taskitem'
     )
 ]
