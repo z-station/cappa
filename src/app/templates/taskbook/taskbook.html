@@ -8,11 +8,31 @@
 {% block content %}
     <div class="one-col white">
         <h1>Задачник</h1>
+        <!--
         <form method="post">
             {% csrf_token %}
             {{ form.as_ul }}
             <input type="submit" value="OK">
         </form>
+        -->
+        <br/>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="id_{{ field.name }}">
+                    {% for error in field.errors %}
+                        <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
+                    <br/>
+                    {% endfor %}
+                    <label for="id_{{ field.name }}">{{ field.label }}:</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="OK">
+        </form>
+        {{ min_rate }}
+        <br/>
         <table>
             <thead>
                 <th>

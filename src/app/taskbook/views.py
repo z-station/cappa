@@ -16,12 +16,15 @@ class TaskBookView(View):
         return render(request,
                       template_name='taskbook/taskbook.html',
                       context={
-                            'tasks': [{'number': '1', 'name': 'задача1', 'difficulty': 'нормально', 'rate': '94', 'solved': True},
-                                  {'number': '2', 'name': 'задача1', 'difficulty': 'нормально', 'rate': '94', 'solved': True},
-                                  {'number': '3', 'name': 'задача1', 'difficulty': 'нормально', 'rate': '94', 'solved': True}],
-                          # TODO изучить рендер форм, срендерить каждое поле отдельно
-                          # TODO добавить csrf токен в шаблоне
-                            'form': TaskBookForm(),
+                          'tasks': [{'number': '1', 'name': 'задача1',
+                                     'difficulty': 'нормально', 'rate': '94', 'solved': True},
+                                    {'number': '2', 'name': 'задача1',
+                                     'difficulty': 'нормально', 'rate': '94', 'solved': True},
+                                    {'number': '3', 'name': 'задача1',
+                                     'difficulty': 'нормально', 'rate': '94', 'solved': True}],
+                          # TODO спросить как настроить для каждого поля формы свой input
+                          #  (особенно для MultipleChoiseField)
+                          'form': TaskBookForm(),
                       })
 
     def post(self, request, *args, **kwargs):
@@ -36,13 +39,20 @@ class TaskBookView(View):
                                          'solved': True},
                                         {'number': '3', 'name': 'З3', 'difficulty': 'нормально', 'rate': '94',
                                          'solved': True}],
-                              # TODO добавить вывод ошибок у полей
                               'form': form,
                           })
         else:
-            # TODO добавить вывод ошибок у полей
-            #  вместо 404 выводить форму со списком ошибок
-            return HttpResponseNotFound()
+            return render(request,
+                          template_name='taskbook/taskbook.html',
+                          context={
+                              'tasks': [{'number': '1', 'name': 'З1', 'difficulty': 'нормально', 'rate': '94',
+                                         'solved': True},
+                                        {'number': '2', 'name': 'З2', 'difficulty': 'нормально', 'rate': '94',
+                                         'solved': True},
+                                        {'number': '3', 'name': 'З3', 'difficulty': 'нормально', 'rate': '94',
+                                         'solved': True}],
+                              'form': form,
+                          })
 
 
 @method_decorator(login_required, name='dispatch')
