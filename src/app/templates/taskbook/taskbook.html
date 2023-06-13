@@ -16,7 +16,6 @@
                 <div class="id_{{ field.name }}">
                     {% for error in field.errors %}
                         <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
-                    <br/>
                     {% endfor %}
                     <label for="id_{{ field.name }}">{{ field.label }}:</label>
                     {{ field }}
@@ -58,6 +57,7 @@
                 </tbody>
             </table>
         </div>
+        {% include "taskbook/paginator.html" with page=tasks %}
     </div>
 {% endblock %}
 
