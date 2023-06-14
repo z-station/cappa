@@ -1,10 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-taskbook/taskitem
-</body>
-</html>
+{% extends 'tasks/base.html' %}
+{% load static base_tags %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white page-content ">
+            {% if object.is_internal %}
+                <h1 class="text-center">Решение</h1>
+            {% else %}
+                <h1 class="text-center">Внешнее решение</h1>
+            {% endif %}
+            {% include 'tasks/solution/parts/info_table.html' %}
+        </div>
+
+        {% if object.is_internal %}
+            {% if object.score_method_is_tests or object.score_method_is_tests_and_review %}
+                <div class="white page-content ">
+                    <h3>Результаты тестирования кода</h3>
+                    {% include 'tasks/solution/parts/tests_result.html' %}
+                </div>
+            {% endif %}
+            {% if object.score_method_is_review or object.score_method_is_tests_and_review %}
+                {% if request.user.is_teacher %}
+                    <div class="white page-content ">
+                        <form method="POST" class="solution__form {% if form.non_field_errors %}error{% endif %}">
+                            {% csrf_token %}
+                            <h3>Результаты проверки преподавателем</h3>
+                            {% include 'tasks/solution/parts/review_form.html' %}
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="white page-content ">
+                        <h3>Результаты проверки преподавателем</h3>
+                        {% include 'tasks/solution/parts/review_result.html' %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <div class="white page-content ">
+            {% include 'tasks/solution/parts/listing.html' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'tiny_mce/tiny_mce.js' %}"></script>
+    <script src="{% static 'django_tinymce/init_tinymce.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/tasks/solution20.js' %}"></script>
+    <script>window.dispatchEvent(new Event('solutionPageLoaded'))</script>
+{% endblock %}
