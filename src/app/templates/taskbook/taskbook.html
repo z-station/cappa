@@ -7,22 +7,93 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+.dropdown {
+  width: 13em;
+  min-height: 1em;
+  max-height: 3em;
+  position: relative;
+  margin: 2em;
+  opacity: 1;
+  z-index: 2;
+}
+
+.dropdown-name {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  top: 0.4em;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.dropdown * {
+  box-sizing: border-box;
+}
+
+#dropdown_button {
+  background: #5fcf80;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  #border: 2px #2a2f3b solid;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: background 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.dropdown-clicked {
+  border: 2px #26489a solid;
+  box-shadow: 0 0 0.8em #26489a;
+}
+
+#dropdown_button:hover {
+  background: #323741;
+}
+
+.form-menu {
+  list-style: none;
+  padding: 1em 0.5em;
+  background: white;
+  border: 1px #26489a solid;
+  border-radius: 0.5em;
+  color: black;
+  position: absolute;
+  top: 3em;
+  width: 100%;
+  max-height: 0;
+  transition: 0.3s;
+  visibility: hidden;
+}
+
+.form-open {
+  visibility: visible;
+}
+
+    </style>
     <div class="one-col white">
         <h1 class="text-center">Задачник</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% for field in form %}
-                <div class="id_{{ field.name }}">
-                    {% for error in field.errors %}
-                        <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
+        <div class="dropdown" id="dropdown_button">
+            <p class="dropdown-name">Фильтр</p>
+            <div class="form-menu">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {% for field in form %}
+                        <div class="id_{{ field.name }}">
+                            {% for error in field.errors %}
+                                <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
+                            {% endfor %}
+                            <label for="id_{{ field.name }}">{{ field.label }}:</label>
+                            {{ field }}
+                        </div>
                     {% endfor %}
-                    <label for="id_{{ field.name }}">{{ field.label }}:</label>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <input type="submit" value="OK">
-        </form>
+                    <input type="submit" value="OK">
+                </form>
+            </div>
+        </div>
         <div class="table-container">
             <table class="table js__tablesorter">
                 <thead>
@@ -68,4 +139,20 @@
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
     <script>window.dispatchEvent(new Event('initTablesorter'))</script>
+    <script>
+let dropdowns = document.getElementsByClassName('dropdown');
+for (let dd of dropdowns) {
+dd.addEventListener('click', function() {
+let menus = dd.getElementsByClassName('form-menu');
+for (let menu of menus) {
+  menu.classList.toggle('form-open');
+  if (menu.style.maxHeight) {
+    menu.style.maxHeight = null;
+  } else {
+    menu.style.maxHeight = menu.scrollHeight + 'px';
+  }
+}
+})
+}
+</script>
 {% endblock %}
