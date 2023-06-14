@@ -12,7 +12,7 @@ from app.taskbook.forms import TaskBookForm
 @method_decorator(login_required, name='dispatch')
 class TaskBookView(View):
     num_tasks = 10  # количество задач на странице
-
+    # TODO taskbook.html фильтр закрывается при клике на какой-либо элемент,
     def get(self, request, *args, **kwargs):
         tasks_list = [{'number': '1', 'name': 'Один',
                        'difficulty': 'нормально', 'rate': '94', 'solved': True},
