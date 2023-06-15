@@ -1,15 +1,14 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, Http404, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.views.generic import View
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, Http404
+from django.utils.decorators import method_decorator
+from django.views.generic import View
 
-from app.translators.enums import TranslatorType
 from app.taskbook.forms import TaskBookForm
 from app.tasks.models import Solution
 from app.training.models import TaskItem
+from app.translators.enums import TranslatorType
 
 UserModel = get_user_model()
 
