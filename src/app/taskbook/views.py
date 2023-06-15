@@ -10,7 +10,6 @@ from app.translators.enums import TranslatorType
 from app.taskbook.forms import TaskBookForm
 from app.tasks.models import Solution
 from app.training.models import TaskItem
-from app.tasks.forms import ReviewSolutionForm
 
 UserModel = get_user_model()
 
@@ -252,7 +251,7 @@ class TaskItemView(View):
             request=request,
             template_name=template,
             context={
-                # 'course': taskitem.topic.course,
+                'course': taskitem.topic.course,
                 'object': taskitem,
                 'solutions_exists': solutions_exists
             }
