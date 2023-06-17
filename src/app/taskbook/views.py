@@ -7,7 +7,7 @@ from django.views.generic import View
 
 from app.taskbook.forms import TaskBookForm
 from app.tasks.models import Solution
-from app.training.models import TaskItem
+from app.taskbook.models import TaskBookItem
 from app.translators.enums import TranslatorType
 
 UserModel = get_user_model()
@@ -15,6 +15,7 @@ UserModel = get_user_model()
 
 @method_decorator(login_required, name='dispatch')
 class TaskBookView(View):
+
     num_tasks = 10  # количество задач на странице
 
     # TODO taskbook.html фильтр закрывается при клике на какой-либо элемент,
@@ -74,15 +75,17 @@ class TaskBookView(View):
             tasks = paginator.page(1)
         except EmptyPage:
             tasks = paginator.page(paginator.num_pages)
-        return render(request,
-                      template_name='taskbook/taskbook.html',
-                      context={
-                          'page': page,
-                          'tasks': tasks,
-                          # TODO спросить как настроить для каждого поля формы свой input
-                          #  (особенно для MultipleChoiseField)
-                          'form': TaskBookForm(),
-                      })
+        return render(
+            request,
+            template_name='taskbook/taskbook.html',
+            context={
+                'page': page,
+                'tasks': tasks,
+                # TODO спросить как настроить для каждого поля формы свой input
+                #  (особенно для MultipleChoiseField)
+                'form': TaskBookForm(),
+            }
+        )
 
     def post(self, request, *args, **kwargs):
         form = TaskBookForm(data=request.POST)
@@ -223,21 +226,16 @@ class TaskItemView(View):
 
     def get_object(self, request, *args, **kwargs):
         try:
-            return TaskItem.objects.select_related(
+            return TaskBookItem.objects.select_related(
                 'task'
-                # 'topic__course'
-            ).get(
-                show=True,
-                # slug=kwargs['taskitem'],
-                # topic__slug=kwargs['topic'],
-                # topic__course__slug=kwargs['course']
-            )
-        except TaskItem.DoesNotExist:
+            ).get(show=True, slug=kwargs['taskitem'])
+        except TaskBookItem.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
         taskitem = self.get_object(request, *args, **kwargs)
-        solutions_exists = Solution.objects.internal().by_user(
+        # TODO В задачнике доступны решения из курсов или нет
+        solutions_exists = Solution.objects.by_user(
             request.user.id
         ).by_task(
             taskitem.task_id
@@ -250,7 +248,6 @@ class TaskItemView(View):
             request=request,
             template_name=template,
             context={
-                'course': taskitem.topic.course,
                 'object': taskitem,
                 'solutions_exists': solutions_exists
             }

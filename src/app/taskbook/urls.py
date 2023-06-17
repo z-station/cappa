@@ -9,8 +9,7 @@ urlpatterns = [
         name='taskbook'
     ),
     url(
-        # TODO возможно нужно будет поправить regex
-        regex=r'^taskitem/',
+        regex='^(?P<taskitem>[-\w]+)/$',
         view=views.TaskItemView.as_view(),
         name='taskitem'
     )

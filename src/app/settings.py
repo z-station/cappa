@@ -102,7 +102,7 @@ INSTALLED_APPS = [
     'app.training',
     'app.groups',
     'app.service',
-    'app.taskbook'
+    'app.taskbook',
 ]
 
 MIDDLEWARE = [
@@ -183,6 +183,10 @@ ADMIN_REORDER = (
     {
         'app': 'training', 'label': u'Учебные курсы',
         'models': ('training.Course', 'groups.Group')
+    },
+    {
+        'app': 'taskbook', 'label': u'Задачник',
+        'models': ('taskbook.TaskBookItem',)
     },
     {
         'app': 'tasks', 'label': u'Архив задач',

@@ -1,4 +1,6 @@
 from django import forms
+from app.taskbook.models import TaskBookItem
+from app.translators.enums import TranslatorType
 
 
 class TaskBookForm(forms.Form):
@@ -39,3 +41,14 @@ class TaskBookForm(forms.Form):
             self.add_error(field='min_rate', error='Нижняя граница не может быть больше верхней.')
 
         return self.cleaned_data
+
+
+class TaskBookItemAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = TaskBookItem
+        fields = '__all__'
+
+    translator = forms.TypedMultipleChoiceField(
+        choices=TranslatorType.CHOICES
+    )
