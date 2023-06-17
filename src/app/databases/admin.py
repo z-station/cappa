@@ -1,11 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
-
 from django.http import HttpResponseRedirect
-
-from django.utils.html import format_html
-from django.utils.translation import ugettext as _
 from django.contrib import admin
 from app.databases.models import Database
 from app.databases.service import DatabaseManagementService
