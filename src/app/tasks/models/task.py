@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
@@ -89,3 +91,9 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def difficulty_name(self) -> Optional[str]:
+        if self.difficulty:
+            return DifficultyLevel.MAP[self.difficulty]
+        return None

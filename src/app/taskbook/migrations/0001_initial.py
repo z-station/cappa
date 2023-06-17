@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('show', models.BooleanField(default=True, verbose_name='отображать')),
                 ('max_score', models.PositiveIntegerField(default=5, verbose_name='балл за решение')),
                 ('score_method', models.CharField(choices=[('tests', 'Тестирование кода'), ('review', 'Проверка преподавателем'), ('tests_and_review', 'Тестирование и проверка')], default='tests', max_length=50, verbose_name='метод оценивания')),
-                ('slug', app.common.fields.SlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
+                ('slug', app.common.fields.TaskItemSlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
                 ('translator', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('Python3.8', 'Python 3.8'), ('GCC7.4', 'С++ (GCC 7.4)'), ('Prolog-D', 'Пролог-Д'), ('PostgreSQL', 'PostgreSQL 13'), ('Pascal', 'PascalABC.NET')], max_length=100), size=None, verbose_name='транслятор кода')),
                 ('database', models.ForeignKey(blank=True, help_text='обязательна для задач по базам данных', null=True, on_delete=django.db.models.deletion.SET_NULL, to='databases.Database', verbose_name='учебная база данных')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='taskbook_items', to='tasks.Task', verbose_name='задача')),

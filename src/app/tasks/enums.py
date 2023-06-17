@@ -76,3 +76,11 @@ class DifficultyLevel:
         (HARD, 'сложный'),
         (HARDEST, 'легендарный'),
     )
+
+    MAP = {
+        SIMPLEST: 'Очень простой',
+        SIMPLE: 'Простой',
+        MEDIUM: 'Средний',
+        HARD: 'Сложный',
+        HARDEST: 'Легендарный',
+    }

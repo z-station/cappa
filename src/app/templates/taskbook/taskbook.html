@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <style>
+    <!-- <style>
 .dropdown {
   width: 13em;
   min-height: 1em;
@@ -72,16 +72,16 @@
   visibility: visible;
 }
 
-    </style>
+    </style> -->
     <div class="one-col white">
         <h1 class="text-center">Задачник</h1>
-        <div class="dropdown" id="dropdown_button">
-            <p class="dropdown-name">Фильтр</p>
+<!--        <div class="dropdown" id="dropdown_button">-->
+<!--            <p class="dropdown-name">Фильтр</p>-->
             <div class="form-menu">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    {% for field in form %}
+                    {{ filter.form.non_field_errors }}
+                    {% for field in filter.form %}
                         <div class="id_{{ field.name }}">
                             {% for error in field.errors %}
                                 <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
@@ -93,7 +93,7 @@
                     <input type="submit" value="OK">
                 </form>
             </div>
-        </div>
+<!--        </div>-->
         <div class="table-container">
             <table class="table js__tablesorter">
                 <thead>
@@ -106,23 +106,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for task in tasks %}
+                {% for taskitem in tasks %}
                     <tr>
                         <td>
-                            {{ task.number }}
+                            {{ taskitem.id }}
                         </td>
                         <td>
-                            <!-- правильно <a href="#" target="_blank">{{ task.name }}</a> -->
-                            <a href="{% url '' task %}">{{ task.name }}</a>
+                            <a href="{% url 'taskbook:taskitem' taskitem.slug %}" target="_blank">{{ taskitem.title }}</a>
                         </td>
                         <td>
-                            {{ task.difficulty }}
+                            {{ taskitem.task.difficulty_name|default:'Сложность не указана' }}
                         </td>
                         <td>
-                            {{ task.rate }}
+                            {% if taskitem.rating %}
+                                {{ taskitem.rating }}
+                            {% else %}
+                                Рейтинг не указан
+                            {% endif %}
                         </td>
                         <td>
-                            {{ task.solved }}
+                            Отметка о решении
                         </td>
                     </tr>
                 {% endfor %}
@@ -140,20 +143,20 @@
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
     <script>window.dispatchEvent(new Event('initTablesorter'))</script>
-    <script>
-let dropdowns = document.getElementsByClassName('dropdown');
-for (let dd of dropdowns) {
-dd.addEventListener('click', function() {
-let menus = dd.getElementsByClassName('form-menu');
-for (let menu of menus) {
-  menu.classList.toggle('form-open');
-  if (menu.style.maxHeight) {
-    menu.style.maxHeight = null;
-  } else {
-    menu.style.maxHeight = menu.scrollHeight + 'px';
-  }
-}
-})
-}
-</script>
+<!--    <script>-->
+<!--let dropdowns = document.getElementsByClassName('dropdown');-->
+<!--for (let dd of dropdowns) {-->
+<!--dd.addEventListener('click', function() {-->
+<!--let menus = dd.getElementsByClassName('form-menu');-->
+<!--for (let menu of menus) {-->
+<!--  menu.classList.toggle('form-open');-->
+<!--  if (menu.style.maxHeight) {-->
+<!--    menu.style.maxHeight = null;-->
+<!--  } else {-->
+<!--    menu.style.maxHeight = menu.scrollHeight + 'px';-->
+<!--  }-->
+<!--}-->
+<!--})-->
+<!--}-->
+<!--</script>-->
 {% endblock %}

@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('show', models.BooleanField(default=True, verbose_name='отображать')),
-                ('slug', app.common.fields.SlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
+                ('slug', app.common.fields.TaskItemSlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
                 ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='topics', to='tasks.Task', verbose_name='задача')),
             ],

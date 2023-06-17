@@ -17,6 +17,7 @@ register = template.Library()
 def show_breadcrumbs(obj):
     return {'object': obj}
 
+
 @register.inclusion_tag('training/parts/ace_field.html')
 def show_ace_field(field):
     return {'field': field}

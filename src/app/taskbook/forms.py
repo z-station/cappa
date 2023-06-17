@@ -5,37 +5,48 @@ from app.translators.enums import TranslatorType
 
 
 class TaskBookFilter(django_filters.FilterSet):
-    min_rate = django_filters.CharFilter(label='мин граница',
+    min_rate = django_filters.CharFilter(label='Мин граница',
                                          max_length=3,
                                          required=False)
 
-    max_rate = django_filters.CharFilter(label='макс граница',
+    max_rate = django_filters.CharFilter(label='Макс граница',
                                          max_length=3,
                                          required=False)
 
     DIFFICULT_CHOICES = [
-        ('easy', 'легкая'),
-        ('normal', 'нормальная'),
-        ('hard', 'сложная'),
-        ('legendary', 'легендарная'),
+        ('easy', 'Легкая'),
+        ('normal', 'Нормальная'),
+        ('hard', 'Сложная'),
+        ('legendary', 'Легендарная'),
     ]
-    difficulty = django_filters.MultipleChoiceFilter(label='сложность',
+    difficulty = django_filters.MultipleChoiceFilter(label='Сложность',
                                                      choices=DIFFICULT_CHOICES,
                                                      widget=forms.CheckboxSelectMultiple(),
                                                      required=False)
 
     TAGS_CHOICES = [
-        ('conditions', 'условия'),
-        ('cycles', 'циклы'),
+        ('conditions', 'Условия'),
+        ('cycles', 'Циклы'),
     ]
-    tags = django_filters.MultipleChoiceFilter(label='метки',
+    tags = django_filters.MultipleChoiceFilter(label='Метки',
                                                choices=TAGS_CHOICES,
                                                widget=forms.CheckboxSelectMultiple(),
                                                required=False)
 
     class Meta:
-        model = TaskBook
+        model = TaskBookItem
         fields = ['difficulty', 'tags']
+
+    def clean(self):
+        min_rate = self.cleaned_data['min_rate']
+        max_rate = self.cleaned_data['max_rate']
+
+        if not min_rate.isnumeric() or not max_rate.isnumeric():
+            self.add_error(field='min_rate', error='Рейтинг должен быть числом.')
+        elif min_rate > max_rate:
+            self.add_error(field='min_rate', error='Нижняя граница не может быть больше верхней.')
+
+        return self.cleaned_data
 
 
 class TaskBookForm(forms.Form):
