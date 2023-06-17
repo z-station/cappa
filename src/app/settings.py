@@ -186,7 +186,7 @@ ADMIN_REORDER = (
         'models': ('training.Course', 'groups.Group')
     },
     {
-        'app': 'filebrowser'
+        'app': 'filebrowser',  'label': u'Менеджер файлов',
     },
     {
         'app': 'tasks', 'label': u'Архив задач',
