@@ -248,33 +248,38 @@ ANTIPLAG_HOST = env.get(
     'ANTIPLAG_HOST', 'http://localhost:9020'
 )
 
+# ~========== FILEBROWSER ===========~
+
 FILEBROWSER_DIRECTORY = "upload/"
 
 FILEBROWSER_EXTENSIONS = {
-    'Image': ['.jpg','.jpeg','.gif','.png','.tif','.tiff'],
-    'Document': ['.pdf','.doc','.rtf','.txt','.xls','.csv', '.sql'],
-    'Video': ['.mov','.wmv','.mpeg','.mpg','.avi','.rm'],
-    'Audio': ['.mp3','.mp4','.wav','.aiff','.midi','.m4p']
+    'Image': ['.jpg', '.jpeg', '.gif', '.png', '.tif', '.tiff', '.webp'],
+    'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv', '.sql'],
+    'Video': ['.mov', '.wmv', '.mpeg', '.mpg', '.avi', '.rm'],
+    'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p']
 }
-
 FILEBROWSER_SELECT_FORMATS = {
-    'file': ['Image','Document','Video','Audio'],
+    'file': ['Image', 'Document', 'Video', 'Audio'],
     'image': ['Image'],
     'document': ['Document'],
-    'media': ['Video','Audio'],
+    'media': ['Video', 'Audio'],
 }
-
 FILEBROWSER_VERSIONS = {
-    'thumbnail': {'verbose_name': 'Thumbnail', 'width': 100, 'height': 100, 'opts': 'crop'},
+    'thumbnail': {
+        'verbose_name': 'Thumbnail',
+        'width': 100,
+        'height': 100,
+        'opts': 'crop'
+    },
 }
 
 FILEBROWSER_VERSION_QUALITY = 90
 FILEBROWSER_ADMIN_VERSIONS = ['thumbnail']
 FILEBROWSER_ADMIN_THUMBNAIL = 'thumbnail'
-FILEBROWSER_MAX_UPLOAD_SIZE = 100*1048576   # 100 mb
+FILEBROWSER_MAX_UPLOAD_SIZE = 500*1048576   # 500 mb
 FILEBROWSER_NORMALIZE_FILENAME = True
 FILEBROWSER_CONVERT_FILENAME = True
-FILEBROWSER_LIST_PER_PAGE = 10
+FILEBROWSER_LIST_PER_PAGE = 20
 FILEBROWSER_DEFAULT_SORTING_BY = "date"
 FILEBROWSER_DEFAULT_SORTING_ORDER = "desc"
 FILEBROWSER_SEARCH_TRAVERSE = True

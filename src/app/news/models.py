@@ -38,7 +38,8 @@ class News(models.Model):
     )
     image = FileBrowseField(
         verbose_name='изображение',
-        max_length=100, extensions=['.jpg', '.jpeg', '.png', '.gif', '.tif', '.tiff'],
+        max_length=100,
+        extensions=['.jpg', '.jpeg', '.png', '.gif', '.tif', '.tiff', '.webp'],
         blank=True,
         null=True
     )
