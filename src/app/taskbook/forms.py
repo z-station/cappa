@@ -1,4 +1,39 @@
+import django_filters
 from django import forms
+
+
+class TaskBookFilter(django_filters.FilterSet):
+    min_rate = django_filters.CharFilter(label='мин граница',
+                                         max_length=3,
+                                         required=False)
+
+    max_rate = django_filters.CharFilter(label='макс граница',
+                                         max_length=3,
+                                         required=False)
+
+    DIFFICULT_CHOICES = [
+        ('easy', 'легкая'),
+        ('normal', 'нормальная'),
+        ('hard', 'сложная'),
+        ('legendary', 'легендарная'),
+    ]
+    difficulty = django_filters.MultipleChoiceFilter(label='сложность',
+                                                     choices=DIFFICULT_CHOICES,
+                                                     widget=forms.CheckboxSelectMultiple(),
+                                                     required=False)
+
+    TAGS_CHOICES = [
+        ('conditions', 'условия'),
+        ('cycles', 'циклы'),
+    ]
+    tags = django_filters.MultipleChoiceFilter(label='метки',
+                                               choices=TAGS_CHOICES,
+                                               widget=forms.CheckboxSelectMultiple(),
+                                               required=False)
+
+    class Meta:
+        model = TaskBook
+        fields = ['difficulty', 'tags']
 
 
 class TaskBookForm(forms.Form):
