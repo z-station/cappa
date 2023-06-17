@@ -7,7 +7,7 @@ from app.tasks.models import Task
 from app.tasks.enums import ScoreMethod
 from app.training.models import Topic
 from app.translators.enums import TranslatorType
-from app.common.fields import OrderField, SlugField
+from app.common.fields import OrderField, TaskItemSlugField
 
 UserModel = get_user_model()
 
@@ -28,7 +28,13 @@ class TaskItem(models.Model):
         choices=ScoreMethod.CHOICES,
         default=ScoreMethod.TESTS
     )
-    slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
+    slug = TaskItemSlugField(
+        verbose_name="слаг",
+        max_length=255,
+        blank=True,
+        null=True,
+        for_fields=['topic']
+    )
 
     number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
     order_key = OrderField(verbose_name='порядок', blank=True, null=True, for_fields=['topic'])

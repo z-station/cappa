@@ -50,6 +50,7 @@ class TaskAdmin(admin.ModelAdmin):
 
     model = Task
     form = TaskAdminForm
+    readonly_fields = ('rating',)
     exclude = ('order_key',)
     raw_id_fields = ("author",)
     search_fields = ('title',)
