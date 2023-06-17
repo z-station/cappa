@@ -23,6 +23,7 @@ pyenchant = "3.2.1"
 python-memcached = "1.59"
 django-filter = "2.2.0"
 beautifulsoup4 = "^4.11.1"
+django-filebrowser-no-grappelli = "3.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
