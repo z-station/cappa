@@ -5,7 +5,8 @@ from django.shortcuts import render, Http404
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from app.taskbook.forms import TaskBookForm, TaskBookFilter
+from app.taskbook.forms import TaskBookForm
+from app.taskbook.filters import TaskBookFilter
 from app.tasks.models import Solution
 from app.taskbook.models import TaskBookItem
 from app.translators.enums import TranslatorType
