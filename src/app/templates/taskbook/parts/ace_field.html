@@ -1,0 +1,7 @@
+<div class="js__editor js__{{ field.name }}">
+    <label>{{ field.label }}</label>
+    <div class="js__editor-ace"></div>
+    <textarea class="js__editor-content" name="{{ field.name }}"
+        {% for key, val in field.field.widget.attrs.items %} {{ key }}="{{ val|lower }}"{% endfor %}
+    >{{ field.value|default:'' }}</textarea>
+</div>

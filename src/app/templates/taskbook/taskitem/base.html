@@ -19,12 +19,6 @@
             {% elif object.score_method_is_tests %}
                 <div class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
             {% endif %}
-            {% if object.topic.due_date %}
-                <div class="text-small">
-                    <span>Срок сдачи решения:</span>
-                    <span class="js__utc-time" data-utc-time="{{ object.topic.due_date|date:'Y-m-d H:i:s.u'}}"></span>
-                </div>
-            {% endif %}
             </p>
         </div>
         <div class="white page-content  js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
