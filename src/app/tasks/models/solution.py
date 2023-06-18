@@ -196,6 +196,10 @@ class Solution(Model):
         max_length=100,
         null=True
     )
+    rating_is_calculated = BooleanField(
+        verbose_name='решение учтено в рейтинге',
+        default=False
+    )
 
     objects = SolutionQueryset.as_manager()
 
@@ -221,6 +225,8 @@ class Solution(Model):
     @property
     def score_method_name(self):
         return ScoreMethod.MAP[self.score_method]
+
+    # TODO в зависимости от типа проверки использовать для рейтинга разные значения
 
     def score_method_is_tests(self):
         return self.score_method == ScoreMethod.TESTS

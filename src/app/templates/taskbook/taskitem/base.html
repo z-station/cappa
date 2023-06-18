@@ -40,7 +40,7 @@
     <script>
         window.dispatchEvent(new Event('initSidebar'))
         window.dispatchEvent(new Event('toggleSidebar'))
-        {% if request.user.is_active and course %}
+        {% if request.user.is_active %}
             window.authToken = '{{ request.user.auth_token }}'
             window.courseStatisticsUrl = '/api/training/courses/{{ course.id }}/statistics/'
             window.dispatchEvent(new Event('getUserSolutions'))

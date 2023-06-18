@@ -54,14 +54,16 @@ def show_editor(context, taskbookitem: TaskBookItem):
     draft = Draft.objects.filter(
         task_id=taskbookitem.task_id,
         user_id=context.request.user.id,
-        translator=taskbookitem.translator
+        # TODO выбирать транслятор исходя из выбранного пользователем языка
+        translator=taskbookitem.translator[0]
     ).first()
 
     form = EditorForm(
         initial={
             'content': draft.content if draft else '',
             'input': '',
-            'translator': taskbookitem.translator,
+            # TODO выбирать транслятор исходя из выбранного пользователем языка
+            'translator': taskbookitem.translator[0],
         }
     )
     show_testing_actions = (

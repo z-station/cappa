@@ -69,6 +69,14 @@ class Task(models.Model):
         verbose_name='рейтинг',
         help_text='рассчитывается автоматически'
     )
+    rating_total = models.PositiveIntegerField(
+        verbose_name='количество решений',
+        default=0
+    )
+    rating_success = models.PositiveIntegerField(
+        verbose_name='количество успешных решений',
+        default=0
+    )
     source = models.ForeignKey(
         Source,
         verbose_name='источник',
