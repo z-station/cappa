@@ -23,10 +23,6 @@ class TaskBookView(View):
         # TODO изучить querysets
         return TaskBookItem.objects.filter(show=True)
 
-    def get_filtered_queryset(self, request, *args, **kwargs):
-        # TODO тут фильтруем по данным, полученным из фильтра
-        return self.get_queryset(request, *args, **kwargs)
-
     # TODO taskbook.html фильтр закрывается при клике на какой-либо элемент,
     def get(self, request, *args, **kwargs):
         tasks_list = self.get_queryset(request, *args, **kwargs)
@@ -47,41 +43,23 @@ class TaskBookView(View):
                       })
 
     def post(self, request, *args, **kwargs):
-        filter = TaskBookFilter(data=request.POST)
-        if filter.is_valid():
-            tasks_list = self.get_filtered_queryset(request, *args, **kwargs)
-            paginator = Paginator(tasks_list, self.num_tasks)
-            page = request.GET.get('page')
-            try:
-                tasks = paginator.page(page)
-            except PageNotAnInteger:
-                tasks = paginator.page(1)
-            except EmptyPage:
-                tasks = paginator.page(paginator.num_pages)
-            return render(request,
-                          template_name='taskbook/taskbook.html',
-                          context={
-                              'page': page,
-                              'tasks': tasks,
-                              'filter': filter,
-                          })
-        else:
-            tasks_list = self.get_queryset(request, *args, **kwargs)
-            paginator = Paginator(tasks_list, self.num_tasks)
-            page = request.GET.get('page')
-            try:
-                tasks = paginator.page(page)
-            except PageNotAnInteger:
-                tasks = paginator.page(1)
-            except EmptyPage:
-                tasks = paginator.page(paginator.num_pages)
-            return render(request,
-                          template_name='taskbook/taskbook.html',
-                          context={
-                              'page': page,
-                              'tasks': tasks,
-                              'filter': TaskBookFilter(),
-                          })
+        taskitem_filter = TaskBookFilter(request.POST, queryset=TaskBookItem.objects.filter(show=True))
+        tasks_list = taskitem_filter.qs
+        paginator = Paginator(tasks_list, self.num_tasks)
+        page = request.GET.get('page')
+        try:
+            tasks = paginator.page(page)
+        except PageNotAnInteger:
+            tasks = paginator.page(1)
+        except EmptyPage:
+            tasks = paginator.page(paginator.num_pages)
+        return render(request,
+                      template_name='taskbook/taskbook.html',
+                      context={
+                          'page': page,
+                          'tasks': tasks,
+                          'filter': taskitem_filter,
+                      })
 
 
 @method_decorator(login_required, name='dispatch')

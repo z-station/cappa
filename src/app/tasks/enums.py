@@ -70,17 +70,17 @@ class DifficultyLevel:
     HARDEST = '4'
 
     CHOICES = (
-        (SIMPLEST, 'очень простой'),
-        (SIMPLE, 'простой'),
-        (MEDIUM, 'средний'),
-        (HARD, 'сложный'),
-        (HARDEST, 'легендарный'),
+        (SIMPLEST, 'Очень простая'),
+        (SIMPLE, 'Простая'),
+        (MEDIUM, 'Средняя'),
+        (HARD, 'Сложная'),
+        (HARDEST, 'Легендарная'),
     )
 
     MAP = {
-        SIMPLEST: 'Очень простой',
-        SIMPLE: 'Простой',
-        MEDIUM: 'Средний',
-        HARD: 'Сложный',
-        HARDEST: 'Легендарный',
+        SIMPLEST: 'Очень простая',
+        SIMPLE: 'Простая',
+        MEDIUM: 'Средняя',
+        HARD: 'Сложная',
+        HARDEST: 'Легендарная',
     }

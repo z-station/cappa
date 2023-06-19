@@ -118,11 +118,7 @@
                             {{ taskitem.task.difficulty_name|default:'Сложность не указана' }}
                         </td>
                         <td>
-                            {% if taskitem.rating %}
-                                {{ taskitem.rating }}
-                            {% else %}
-                                Рейтинг не указан
-                            {% endif %}
+                            {{ taskitem.task.rating|default:'Рейтинг не указан' }}
                         </td>
                         <td>
                             Отметка о решении

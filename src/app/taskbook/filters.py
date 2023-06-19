@@ -1,23 +1,22 @@
 import django_filters
 from django import forms
 
+from app.accounts import models
 from app.taskbook.models import TaskBookItem
+from app.tasks.enums import DifficultyLevel
 
 
 class TaskBookFilter(django_filters.FilterSet):
-    rating = django_filters.RangeFilter(label="Рейтинг",
-                                        required=False)
+    rating = django_filters.RangeFilter(label='Рейтинг',
+                                        required=False,
+                                        field_name='task__rating')
 
-    DIFFICULT_CHOICES = [
-        ('easy', 'Легкая'),
-        ('normal', 'Нормальная'),
-        ('hard', 'Сложная'),
-        ('legendary', 'Легендарная'),
-    ]
     difficulty = django_filters.MultipleChoiceFilter(label='Сложность',
-                                                     choices=DIFFICULT_CHOICES,
+                                                     choices=DifficultyLevel.CHOICES,
                                                      widget=forms.CheckboxSelectMultiple(),
-                                                     required=False)
+                                                     required=False,
+                                                     field_name='task__difficulty',
+                                                     lookup_expr='icontains')
 
     TAGS_CHOICES = [
         ('conditions', 'Условия'),
@@ -26,13 +25,10 @@ class TaskBookFilter(django_filters.FilterSet):
     tags = django_filters.MultipleChoiceFilter(label='Метки',
                                                choices=TAGS_CHOICES,
                                                widget=forms.CheckboxSelectMultiple(),
-                                               required=False)
+                                               required=False,
+                                               field_name='task__tags',
+                                               lookup_expr='icontains')
 
     class Meta:
         model = TaskBookItem
         fields = []
-
-
-qs = TaskBookItem.objects.filter(show=True)
-
-f = TaskBookFilter({'rating_min': 0, 'rating_max': 100}, queryset=qs)
