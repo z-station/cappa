@@ -36,6 +36,7 @@ def show_editor(
                 'db_name': taskitem.get_db_name()
             }
         )
+        template_name = 'tasks/taskitem/parts/sql/editor.html'
     else:
         form = EditorForm(
             initial={
@@ -44,12 +45,14 @@ def show_editor(
                 'translator': translator,
             }
         )
+        template_name = 'tasks/taskitem/parts/editor.html'
+
     show_testing_actions = (
         taskitem.score_method_is_tests
         or taskitem.score_method_is_tests_and_review
     )
     raw_html = render_to_string(
-        template_name='tasks/taskitem/parts/editor.html',
+        template_name=template_name,
         context={
             'object': taskitem,
             'form': form,
