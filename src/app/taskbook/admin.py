@@ -25,7 +25,6 @@ class TaskItemAdmin(admin.ModelAdmin):
         'task',
         'max_score',
         'score_method',
-        'score_method',
         'translator',
         'database',
         'slug',

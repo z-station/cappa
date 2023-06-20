@@ -40,13 +40,17 @@
                                     {% if solution.review_score == None %}
                                         <td>-</td>
                                     {% else %}
-                                        <td>{{ solution.review_score|cut_zero|unlocalize }}</td>
+                                        {% if solution.hide_review_score and not request.user.is_teacher %}
+                                            <td>выставлена</td>
+                                        {% else %}
+                                            <td>{{ solution.review_score|cut_zero|unlocalize }} / {{ solution.max_score }}</td>
+                                        {% endif %}
                                     {% endif %}
                                 {% elif solution.score_method_is_tests %}
                                     {% if solution.testing_score == None %}
                                         <td>-</td>
                                     {% else %}
-                                        <td>{{ solution.testing_score|cut_zero|unlocalize }}</td>
+                                        <td>{{ solution.testing_score|cut_zero|unlocalize }} / {{ solution.max_score }}</td>
                                     {% endif %}
                                 {% endif %}
                         </tr>
