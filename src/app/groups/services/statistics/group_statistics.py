@@ -3,9 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from app.groups.models import Group, GroupCourse
 from app.groups.services import exceptions
-from app.training.queries import CreateOrUpdateCourseUserStatisticsQuery
-from app.training.models import CourseUserStatistics
-from app.training.entities import TaskItemStatistics
+from app.tasks.queries import CreateOrUpdateCourseUserStatisticsQuery
+from app.tasks.models import UserStatistics
+from app.tasks.entities import TaskItemStatistics
+from app.tasks.enums import TaskItemType
 
 
 UserModel = get_user_model()
@@ -61,8 +62,9 @@ class GroupStatisticsService:
         user_ids = set(group.learners.only_ids())
 
         objs = list(
-            CourseUserStatistics.objects.filter(
-                course_id=course_id,
+            UserStatistics.objects.filter(
+                type_id=course_id,
+                type=TaskItemType.COURSE,
                 user_id__in=user_ids
             )
         )
@@ -73,7 +75,7 @@ class GroupStatisticsService:
                     course_id=course_id,
                     version_hash=version_hash,
                 )
-                obj = CourseUserStatistics.objects.raw(*query.get_sql())[0]
+                obj = UserStatistics.objects.raw(*query.get_sql())[0]
             user_ids.remove(obj.user_id)
             result[obj.user_id] = obj.data
 
@@ -84,6 +86,6 @@ class GroupStatisticsService:
                 course_id=course_id,
                 version_hash=version_hash,
             )
-            obj = CourseUserStatistics.objects.raw(*query.get_sql())[0]
+            obj = UserStatistics.objects.raw(*query.get_sql())[0]
             result[obj.user_id] = obj.data
         return result

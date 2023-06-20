@@ -14,7 +14,7 @@ from app.tasks.models import (
     ExternalSolution
 )
 from app.tasks.enums import (
-    SolutionType,
+    TaskItemType,
     ScoreMethod
 )
 from app.tasks.forms import (
@@ -24,7 +24,7 @@ from app.tasks.forms import (
     ExternalSolutionAdminForm,
 )
 from app.translators.enums import TranslatorType
-from app.training.services.statistics import UserStatisticsService
+from app.tasks.services.statistics import UserStatisticsService
 from app.common.admin.mixins import DeleteSelectedMixin
 
 
@@ -50,7 +50,11 @@ class TaskAdmin(admin.ModelAdmin):
 
     model = Task
     form = TaskAdminForm
-    readonly_fields = ('rating',)
+    readonly_fields = (
+        'rating',
+        'rating_total',
+        'rating_success',
+    )
     exclude = ('order_key',)
     raw_id_fields = ("author",)
     search_fields = ('title',)
@@ -285,7 +289,7 @@ class SolutionAdmin(
         for obj in queryset:
             obj_display = force_text(obj)
             modeladmin.log_deletion(request, obj, obj_display)
-            if obj.type == SolutionType.COURSE:
+            if obj.type == TaskItemType.COURSE:
                 pairs.add((obj.type_id, obj.user_id))
 
         with transaction.atomic():
@@ -301,7 +305,7 @@ class SolutionAdmin(
         """ When delete solution - delete course statistics """
 
         with transaction.atomic():
-            if obj.type == SolutionType.COURSE and obj.user:
+            if obj.type == TaskItemType.COURSE and obj.user:
                 UserStatisticsService.delete_course_statistics(
                     course_id=obj.type_id,
                     user_id=obj.user.id
@@ -343,7 +347,7 @@ class ExternalSolutionAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.external_source_name = obj.external_source.name
         obj.task_name = obj.task.title
-        obj.type = SolutionType.EXTERNAL
+        obj.type = TaskItemType.EXTERNAL
         obj.save()
 
     fieldsets = (

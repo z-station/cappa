@@ -1,18 +1,28 @@
+import typing
 
 
-class SolutionType:
+class TaskItemType:
 
     COURSE = 'course'
     EXTERNAL = 'external'
+    TASKBOOK = 'taskbook'
 
     CHOICES = (
         (COURSE, 'Курс'),
+        (TASKBOOK, 'Задачник'),
         (EXTERNAL, 'Внешний источник'),
     )
     MAP = {
         COURSE: 'Курс',
+        TASKBOOK: 'Задачник',
         EXTERNAL: 'Внешний источник',
     }
+
+    LITERALS = typing.Literal[
+        COURSE,
+        EXTERNAL,
+        TASKBOOK,
+    ]
 
 
 class ReviewStatus:

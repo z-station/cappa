@@ -31,7 +31,6 @@ class Topic(models.Model):
     )
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
-    number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     database = models.ForeignKey(
@@ -47,12 +46,8 @@ class Topic(models.Model):
         return self.course.translator
 
     @property
-    def taskitems(self):
-        return self._taskitems.filter(show=True)
-
-    @property
     def numbered_title(self):
-        return '%s %s' % (self.number, self.title)
+        return '%s %s' % (self.order_key, self.title)
 
     @property
     def cache_key(self):
@@ -61,7 +56,7 @@ class Topic(models.Model):
     def get_data(self):
         return {
             'id': self.id,
-            'number': self.number,
+            'number': self.order_key,
             'title': self.title,
             'url': reverse(
                 'training:topic',  kwargs={
@@ -69,7 +64,10 @@ class Topic(models.Model):
                     'topic': self.slug
                 }
             ),
-            'taskitems': [taskitem.get_data() for taskitem in self.taskitems],
+            'taskitems': [
+                taskitem.get_data()
+                for taskitem in self.taskitems.show()
+            ],
         }
 
     def get_cache_data(self):

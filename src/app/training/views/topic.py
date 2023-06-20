@@ -12,7 +12,9 @@ class TopicView(View):
     def get_object(self, request, *args, **kwargs):
         try:
             return Topic.objects.select_related(
-                'course').get(
+                'course'
+            ).get(
+                show=True,
                 slug=kwargs['topic'],
                 course__slug=kwargs['course']
             )

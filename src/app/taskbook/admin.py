@@ -1,14 +1,14 @@
 from django.contrib import admin
-from app.taskbook.models import TaskBookItem
-from app.taskbook.forms import TaskBookItemAdminForm
+from app.tasks.models.taskitem import TaskItem
+from app.taskbook.forms import TaskItemAdminForm
 
 
-@admin.register(TaskBookItem)
-class TaskBookItemAdmin(admin.ModelAdmin):
+@admin.register(TaskItem)
+class TaskItemAdmin(admin.ModelAdmin):
 
-    model = TaskBookItem
-    form = TaskBookItemAdminForm
-    raw_id_fields = ("task",)
+    model = TaskItem
+    form = TaskItemAdminForm
+    raw_id_fields = ('task',)
     readonly_fields = ('slug',)
     list_display = (
         'title',
@@ -20,3 +20,18 @@ class TaskBookItemAdmin(admin.ModelAdmin):
     list_filter = (
         'show',
     )
+    fields = (
+        'show',
+        'task',
+        'max_score',
+        'score_method',
+        'score_method',
+        'translator',
+        'database',
+        'slug',
+        'type',
+    )
+
+    def get_queryset(self, request):
+        qst = super().get_queryset(request)
+        return qst.type_taskbook()

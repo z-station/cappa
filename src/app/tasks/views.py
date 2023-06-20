@@ -10,7 +10,7 @@ from app.tasks.models import Solution
 from app.tasks.forms import ReviewSolutionForm
 from app.tasks.services import SolutionService
 from app.tasks.filters import SoluionsFilterSet
-from app.training.services import UserStatisticsService
+from app.tasks.services.statistics import UserStatisticsService
 from app.common.services.exceptions import ServiceException
 from app.common.decorators import teacher_access
 

@@ -186,7 +186,7 @@ ADMIN_REORDER = (
     },
     {
         'app': 'taskbook', 'label': u'Задачник',
-        'models': ('taskbook.TaskBookItem',)
+        'models': ('tasks.TaskItem',)
     },
     {
         'app': 'tasks', 'label': u'Архив задач',

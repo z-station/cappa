@@ -1,3 +1,5 @@
+import typing
+
 from app.translators.checkers import (
     str_checker,
     int_checker,
@@ -37,6 +39,17 @@ class TranslatorType:
         GCC74,
         JAVA
     }
+
+    LITERALS = typing.Literal[
+        PYTHON38,
+        GCC74,
+        PROLOG_D,
+        POSTGRESQL,
+        PASCAL,
+        PHP,
+        CSHARP,
+        JAVA,
+    ]
 
 
 class CheckerType:

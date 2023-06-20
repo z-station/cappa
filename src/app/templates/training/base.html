@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static training_tags %}
+{% load static training_tags base_tags %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -28,10 +28,7 @@
     <script>
         window.dispatchEvent(new Event('initSidebar'))
         window.dispatchEvent(new Event('toggleSidebar'))
-        {% if request.user.is_active and course %}
-            window.authToken = '{{ request.user.auth_token }}'
-            window.courseStatisticsUrl = '/api/training/courses/{{ course.id }}/statistics/'
-            window.dispatchEvent(new Event('getUserSolutions'))
-        {% endif %}
+        window.courseStatisticsUrl = '/api/training/courses/{{ course.id }}/statistics/'
+        window.dispatchEvent(new Event('getUserSolutions'))
     </script>
 {% endblock %}

@@ -6,10 +6,8 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from app.translators.enums import CheckerType
 from app.tasks.enums import DifficultyLevel
-from app.tasks.models import (
-    Tag,
-    Source
-)
+from app.tasks.models.tag import Tag
+from app.tasks.models.source import Source
 
 
 UserModel = get_user_model()

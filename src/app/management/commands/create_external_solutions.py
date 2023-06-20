@@ -2,7 +2,7 @@ from django.core.management import BaseCommand
 from app.tasks.models.source import Source
 from app.tasks.models.task import Task
 from app.tasks.services import SolutionService
-from app.tasks.enums import SolutionType
+from app.tasks.enums import TaskItemType
 from app.translators.enums import TranslatorType
 from app.training.models import TaskItem
 from bs4 import BeautifulSoup
@@ -183,7 +183,7 @@ class Command(BaseCommand):
         for task in tasks:
             if task.solutions.filter(
                 translator=TranslatorType.PYTHON38,
-                type=SolutionType.EXTERNAL,
+                type=TaskItemType.EXTERNAL,
                 external_source=pyanswer_source
             ).exists():
                 self.stdout.write('Внешнее решение задачи уже существует')
