@@ -67,6 +67,8 @@ class SolutionService:
         else:
             count_tests = count_passed_tests = testing_score = None
 
+        score = testing_score if taskitem.score_method_is_tests() else None
+
         data = {
             'type': taskitem.type,
             'user': user,
@@ -84,6 +86,7 @@ class SolutionService:
             'count_tests': count_tests,
             'count_passed_tests': count_passed_tests,
             'score_method': taskitem.score_method,
+            'score': score,
         }
         if taskitem.type == TaskItemType.COURSE:
             data['type_id'] = taskitem.topic.course_id
@@ -166,6 +169,10 @@ class SolutionService:
             solution.reviewer_comment = reviewer_comment
         if review_score and review_status == ReviewStatus.CHECKED:
             solution.review_date = timezone.now()
+            solution.score = review_score
+        else:
+            solution.review_date = None
+            solution.score = None
         solution.reviewer = reviewer
         solution.reviewer_first_name = reviewer.first_name
         solution.reviewer_last_name = reviewer.last_name

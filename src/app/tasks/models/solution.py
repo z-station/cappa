@@ -200,7 +200,11 @@ class Solution(Model):
         verbose_name='решение учтено в рейтинге',
         default=False
     )
-
+    score = FloatField(
+        verbose_name='итоговая оценка',
+        null=True,
+        help_text='рассчитывается автоматически'
+    )
     objects = SolutionQueryset.as_manager()
 
     @property

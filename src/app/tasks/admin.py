@@ -137,10 +137,6 @@ class SolutionAdmin(
         return TranslatorType.MAP.get(obj.translator, '-')
     translator_name.short_description = 'язык'
 
-    def score(self, obj: Solution) -> int:
-        return obj.review_score or obj.testing_score
-    score.short_description = 'оценка'
-
     def get_type_name(self, obj: Solution) -> str:
         return f'{obj.type_name_value}: {obj.type_name}'
     get_type_name.short_description = 'Источник решения'
@@ -220,7 +216,8 @@ class SolutionAdmin(
                     'created',
                     'max_score',
                     'get_type_name',
-                    'score_method'
+                    'score_method',
+                    'score'
                 )
             }
         ),
@@ -257,6 +254,7 @@ class SolutionAdmin(
         'hide_review_score',
         'hide_reviewer_comment',
         'score_method',
+        'score'
     )
     list_display = (
         'task_name',
