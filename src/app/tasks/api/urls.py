@@ -10,7 +10,7 @@ router.register(
     basename='tasks'
 )
 router.register(
-    'taskitem/',
+    'taskitem',
     views.TaskItemViewSet,
     basename='taskitem'
 )

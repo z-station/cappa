@@ -44,13 +44,14 @@ class PlagStatisticsService(RequestMixin):
         reference_user_id: int,
         taskitem: TaskItem,
         candidate_ids: List[int],
+        translator: TranslatorType.LITERALS
     ):
         course_id = taskitem.topic.course_id
         return Solution.objects.filter(
             user_id__in=candidate_ids,
             type=TaskItemType.COURSE,
             type_id=course_id,
-            translator=taskitem.translator,
+            translator=translator,
             task_id=taskitem.task_id
         ).exclude(
             user_id=reference_user_id
@@ -66,10 +67,11 @@ class PlagStatisticsService(RequestMixin):
     def _get_external_solutions(
         cls,
         taskitem: TaskItem,
+        translator: TranslatorType.LITERALS
     ):
         return Solution.objects.filter(
             type=TaskItemType.EXTERNAL,
-            translator=taskitem.translator,
+            translator=translator,
             task_id=taskitem.task_id
         ).order_by(
             '-created',
@@ -84,12 +86,14 @@ class PlagStatisticsService(RequestMixin):
         cls,
         taskitem: TaskItem,
         reference_user_id: int,
+        translator: TranslatorType.LITERALS
     ):
+        print(translator)
         return Solution.objects.filter(
             user_id=reference_user_id,
             type=TaskItemType.COURSE,
             type_id=taskitem.topic.course_id,
-            translator=taskitem.translator,
+            translator=translator,
             task_id=taskitem.task_id
         ).first()
 
@@ -106,16 +110,19 @@ class PlagStatisticsService(RequestMixin):
         cls,
         taskitem: TaskItem,
         reference_user_id: int,
-        candidate_ids: List[int]
+        candidate_ids: List[int],
+        translator: TranslatorType.LITERALS
     ) -> list:
 
         candidates_solutions = cls._get_candidates_solutions(
             reference_user_id=reference_user_id,
             taskitem=taskitem,
-            candidate_ids=candidate_ids
+            candidate_ids=candidate_ids,
+            translator=translator
         )
         external_solutions = cls._get_external_solutions(
             taskitem=taskitem,
+            translator=translator
         )
         all_solutions = candidates_solutions.union(external_solutions)
         candidates_data = []
@@ -129,15 +136,15 @@ class PlagStatisticsService(RequestMixin):
     @classmethod
     def _get_plag_data(
         cls,
-        taskitem: TaskItem,
         ref_code: str,
-        candidates_data: list
+        candidates_data: list,
+        translator: TranslatorType.LITERALS
     ):
         try:
             response = cls._perform_request(
                 url=f'{settings.ANTIPLAG_HOST}/check/',
                 data={
-                    "lang": cls.langs_map[taskitem.translator],
+                    "lang": cls.langs_map[translator],
                     "ref_code": ref_code,
                     "candidates": candidates_data
                 },
@@ -171,7 +178,8 @@ class PlagStatisticsService(RequestMixin):
         cls,
         taskitem: TaskItem,
         reference_user_id: int,
-        candidate_ids: List[int]
+        candidate_ids: List[int],
+        translator: TranslatorType.LITERALS
     ) -> PlagCheckResult:
 
         """ TODO prototype """
@@ -179,6 +187,7 @@ class PlagStatisticsService(RequestMixin):
         ref_solution = cls._get_reference_solution(
             reference_user_id=reference_user_id,
             taskitem=taskitem,
+            translator=translator
         )
         if not ref_solution or not ref_solution.content:
             raise SolutionNotFound()
@@ -196,13 +205,14 @@ class PlagStatisticsService(RequestMixin):
         candidates_data = cls._get_candidates_data(
             taskitem=taskitem,
             reference_user_id=reference_user_id,
-            candidate_ids=candidate_ids
+            candidate_ids=candidate_ids,
+            translator=translator,
         )
         if candidates_data:
             plag_data = cls._get_plag_data(
-                taskitem=taskitem,
                 ref_code=ref_solution.content,
-                candidates_data=candidates_data
+                candidates_data=candidates_data,
+                translator=translator
             )
             percent = plag_data['percent']
             if percent == -1:

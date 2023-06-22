@@ -45,7 +45,8 @@ class TaskItemViewSet(GenericViewSet):
             data = PlagStatisticsService.check_by_taskitem(
                 taskitem=taskitem,
                 reference_user_id=slz.validated_data['reference_user_id'],
-                candidate_ids=slz.validated_data['candidates']
+                candidate_ids=slz.validated_data['candidates'],
+                translator=taskitem.translator[0]
             )
         except (CheckPlagException, CheckPlagImpossible) as ex:
             return Response(data=ex.as_dict(), status=500)

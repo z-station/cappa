@@ -71,7 +71,7 @@ class TaskItem(models.Model):
         verbose_name='транслятор кода',
         base_field=models.CharField(
             choices=TranslatorType.CHOICES,
-            max_length=100
+            max_length=10000
         ),
     )
     database = models.ForeignKey(
