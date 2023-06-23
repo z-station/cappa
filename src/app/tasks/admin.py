@@ -138,7 +138,10 @@ class SolutionAdmin(
     translator_name.short_description = 'язык'
 
     def get_type_name(self, obj: Solution) -> str:
-        return f'{obj.type_name_value}: {obj.type_name}'
+        if obj.type_course:
+            return f'{obj.type_name_value}: {obj.type_name}'
+        else:
+            return obj.type_name_value
     get_type_name.short_description = 'Источник решения'
 
     def changeform_view(
