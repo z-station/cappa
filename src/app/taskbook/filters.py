@@ -29,12 +29,14 @@ class TaskBookFilter(django_filters.FilterSet):
         ('conditions', 'Условия'),
         ('cycles', 'Циклы'),
     ]
-    tags = django_filters.MultipleChoiceFilter(
+    # TODO можно ли легально переопределить AllValueMultipleFilter
+    tags = django_filters.AllValuesMultipleFilter(
         label='Метки',
-        choices=TAGS_CHOICES,
+        null_label='Без меток',
+        # choices=TAGS_CHOICES,
         widget=forms.CheckboxSelectMultiple(),
         required=False,
         field_name='task__tags',
-        lookup_expr='icontains'
+        # lookup_expr='icontains'
     )
 
