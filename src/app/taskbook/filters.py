@@ -39,4 +39,3 @@ class TaskBookFilter(django_filters.FilterSet):
         field_name='task__tags',
         # lookup_expr='icontains'
     )
-
