@@ -13,7 +13,6 @@ class CourseUserStatisticsMixin:
           AND s.type_id = %(course_id)s """
 
     def get_course_statistics_cte(self):
-
         """ Возвращает таблицу, где каждая запись это пара:
             id задачи курса (taskitem_id) и статистика решений пользователя
             по этой задаче курса """
@@ -61,10 +60,10 @@ class CreateOrUpdateCourseUserStatisticsQuery(
 ):
 
     def __init__(
-        self,
-        course_id: int,
-        user_id: int,
-        version_hash: str,
+            self,
+            course_id: int,
+            user_id: int,
+            version_hash: str,
     ):
         self.sql_params = {
             'course_id': course_id,
@@ -116,11 +115,11 @@ class CreateOrUpdateUserTaskItemStatisticQuery(
 ):
 
     def __init__(
-        self,
-        course_id: int,
-        user_id: int,
-        version_hash: str,
-        taskitem_id: Optional[int] = None
+            self,
+            course_id: int,
+            user_id: int,
+            version_hash: str,
+            taskitem_id: Optional[int] = None
     ):
         self.sql_params = {
             'course_id': course_id,
@@ -132,8 +131,8 @@ class CreateOrUpdateUserTaskItemStatisticQuery(
 
     def get_course_statistics_cte_where(self) -> str:
         return (
-            super().get_course_statistics_cte_where() +
-            "AND t.id = %(taskitem_id)s"
+                super().get_course_statistics_cte_where() +
+                "AND t.id = %(taskitem_id)s"
         )
 
     @property
@@ -171,9 +170,9 @@ class UpdateCourseUserStatisticsQuery(
 ):
 
     def __init__(
-        self,
-        course_id: int,
-        user_id: int,
+            self,
+            course_id: int,
+            user_id: int,
     ):
         self.sql_params = {
             'course_id': course_id,
@@ -193,3 +192,38 @@ class UpdateCourseUserStatisticsQuery(
           AND type = %(course_type)s
           AND user_id = %(user_id)s
         """
+
+
+class UpdateRatingQuery(
+    SqlQueryObject
+):
+    sql_template = """
+        WITH new_rating AS (
+            SELECT
+                id,
+                (1 - rating_success / rating_total) * 100 AS rating,
+                rating_success,
+                rating_total
+            FROM (
+                SELECT 
+                    t.id AS id,
+                    CAST(
+                        t.rating_success + (COUNT(s.id) FILTER(WHERE s.score = s.max_score)) AS real
+                    ) AS rating_success,
+                    CAST(t.rating_total + COUNT(s.id) AS real) AS rating_total
+                FROM
+                    tasks_solution s INNER JOIN tasks_task t
+                        ON s.task.id = t.id
+                WHERE
+                    s.rating_is_calculated = FALSE
+                GROUP BY
+                    t.id
+            ) rating_tasks
+        )
+        UPDATE tasks_task
+        SET rating = nr.rating,
+            rating_success = nr.rating_success,
+            rating_total = nr.rating_total
+        FROM new_rating nr
+        WHERE tasks_task.id = nr.id
+    """
