@@ -1,12 +1,12 @@
 from django.contrib import admin
-from app.tasks.models.taskitem import TaskItem
+from app.taskbook.models import TaskBookItem
 from app.taskbook.forms import TaskItemAdminForm
 
 
-@admin.register(TaskItem)
+@admin.register(TaskBookItem)
 class TaskItemAdmin(admin.ModelAdmin):
 
-    model = TaskItem
+    model = TaskBookItem
     form = TaskItemAdminForm
     raw_id_fields = ('task',)
     readonly_fields = ('slug',)

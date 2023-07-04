@@ -1,41 +1,41 @@
-import django_filters
-from django import forms
+from django_filters import (
+    FilterSet,
+    RangeFilter,
+    MultipleChoiceFilter
+)
 from app.tasks.models.taskitem import TaskItem
 from app.tasks.enums import DifficultyLevel
+from app.tasks.filters import TagsFilter
+from app.common.widgets import (
+    CheckboxMultiple,
+)
 
 
-class TaskBookFilter(django_filters.FilterSet):
+class TaskBookFilter(FilterSet):
 
     class Meta:
         model = TaskItem
-        fields = []  # TODO проверить что это выражение корректно
+        fields = []
 
-    rating = django_filters.RangeFilter(
+    rating = RangeFilter(
         label='Рейтинг',
         required=False,
         field_name='task__rating'
     )
 
-    difficulty = django_filters.MultipleChoiceFilter(
+    difficulty = MultipleChoiceFilter(
         label='Сложность',
         choices=DifficultyLevel.CHOICES,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=CheckboxMultiple(),
         required=False,
         field_name='task__difficulty',
         lookup_expr='icontains'
     )
 
-    TAGS_CHOICES = [
-        ('conditions', 'Условия'),
-        ('cycles', 'Циклы'),
-    ]
-    # TODO можно ли легально переопределить AllValueMultipleFilter
-    tags = django_filters.AllValuesMultipleFilter(
+    tags = TagsFilter(
         label='Метки',
         null_label='Без меток',
-        # choices=TAGS_CHOICES,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=CheckboxMultiple(),
         required=False,
         field_name='task__tags',
-        # lookup_expr='icontains'
     )

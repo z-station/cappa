@@ -1,5 +1,5 @@
 from django import forms
-from app.tasks.models import TaskItem
+from app.taskbook.models import TaskBookItem
 from app.tasks.enums import TaskItemType
 from app.translators.enums import TranslatorType
 
@@ -7,7 +7,7 @@ from app.translators.enums import TranslatorType
 class TaskItemAdminForm(forms.ModelForm):
 
     class Meta:
-        model = TaskItem
+        model = TaskBookItem
         fields = '__all__'
 
     translator = forms.TypedMultipleChoiceField(

@@ -9,7 +9,7 @@ from django.forms import ValidationError
 from app.tasks.models import Solution
 from app.tasks.forms import ReviewSolutionForm
 from app.tasks.services import SolutionService
-from app.tasks.filters import SoluionsFilterSet
+from app.tasks.filters import SolutionsFilterSet
 from app.tasks.services.statistics import UserStatisticsService
 from app.common.services.exceptions import ServiceException
 from app.common.decorators import teacher_access
@@ -85,7 +85,7 @@ class SolutionsView(View):
 
     def get_filtered_queryset(self):
         qst = self.get_queryset()
-        filterset = SoluionsFilterSet(
+        filterset = SolutionsFilterSet(
             data=self.request.GET,
             queryset=qst,
             request=self.request

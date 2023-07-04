@@ -1,132 +1,71 @@
 {% extends 'taskbook/base.html' %}
 {% load static base_tags %}
-
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static '/css/ion.rangeSlider.min.css' %}"/>
+{% endblock %}
 
 {% block content %}
-<!-- <style>-->
-<!--.dropdown {-->
-<!--  width: 13em;-->
-<!--  min-height: 1em;-->
-<!--  max-height: 3em;-->
-<!--  position: relative;-->
-<!--  margin: 1em;-->
-<!--  opacity: 1;-->
-<!--  z-index: 2;-->
-<!--  display: inline-block;-->
-<!--}-->
+    <div class="one-col">
+        <div class="white page-content ">
+            <h1 class="text-center">Задачник</h1>
+            <form method="post" class="was-validated">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>{{ form.rating.label }}:</label>
+                    <span style="display: none">{{ form.rating }}</span>
+                       <input type="text" class="js-range-slider" name="my_range" value=""
+                        data-type="double"
+                        data-min="0"
+                        data-max="100"
+                        data-from="{{ form.rating.value.0|default:0 }}"
+                        data-to="{{ form.rating.value.1|default:0 }}"
+                        data-grid="true"
+                        data-skin="round"
+                    />
+                </div>
+                <div class="form-group">
+                    <label>{{ form.difficulty.label }}:</label>
+                    {{ form.difficulty }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.tags.label }}:</label>
+                    {{ form.tags }}
+                </div>
 
-<!--.dropdown-name {-->
-<!--  position: relative;-->
-<!--  width: 100%;-->
-<!--  text-align: center;-->
-<!--  top: 0.4em;-->
-<!--  font-size: 20px;-->
-<!--  font-weight: bold;-->
-<!--}-->
-
-<!--.dropdown * {-->
-<!--  box-sizing: border-box;-->
-<!--}-->
-
-<!--#dropdown_button {-->
-<!--  background: #5fcf80;-->
-<!--  display: flex;-->
-<!--  justify-content: space-between;-->
-<!--  align-items: center;-->
-<!--  #border: 2px #2a2f3b solid;-->
-<!--  border-radius: 0.5em;-->
-<!--  cursor: pointer;-->
-<!--  transition: background 0.3s;-->
-<!--  position: relative;-->
-<!--  z-index: 2;-->
-<!--  display: inline-block;-->
-<!--}-->
-
-<!--.dropdown-clicked {-->
-<!--  border: 2px #26489a solid;-->
-<!--  box-shadow: 0 0 0.8em #26489a;-->
-<!--}-->
-
-<!--#dropdown_button:hover {-->
-<!--  background: #323741;-->
-<!--}-->
-
-<!--.form-menu {-->
-<!--  list-style: none;-->
-<!--  padding: 1em 0.5em;-->
-<!--  background: white;-->
-<!--  border: 1px #26489a solid;-->
-<!--  border-radius: 0.5em;-->
-<!--  color: black;-->
-<!--  position: absolute;-->
-<!--  top: 3em;-->
-<!--  width: 100%;-->
-<!--  max-height: 0;-->
-<!--  transition: 0.3s;-->
-<!--  visibility: hidden;-->
-<!--}-->
-
-<!--.form-open {-->
-<!--  visibility: visible;-->
-<!--}-->
-
-<!--    </style>-->
-    <div class="one-col white">
-        <h1 class="text-center">Задачник</h1>
-<!--        <div class="dropdown" id="dropdown_button">-->
-<!--            <p class="dropdown-name">Фильтр</p>-->
-            <div class="form-menu">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ filter.form.non_field_errors }}
-                    {% for field in filter.form %}
-                        <div class="id_{{ field.name }}">
-                            {% for error in field.errors %}
-                                <strong><label for="errors_{{ field.name }}">{{ error }}</label></strong>
-                            {% endfor %}
-                            <label for="id_{{ field.name }}">{{ field.label }}:</label>
-                            {{ field }}
-                        </div>
-                    {% endfor %}
-                    <input type="submit" value="OK">
-                </form>
-            </div>
-<!--        </div>-->
-        <div class="table-container">
-            <table class="table js__tablesorter">
-                <thead>
-                    <tr>
-                        <th>Номер</th>
-                        <th>Название</th>
-                        <th>Сложность</th>
-                        <th>Рейтинг</th>
-                        <th>Решение</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for taskitem in tasks %}
-                    <tr>
-                        <td>
-                            {{ taskitem.id }}
-                        </td>
-                        <td>
-                            <a href="{% url 'taskbook:taskitem' taskitem.slug %}" target="_blank">{{ taskitem.title }}</a>
-                        </td>
-                        <td>
-                            {{ taskitem.task.difficulty_name|default:'Сложность не указана' }}
-                        </td>
-                        <td>
-                            {{ taskitem.task.rating|default:'100' }}
-                        </td>
-                        <td>
-                            Отметка о решении
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                <input type="submit" class="btn btn-primary" value="Применить">
+            </form>
         </div>
-        {% include "taskbook/paginator.html" with page=tasks %}
+    </div>
+    <div class="one-col">
+        <div class="white page-content ">
+            <div class="table-container">
+                <table class="table js__tablesorter">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Сложность</th>
+                            <th>Рейтинг</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for taskitem in taskitems %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'taskbook:taskitem' taskitem.slug %}" target="_blank">{{ taskitem.title }}</a>
+                            </td>
+                            <td>
+                                {{ taskitem.task.difficulty_name|default:'Сложность не указана' }}
+                            </td>
+                            <td>
+                                {{ taskitem.task.rating }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -135,22 +74,16 @@
     <script src="{% static 'js/jquery.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/ion.rangeSlider.min.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
-    <script>window.dispatchEvent(new Event('initTablesorter'))</script>
-<!--    <script>-->
-<!--let dropdowns = document.getElementsByClassName('dropdown');-->
-<!--for (let dd of dropdowns) {-->
-<!--dd.addEventListener('click', function() {-->
-<!--let menus = dd.getElementsByClassName('form-menu');-->
-<!--for (let menu of menus) {-->
-<!--  menu.classList.toggle('form-open');-->
-<!--  if (menu.style.maxHeight) {-->
-<!--    menu.style.maxHeight = null;-->
-<!--  } else {-->
-<!--    menu.style.maxHeight = menu.scrollHeight + 'px';-->
-<!--  }-->
-<!--}-->
-<!--})-->
-<!--}-->
-<!--</script>-->
+    <script>
+        window.dispatchEvent(new Event('initTablesorter'));
+            $(".js-range-slider").ionRangeSlider({
+                onFinish: function (data) {
+                    document.querySelector('#id_rating_0').value = data.from;
+                    document.querySelector('#id_rating_1').value = data.to;
+                },
+            });
+
+    </script>
 {% endblock %}

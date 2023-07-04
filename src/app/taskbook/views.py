@@ -9,6 +9,7 @@ from app.tasks.models import Solution, TaskItem
 from app.tasks.enums import TaskItemType
 from app.translators.enums import TranslatorType
 
+
 UserModel = get_user_model()
 
 
@@ -20,45 +21,38 @@ class TaskBookView(View):
 
     # TODO taskbook.html фильтр закрывается при клике на какой-либо элемент,
     def get(self, request, *args, **kwargs):
-        paginator = Paginator(self.queryset, self.num_tasks)
-        page = request.GET.get('page')
-        try:
-            tasks = paginator.page(page)
-        except PageNotAnInteger:
-            tasks = paginator.page(1)
-        except EmptyPage:
-            tasks = paginator.page(paginator.num_pages)
+        taskbook_filter = TaskBookFilter(
+            data=request.GET,
+            queryset=self.queryset
+        )
+        if taskbook_filter.is_valid():
+            taskitems = taskbook_filter.qs
+        else:
+            taskitems = self.queryset
         return render(
             request=request,
             template_name='taskbook/taskbook.html',
             context={
-              'page': page,
-              'tasks': tasks,
-              'filter': TaskBookFilter(),
+              'taskitems': taskitems,
+              'form': taskbook_filter.form,
             }
         )
 
     def post(self, request, *args, **kwargs):
-        taskitem_filter = TaskBookFilter(
+        taskbook_filter = TaskBookFilter(
             data=request.POST,
             queryset=self.queryset
         )
-        tasks_list = taskitem_filter.qs
-        paginator = Paginator(tasks_list, self.num_tasks)
-        page = request.GET.get('page')
-        try:
-            tasks = paginator.page(page)
-        except PageNotAnInteger:
-            tasks = paginator.page(1)
-        except EmptyPage:
-            tasks = paginator.page(paginator.num_pages)
+        if taskbook_filter.is_valid():
+            taskitems = taskbook_filter.qs
+        else:
+            taskitems = self.queryset
         return render(
             request,
             template_name='taskbook/taskbook.html',
             context={
-              'page': page,
-              'tasks': tasks,
-              'filter': taskitem_filter,
+              'taskitems': taskitems,
+              'form': taskbook_filter.form,
             }
         )
 
