@@ -38,24 +38,6 @@ class TaskBookView(View):
             }
         )
 
-    def post(self, request, *args, **kwargs):
-        taskbook_filter = TaskBookFilter(
-            data=request.POST,
-            queryset=self.queryset
-        )
-        if taskbook_filter.is_valid():
-            taskitems = taskbook_filter.qs
-        else:
-            taskitems = self.queryset
-        return render(
-            request,
-            template_name='taskbook/taskbook.html',
-            context={
-              'taskitems': taskitems,
-              'form': taskbook_filter.form,
-            }
-        )
-
 
 @method_decorator(login_required, name='dispatch')
 class TaskItemView(View):

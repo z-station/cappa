@@ -9,8 +9,7 @@
     <div class="one-col">
         <div class="white page-content ">
             <h1 class="text-center">Задачник</h1>
-            <form method="post" class="was-validated">
-                {% csrf_token %}
+            <form method="get" class="was-validated">
                 <div class="form-group">
                     <label>{{ form.rating.label }}:</label>
                     <span style="display: none">{{ form.rating }}</span>
@@ -23,6 +22,14 @@
                         data-grid="true"
                         data-skin="round"
                     />
+                </div>
+                <div class="form-group">
+                    <label>{{ form.search.label }}:</label>
+                    {{ form.search }}
+                </div>
+                <div class="form-group">
+                    <label>{{ form.lang.label }}:</label>
+                    {{ form.lang }}
                 </div>
                 <div class="form-group">
                     <label>{{ form.difficulty.label }}:</label>

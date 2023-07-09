@@ -213,7 +213,7 @@ class UpdateRatingQuery(
                     CAST(t.rating_total + COUNT(s.id) AS real) AS rating_total
                 FROM
                     tasks_solution s INNER JOIN tasks_task t
-                        ON s.task.id = t.id
+                        ON s.task_id = t.id
                 WHERE
                     s.rating_is_calculated = FALSE
                 GROUP BY

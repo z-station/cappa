@@ -9,4 +9,8 @@ def calculate_rating():
     query = UpdateRatingQuery()
     with transaction.atomic():
         RawSqlExecutor.execute(query.get_sql())
-        Solution.objects.filter(rating_is_calculated=False).update(rating_is_calculated=True)
+        Solution.objects.filter(
+            rating_is_calculated=False
+        ).update(
+            rating_is_calculated=True
+        )
