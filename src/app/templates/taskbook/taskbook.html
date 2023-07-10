@@ -9,7 +9,7 @@
     <div class="one-col">
         <div class="white page-content ">
             <h1 class="text-center">Задачник</h1>
-            <form method="get" class="was-validated">
+            <form method="get" class="taskbook__filter">
                 <div class="form-group">
                     <label>{{ form.rating.label }}:</label>
                     <span style="display: none">{{ form.rating }}</span>
@@ -24,23 +24,51 @@
                     />
                 </div>
                 <div class="form-group">
-                    <label>{{ form.search.label }}:</label>
                     {{ form.search }}
                 </div>
                 <div class="form-group">
-                    <label>{{ form.lang.label }}:</label>
-                    {{ form.lang }}
+                    <button
+                        id="js__lang_btn"
+                        class="btn taskbook__filter-btn"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#js__lang_choices"
+                        aria-expanded="false"
+                    >{{ form.lang.label }}</button>
+                    <div class="collapse ml-2 js__choices" data-name="lang" id="js__lang_choices">
+                        {{ form.lang }}
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>{{ form.difficulty.label }}:</label>
-                    {{ form.difficulty }}
+                    <button
+                        id="js__difficulty_btn"
+                        class="btn taskbook__filter-btn"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#js__difficulty_choices"
+                        aria-expanded="false"
+                    >{{ form.difficulty.label }}</button>
+                    <div class="collapse ml-2 js__choices" data-name="difficulty" id="js__difficulty_choices">
+                        {{ form.difficulty }}
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>{{ form.tags.label }}:</label>
-                    {{ form.tags }}
+                    <button
+                        id="js__tags_btn"
+                        class="btn taskbook__filter-btn"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#js__tags_choices"
+                        aria-expanded="false"
+                    >{{ form.tags.label }}</button>
+                    <div class="collapse ml-2 js__choices" data-name="tags" id="js__tags_choices">
+                        {{ form.tags }}
+                    </div>
                 </div>
 
-                <input type="submit" class="btn btn-primary" value="Применить">
+                <input type="submit" class="btn btn-primary taskbook__filter-submit" value="Применить">
+                <a href="#" class="taskbook__filter-reset red-link">Очистить</a>
+
             </form>
         </div>
     </div>
@@ -83,14 +111,6 @@
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
     <script src="{% static 'js/ion.rangeSlider.min.js' %}"></script>
     <script src="{% static 'js/main22.js' %}"></script>
-    <script>
-        window.dispatchEvent(new Event('initTablesorter'));
-            $(".js-range-slider").ionRangeSlider({
-                onFinish: function (data) {
-                    document.querySelector('#id_rating_0').value = data.from;
-                    document.querySelector('#id_rating_1').value = data.to;
-                },
-            });
-
-    </script>
+    <script src="{% static 'js/taskbook.js' %}"></script>
+    <script>window.dispatchEvent(new Event('taskBookPageLoaded'))</script>
 {% endblock %}

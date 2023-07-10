@@ -4,6 +4,9 @@ from django_filters import (
     MultipleChoiceFilter,
     CharFilter
 )
+from django.forms.widgets import (
+    TextInput
+)
 from app.tasks.models.taskitem import TaskItem
 from app.tasks.enums import DifficultyLevel
 from app.translators.enums import TranslatorType
@@ -22,7 +25,14 @@ class TaskBookFilter(FilterSet):
     search = CharFilter(
         label='Поиск',
         field_name='task__title',
-        lookup_expr='icontains'
+        lookup_expr='icontains',
+        widget=TextInput(
+            attrs={
+                'placeholder': 'Поиск по названию',
+                'type': 'search',
+                'class': 'form-control'
+            }
+        )
     )
 
     rating = RangeFilter(

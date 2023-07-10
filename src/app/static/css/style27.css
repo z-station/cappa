@@ -60,6 +60,13 @@ a:hover {
     color: #008226;
 }
 
+a.red-link {
+    color: #dc3545;
+}
+a.red-link:hover {
+    color: #dc3545;
+}
+
 .row {
     margin: 0;
 }
@@ -1765,6 +1772,28 @@ li.error {
 .signup__form ul {
     margin: 0;
 }
+
+/* taskbook menu */
+
+.taskbook__filter-btn {
+    min-width: 150px;
+}
+
+.taskbook__filter-submit {
+    min-width: 150px;
+}
+
+.irs--round .irs-bar,
+.irs--round .irs-from,
+.irs--round .irs-to {
+    background-color: #28a745 !important;
+}
+.irs-handle.from,
+.irs-handle.to {
+    border-color:  #28a745 !important;
+}
+
+/* end taskbook menu */
 
 /* адаптив */
 
