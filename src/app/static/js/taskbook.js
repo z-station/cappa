@@ -1,5 +1,6 @@
 
 var initTaskBookFilter = function(){
+    /* Раскрыть и отметить зеленым выбранные фильтры */
     document.querySelectorAll('.js__choices').forEach(
         function(elem){
             var activeCheckbox = elem.querySelectorAll(`input[type=checkbox]:checked`).length,
@@ -7,10 +8,15 @@ var initTaskBookFilter = function(){
             if (activeCheckbox == 0){
                 document.querySelector(buttonId).classList.remove("btn-success")
             } else {
-                document.querySelector(buttonId).classList.add("btn-success")
+                var btn = document.querySelector(buttonId);
+                btn.classList.add("btn-success");
+                $(elem).collapse('show');
             }
         }
     )
+
+
+    /* Отмечать зеленым фильтр после того как он выбран */
     document.querySelectorAll('.js__checkbox-container input').forEach(
         function(elem){
             elem.addEventListener('click', function(e){

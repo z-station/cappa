@@ -21,14 +21,16 @@ class TaskBookView(View):
 
     # TODO taskbook.html фильтр закрывается при клике на какой-либо элемент,
     def get(self, request, *args, **kwargs):
-        taskbook_filter = TaskBookFilter(
-            data=request.GET,
-            queryset=self.queryset
-        )
-        if taskbook_filter.is_valid():
-            taskitems = taskbook_filter.qs
+        taskitems = self.queryset
+        if 'clear' in request.GET:
+            taskbook_filter = TaskBookFilter()
         else:
-            taskitems = self.queryset
+            taskbook_filter = TaskBookFilter(
+                data=request.GET,
+                queryset=self.queryset
+            )
+            if taskbook_filter.is_valid():
+                taskitems = taskbook_filter.qs
         return render(
             request=request,
             template_name='taskbook/taskbook.html',
