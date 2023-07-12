@@ -1,0 +1,15 @@
+{% if page.paginator.num_pages > 1 %}
+<div class="paginator" align="center">
+    <span class="step-links">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}{% if query_params %}&{{ query_params }}{% endif %}">Предыдущая</a>
+        {% endif %}
+        <span class="current">
+            Страница {{ page.number }} / {{ page.paginator.num_pages }}.
+        </span>
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}{% if query_params %}&{{ query_params }}{% endif %}">Следующая</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}

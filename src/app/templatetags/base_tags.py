@@ -32,3 +32,13 @@ def cut_zero(float_val):
 @register.inclusion_tag('common/breadcrumbs.html')
 def show_breadcrumbs(obj):
     return {'object': obj}
+
+
+@register.inclusion_tag('common/pagination.html', takes_context=True)
+def show_pagination(context, page):
+    get_copy = context['request'].GET.copy()
+    query_params = get_copy.pop('page', True) and get_copy.urlencode()
+    return {
+        'page': page,
+        'query_params': query_params
+    }

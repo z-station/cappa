@@ -1853,6 +1853,13 @@ li.error {
     margin-bottom: 30px;
 }
 
+.taskbook__table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 50px);
+}
+
 .irs--round .irs-bar,
 .irs--round .irs-from,
 .irs--round .irs-to {

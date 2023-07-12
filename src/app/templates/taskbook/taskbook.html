@@ -93,7 +93,7 @@
         <div class="white taskbook-content">
             <h1 class="text-center">Задачник</h1>
             {% if taskitems %}
-                <div class="table-container">
+                <div class="taskbook__table-container">
                     <table class="table js__tablesorter">
                         <thead>
                             <tr>
@@ -118,7 +118,9 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    {% show_pagination page=taskitems %}
                 </div>
+
             {% else %}
                 <div class="taskbook-content__no_results">
                     <img src="{% static 'img/no-results.png' %}" alt="=(">
