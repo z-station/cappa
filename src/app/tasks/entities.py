@@ -30,3 +30,19 @@ class PlagCheckResult(TypedDict):
     datetime: datetime
     reference: Optional[PlagCheckUser]
     candidate: Optional[PlagCheckUser]
+
+
+class CandidateData(TypedDict):
+
+    """ Candidate data for request in antiplag service """
+
+    uuid: str
+    code: str
+
+
+class PlagData(TypedDict):
+
+    """ Candidate data with max plag value """
+
+    uuid: str
+    percent: int

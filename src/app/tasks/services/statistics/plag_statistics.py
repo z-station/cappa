@@ -6,7 +6,9 @@ from app.tasks.models import Solution
 from app.tasks.enums import TaskItemType
 from app.tasks.entities import (
     PlagCheckResult,
-    PlagCheckUser
+    PlagCheckUser,
+    CandidateData,
+    PlagData,
 )
 from app.tasks.models import (
     TaskItem,
@@ -88,7 +90,6 @@ class PlagStatisticsService(RequestMixin):
         reference_user_id: int,
         translator: TranslatorType.LITERALS
     ):
-        print(translator)
         return Solution.objects.filter(
             user_id=reference_user_id,
             type=TaskItemType.COURSE,
@@ -112,7 +113,7 @@ class PlagStatisticsService(RequestMixin):
         reference_user_id: int,
         candidate_ids: List[int],
         translator: TranslatorType.LITERALS
-    ) -> list:
+    ) -> List[CandidateData]:
 
         candidates_solutions = cls._get_candidates_solutions(
             reference_user_id=reference_user_id,
@@ -127,19 +128,22 @@ class PlagStatisticsService(RequestMixin):
         all_solutions = candidates_solutions.union(external_solutions)
         candidates_data = []
         for solution in all_solutions:
-            candidates_data.append({
-                "uuid": cls._get_solution_uuid(solution),
-                "code": solution.content
-            })
+            candidates_data.append(
+                CandidateData(
+                    uuid=cls._get_solution_uuid(solution),
+                    code=solution.content
+                )
+            )
         return candidates_data
 
     @classmethod
     def _get_plag_data(
         cls,
         ref_code: str,
-        candidates_data: list,
+        candidates_data: List[CandidateData],
         translator: TranslatorType.LITERALS
-    ):
+    ) -> PlagData:
+        print(f'{settings.ANTIPLAG_HOST}/check/')
         try:
             response = cls._perform_request(
                 url=f'{settings.ANTIPLAG_HOST}/check/',
@@ -182,7 +186,26 @@ class PlagStatisticsService(RequestMixin):
         translator: TranslatorType.LITERALS
     ) -> PlagCheckResult:
 
-        """ TODO prototype """
+        """
+            Вычисляет и сохраняет значение плагиата по задаче для пользователя
+
+            Формат ответа:
+            {
+                "percent": float,
+                "datetime": str,
+                "reference": {
+                    "id": int,             // user id
+                    "solution_type": str,  // course | external | taskbook
+                    "solution_id": int     // checked solution id
+                },
+                "candidate": {
+                    "id": int,
+                    "solution_type": str,
+                    "solution_id": int
+                }
+            }
+
+        """
 
         ref_solution = cls._get_reference_solution(
             reference_user_id=reference_user_id,
@@ -222,9 +245,9 @@ class PlagStatisticsService(RequestMixin):
             )
             result['percent'] = percent
             result['candidate'] = PlagCheckUser(
-                id=user_id,
+                id=int(user_id),
                 solution_type=solution_type,
-                solution_id=solution_id
+                solution_id=int(solution_id)
             )
         cls.create_or_update_taskitem_statistics(
             user_id=reference_user_id,
