@@ -16,6 +16,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='database',
             name='file',
-            field=filebrowser.fields.FileBrowseField(blank=True, help_text='Файл данных PostgreSQL версии не ниже 13', max_length=1000, null=True, verbose_name='файл'),
+            field=filebrowser.fields.FileBrowseField(
+                blank=True,
+                help_text='Файл данных PostgreSQL версии не ниже 13',
+                max_length=1000,
+                null=True,
+                verbose_name='файл'
+            ),
         ),
     ]
