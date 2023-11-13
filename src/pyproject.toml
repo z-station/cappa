@@ -22,6 +22,7 @@ requests = "2.24.0"
 pyenchant = "3.2.1"
 python-memcached = "1.59"
 django-filter = "2.2.0"
+django-filebrowser-no-grappelli = "3.8"
 
 [tool.poetry.dev-dependencies]
 
