@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+import app.databases.utils
 
 
 class Migration(migrations.Migration):
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now=True, verbose_name='дата создания')),
                 ('last_changes', models.DateTimeField(auto_now_add=True, verbose_name='дата изменения')),
                 ('description', models.TextField(blank=True, null=True, verbose_name='описание')),
-                ('file', models.FileField(upload_to=settings.SQL_FILES_DIR, verbose_name='файл')),
+                ('file', models.FileField(upload_to=app.databases.utils.get_db_file_path, verbose_name='файл')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='владелец')),
             ],
             options={
