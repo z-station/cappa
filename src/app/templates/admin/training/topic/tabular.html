@@ -81,7 +81,7 @@
         var addRow = $('#_topics-group .add-row')
         addRow.children().hide()
         var td = $('<td>', { colspan: '4'});
-        $('<a>', { text: 'Добавить тему', href: '{% url 'admin:add_topic' course_pk=inline_admin_formset.model_admin.instance.id %}'}).appendTo(td);;
+        $('<a>', { text: 'Добавить страницу', href: '{% url 'admin:add_topic' course_pk=inline_admin_formset.model_admin.instance.id %}'}).appendTo(td);;
         td.appendTo(addRow)
     })
 </script>

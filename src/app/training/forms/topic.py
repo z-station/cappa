@@ -19,7 +19,7 @@ class TopicAdminForm(forms.ModelForm):
             if self.instance:
                 qst = qst.exclude(id=self.instance.id)
             if qst.exists():
-                self.add_error('slug', ValidationError('Значение не уникально в рамках курса'))
+                self.add_error('slug', ValidationError('Значение не уникально в рамках раздела'))
         return self.cleaned_data
 
 

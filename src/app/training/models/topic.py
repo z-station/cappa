@@ -21,7 +21,7 @@ class Topic(models.Model):
     slug = models.SlugField(verbose_name="слаг", max_length=255)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
 
-    course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
+    course = models.ForeignKey(Course, verbose_name='раздел сайта', related_name='_topics')
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
 
