@@ -27,7 +27,7 @@ class DatabaseAdmin(admin.ModelAdmin):
     get_status.short_description = 'активная'
     raw_id_fields = ('author',)
     readonly_fields = ('get_status',)
-    list_display = ('name', 'get_status', 'author', 'file_url')
+    list_display = ('name', 'get_status', 'author')
     fields = (
         'get_status',
         'name',
