@@ -1,42 +1,3 @@
-// sidebar
-var initSidebar = function(){
-    var sidebarBtns = document.querySelectorAll('.js__sidebar-btn')
-    sidebarBtns && sidebarBtns.forEach(function(elem){
-        elem.addEventListener('click', function(e){
-            e.target.classList.toggle("active")
-            document.querySelector('.js__sidebar').classList.toggle("active")
-        })
-    })
-
-    document.addEventListener('click', function(e) {
-        var sidebar = document.querySelector('.js__sidebar')
-        if(sidebar && !sidebar.contains(e.target)){
-            sidebar.classList.remove("active")
-            document.querySelectorAll('.js__sidebar-btn').forEach(function(e){
-                e.classList.remove('active')
-            })
-        }
-    })
-}
-
-var set_table_row_numbers = function(table){
-    /* Колонка с номерами строк не сортруется */
-    let i = 1;
-    $(table).find("tr:gt(0)").each(function(){
-        $(this).find("td.js__tablesorter-number").text(i);
-        i++;
-    });
-}
-
-var initTablesorter = function(){
-    document.querySelectorAll(".js__tablesorter").forEach(
-        function(table){
-            $(table).tablesorter()
-                .bind('sortEnd filterEnd', (e) => set_table_row_numbers(table))
-            set_table_row_numbers(table)
-        }
-    )
-}
 
 var getFormatedDateTime = function(d){
     var year = d.getFullYear()
@@ -67,6 +28,3 @@ document.querySelectorAll('.js__utc-time').forEach(function(elem){
         elem.innerHTML = getFormatedDateTime(d);
     }
 })
-
-window.addEventListener('initSidebar', initSidebar)
-window.addEventListener('initTablesorter', initTablesorter)

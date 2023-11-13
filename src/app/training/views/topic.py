@@ -20,7 +20,7 @@ class TopicView(View):
         topic = self.get_object(request, *args, **kwargs)
         return render(
             request=request,
-            template_name='training/topic/template.html',
+            template_name='training/topic.html',
             context={
                 'object': topic,
                 'course': topic.course,

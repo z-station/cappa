@@ -16,7 +16,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0002_auto_20191117_1332'),
     ]
 
     operations = [
@@ -81,7 +80,6 @@ class Migration(migrations.Migration):
                 ('show', models.BooleanField(default=True, verbose_name='отображать')),
                 ('slug', app.common.fields.SlugField(blank=True, max_length=255, null=True, verbose_name='слаг')),
                 ('order_key', app.common.fields.OrderField(blank=True, null=True, verbose_name='порядок')),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='topics', to='tasks.Task', verbose_name='задача')),
             ],
             options={
                 'verbose_name': 'задача',

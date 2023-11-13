@@ -55,15 +55,4 @@ class ContentForm(forms.Form):
         required=False
     )
     content = forms.CharField(label='')
-    output = forms.CharField(
-        label="Консольный вывод",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
-    )
-    error = forms.CharField(
-        label="Ошибка",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
-    )
-    translator = forms.CharField(widget=forms.HiddenInput)
-    db_name = forms.CharField(widget=forms.HiddenInput)
+

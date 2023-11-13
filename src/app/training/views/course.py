@@ -28,7 +28,6 @@ class CourseView(View):
             template_name='training/course.html',
             context={
                 'object': course,
-                'course': course,
             },
             request=request
         )

@@ -8,7 +8,7 @@ var aceInit = function(readonly = false){
         editor.setOption("showPrintMargin", false)     // убрать верт черту
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
-        editor.setReadOnly(textarea.getAttribute('readonly') || readonly)  // для чтения
+        editor.setReadOnly(true)  // для чтения
         editor.getSession().setMode('ace/mode/python');
 
         // вписать код из textarea в ace editor

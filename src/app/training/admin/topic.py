@@ -14,7 +14,6 @@ from django.db import router
 from django.contrib.admin.utils import get_deleted_objects
 from adminsortable2.admin import SortableInlineAdminMixin
 from app.training.models import Topic, Content
-from app.training.admin import TaskItemInline
 from app.training.forms.topic import (
     TopicAdminForm,
     ContentAdminForm
@@ -44,7 +43,7 @@ class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
     form = ContentAdminForm
     model = Content
     extra = 0
-    fields = ('order_key', 'type', ('show_input', 'show_debug', 'readonly'), 'text', 'input', 'content')
+    fields = ('order_key', 'type', 'text', 'input', 'content')
 
 
 @admin.register(Topic)
@@ -57,9 +56,7 @@ class TopicAdmin(admin.ModelAdmin):
         'title',
         'slug',
         'author',
-        'due_date',
         'course',
-        'database'
     )
     prepopulated_fields = {'slug': ['title']}
     inlines = (ContentInline,)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 from os import environ as env
-from app.translators.enums import TranslatorType
 
 
 if env.get('APP_DEBUG', None) is None:
@@ -81,6 +80,7 @@ TEMPLATES = [
 ]
 
 INSTALLED_APPS = [
+    'filebrowser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -97,10 +97,7 @@ INSTALLED_APPS = [
     'app',
     'app.accounts',
     'app.news',
-    'app.tasks',
-    'app.databases',
     'app.training',
-    'app.groups',
     'app.service'
 ]
 
@@ -152,7 +149,8 @@ TINYMCE_DEFAULT_CONFIG = {
         'formatselect,|,'
         'fontsizeselect,|,'
         'forecolor,backcolor,table,|,'
-        'removeformat,|,code',
+        'removeformat,|,code, |,'
+        'link,unlink, image, |,',
     'width': '100%',
     'height': 100,
     'theme_advanced_resizing': 'True',
@@ -173,52 +171,55 @@ DEFAULT_FROM_EMAIL = env.get('APP_EMAIL', 'info@app.ru')
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = ['app.auth.backends.CustomModelBackend']
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5Mb
+
 # ~========== ADMIN REORDER ===========~
 INSTALLED_APPS += ['admin_reorder']
 MIDDLEWARE += ['app.admin.middleware.CustomModelAdminReorder']
 ADMIN_REORDER = (
     {
-        'app': 'training', 'label': u'Учебные курсы',
-        'models': ('training.Course',)
+        'app': 'training', 'label': 'Страницы сайта',
+        'models': ('training.Course', )
     },
     {
-        'app': 'news', 'label': u'Контент',
+        'app': 'filebrowser', 'label': u'Менеджер файлов',
+    },
+    {
+        'app': 'news', 'label': 'Записи на стене',
         'models': ('news.News', 'service.Menu')
     }
 )
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ]
+# ~========== FILEBROWSER ===========~
+
+FILEBROWSER_DIRECTORY = "filebrowser/"
+
+FILEBROWSER_EXTENSIONS = {
+    'Image': ['.jpg','.jpeg','.gif','.png','.tif','.tiff'],
+    'Document': ['.pdf','.doc','.rtf','.txt','.xls','.csv', '.sql'],
+    'Video': ['.mov','.wmv','.mpeg','.mpg','.avi','.rm'],
+    'Audio': ['.mp3','.mp4','.wav','.aiff','.midi','.m4p']
 }
 
-SERVICES_HOSTS = {
-    TranslatorType.PYTHON38: env.get(
-        'PYTHON38_HOST', 'http://localhost:9001'
-    ),
-    TranslatorType.GCC74: env.get(
-        'GCC74_HOST', 'http://localhost:9002'
-    ),
-    TranslatorType.PROLOG_D: env.get(
-        'PROLOGD_HOST', 'http://localhost:9003'
-    ),
-    TranslatorType.POSTGRESQL: env.get(
-        'POSTGRESQL_HOST', 'http://localhost:9004'
-    ),
-    TranslatorType.PASCAL: env.get(
-        'PASCAL_HOST', 'http://localhost:9005'
-    ),
-    TranslatorType.PHP: env.get(
-        'PHP_HOST', 'http://localhost:9006'
-    ),
-    TranslatorType.CSHARP: env.get(
-        'CSHARP_HOST', 'http://localhost:9007'
-    ),
-    TranslatorType.JAVA: env.get(
-        'JAVA_HOST', 'http://localhost:9008'
-    ),
+FILEBROWSER_SELECT_FORMATS = {
+    'file': ['Image','Document','Video','Audio'],
+    'image': ['Image'],
+    'document': ['Document'],
+    'media': ['Video','Audio'],
 }
+
+FILEBROWSER_VERSIONS = {
+    'thumbnail': {'verbose_name': 'Thumbnail', 'width': 100, 'height': 100, 'opts': 'crop'},
+}
+
+FILEBROWSER_VERSION_QUALITY = 90
+FILEBROWSER_ADMIN_VERSIONS = ['thumbnail']
+FILEBROWSER_ADMIN_THUMBNAIL = 'thumbnail'
+FILEBROWSER_MAX_UPLOAD_SIZE = 100*1048576   # 100 mb
+FILEBROWSER_NORMALIZE_FILENAME = True
+FILEBROWSER_CONVERT_FILENAME = True
+FILEBROWSER_LIST_PER_PAGE = 10
+FILEBROWSER_DEFAULT_SORTING_BY = "date"
+FILEBROWSER_DEFAULT_SORTING_ORDER = "desc"
+FILEBROWSER_SEARCH_TRAVERSE = True
+FILEBROWSER_OVERWRITE_EXISTING = False

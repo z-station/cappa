@@ -15,9 +15,6 @@ var toggleWidgetAceInput = function(e){
 var toggleWidget = function(e){
     var fieldset = $(this).parents('fieldset')
     if($(this).val() == 'text'){
-        fieldset.find('.field-show_input').hide()
-        fieldset.find('.field-show_debug').hide()
-        fieldset.find('.field-readonly').hide()
         fieldset.find('.field-input').hide()
         fieldset.find('.field-content').hide()
         fieldset.find('.field-text').show()
@@ -27,9 +24,6 @@ var toggleWidget = function(e){
         } else {
             fieldset.find('.field-input').hide()
         }
-        fieldset.find('.field-show_debug').show()
-        fieldset.find('.field-readonly').show()
-        fieldset.find('.field-show_input').show()
         fieldset.find('.field-content').show()
         fieldset.find('.field-text').hide()
     }

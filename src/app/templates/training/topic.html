@@ -1,0 +1,18 @@
+{% extends 'training/base.html' %}
+{% load static training_tags %}
+
+{% block content %}
+    <div class="one-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.title }}</h1>
+            {% show_content object %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/ace_init.js' %}"></script>
+    <script>aceInit();</script>
+{% endblock %}

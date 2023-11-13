@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from app.accounts.models import User
-from app.groups.admin import UserGroupInline
 
 
 class UserAdmin(BaseUserAdmin):
@@ -65,7 +64,6 @@ class UserAdmin(BaseUserAdmin):
         'father_name',
         'email'
     )
-    inlines = (UserGroupInline, )
 
 
 admin.site.register(User, UserAdmin)
