@@ -250,11 +250,11 @@ ANTIPLAG_HOST = env.get(
 
 # ~========== FILEBROWSER ===========~
 
-FILEBROWSER_DIRECTORY = "upload/"
+FILEBROWSER_DIRECTORY = "filebrowser/"
 
 FILEBROWSER_EXTENSIONS = {
     'Image': ['.jpg', '.jpeg', '.gif', '.png', '.tif', '.tiff', '.webp'],
-    'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv', '.sql'],
+    'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv', '.sql', '.svg'],
     'Video': ['.mov', '.wmv', '.mpeg', '.mpg', '.avi', '.rm'],
     'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p']
 }
