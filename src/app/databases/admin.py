@@ -27,7 +27,7 @@ class DatabaseAdmin(admin.ModelAdmin):
 
     raw_id_fields = ('author',)
     readonly_fields = ('get_status',)
-    list_display = ('name', 'get_status', 'author')
+    list_display = ('name', 'get_status', 'author', 'file')
     fields = (
         'get_status',
         'name',
