@@ -1,9 +1,11 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from filebrowser.fields import FileBrowseField
+from django.core.files.storage import FileSystemStorage
 
 
 UserModel = get_user_model()
+sql_files_storage = FileSystemStorage(location=settings.SQL_FILES_DIR)
 
 
 class Database(models.Model):
@@ -29,13 +31,11 @@ class Database(models.Model):
         blank=True,
         null=True
     )
-    file = FileBrowseField(
+    file = models.FileField(
         verbose_name='файл',
-        max_length=1000,
-        extensions=['.sql',],
-        blank=True,
-        null=True,
-        help_text='Файл данных PostgreSQL версии не ниже 13'
+        storage=sql_files_storage,
+        help_text='Файл данных PostgreSQL версии не ниже 13',
+        unique=True
     )
     author = models.ForeignKey(
         UserModel,

@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.http import HttpResponseRedirect
 from django.contrib import admin
-from django.utils.html import format_html
 
 from app.databases.models import Database
 from app.databases.service import DatabaseManagementService
@@ -26,16 +25,6 @@ class DatabaseAdmin(admin.ModelAdmin):
             return status == DatabaseStatus.ACTIVE
     get_status.boolean = True
     get_status.short_description = 'активная'
-
-    def file_url(self, obj):
-        if obj.file:
-            return format_html(
-                f'<a href="{obj.file.url}" target="_blank">{obj.file.original_filename}</a>'
-            )
-        return ''
-    file_url.short_description = 'SQL-файл'
-
-
     raw_id_fields = ('author',)
     readonly_fields = ('get_status',)
     list_display = ('name', 'get_status', 'author', 'file_url')
