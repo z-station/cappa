@@ -1,17 +1,17 @@
 version: "3.3"
 
 services:
-  cappa-db134:
-    container_name: cappa-db134
+  cappa-db:
+    container_name: cappa-db
     image: postgres:13
     networks:
       - localhost
     volumes:
-      - ../postgresql-data:/var/lib/postgresql/data134
+      - ../postgresql-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: cappa134
-      POSTGRES_PASSWORD: cappa134
-      POSTGRES_DB: cappa134
+      POSTGRES_USER: cappa
+      POSTGRES_PASSWORD: cappa
+      POSTGRES_DB: cappa
     restart: always
 
   cappa-app:
@@ -31,12 +31,12 @@ services:
     networks:
       - localhost
     depends_on:
-      - cappa-db134
+      - cappa-db
     environment:
-      POSTGRES_USER: cappa134
-      PGPASSWORD: cappa134
-      POSTGRES_DB: cappa134
-      POSTGRES_HOST: cappa-db134
+      POSTGRES_USER: cappa
+      PGPASSWORD: cappa
+      POSTGRES_DB: cappa
+      POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
       PYTHON38_HOST: http://sandbox-python38:9001
       GCC74_HOST: http://sandbox-gcc74:9002
@@ -48,7 +48,7 @@ services:
       JAVA_HOST: http://sandbox-java:9008
     restart: always
     healthcheck:
-      test: ["CMD", "pg_isready", "-h", cappa-db134]
+      test: ["CMD", "pg_isready", "-h", cappa-db]
       interval: 5s
       timeout: 5s
       retries: 10

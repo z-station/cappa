@@ -15,7 +15,6 @@
         <div class="course__fake-table-container js__course__fake-table-container">
             <div class="course__fake-table js__course__fake-table"></div>
         </div>
-        <!-- issue #134 -->
         <div class="course__table-container mb-4 js__course__table-container">
             <table class="course__table js__course__table js__tablesorter">
                 <thead>
@@ -24,12 +23,11 @@
                         <th class="wide-90">Решено</th>
                         <th class="wide-90">Баллы</th>
                         {% for topic in course_data.topics %}
-                            topic: {{ topic }}
                             <th data-sorter="false" title="{{ topic.number }}\n{{ topic.title }}">
-                                    <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ topic.url }}"
-                                       target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ topic.number }} {{ topic.title }}">
-                                        {{ topic.number }}
-                                    </a>
+                                <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ topic.url }}"
+                                   target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ topic.number }} {{ topic.title }}">
+                                    {{ topic.number }}
+                                </a>
                             </th>
                             {% for taskitem in topic.taskitems %}
                                 <th class="task" data-sorter="false" title="{{ taskitem.title }}\n{{ topic.title }}">

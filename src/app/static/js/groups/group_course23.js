@@ -51,16 +51,10 @@ var groupCoursePage = function(e){
                                 if (data_th != null){
                                     topic = document.querySelector(`tr[id="js__member-${user_id}"] td.js__topic[data-th="${data_th}"]`)
                                     topic.innerHTML = topic_solved_tasks + ' / ' + topic.innerHTML
-
-                                    console.log('topic: ', topic)
                                 }
                                 data_th = td.getAttribute('data-th').slice(0, 9)
                                 topic_solved_tasks = 0
                             }
-                            console.log('tr: ', tr)
-                            console.log('td: ', td)
-                            console.log('data_th: ', data_th)
-
                             if(overdue){
                                 title = title + '\nРешение отправлено позже даты сдачи'
                             }
@@ -137,14 +131,11 @@ var groupCoursePage = function(e){
                                 }
                             }
                             td.append(tdContent)
-                            // добавить условия для топика
                         }
                     }
                     if (data_th != null){
                         topic = document.querySelector(`tr[id="js__member-${user_id}"] td.js__topic[data-th="${data_th}"]`)
                         topic.innerHTML = topic_solved_tasks + ' / ' + topic.innerHTML
-
-                        console.log('topic: ', topic)
                     }
                     tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks + ' / ' + total_tasks;
                     tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);
