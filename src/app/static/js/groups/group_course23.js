@@ -28,15 +28,13 @@ var groupCoursePage = function(e){
                     var total_tasks = document.querySelectorAll('th.task').length,
                         total_solved_tasks = 0,
                         total_score = 0,
-                        tr = document.querySelector('#js__member-' + user_id),
-                        topics = tr.querySelectorAll('td.js__topic')
-                    console.log(tr)
-                    console.log(topics)
+                        topic_solved_tasks = 0,
+                        data_th = null,
+                        tr = document.querySelector('#js__member-' + user_id)
                     var userName = tr.querySelector('td.js__username').innerText
 
                     for(const [taskitem, data] of Object.entries(user_data)){
-                        var td = tr.querySelector('.js__taskitem__' + taskitem),
-                            topic_solved_tasks = 0
+                        var td = tr.querySelector('.js__taskitem__' + taskitem)
                         if(td){
                             if (data.due_date){
                                 overdue = new Date(data.created) > new Date(data.due_date)
@@ -49,6 +47,20 @@ var groupCoursePage = function(e){
                                 topicTitle = th.getAttribute('data-topic-title'),
                                 taskitemTitle = th.getAttribute('data-taskitem-title'),
                                 title = `${userName}\n${createdLocalFormattedDate}\n${taskitemTitle}\nТема: ${topicTitle}`;
+                            if (data_th == null || data_th != td.getAttribute('data-th').slice(0, 9)){
+                                if (data_th != null){
+                                    topic = document.querySelector(`tr[id="js__member-${user_id}"] td.js__topic[data-th="${data_th}"]`)
+                                    topic.innerHTML = topic_solved_tasks + ' / ' + topic.innerHTML
+
+                                    console.log('topic: ', topic)
+                                }
+                                data_th = td.getAttribute('data-th').slice(0, 9)
+                                topic_solved_tasks = 0
+                            }
+                            console.log('tr: ', tr)
+                            console.log('td: ', td)
+                            console.log('data_th: ', data_th)
+
                             if(overdue){
                                 title = title + '\nРешение отправлено позже даты сдачи'
                             }
@@ -127,6 +139,12 @@ var groupCoursePage = function(e){
                             td.append(tdContent)
                             // добавить условия для топика
                         }
+                    }
+                    if (data_th != null){
+                        topic = document.querySelector(`tr[id="js__member-${user_id}"] td.js__topic[data-th="${data_th}"]`)
+                        topic.innerHTML = topic_solved_tasks + ' / ' + topic.innerHTML
+
+                        console.log('topic: ', topic)
                     }
                     tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks + ' / ' + total_tasks;
                     tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);

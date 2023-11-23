@@ -54,7 +54,7 @@ class Course(models.Model):
             'title': self.title,
             'version_hash': get_md5_hash_from_list(value=taskitems_ids),
             'url': reverse('training:course', kwargs={'course': self.slug}),
-            'topics': [topic.get_data() for topic in self.topics],
+            'topics': topics_data,
         }
 
     def get_cache_data(self):
