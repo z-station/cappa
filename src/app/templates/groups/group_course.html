@@ -24,8 +24,15 @@
                         <th class="wide-90">Решено</th>
                         <th class="wide-90">Баллы</th>
                         {% for topic in course_data.topics %}
+                            topic.taskitems: {{ topic.taskitems|length }}
+                            <th data-sorter="false" title="{{ topic.title }}">
+                                    <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ topic.url }}"
+                                       target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ topic.number }} {{ topic.title }}">
+                                        {{ topic.number }}
+                                    </a>
+                            </th>
                             {% for taskitem in topic.taskitems %}
-                                <th data-sorter="false" title="{{ taskitem.title }}\n{{ topic.title }}">
+                                <th class="task" data-sorter="false" title="{{ taskitem.title }}\n{{ topic.title }}">
                                     <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ taskitem.url }}"
                                        target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ taskitem.number }} {{ taskitem.title }}">
                                         {{ taskitem.number }}
@@ -42,6 +49,7 @@
                             <td class="wide-90 js__total_solved_tasks"></td>
                             <td class="wide-90 js__total_score"></td>
                             {% for topic in course_data.topics %}
+                                <td class="js__topic-{{ topic.id }}" data-th=".js__th-{{ topic.number }}">N / {{ topic.taskitems|length }}</td>
                                 {% for taskitem in topic.taskitems %}
                                     <td class="js__taskitem__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
                                 {% endfor %}

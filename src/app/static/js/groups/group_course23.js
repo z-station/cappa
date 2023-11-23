@@ -25,13 +25,18 @@ var groupCoursePage = function(e){
         statusCode:{
             200: function(response){
                for(const [user_id, user_data] of Object.entries(response)){
-                    var total_solved_tasks = 0,
+                    var total_tasks = document.querySelectorAll('th.task').length,
+                        total_solved_tasks = 0,
                         total_score = 0,
-                        tr = document.querySelector('#js__member-' + user_id)
+                        tr = document.querySelector('#js__member-' + user_id),
+                        topics = tr.querySelectorAll('td.js__topic')
+                    console.log(tr)
+                    console.log(topics)
                     var userName = tr.querySelector('td.js__username').innerText
 
                     for(const [taskitem, data] of Object.entries(user_data)){
-                        var td = tr.querySelector('.js__taskitem__' + taskitem)
+                        var td = tr.querySelector('.js__taskitem__' + taskitem),
+                            topic_solved_tasks = 0
                         if(td){
                             if (data.due_date){
                                 overdue = new Date(data.created) > new Date(data.due_date)
@@ -67,12 +72,14 @@ var groupCoursePage = function(e){
                                         if (!overdue){
                                             td.classList.add('s-green')
                                             total_solved_tasks += 1
+                                            topic_solved_tasks += 1
                                         }
                                     } else if (data.review_score == data.max_score){
                                         tdContent.innerHTML = '+'
                                         if (!overdue){
                                             td.classList.add('s-green')
                                             total_solved_tasks += 1
+                                            topic_solved_tasks += 1
                                             total_score += data.review_score
                                         }
                                     } else if (data.review_score == 0){
@@ -85,6 +92,7 @@ var groupCoursePage = function(e){
                                         if (!overdue){
                                             td.classList.add('s-yellow')
                                             total_solved_tasks += 1
+                                            topic_solved_tasks += 1
                                             total_score += data.review_score
                                         }
                                     }
@@ -100,6 +108,7 @@ var groupCoursePage = function(e){
                                     if (!overdue){
                                         td.classList.add('s-green')
                                         total_solved_tasks += 1
+                                        topic_solved_tasks += 1
                                         total_score += data.testing_score
                                     }
                                 } else if (data.testing_score == 0){
@@ -110,14 +119,16 @@ var groupCoursePage = function(e){
                                     if (!overdue){
                                         td.classList.add('s-yellow')
                                         total_solved_tasks += 1
+                                        topic_solved_tasks += 1
                                         total_score += data.testing_score
                                     }
                                 }
                             }
                             td.append(tdContent)
+                            // добавить условия для топика
                         }
                     }
-                    tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks;
+                    tr.querySelector('.js__total_solved_tasks').innerHTML = total_solved_tasks + ' / ' + total_tasks;
                     tr.querySelector('.js__total_score').innerHTML = total_score.toFixed(1);
                 }
                 $(".js__tablesorter").tablesorter()
