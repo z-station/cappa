@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from app.common.fields import OrderField
-from filebrowser.fields import FileBrowseField
+from app.common.fields import AnyExtFileBrowseField
 
 
 class Menu(models.Model):
@@ -38,7 +38,7 @@ class MenuItem(models.Model):
     menu = models.ForeignKey(Menu, related_name='menuitems')
     name = models.CharField(verbose_name='текст', max_length=255)
     url = models.CharField(verbose_name='ссылка', max_length=255)
-    image = FileBrowseField(
+    image = AnyExtFileBrowseField(
         verbose_name='изображение',
         max_length=1000,
         blank=True,
