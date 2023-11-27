@@ -254,16 +254,11 @@ FILEBROWSER_DIRECTORY = "filebrowser/"
 
 FILEBROWSER_EXTENSIONS = {
     'Image': ['.jpg', '.jpeg', '.gif', '.png', '.tif', '.tiff', '.webp'],
-    'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv', '.sql', '.svg'],
-    'Video': ['.mov', '.wmv', '.mpeg', '.mpg', '.avi', '.rm'],
-    'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p']
+    'Document': ['Any extensions'],
+    'Video': ['.mov', '.mp4', '.mkv'],
+    'Audio': ['.mp3',]
 }
-FILEBROWSER_SELECT_FORMATS = {
-    'file': ['Image', 'Document', 'Video', 'Audio'],
-    'image': ['Image'],
-    'document': ['Document'],
-    'media': ['Video', 'Audio'],
-}
+
 FILEBROWSER_VERSIONS = {
     'thumbnail': {
         'verbose_name': 'Thumbnail',

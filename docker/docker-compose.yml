@@ -22,8 +22,8 @@ services:
     image: cappa-app
     volumes:
       - ../public:/app/public
-      - shared_files:/app/public/shared_files
-      - sql_files:/app/public/sql_files
+      - shared_files:/app/public/media/filebrowser/files
+      - sql_files:/app/public/media/filebrowser/sql_files
       - ../src:/app/src:ro
       - ../backup:/app/backup
     ports:
