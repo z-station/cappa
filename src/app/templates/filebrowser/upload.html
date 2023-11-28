@@ -123,18 +123,6 @@
                 <h2>{% trans "Help" %}</h2>
                 <div class="form-row">
                     <div>
-                        <label class="required">{% trans "Allowed" %}</label>
-                        <p>
-                        {% for extension in settings_var.EXTENSIONS.items %}
-                            {% ifnotequal extension.0 'Folder' %}
-                                <strong>{% trans extension.0|safe %}</strong> ({{ extension.1|join:", "|safe }})<br />
-                            {% endifnotequal %}
-                        {% endfor %}
-                        </p>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div>
                         <label class="required">{% trans "Max. Filesize" %}</label>
                         <p>{{ settings_var.MAX_UPLOAD_SIZE|filesizeformat }}</p>
                     </div>
