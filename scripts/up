@@ -6,5 +6,5 @@ mkdir -m 775 -p ../backup
 mkdir -m 775 -p ../postgresql-data
 docker network create localhost || true
 docker volume create --name sql_files || true
-docker volume create --name shared_files || true
+docker volume create --name import || true
 docker-compose -f ../docker/docker-compose.yml up --build --force-recreate -d

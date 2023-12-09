@@ -22,7 +22,7 @@ services:
     image: cappa-app
     volumes:
       - ../public:/app/public
-      - shared_files:/app/public/media/filebrowser/files
+      - import:/app/public/media/filebrowser/import
       - sql_files:/app/public/media/filebrowser/sql_files
       - ../src:/app/src:ro
       - ../backup:/app/backup
@@ -63,7 +63,7 @@ networks:
     external: true
 
 volumes:
-  shared_files:
+  import:
     external: true
 
   sql_files:
@@ -71,4 +71,4 @@ volumes:
 
 # монтирование к ФС невозможно т.к. требуется абсолютный путь
 # для получения доступа к файлам использовать путь
-# указанный в Mountpoint команды "docker inspect docker_shared_files"
+# указанный в Mountpoint команды "docker inspect docker_import"
