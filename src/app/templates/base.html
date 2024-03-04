@@ -11,20 +11,19 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style25.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style26.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
     {% endblock %}
 </head>
 <body>
     <div class="wrapper">
-        <div class="header__menu">
-            <nav class="header__menu-nav container">
+        <div class="header__menu top">
+            <div class="header__menu-nav container">
                 <div class="header__menu-col-1">
                     {% if site.logo_title %}<a class="menu__item-home" href="/">{{ site.logo_title }}</a>{% endif %}
-                    {% if site.logo_desc %}<span class="menu__item-desc">{{ site.logo_desc }}</span>{% endif %}
                 </div>
                 <div class="header__menu-col-2">
-                    {% show_menu 'top' %}
+                    {% if site.logo_desc %}<span class="menu__item-desc">{{ site.logo_desc }}</span>{% endif %}
                 </div>
                 <div class="header__menu-col-3">
                     <div class="profile__bar">
@@ -44,6 +43,13 @@
                             <a class="profile__bar-login" href="{% url 'auth:signin' %}">Войти</a>
                         {% endif %}
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="header__menu">
+            <nav class="header__menu-nav container">
+                <div class="header__menu-col-2">
+                    {% show_menu 'top' %}
                 </div>
             </nav>
         </div>

@@ -12,7 +12,7 @@
             <div class="topic__list">
                 {% for topic in object.topics %}
                     <div class="topic__item">
-                        <a class="topic__item-title h3" href="{{ topic.url }}"> {{ topic.title }}</a>
+                        <a class="topic__item-title h3" href="{{ topic.get_absolute_url }}"> {{ topic.title }}</a>
                     </div>
                 {% endfor %}
             </div>
