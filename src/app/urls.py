@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^admin/filebrowser/', include(site.urls)),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
-    url(r'^courses/', include('app.training.urls', namespace='training')),
+    url(r'^pages/', include('app.training.urls', namespace='training')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^auth/', include('app.auth.urls', namespace='auth')),
     url(r'^$', TemplateView.as_view(template_name='frontpage.html'))
