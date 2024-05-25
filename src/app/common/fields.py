@@ -2,6 +2,13 @@ import random
 from unidecode import unidecode
 from django.utils.text import slugify
 from django.db import models
+from django import forms
+from django.db.models.fields import CharField
+from filebrowser.fields import (
+    FileBrowseField,
+    FileBrowseWidget,
+    FileBrowseFormField,
+)
 
 
 class OrderField(models.PositiveIntegerField):
@@ -56,3 +63,30 @@ class TaskItemSlugField(models.SlugField):
                 value += str(random.randint(0, 999))
         setattr(instance, self.attname, value)
         return value
+
+
+class AnyExtFileBrowseFormField(FileBrowseFormField):
+
+    def clean(self, value):
+        value = super(forms.CharField, self).clean(value)
+        return value
+
+
+class AnyExtFileBrowseField(FileBrowseField):
+
+    def formfield(self, **kwargs):
+        widget_class = kwargs.get('widget', FileBrowseWidget)
+        attrs = {}
+        attrs["filebrowser_site"] = self.site
+        attrs["directory"] = self.directory
+        attrs["extensions"] = self.extensions
+        attrs["format"] = self.format
+        defaults = {
+            'form_class': FileBrowseFormField,
+            'widget': widget_class(attrs=attrs),
+            'filebrowser_site': self.site,
+            'directory': self.directory,
+            'extensions': self.extensions,
+            'format': self.format
+        }
+        return super(CharField, self).formfield(**defaults)

@@ -3,7 +3,7 @@ FROM python:3.8.12-buster
 RUN apt-get update && \
     apt-get -y install nano && \
     pip install --upgrade pip && \
-    pip install poetry
+    pip install poetry==1.5.0
 
 # postgresql client for execute psql command
 RUN apt-get -y install lsb-release && \

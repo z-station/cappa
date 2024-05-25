@@ -3,11 +3,16 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.views.static import serve
 from django.contrib import admin
+from filebrowser.sites import site
 
 urlpatterns = [
     url(
         regex=r'^api/',
         view=include('app.api_urls')
+    ),
+    url(
+        regex=r'^admin/filebrowser/',
+        view=include(site.urls)
     ),
     url(
         regex=r'^admin/',

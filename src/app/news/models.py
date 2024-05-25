@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from tinymce.models import HTMLField
 from app.news.entities import CardType
+from app.common.fields import AnyExtFileBrowseField
 
 UserModel = get_user_model()
 
@@ -35,11 +36,13 @@ class News(models.Model):
             'у вертикальной карточки фото находится над текстом'
         )
     )
-    image = models.ImageField(
+    image = AnyExtFileBrowseField(
         verbose_name='изображение',
+        max_length=1000,
         blank=True,
         null=True
     )
 
     def __str__(self):
         return self.title
+

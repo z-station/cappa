@@ -1,12 +1,9 @@
 from __future__ import unicode_literals
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
-
 from django.http import HttpResponseRedirect
-
-from django.utils.html import format_html
-from django.utils.translation import ugettext as _
 from django.contrib import admin
+
 from app.databases.models import Database
 from app.databases.service import DatabaseManagementService
 from app.databases.enums import DatabaseStatus
@@ -28,7 +25,6 @@ class DatabaseAdmin(admin.ModelAdmin):
             return status == DatabaseStatus.ACTIVE
     get_status.boolean = True
     get_status.short_description = 'активная'
-
     raw_id_fields = ('author',)
     readonly_fields = ('get_status',)
     list_display = ('name', 'get_status', 'author')

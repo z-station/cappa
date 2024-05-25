@@ -81,6 +81,7 @@ TEMPLATES = [
 ]
 
 INSTALLED_APPS = [
+    'filebrowser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -144,7 +145,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 # Настройки tinymce
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': 'table, spellchecker, advlink, contextmenu, advimage, advlink, inlinepopups, preview, media',
+    'plugins': 'table, spellchecker, advlink, contextmenu, advimage, inlinepopups, preview, media',
     'theme_advanced_buttons1':
         'spellchecker, undo,redo,|,'
         'bold,italic,underline,strikethrough,|,'
@@ -153,7 +154,8 @@ TINYMCE_DEFAULT_CONFIG = {
         'formatselect,|,'
         'fontsizeselect,|,'
         'forecolor,backcolor,table,|,'
-        'removeformat,|,code',
+        'removeformat,|,code, |,'
+        'link,unlink, image, |,',
     'width': '100%',
     'height': 100,
     'theme_advanced_resizing': 'True',
@@ -183,6 +185,9 @@ ADMIN_REORDER = (
     {
         'app': 'training', 'label': u'Учебные курсы',
         'models': ('training.Course', 'groups.Group')
+    },
+    {
+        'app': 'filebrowser',  'label': u'Менеджер файлов',
     },
     {
         'app': 'taskbook', 'label': u'Задачник',
@@ -247,3 +252,35 @@ SERVICES_HOSTS = {
 ANTIPLAG_HOST = env.get(
     'ANTIPLAG_HOST', 'http://localhost:9020'
 )
+
+# ~========== FILEBROWSER ===========~
+
+FILEBROWSER_DIRECTORY = "filebrowser/"
+
+FILEBROWSER_EXTENSIONS = {
+    'Image': ['.jpg', '.jpeg', '.gif', '.png', '.tif', '.tiff', '.webp'],
+    'Document': ['Any extensions'],
+    'Video': ['.mov', '.mp4', '.mkv'],
+    'Audio': ['.mp3',]
+}
+
+FILEBROWSER_VERSIONS = {
+    'thumbnail': {
+        'verbose_name': 'Thumbnail',
+        'width': 100,
+        'height': 100,
+        'opts': 'crop'
+    },
+}
+
+FILEBROWSER_VERSION_QUALITY = 90
+FILEBROWSER_ADMIN_VERSIONS = ['thumbnail']
+FILEBROWSER_ADMIN_THUMBNAIL = 'thumbnail'
+FILEBROWSER_MAX_UPLOAD_SIZE = 500*1048576   # 500 mb
+FILEBROWSER_NORMALIZE_FILENAME = True
+FILEBROWSER_CONVERT_FILENAME = True
+FILEBROWSER_LIST_PER_PAGE = 20
+FILEBROWSER_DEFAULT_SORTING_BY = "date"
+FILEBROWSER_DEFAULT_SORTING_ORDER = "desc"
+FILEBROWSER_SEARCH_TRAVERSE = True
+FILEBROWSER_OVERWRITE_EXISTING = False
