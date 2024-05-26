@@ -103,3 +103,10 @@ class Task(models.Model):
         if self.difficulty:
             return DifficultyLevel.MAP[self.difficulty]
         return None
+
+    @property
+    def active_tests(self) -> list:
+        if not self.tests:
+            return self.tests
+        else:
+            return [e for e in self.tests if e['show']]

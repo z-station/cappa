@@ -31,7 +31,7 @@
         </div>
 
     {% if not sql_translator %}
-        {% if object.score_method_with_tests and object.task.tests %}
+        {% if object.score_method_with_tests and object.task.active_tests %}
             <div class="white page-content ">
                     <h3>Тесты на решение</h3></br>
 
@@ -46,7 +46,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                                {% for test in object.task.tests %}
+                                {% for test in object.task.active_tests %}
                                 <tr class="js__form__test-{{ forloop.counter0 }}">
                                     <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
                                     <td class="form__test-input"><pre>{{ test.input }}</pre></td>

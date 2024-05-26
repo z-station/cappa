@@ -53,7 +53,7 @@ class BaseTaskItemService:
         code: str
     ) -> Solution:
 
-        if taskitem.task.tests and taskitem.score_method_with_tests():
+        if taskitem.task.active_tests and taskitem.score_method_with_tests():
             testing_result = cls.testing(taskitem=taskitem, code=code)
         else:
             testing_result = None
@@ -76,7 +76,7 @@ class BaseTaskItemService:
 
     @classmethod
     def _get_tests(cls, taskitem: TaskItem) -> List[Test]:
-        task_tests = taskitem.task.tests
+        task_tests = taskitem.task.active_tests
         if not isinstance(task_tests, list) or len(task_tests) == 0:
             raise exceptions.TestsNotFound()
         return [

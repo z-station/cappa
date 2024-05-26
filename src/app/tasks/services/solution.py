@@ -56,7 +56,7 @@ class SolutionService:
             taskitem.score_method in ScoreMethod.TESTS_METHODS
             and testing_result
         ):
-            count_tests = len(taskitem.task.tests)
+            count_tests = len(taskitem.task.active_tests)
             count_passed_tests = 0
             for test in testing_result['tests']:
                 if test['ok']:

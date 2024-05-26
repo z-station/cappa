@@ -8,14 +8,28 @@ var jsonInit = function(){
             schema: {
               "type": "array",
               "format": "table",
-              "title": "Tests",
+              "title": " ",
               "uniqueItems": true,
               "items": {
                 "type": "object",
                 "title": "Test",
                 "properties": {
-                  "input": {"type": "string", "format": "textarea"},
-                  "output": { "type": "string", "format": "textarea"}
+                  "input": {
+                    "type": "string",
+                    "format": "textarea",
+                    "title": "Консольный ввод"
+                  },
+                  "output": {
+                    "type": "string",
+                    "format": "textarea",
+                    "title": "Правильный ответ"
+                  },
+                  "show": {
+                    "type": "boolean",
+                    "format": "checkbox",
+                    "title": "Включить",
+                    "default": true
+                  }
                 }
               }
             }
