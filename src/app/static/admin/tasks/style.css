@@ -1,3 +1,4 @@
+/* json editor */
 .json-editor__editor table {
     width: 100%;
 }
@@ -9,7 +10,9 @@
 .json-editor__content {
     display: none;
 }
+button.json-editor-btn-collapse {
 
+}
 
 /* ace */
 

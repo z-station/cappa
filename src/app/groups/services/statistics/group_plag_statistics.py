@@ -3,8 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from app.groups.services import exceptions
 from app.groups.models import Group
-from app.training.models import CourseUserPlagStatistics
-from app.training.entities import PlagCheckResult
+from app.tasks.models import UserPlagStatistics
+from app.tasks.entities import PlagCheckResult
+from app.tasks.enums import TaskItemType
 
 
 UserModel = get_user_model()
@@ -15,9 +16,7 @@ class GroupPlagStatisticsService:
     @classmethod
     def validate_group_course(cls, group: Group, course_id: int):
         try:
-            group.group_courses.get(
-                course_id=course_id
-            )
+            group.group_courses.get(course_id=course_id)
         except ObjectDoesNotExist:
             raise exceptions.CourseNotFoundException()
         else:
@@ -60,10 +59,12 @@ class GroupPlagStatisticsService:
         cls.validate_group_course(group=group, course_id=course_id)
         result = {}
         user_ids = set(group.learners.only_ids())
-        objs = CourseUserPlagStatistics.objects.filter(
-            course_id=course_id,
+        objs = UserPlagStatistics.objects.filter(
+            type_id=course_id,
+            type=TaskItemType.COURSE,
             user_id__in=user_ids
         )
         for obj in objs:
             result[obj.user_id] = obj.data
         return result
+

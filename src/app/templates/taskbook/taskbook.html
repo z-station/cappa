@@ -1,0 +1,144 @@
+{% extends 'taskbook/base.html' %}
+{% load static base_tags %}
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static '/css/ion.rangeSlider.min.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12 col-lg-3">
+        <div class="white">
+            <h3 class="text-center mb-4">Фильтр</h3>
+
+            <form method="get" class="taskbook__filter-form">
+                    <div class="taskbook__filter">
+                        {{ form.search }}
+                    </div>
+                    <div class="taskbook__filter">
+                        <button
+                            id="js__lang_btn"
+                            class="btn taskbook__filter-title js__taskbook__filter-title collapsed"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#js__lang_choices"
+                            aria-expanded="false"
+                        >{{ form.lang.label }}</button>
+                        <div
+                            class="collapse ml-2 js__choices taskbook__filter-body"
+                            data-name="lang"
+                            id="js__lang_choices"
+                        >
+                            {{ form.lang }}
+                        </div>
+                    </div>
+                    <div class="taskbook__filter">
+                        <button
+                            id="js__difficulty_btn"
+                            class="btn taskbook__filter-title js__taskbook__filter-title collapsed"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#js__difficulty_choices"
+                            aria-expanded="false"
+                        >{{ form.difficulty.label }}</button>
+                        <div
+                            class="collapse js__choices taskbook__filter-body"
+                            data-name="difficulty"
+                            id="js__difficulty_choices"
+                        >
+                            {{ form.difficulty }}
+                        </div>
+                    </div>
+                    <div class="taskbook__filter">
+                        <button
+                            id="js__tags_btn"
+                            class="btn taskbook__filter-title js__taskbook__filter-title collapsed"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#js__tags_choices"
+                            aria-expanded="false"
+                        >{{ form.tags.label }}</button>
+                        <div
+                            class="collapse ml-2 js__choices taskbook__filter-body"
+                            data-name="tags"
+                            id="js__tags_choices"
+                        >
+                            {{ form.tags }}
+                        </div>
+                    </div>
+                    <div class="taskbook__filter">
+                        <label class="taskbook__filter-simple-title">{{ form.rating.label }}</label>
+                        <span style="display: none">{{ form.rating }}</span>
+                        <input type="text" class="js-range-slider" name="my_range" value=""
+                            data-type="double"
+                            data-min="0"
+                            data-max="100"
+                            data-from="{{ form.rating.value.0|default:0 }}"
+                            data-to="{{ form.rating.value.1|default:100 }}"
+                            data-grid="true"
+                            data-skin="round"
+                        />
+                    </div>
+
+                    <div class="taskbook__filter">
+                        <input type="submit"
+                           class="btn btn-primary taskbook__filter-submit"
+                           value="Применить"
+                        >
+                        <button name="clear" class="btn btn btn-light taskbook__filter-clear">Очистить</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-9">
+        <div class="white taskbook-content">
+            <h1 class="text-center">Задачник</h1>
+            {% if taskitems %}
+                <div class="taskbook__table-container">
+                    <table class="table js__tablesorter">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Сложность</th>
+                                <th>Рейтинг</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for taskitem in taskitems %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'taskbook:taskitem' taskitem.slug %}" target="_blank">{{ taskitem.title }}</a>
+                                </td>
+                                <td>
+                                    {{ taskitem.task.difficulty_name|default:'Сложность не указана' }}
+                                </td>
+                                <td>
+                                    {{ taskitem.task.rating }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% show_pagination page=taskitems %}
+                </div>
+
+            {% else %}
+                <div class="taskbook-content__no_results">
+                    <img src="{% static 'img/no-results.png' %}" alt="=(">
+                    <span class="no_results-title">Ничего не найдено.</span>
+                    <span class="no_results-desc">Попробуйте изменить условия фильтрации</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script src="{% static 'js/ion.rangeSlider.min.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/taskbook.js' %}"></script>
+    <script>window.dispatchEvent(new Event('taskBookPageLoaded'))</script>
+{% endblock %}

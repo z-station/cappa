@@ -102,7 +102,8 @@ INSTALLED_APPS = [
     'app.databases',
     'app.training',
     'app.groups',
-    'app.service'
+    'app.service',
+    'app.taskbook',
 ]
 
 MIDDLEWARE = [
@@ -187,6 +188,10 @@ ADMIN_REORDER = (
     },
     {
         'app': 'filebrowser',  'label': u'Менеджер файлов',
+    },
+    {
+        'app': 'taskbook', 'label': u'Задачник',
+        'models': ('taskbook.TaskBookItem',)
     },
     {
         'app': 'tasks', 'label': u'Архив задач',

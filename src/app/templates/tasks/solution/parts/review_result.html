@@ -9,12 +9,18 @@
         <td>Статус проверки:</td>
         <td> {{ object.review_status_name }}</td>
     </tr>
-    {% if not object.hide_review_score %}
     <tr>
         <td>Оценка:</td>
-        <td>{{ object.review_score|cut_zero }}</td>
+        <td>
+        {% if object.review_score == None %}
+            -
+        {% elif object.hide_review_score and not request.user.is_teacher %}
+            выставлена
+        {% else %}
+            {{ object.review_score|cut_zero }}
+        {% endif %}
+        </td>
     </tr>
-    {% endif %}
 </table>
 {% if object.reviewer_comment and not object.hide_reviewer_comment %}
     <div class="pt-1" ><strong>Комментарий преподавателя:</strong></div>

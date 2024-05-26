@@ -1,0 +1,78 @@
+{% extends 'tasks/base.html' %}
+
+{% load static tasks_tags %}
+
+
+{% block content %}
+    <div class="one-col">
+        <div class="white page-content ">
+            <h1 class="text-center">
+                <span>{{ object.numbered_title }}</span>
+            </h1>
+            <h3>Условие</h3>
+            {{ object.task.content|safe }}
+
+            <p>
+            {% if object.score_method_is_review or object.score_method_is_tests_and_review %}
+                <div class="text-small">Оценку выставляет преподаватель (по шкале от 0 до {{ object.max_score }} баллов)</div>
+            {% elif object.score_method_is_tests %}
+                <div class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
+            {% endif %}
+            {% block due_date %}{% endblock %}
+            </p>
+        </div>
+        <div class="white page-content  js__solutions-link {% if not solutions_exists %}hidden{% endif %}">
+            <a target="_blank" href="{% url 'solutions:solutions' %}?task_id={{ object.task_id }}">Мои решения</a>
+        </div>
+
+        <div class="white page-content ">
+            <h3>Редактор решения</h3>
+            {% show_editor object %}
+        </div>
+
+    {% if not sql_translator %}
+        {% if object.score_method_with_tests and object.task.active_tests %}
+            <div class="white page-content ">
+                    <h3>Тесты на решение</h3></br>
+
+                    <div class="form__tests-container">
+                        <table class="js__form__tests-table" id="form__tests-table">
+                            <thead>
+                            <tr>
+                                <th class="form__test-counter">№</th>
+                                <th class="form__test-input">Консольный ввод</th>
+                                <th class="form__test-output">Правильный ответ</th>
+                                <th class="js__form__test-result hidden">Вывод программы</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for test in object.task.active_tests %}
+                                <tr class="js__form__test-{{ forloop.counter0 }}">
+                                    <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
+                                    <td class="form__test-input"><pre>{{ test.input }}</pre></td>
+                                    <td class="form__test-output"><pre>{{ test.output }}</pre></td>
+                                    <td class="js__form__test-result hidden"><pre></pre></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        {% endif %}
+    {% endif %}
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/main22.js' %}"></script>
+    <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
+    <script src="{% static 'js/editor2.js' %}"></script>
+    <script>
+        window.authToken = '{{ request.user.auth_token }}'
+        new Editor(document.querySelector('.js__editor-form'))
+    </script>
+{% endblock %}

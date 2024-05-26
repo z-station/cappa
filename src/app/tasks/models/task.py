@@ -1,13 +1,13 @@
+from typing import Optional
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from app.translators.enums import CheckerType
 from app.tasks.enums import DifficultyLevel
-from app.tasks.models import (
-    Tag,
-    Source
-)
+from app.tasks.models.tag import Tag
+from app.tasks.models.source import Source
 
 
 UserModel = get_user_model()
@@ -62,6 +62,19 @@ class Task(models.Model):
         blank=True,
         null=True
     )
+    rating = models.PositiveIntegerField(
+        default=0,
+        verbose_name='рейтинг',
+        help_text='рассчитывается автоматически'
+    )
+    rating_total = models.PositiveIntegerField(
+        verbose_name='количество решений',
+        default=0
+    )
+    rating_success = models.PositiveIntegerField(
+        verbose_name='количество успешных решений',
+        default=0
+    )
     source = models.ForeignKey(
         Source,
         verbose_name='источник',
@@ -84,3 +97,16 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def difficulty_name(self) -> Optional[str]:
+        if self.difficulty:
+            return DifficultyLevel.MAP[self.difficulty]
+        return None
+
+    @property
+    def active_tests(self) -> list:
+        if not self.tests:
+            return self.tests
+        else:
+            return [e for e in self.tests if e['show']]

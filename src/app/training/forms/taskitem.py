@@ -1,39 +1,19 @@
 from django import forms
+from app.tasks.models.taskitem import TaskItem
+from app.tasks.enums import TaskItemType
+from app.translators.enums import TranslatorType
 
 
-class EditorForm(forms.Form):
+class TaskItemAdminForm(forms.ModelForm):
 
-    input = forms.CharField(
-        label="Консольный ввод",
-        required=False
+    class Meta:
+        model = TaskItem
+        fields = '__all__'
+
+    type = forms.CharField(
+        initial=TaskItemType.COURSE,
+        widget=forms.HiddenInput()
     )
-    content = forms.CharField(label='Код программы')
-    output = forms.CharField(
-        label="Консольный вывод",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
+    translator = forms.TypedMultipleChoiceField(
+        choices=TranslatorType.CHOICES
     )
-    error = forms.CharField(
-        label="Ошибка отладки",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
-    )
-    translator = forms.CharField(widget=forms.HiddenInput)
-    db_name = forms.CharField(widget=forms.HiddenInput)
-
-
-class SqlEditorForm(forms.Form):
-
-    content = forms.CharField(label='Код запроса')
-    output = forms.CharField(
-        label="Результат запроса",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
-    )
-    error = forms.CharField(
-        label="Ошибка",
-        required=False,
-        widget=forms.Textarea(attrs={'readonly': True})
-    )
-    translator = forms.CharField(widget=forms.HiddenInput)
-    db_name = forms.CharField(widget=forms.HiddenInput)

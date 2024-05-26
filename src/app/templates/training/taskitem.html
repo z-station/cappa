@@ -1,0 +1,40 @@
+{% extends 'tasks/taskitem/template.html' %}
+
+{% load static training_tags %}
+
+{% block sidebar_title %}{{ course.title }}{% endblock %}
+
+{% block sidebar_control %}
+    <div class="sidebar__control-btn sidebar__control-btn-menu js__sidebar-btn"></div>
+    {{ block.super }}
+{% endblock %}
+
+{% block sidebar_body %}
+    {% if course %}
+        {% show_sidebar course %}
+    {% endif %}
+{% endblock %}
+
+{% block due_date %}
+    {% if object.topic.due_date %}
+        <div class="text-small">
+            <span>Срок сдачи решения:</span>
+            <span class="js__utc-time" data-utc-time="{{ object.topic.due_date|date:'Y-m-d H:i:s.u'}}"></span>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static 'js/training/main21.js' %}"></script>
+    <script>
+        window.dispatchEvent(new Event('initSidebar'))
+        window.dispatchEvent(new Event('toggleSidebar'))
+        {% if request.user.is_active and course %}
+            window.authToken = '{{ request.user.auth_token }}'
+            window.courseStatisticsUrl = '/api/training/courses/{{ course.id }}/statistics/'
+            window.dispatchEvent(new Event('getUserSolutions'))
+        {% endif %}
+    </script>
+{% endblock %}

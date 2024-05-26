@@ -59,7 +59,7 @@ class TopicAdmin(admin.ModelAdmin):
         'author',
         'due_date',
         'course',
-        'database'
+        'database',
     )
     prepopulated_fields = {'slug': ['title']}
     inlines = (ContentInline, TaskItemInline)

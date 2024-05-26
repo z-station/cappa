@@ -4,8 +4,8 @@ from django.shortcuts import render, Http404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
-from app.training.models import TaskItem
-from app.tasks.models import Solution
+from app.tasks.models import Solution, TaskItem
+from app.tasks.enums import TaskItemType
 from app.translators.enums import TranslatorType
 
 
@@ -22,7 +22,9 @@ class TaskItemView(View):
                 'topic__course'
             ).get(
                 show=True,
+                type=TaskItemType.COURSE,
                 slug=kwargs['taskitem'],
+                topic__show=True,
                 topic__slug=kwargs['topic'],
                 topic__course__slug=kwargs['course']
             )
@@ -36,16 +38,16 @@ class TaskItemView(View):
         ).by_task(
             taskitem.task_id
         ).exists()
-        if taskitem.translator == TranslatorType.POSTGRESQL:
-            template = 'training/taskitem/sql_template.html'
-        else:
-            template = 'training/taskitem/template.html'
         return render(
             request=request,
-            template_name=template,
+            template_name='training/taskitem.html',
             context={
                 'course': taskitem.topic.course,
                 'object': taskitem,
-                'solutions_exists': solutions_exists
+                'solutions_exists': solutions_exists,
+                'translator': taskitem.translator[0],
+                'sql_translator': (
+                    taskitem.translator[0] == TranslatorType.POSTGRESQL
+                )
             }
         )

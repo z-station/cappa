@@ -14,7 +14,7 @@ from app.tasks.models import (
     ExternalSolution
 )
 from app.tasks.enums import (
-    SolutionType,
+    TaskItemType,
     ScoreMethod
 )
 from app.tasks.forms import (
@@ -24,7 +24,7 @@ from app.tasks.forms import (
     ExternalSolutionAdminForm,
 )
 from app.translators.enums import TranslatorType
-from app.training.services.statistics import UserStatisticsService
+from app.tasks.services.statistics import UserStatisticsService
 from app.common.admin.mixins import DeleteSelectedMixin
 
 
@@ -50,6 +50,11 @@ class TaskAdmin(admin.ModelAdmin):
 
     model = Task
     form = TaskAdminForm
+    readonly_fields = (
+        'rating',
+        'rating_total',
+        'rating_success',
+    )
     exclude = ('order_key',)
     raw_id_fields = ("author",)
     search_fields = ('title',)
@@ -132,12 +137,11 @@ class SolutionAdmin(
         return TranslatorType.MAP.get(obj.translator, '-')
     translator_name.short_description = 'язык'
 
-    def score(self, obj: Solution) -> int:
-        return obj.review_score or obj.testing_score
-    score.short_description = 'оценка'
-
     def get_type_name(self, obj: Solution) -> str:
-        return f'{obj.type_name_value}: {obj.type_name}'
+        if obj.type_course:
+            return f'{obj.type_name_value}: {obj.type_name}'
+        else:
+            return obj.type_name_value
     get_type_name.short_description = 'Источник решения'
 
     def changeform_view(
@@ -215,7 +219,8 @@ class SolutionAdmin(
                     'created',
                     'max_score',
                     'get_type_name',
-                    'score_method'
+                    'score_method',
+                    'score'
                 )
             }
         ),
@@ -252,6 +257,7 @@ class SolutionAdmin(
         'hide_review_score',
         'hide_reviewer_comment',
         'score_method',
+        'score'
     )
     list_display = (
         'task_name',
@@ -284,7 +290,7 @@ class SolutionAdmin(
         for obj in queryset:
             obj_display = force_text(obj)
             modeladmin.log_deletion(request, obj, obj_display)
-            if obj.type == SolutionType.COURSE:
+            if obj.type == TaskItemType.COURSE:
                 pairs.add((obj.type_id, obj.user_id))
 
         with transaction.atomic():
@@ -300,7 +306,7 @@ class SolutionAdmin(
         """ When delete solution - delete course statistics """
 
         with transaction.atomic():
-            if obj.type == SolutionType.COURSE and obj.user:
+            if obj.type == TaskItemType.COURSE and obj.user:
                 UserStatisticsService.delete_course_statistics(
                     course_id=obj.type_id,
                     user_id=obj.user.id
@@ -342,7 +348,7 @@ class ExternalSolutionAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.external_source_name = obj.external_source.name
         obj.task_name = obj.task.title
-        obj.type = SolutionType.EXTERNAL
+        obj.type = TaskItemType.EXTERNAL
         obj.save()
 
     fieldsets = (

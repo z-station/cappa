@@ -13,7 +13,7 @@ from django.db.models import (
 from django.contrib.auth import get_user_model
 from tinymce.models import HTMLField
 from app.tasks.enums import (
-    SolutionType,
+    TaskItemType,
     ReviewStatus,
     ScoreMethod,
 )
@@ -34,7 +34,7 @@ class Solution(Model):
 
     type = CharField(
         verbose_name='источник решения',
-        choices=SolutionType.CHOICES,
+        choices=TaskItemType.CHOICES,
         max_length=100
     )
     type_id = PositiveIntegerField(
@@ -196,7 +196,15 @@ class Solution(Model):
         max_length=100,
         null=True
     )
-
+    rating_is_calculated = BooleanField(
+        verbose_name='решение учтено в рейтинге',
+        default=False
+    )
+    score = FloatField(
+        verbose_name='итоговая оценка',
+        null=True,
+        help_text='рассчитывается автоматически'
+    )
     objects = SolutionQueryset.as_manager()
 
     @property
@@ -216,11 +224,13 @@ class Solution(Model):
 
     @property
     def type_name_value(self):
-        return SolutionType.MAP[self.type]
+        return TaskItemType.MAP[self.type]
 
     @property
     def score_method_name(self):
         return ScoreMethod.MAP[self.score_method]
+
+    # TODO в зависимости от типа проверки использовать для рейтинга разные значения
 
     def score_method_is_tests(self):
         return self.score_method == ScoreMethod.TESTS
@@ -233,11 +243,15 @@ class Solution(Model):
 
     @property
     def is_internal(self):
-        return self.type != SolutionType.EXTERNAL
+        return self.type != TaskItemType.EXTERNAL
 
     @property
     def is_external(self):
-        return self.type == SolutionType.EXTERNAL
+        return self.type == TaskItemType.EXTERNAL
+
+    @property
+    def type_course(self):
+        return self.type == TaskItemType.COURSE
 
     @property
     def reviewer_full_name(self):
