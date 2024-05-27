@@ -42,10 +42,10 @@ class TaskAdmin(admin.ModelAdmin):
         css = {'all': ('admin/tasks/style.css',)}
         js = (
             'django_tinymce/jquery-1.9.1.min.js',
-            'admin/tasks/jsoneditor.min.js',
+            'admin/tasks/jsoneditor1.min.js',
             'js/ace-1.4.7/ace.js',
             'admin/ace_init.js',
-            'admin/tasks/task.js'
+            'admin/tasks/task1.js'
         )
 
     model = Task

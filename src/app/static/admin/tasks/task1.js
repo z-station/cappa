@@ -24,10 +24,16 @@ var jsonInit = function(){
                     "format": "textarea",
                     "title": "Правильный ответ"
                   },
-                  "show": {
+                  "visible": {
                     "type": "boolean",
                     "format": "checkbox",
-                    "title": "Включить",
+                    "title": "Показывать",
+                    "default": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "format": "checkbox",
+                    "title": "Проверять",
                     "default": true
                   }
                 }

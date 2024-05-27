@@ -1313,6 +1313,9 @@ li.error {
 .js__form__tests-table tbody tr.unluck {
     background-color: #ffae95;
 }
+.js__form__tests-table tr.disabled {
+    background-color: #edeff0;
+}
 
 .form__test-counter {
     text-align: center;

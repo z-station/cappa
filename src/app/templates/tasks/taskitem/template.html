@@ -15,7 +15,7 @@
             <p>
             {% if object.score_method_is_review or object.score_method_is_tests_and_review %}
                 <div class="text-small">Оценку выставляет преподаватель (по шкале от 0 до {{ object.max_score }} баллов)</div>
-            {% elif object.score_method_is_tests %}
+            {% elif object.score_method_is_tests and object.task.enabled_tests %}
                 <div class="text-small">Оценка выставляется на основании пройденных тестов (по шкале от 0 до {{ object.max_score }})</div>
             {% endif %}
             {% block due_date %}{% endblock %}
@@ -31,7 +31,7 @@
         </div>
 
     {% if not sql_translator %}
-        {% if object.score_method_with_tests and object.task.active_tests %}
+        {% if object.score_method_with_tests and object.task.visible_tests %}
             <div class="white page-content ">
                     <h3>Тесты на решение</h3></br>
 
@@ -46,12 +46,12 @@
                             </tr>
                             </thead>
                             <tbody>
-                                {% for test in object.task.active_tests %}
-                                <tr class="js__form__test-{{ forloop.counter0 }}">
+                                {% for test in object.task.visible_tests %}
+                                <tr class="js__form__test-{{ forloop.counter0 }} {% if not test.enabled %}disabled{% endif %}">
                                     <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
                                     <td class="form__test-input"><pre>{{ test.input }}</pre></td>
                                     <td class="form__test-output"><pre>{{ test.output }}</pre></td>
-                                    <td class="js__form__test-result hidden"><pre></pre></td>
+                                    <td class="js__form__test-result hidden"><pre>{% if not test.enabled %}Не участвует в проверке решения{% endif %}</pre></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
