@@ -105,8 +105,15 @@ class Task(models.Model):
         return None
 
     @property
-    def active_tests(self) -> list:
+    def visible_tests(self) -> list:
         if not self.tests:
             return self.tests
         else:
-            return [e for e in self.tests if e['show']]
+            return [e for e in self.tests if e['visible']]
+
+    @property
+    def enabled_tests(self) -> list:
+        if not self.tests:
+            return self.tests
+        else:
+            return [e for e in self.tests if e['enabled']]

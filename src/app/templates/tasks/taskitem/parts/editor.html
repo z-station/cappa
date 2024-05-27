@@ -18,12 +18,10 @@
         </div>
         {% if show_testing_actions %}
         <div class="control__bar-col col__2">
-            {% if object.task.tests %}
+            {% if object.task.enabled_tests %}
                 <div class="js__editor-btn js__editor-btn-tests" title="Протестировать решение"></div>
-                <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
-            {% else %}
-                <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
             {% endif %}
+            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
         </div>
         {% endif %}
 
