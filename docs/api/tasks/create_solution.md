@@ -6,7 +6,7 @@
 
 ### Формат запроса:  
 **HTTP-метод:** POST  
-**URL:** ```/api/training/taskitem/<translator_code:str>/<taskitem_id:int>/create-solution/```   
+**URL:** ```/api/tasks/taskitem/<translator_code:str>/<taskitem_id:int>/create-solution/```   
 **Тело запроса:**  
 ```
 {

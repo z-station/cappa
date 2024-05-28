@@ -9,12 +9,16 @@ class DebugResult(TypedDict):
 
 class Test(TypedDict):
 
+    id: int
     data_in: str
     data_out: str
+    enabled: bool
+    visible: bool
 
 
 class TestResult(TypedDict):
 
+    id: int
     ok: bool
     result: Optional[str]
     error: Optional[str]

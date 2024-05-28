@@ -277,8 +277,8 @@ class Editor {
                         }
                         var table = document.querySelector('.js__form__tests-table')
                         if (that.translator != 'PostgreSQL'){
-                            response.tests.forEach(function(test, index){
-                                var tr = table.querySelector('.js__form__test-'+ index)
+                            response.tests.forEach(function(test){
+                                var tr = table.querySelector('.js__form__test-'+ test.id)
                                 tr.classList.remove('success', 'unluck')
                                 if(test.ok){
                                     tr.classList.add('success')

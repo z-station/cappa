@@ -109,7 +109,12 @@ class Task(models.Model):
         if not self.tests:
             return self.tests
         else:
-            return [e for e in self.tests if e['visible']]
+            result = []
+            for number, test in enumerate(self.tests):
+                if test['visible']:
+                    test['id'] = number
+                    result.append(test)
+            return result
 
     @property
     def enabled_tests(self) -> list:
