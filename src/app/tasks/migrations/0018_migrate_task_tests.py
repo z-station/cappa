@@ -8,12 +8,20 @@ from django.db import migrations
 def update_tests(apps, schema_editor):
     Task = apps.get_model("tasks", "Task")
     db_alias = schema_editor.connection.alias
-    for task in Task.objects.using(db_alias).only('tests').all():
-        for test in task.tests:
+    for task in Task.objects.using(db_alias).all():
+        tests = task.tests
+        for test in tests:
+            test['data_in'] = test['input']
+            test['data_out'] = test['output']
             test['visible'] = True
             test['enabled'] = True
-            if test.get('show'):
+            if test.get('show') is not None:
                 del test['show']
+            if test.get('input') is not None:
+                del test['input']
+            if test.get('output') is not None:
+                del test['output']
+        task.tests = tests
         task.save(update_fields=['tests'])
 
 class Migration(migrations.Migration):

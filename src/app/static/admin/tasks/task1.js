@@ -14,12 +14,12 @@ var jsonInit = function(){
                 "type": "object",
                 "title": "Test",
                 "properties": {
-                  "input": {
+                  "data_in": {
                     "type": "string",
                     "format": "textarea",
                     "title": "Консольный ввод"
                   },
-                  "output": {
+                  "data_out": {
                     "type": "string",
                     "format": "textarea",
                     "title": "Правильный ответ"

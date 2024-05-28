@@ -1,13 +1,15 @@
 from rest_framework.serializers import (
     Serializer,
     CharField,
-    BooleanField
+    BooleanField,
+    IntegerField,
 )
 
 
 class TestSerializer(Serializer):
 
     ok = BooleanField(read_only=True)
+    id = IntegerField(read_only=True)
     result = CharField(read_only=True)
     error = CharField(read_only=True)
 

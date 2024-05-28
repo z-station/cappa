@@ -54,7 +54,11 @@ class BaseTaskItemService:
     ) -> Solution:
 
         if taskitem.task.enabled_tests and taskitem.score_method_with_tests():
-            testing_result = cls.testing(taskitem=taskitem, code=code)
+            testing_result = cls.testing(
+                taskitem=taskitem,
+                code=code,
+                only_visible=False
+            )
         else:
             testing_result = None
         solution = SolutionService.create_internal(
@@ -76,29 +80,51 @@ class BaseTaskItemService:
 
     @classmethod
     def _get_tests(cls, taskitem: TaskItem) -> List[Test]:
-        task_tests = taskitem.task.enabled_tests
+        task_tests = taskitem.task.tests
         if not isinstance(task_tests, list) or len(task_tests) == 0:
             raise exceptions.TestsNotFound()
-        return [
-            Test(
-                data_in=task_test['input'],
-                data_out=task_test['output']
-            ) for task_test in task_tests
-        ]
+        for number, test in enumerate(task_tests):
+            task_tests[number]['id'] = number
+        return task_tests
 
     @classmethod
     def testing(
         cls,
         taskitem: TaskItem,
         code: str,
+        only_visible: bool = True
     ) -> TestingResult:
+
+        """ Testing only enabled task tests,
+            return only enabled and visible tests """
 
         if taskitem.score_method not in ScoreMethod.TESTS_METHODS:
             raise exceptions.OperationNotAllowed()
         checker_code = CheckerType.MAP[taskitem.task.output_type]
         service_cls = cls._get_service_cls()
-        return service_cls.testing(
+        all_tests = cls._get_tests(taskitem)
+        enabled_tests = [el for el in all_tests if el['enabled']]
+
+        # Run enabled tests only
+        request_tests = [
+            {'data_in': el['data_in'], 'data_out': el['data_out']}
+            for el in enabled_tests
+        ]
+        testing_result = service_cls.testing(
             code=code,
             checker_code=checker_code,
-            tests=cls._get_tests(taskitem)
+            tests=request_tests
         )
+        # Remove hidden tests from result
+        result = []
+        for test, test_result in zip(enabled_tests, testing_result['tests']):
+            test_result['id'] = test['id']
+            if only_visible:
+                if test['visible']:
+                    result.append(test_result)
+            else:
+                result.append(test_result)
+        return {
+            'ok': testing_result['ok'],
+            'tests': result
+        }
