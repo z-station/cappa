@@ -109,6 +109,7 @@ class Content(models.Model):
         (TEXT, 'текст'),
     )
 
+    show = models.BooleanField(verbose_name='Отображать', default=True)
     input = models.TextField(verbose_name='Консольный ввод', blank=True, null=True)
     content = models.TextField(verbose_name='Редактор', blank=True, null=True)
     show_input = models.BooleanField(verbose_name='Отображать консольный ввод', default=False)

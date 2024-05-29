@@ -16,8 +16,14 @@
     display: none;
 }
 #_content-group .field-text,
-#_content-group .field-show_input,
+#_content-group .field-box.field-show_input,
+#_content-group .field-box.field-show_debug,
+#_content-group .field-box.field-readonly,
 #_content-group .field-input,
 #_content-group .field-content {
     display: none;
+}
+
+.inline-related.dynamic-_content {
+    margin-bottom: 50px;
 }

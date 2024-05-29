@@ -15,21 +15,21 @@ var toggleWidgetAceInput = function(e){
 var toggleWidget = function(e){
     var fieldset = $(this).parents('fieldset')
     if($(this).val() == 'text'){
-        fieldset.find('.field-show_input').hide()
-        fieldset.find('.field-show_debug').hide()
-        fieldset.find('.field-readonly').hide()
+        fieldset.find('.field-box.field-show_input').hide()
+        fieldset.find('.field-box.field-show_debug').hide()
+        fieldset.find('.field-box.field-readonly').hide()
         fieldset.find('.field-input').hide()
         fieldset.find('.field-content').hide()
         fieldset.find('.field-text').show()
     } else if($(this).val() == 'ace'){
-        if(fieldset.find('.field-show_input input[type=checkbox]').prop('checked')){
+        if(fieldset.find('.field-box.field-show_input input[type=checkbox]').prop('checked')){
             fieldset.find('.field-input').show()
         } else {
             fieldset.find('.field-input').hide()
         }
-        fieldset.find('.field-show_debug').show()
-        fieldset.find('.field-readonly').show()
-        fieldset.find('.field-show_input').show()
+        fieldset.find('.field-box.field-show_debug').show()
+        fieldset.find('.field-box.field-readonly').show()
+        fieldset.find('.field-box.field-show_input').show()
         fieldset.find('.field-content').show()
         fieldset.find('.field-text').hide()
     }

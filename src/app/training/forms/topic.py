@@ -38,11 +38,11 @@ class ContentAdminForm(forms.ModelForm):
             'js/ace-1.4.7/ace.js',
             'admin/ace_init.js',
             'admin/tinymce_init.js',
-            'admin/training/topic.js'
+            'admin/training/topic1.js'
         ]
         css = {
             'all': [
-                'admin/training/topic.css',
+                'admin/training/topic1.css',
                 'admin/ace.css'
             ]
         }

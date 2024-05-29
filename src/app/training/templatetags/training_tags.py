@@ -25,7 +25,7 @@ def show_ace_field(field):
 @register.simple_tag(takes_context=True)
 def show_content(context, topic: Topic):
     raw_html = ''
-    for obj in topic._content.all():
+    for obj in topic._content.filter(show=True):
         extra_context = {'obj': obj}
         if obj.type == Content.ACE:
             extra_context['form'] = ContentForm(
