@@ -18,15 +18,37 @@ class PostgresqlService(BaseTaskItemService):
         cls,
         taskitem: TaskItem,
         code: str,
+        only_visible: bool = True
     ) -> TestingResult:
 
         if taskitem.score_method not in ScoreMethod.TESTS_METHODS:
             raise exceptions.OperationNotAllowed()
         request_type = CheckerType.MAP[taskitem.task.output_type]
         service_cls = cls._get_service_cls()
-        return service_cls.testing(
+        all_tests = cls._get_tests(taskitem)
+        enabled_tests = [el for el in all_tests if el['enabled']]
+
+        # Run enabled tests only
+        request_tests = [
+            {'data_in': el['data_in'], 'data_out': el['data_out']}
+            for el in enabled_tests
+        ]
+        testing_result = service_cls.testing(
             code=code,
             name=taskitem.get_db_name(),
             request_type=request_type,
-            tests=cls._get_tests(taskitem)
+            tests=request_tests
         )
+        # Remove hidden tests from result
+        result = []
+        for test, test_result in zip(enabled_tests, testing_result['tests']):
+            test_result['id'] = test['id']
+            if only_visible:
+                if test['visible']:
+                    result.append(test_result)
+            else:
+                result.append(test_result)
+        return {
+            'ok': testing_result['ok'],
+            'tests': result
+        }
