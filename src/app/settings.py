@@ -177,7 +177,7 @@ AUTHENTICATION_BACKENDS = ['app.auth.backends.CustomModelBackend']
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5Mb
 
-SENTRY_DSN="https://e9d8b1a9fac3d5d68c5d08a98614893d@o4506846799724544.ingest.us.sentry.io/4507309358055424"
+SENTRY_DSN = os.getenv('SENTRY_DSN', 'cappa')
 
 # ~========== ADMIN REORDER ===========~
 INSTALLED_APPS += ['admin_reorder']
