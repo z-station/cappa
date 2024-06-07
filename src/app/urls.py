@@ -41,10 +41,6 @@ urlpatterns = [
         view=include('app.groups.urls', namespace='groups')
     ),
     url(
-        regex=r'^taskbook/',
-        view=include('app.taskbook.urls', namespace='taskbook')
-    ),
-    url(
         regex=r'^tinymce/',
         view=include('tinymce.urls')
     ),
