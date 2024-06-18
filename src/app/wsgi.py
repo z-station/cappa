@@ -11,13 +11,13 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from app.settings import SENTRY_DSN
 
 # Инициализация Sentry SDK
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    traces_sample_rate=1.0,
-    #profiles_sample_rate=1.0,
-    integrations=[DjangoIntegration()],
-)
-
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=1.0,
+        #profiles_sample_rate=1.0,
+        integrations=[DjangoIntegration()],
+    )
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
