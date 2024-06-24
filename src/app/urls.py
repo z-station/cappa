@@ -5,7 +5,13 @@ from django.views.static import serve
 from django.contrib import admin
 from filebrowser.sites import site
 
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+
 urlpatterns = [
+    url(r'^sentry-debug/', trigger_error),
     url(
         regex=r'^api/',
         view=include('app.api_urls')
