@@ -102,8 +102,7 @@ INSTALLED_APPS = [
     'app.databases',
     'app.training',
     'app.groups',
-    'app.service',
-    'app.taskbook',
+    'app.service'
 ]
 
 MIDDLEWARE = [
@@ -188,10 +187,6 @@ ADMIN_REORDER = (
     },
     {
         'app': 'filebrowser',  'label': u'Менеджер файлов',
-    },
-    {
-        'app': 'taskbook', 'label': u'Задачник',
-        'models': ('taskbook.TaskBookItem',)
     },
     {
         'app': 'tasks', 'label': u'Архив задач',
@@ -284,3 +279,6 @@ FILEBROWSER_DEFAULT_SORTING_BY = "date"
 FILEBROWSER_DEFAULT_SORTING_ORDER = "desc"
 FILEBROWSER_SEARCH_TRAVERSE = True
 FILEBROWSER_OVERWRITE_EXISTING = False
+
+# ~========== FILEBROWSER ===========~
+SENTRY_DSN = env.get('SENTRY_DSN')
