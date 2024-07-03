@@ -196,7 +196,12 @@ ADMIN_REORDER = (
             'tasks.Solution',
             'tasks.ExternalSolution',
             'tasks.Source',
+            'tasks.Checker',
         )
+    },
+    {
+        'app': 'taskbook', 'label': u'Задачник',
+        'models': ('taskbook.TaskBookItem',)
     },
     {
         'app': 'databases', 'label': u'Пользовательские базы данных',

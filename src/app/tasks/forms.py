@@ -4,6 +4,7 @@ from app.tasks.models import (
     Solution,
     SolutionExample,
     ExternalSolution,
+    Checker,
 )
 from app.tasks.enums import ReviewStatus
 from django.contrib.postgres.forms import JSONField
@@ -49,6 +50,17 @@ class SolutionExampleAdminForm(forms.ModelForm):
         model = SolutionExample
         fields = '__all__'
         widgets = {'content': AceWidget}
+
+
+class CheckerAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Checker
+        fields = '__all__'
+        widgets = {
+            'content': AceWidget,
+        }
+
 
 
 class ReviewSolutionForm(forms.ModelForm):

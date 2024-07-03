@@ -11,7 +11,8 @@ from app.tasks.models import (
     SolutionExample,
     Source,
     Solution,
-    ExternalSolution
+    ExternalSolution,
+    Checker,
 )
 from app.tasks.enums import (
     TaskItemType,
@@ -22,6 +23,7 @@ from app.tasks.forms import (
     SolutionAdminForm,
     SolutionExampleAdminForm,
     ExternalSolutionAdminForm,
+    CheckerAdminForm,
 )
 from app.translators.enums import TranslatorType
 from app.tasks.services.statistics import UserStatisticsService
@@ -62,7 +64,7 @@ class TaskAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     inlines = (SolutionExampleInline,)
     list_filter = (
-        'output_type',
+        'testing_checker',
         ('tags', RelatedDropdownFilter),
         ('difficulty', ChoiceDropdownFilter),
         ('source', RelatedDropdownFilter),
@@ -387,6 +389,26 @@ class ExternalSolutionAdmin(admin.ModelAdmin):
         'external_source_name',
         'task_name',
     )
+
+
+@admin.register(Checker)
+class CheckerAdmin(admin.ModelAdmin):
+
+    class Media:
+        js = [
+            'django_tinymce/jquery-1.9.1.min.js',
+            'js/ace-1.4.7/ace.js',
+            'admin/ace_init.js',
+            'admin/tasks/checker.js'
+        ]
+        css = {
+            'all': [
+                'admin/ace.css'
+            ]
+        }
+
+    model = Checker
+    form = CheckerAdminForm
 
 
 admin.site.register(Tag)

@@ -36,3 +36,9 @@ class CheckPlagImpossible(ServiceException):
 
     default_message = messages.MSG_015
     code = codes.CODE_015
+
+
+class TestingCheckerNotExist(ServiceException):
+
+    default_message = messages.MSG_016
+    code = codes.CODE_016
