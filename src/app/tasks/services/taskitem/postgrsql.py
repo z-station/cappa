@@ -3,7 +3,7 @@ from app.tasks.services import exceptions
 from app.tasks.services.taskitem.base import BaseTaskItemService
 from app.tasks.models import TaskItem
 from app.translators.services.entities import TestingResult
-from app.translators.enums import TranslatorType, CheckerType
+from app.translators.enums import TranslatorType
 from app.tasks.enums import ScoreMethod
 
 UserModel = get_user_model()

@@ -10,7 +10,7 @@ from app.translators.services.entities import (
     TestingResult,
 )
 from app.translators import services
-from app.translators.enums import TranslatorType, CheckerType
+from app.translators.enums import TranslatorType
 from app.tasks.models import (
     Solution
 )

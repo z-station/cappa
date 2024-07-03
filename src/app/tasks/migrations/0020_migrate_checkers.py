@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import migrations
 from app.tasks.models.task import Task
-from app.tasks.models.checkers import Checker
+from app.tasks.models.checker import Checker
 
 
 class CheckerType:

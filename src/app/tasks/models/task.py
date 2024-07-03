@@ -4,11 +4,10 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
-from app.translators.enums import CheckerType
 from app.tasks.enums import DifficultyLevel
 from app.tasks.models.tag import Tag
 from app.tasks.models.source import Source
-from app.tasks.models.checkers import Checker
+from app.tasks.models.checker import Checker
 
 
 UserModel = get_user_model()
@@ -56,12 +55,6 @@ class Task(models.Model):
         blank=True,
         verbose_name='Функция сверки решения с тестами',
         on_delete=models.SET_NULL,
-    )
-    output_type = models.CharField(
-        verbose_name='чекер',
-        max_length=255,
-        choices=CheckerType.CHOICES,
-        default=CheckerType.STR
     )
     difficulty = models.CharField(
         verbose_name='сложность',
