@@ -1,33 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import migrations
-from app.tasks.models.task import Task
-from app.tasks.models.checker import Checker
 
 
-class CheckerType:
-    STR = 'str'
-    INT = 'int'
-    FLOAT = 'float'
-    SQL_SELECT = 'select'
-    SQL_DELETE = 'delete'
-    SQL_INSERT = 'insert'
-    SQL_UPDATE = 'update'
+def _create_checkers(apps, schema_editor):
+    Checker = apps.get_model("tasks", "Checker")
 
-    CHOICES = (
-
-        (STR, 'строка'),
-        (INT, 'целое число'),
-        (FLOAT, 'вещественное число'),
-        (SQL_SELECT, 'SQL SELECT'),
-        (SQL_DELETE, 'SQL DELETE'),
-        (SQL_INSERT, 'SQL INSERT'),
-        (SQL_UPDATE, 'SQL UPDATE'),
-    )
-
-
-
-def _create_checkers(*args, **kwargs):
     Checker.objects.bulk_create(objs=[
         Checker(
             name='Сравнение строк',
@@ -201,7 +179,30 @@ def _create_checkers(*args, **kwargs):
     ])
 
 
-def _set_checkers(*args, **kwargs):
+def _set_checkers(apps, schema_editor):
+    Task = apps.get_model("tasks", "Task")
+    Checker = apps.get_model("tasks", "Checker")
+
+    class CheckerType:
+        STR = 'str'
+        INT = 'int'
+        FLOAT = 'float'
+        SQL_SELECT = 'select'
+        SQL_DELETE = 'delete'
+        SQL_INSERT = 'insert'
+        SQL_UPDATE = 'update'
+
+        CHOICES = (
+
+            (STR, 'строка'),
+            (INT, 'целое число'),
+            (FLOAT, 'вещественное число'),
+            (SQL_SELECT, 'SQL SELECT'),
+            (SQL_DELETE, 'SQL DELETE'),
+            (SQL_INSERT, 'SQL INSERT'),
+            (SQL_UPDATE, 'SQL UPDATE'),
+        )
+
     str_checker = Checker.objects.get(name="Сравнение строк")
     Task.objects.filter(output_type=CheckerType.STR).update(
         testing_checker=str_checker
