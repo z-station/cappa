@@ -100,7 +100,10 @@ class BaseTaskItemService:
 
         if taskitem.score_method not in ScoreMethod.TESTS_METHODS:
             raise exceptions.OperationNotAllowed()
-        checker_code = CheckerType.MAP[taskitem.task.output_type]
+        testing_checker = taskitem.task.testing_checker
+        if not testing_checker:
+            raise exceptions.TestingCheckerNotExist()
+
         service_cls = cls._get_service_cls()
         all_tests = cls._get_tests(taskitem)
         enabled_tests = [el for el in all_tests if el['enabled']]
@@ -112,7 +115,7 @@ class BaseTaskItemService:
         ]
         testing_result = service_cls.testing(
             code=code,
-            checker_code=checker_code,
+            checker_code=testing_checker.content,
             tests=request_tests
         )
         # Remove hidden tests from result

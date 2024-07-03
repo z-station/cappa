@@ -190,10 +190,6 @@ ADMIN_REORDER = (
         'app': 'filebrowser',  'label': u'Менеджер файлов',
     },
     {
-        'app': 'taskbook', 'label': u'Задачник',
-        'models': ('taskbook.TaskBookItem',)
-    },
-    {
         'app': 'tasks', 'label': u'Архив задач',
         'models': (
             'tasks.Task',
@@ -201,7 +197,12 @@ ADMIN_REORDER = (
             'tasks.Solution',
             'tasks.ExternalSolution',
             'tasks.Source',
+            'tasks.Checker',
         )
+    },
+    {
+        'app': 'taskbook', 'label': u'Задачник',
+        'models': ('taskbook.TaskBookItem',)
     },
     {
         'app': 'databases', 'label': u'Пользовательские базы данных',

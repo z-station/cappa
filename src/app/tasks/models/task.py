@@ -8,6 +8,7 @@ from app.translators.enums import CheckerType
 from app.tasks.enums import DifficultyLevel
 from app.tasks.models.tag import Tag
 from app.tasks.models.source import Source
+from app.tasks.models.checkers import Checker
 
 
 UserModel = get_user_model()
@@ -48,6 +49,13 @@ class Task(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True
+    )
+    testing_checker = models.ForeignKey(
+        Checker,
+        null=True,
+        blank=True,
+        verbose_name='Функция сверки решения с тестами',
+        on_delete=models.SET_NULL,
     )
     output_type = models.CharField(
         verbose_name='чекер',

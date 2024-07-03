@@ -23,7 +23,9 @@ class PostgresqlService(BaseTaskItemService):
 
         if taskitem.score_method not in ScoreMethod.TESTS_METHODS:
             raise exceptions.OperationNotAllowed()
-        request_type = CheckerType.MAP[taskitem.task.output_type]
+        testing_checker = taskitem.task.testing_checker
+        if not testing_checker:
+            raise exceptions.TestingCheckerNotExist()
         service_cls = cls._get_service_cls()
         all_tests = cls._get_tests(taskitem)
         enabled_tests = [el for el in all_tests if el['enabled']]
@@ -36,7 +38,7 @@ class PostgresqlService(BaseTaskItemService):
         testing_result = service_cls.testing(
             code=code,
             name=taskitem.get_db_name(),
-            request_type=request_type,
+            request_type=testing_checker.content,
             tests=request_tests
         )
         # Remove hidden tests from result

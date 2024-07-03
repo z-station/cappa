@@ -12,3 +12,4 @@ from app.tasks.models.statistics import (
     UserStatistics,
     UserPlagStatistics,
 )
+from app.tasks.models.checkers import Checker
