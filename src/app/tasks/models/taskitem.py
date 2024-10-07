@@ -182,15 +182,19 @@ class TaskItem(models.Model):
     def get_db_name(self) -> Optional[str]:
         return self.database.db_name if self.database else None
 
+    @property
     def score_method_is_tests(self):
         return self.score_method == ScoreMethod.TESTS
 
+    @property
     def score_method_is_review(self):
         return self.score_method == ScoreMethod.REVIEW
 
+    @property
     def score_method_is_tests_and_review(self):
         return self.score_method == ScoreMethod.TESTS_AND_REVIEW
 
+    @property
     def score_method_with_tests(self):
         return self.score_method in ScoreMethod.TESTS_METHODS
 
