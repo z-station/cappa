@@ -1,4 +1,4 @@
-FROM python:3.8.12-buster
+FROM python:3.8.12-bullseye
 
 RUN apt-get update && \
     apt-get -y install nano && \
@@ -17,7 +17,7 @@ RUN apt-get update && \
     apt-get -y install memcached libmemcached-tools systemd net-tools
 
 # backend for tinymce spellcheck plugin
-RUN apt-get -y install libenchant-dev aspell-ru aspell-en
+RUN apt-get -y install libenchant-2-dev aspell-ru aspell-en
 
 COPY ./src/pyproject.toml ./src/poetry.lock /tmp/
 RUN cd /tmp && \
