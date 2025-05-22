@@ -2074,3 +2074,46 @@ li.error {
         font-size: 12px;
     }
 }
+.hidden {
+    display: none;
+}
+
+/*вся панель фильтра*/
+.topic-filter {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: .5rem;
+}
+
+#js__topic-search {
+    margin-bottom: 0.5rem;
+}
+
+#js__topic-cols {
+    column-width: 260px;
+    column-gap: 1.5rem;
+}
+
+#js__topic-cols label {
+    break-inside: avoid;
+    display: block;
+    margin-bottom: .3em;
+    line-height: 1.3;
+    padding-left: 1.4em;
+    position: relative;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+#js__topic-cols label input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+  .topic-filter {
+    column-count: 1;
+  }
+}

@@ -24,7 +24,7 @@ services:
       - ../public:/app/public
       - import:/app/public/media/filebrowser/import
       - sql_files:/app/public/media/filebrowser/sql_files
-      - ../src:/app/src:ro
+      - ../src:/app/src #:ro
       - ../backup:/app/backup
     ports:
       - 9000:9000
