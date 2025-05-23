@@ -53,7 +53,7 @@ class BaseTaskItemService:
         code: str
     ) -> Solution:
 
-        if taskitem.task.enabled_tests and taskitem.score_method_with_tests():
+        if taskitem.task.enabled_tests and taskitem.score_method_with_tests:
             testing_result = cls.testing(
                 taskitem=taskitem,
                 code=code,

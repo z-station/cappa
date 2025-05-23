@@ -67,7 +67,7 @@ class SolutionService:
         else:
             count_tests = count_passed_tests = testing_score = None
 
-        score = testing_score if taskitem.score_method_is_tests() else None
+        score = testing_score if taskitem.score_method_is_tests else None
 
         data = {
             'type': taskitem.type,

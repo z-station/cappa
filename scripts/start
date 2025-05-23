@@ -2,4 +2,4 @@
 docker network create localhost || true
 docker volume create --name sql_files || true
 docker volume create --name import || true
-docker-compose -f ../docker/docker-compose.yml start
+docker compose -f ../docker/docker-compose.yml start || docker-compose -f ../docker/docker-compose.yml start

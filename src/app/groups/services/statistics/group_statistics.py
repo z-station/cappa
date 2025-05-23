@@ -1,10 +1,10 @@
-from typing import Dict
+from typing import Dict, Any
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from app.groups.models import Group, GroupCourse
 from app.groups.services import exceptions
 from app.tasks.queries import CreateOrUpdateCourseUserStatisticsQuery
-from app.tasks.models import UserStatistics
+from app.tasks.models import UserStatistics, TaskItem
 from app.tasks.entities import TaskItemStatistics
 from app.tasks.enums import TaskItemType
 
@@ -13,13 +13,10 @@ UserModel = get_user_model()
 
 
 class GroupStatisticsService:
-
     @classmethod
     def get_group_course(cls, group: Group, course_id: int) -> GroupCourse:
         try:
-            group_course = group.group_courses.get(
-                course_id=course_id
-            )
+            group_course = group.group_courses.get(course_id=course_id)
         except ObjectDoesNotExist:
             raise exceptions.CourseNotFoundException()
         else:
@@ -38,26 +35,23 @@ class GroupStatisticsService:
         cls,
         group: Group,
         course_id: int,
-    ) -> Dict[int, Dict[int, TaskItemStatistics]]:
+    ) -> Dict[str, Any]:
 
         """ Формат ответа:
             {
-                user_id_1: {
-                    taskitem_id_1: {...},
-                    taskitem_id_2: {...},
+                "tasks_max_points": { "<task_id>": <max_score>, ... },
+                "stats": {
+                    user_id_1: {
+                        taskitem_id_1: {...},
+                        ...
+                    },
                     ...
-                    taskitem_id_N: {...}
-                },
-                user_id_2: {...},
-                ...
-                user_id_N: {...}
-            } """
+                }
+            }
+        """
 
-        result = {}
-        group_course = cls.get_group_course(
-            group=group,
-            course_id=course_id
-        )
+        result: Dict[int, Dict[int, TaskItemStatistics]] = {}
+        group_course = cls.get_group_course(group=group, course_id=course_id)
         version_hash = group_course.course.get_cache_data()['version_hash']
         user_ids = set(group.learners.only_ids())
 
@@ -88,4 +82,18 @@ class GroupStatisticsService:
             )
             obj = UserStatistics.objects.raw(*query.get_sql())[0]
             result[obj.user_id] = obj.data
-        return result
+
+        # «task_id → max_score»
+        tasks_qs = (
+            TaskItem.objects
+            .filter(topic__course=group_course.course)
+            .values("id", "max_score")
+        )
+        tasks_max_points = {
+            str(t["id"]): float(t["max_score"]) for t in tasks_qs
+        }
+
+        return {
+            "tasks_max_points": tasks_max_points,
+            "stats": result,
+        }
