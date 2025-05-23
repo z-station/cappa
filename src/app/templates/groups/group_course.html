@@ -2,90 +2,132 @@
 {% load static %}
 
 {% block content %}
-    <div class="one-col group-course white">
-        <h1>{{ group.title }}</h1>
-        <h4>Результаты по курсу "{{ course.title }}"</h4>
-        <form class="search__form" id="js__search-form" >
-            <div class="input-group input-group-sm">
-                <input type="text" name="search" class="form-control" id="js__search-input"
-                       placeholder="Поиск участников, через запятую">
-                <input type="submit" value="" title="поиск">
-            </div>
-        </form>
-        <div class="course__fake-table-container js__course__fake-table-container">
-            <div class="course__fake-table js__course__fake-table"></div>
+<div class="one-col group-course white">
+    <h1>{{ group.title }}</h1>
+    <h4>Результаты по курсу "{{ course.title }}"</h4>
+
+    <div id="tablesearch" class="search__form mb-2">
+        <div class="input-group input-group-sm">
+            <input type="text" id="filter-box" class="form-control"
+                   placeholder="Поиск участников, через запятую">
+            <input type="submit" value="" title="поиск">
         </div>
-        <div class="course__table-container mb-4 js__course__table-container">
-            <table class="course__table js__course__table js__tablesorter">
-                <thead>
-                    <tr>
-                        <th class="wide-120">Участник</th>
-                        <th class="wide-90">Решено</th>
-                        <th class="wide-90">Баллы</th>
+    </div>
+
+    <div class="d-flex gap-2 mb-2">
+        <button class="btn btn-sm btn-primary" id="js__topic-filter-btn">Фильтр тем</button>
+        <button class="btn btn-sm btn-secondary" id="js__refresh-btn">Обновить</button>
+    </div>
+
+    <div id="js__topic-filter-panel" class="topic-filter card card-body p-2 mb-3" style="display:none;">
+        <label class="d-block mb-1">
+            <input type="checkbox" class="js__topic-filter-checkbox" value="all" checked>
+            <strong>Все темы</strong>
+        </label>
+
+        <div id="js__topic-search">
+            <input type="text" placeholder="Найти тему…" id="topic-search" class="form-control form-control-sm">
+        </div>
+
+        <div id="js__topic-cols"></div>
+    </div>
+
+    <div class="course__fake-table-container js__course__fake-table-container">
+        <div class="course__fake-table js__course__fake-table"></div>
+    </div>
+
+    <div class="course__table-container mb-4 js__course__table-container">
+        <table id="course-table"
+               class="course__table js__course__table js__tablesorter"
+               data-api-url="/api/groups/{{ group.id }}/statistics/?course_id={{ course.id }}">
+            <thead>
+                <tr>
+                    <th class="wide-120">Участник</th>
+                    <th class="wide-90 js__total-solved-head">Решено</th>
+                    <th class="wide-90 js__total-score-head">Баллы</th>
+
+                    {% for topic in course_data.topics %}
+                        {% for taskitem in topic.taskitems %}
+                            <th data-sorter="false"
+                                data-topic="{{ topic.number }}"
+                                data-taskitem-id="{{ taskitem.id }}"
+                                data-topic-title="{{ topic.number }} {{ topic.title }}"
+                                title="{{ taskitem.title }}&#10;{{ topic.title }}">
+                                <a href="{{ taskitem.url }}" target="_blank"
+                                   data-taskitem-title="{{ taskitem.number }} {{ taskitem.title }}">
+                                    {{ taskitem.number }}
+                                </a>
+                            </th>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in group.learners %}
+                    <tr id="js__member-{{ user.id }}">
+                        <td class="wide-120 js__username">{{ user.get_full_name }}</td>
+                        <td class="wide-90 js__total_solved_tasks">0</td>
+                        <td class="wide-90 js__total_score">0</td>
+
                         {% for topic in course_data.topics %}
                             {% for taskitem in topic.taskitems %}
-                                <th data-sorter="false" title="{{ taskitem.title }}\n{{ topic.title }}">
-                                    <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ taskitem.url }}"
-                                       target="_blank" data-topic-title="{{ topic.number }} {{ topic.title }}" data-taskitem-title="{{ taskitem.number }} {{ taskitem.title }}">
-                                        {{ taskitem.number }}
-                                    </a>
-                                </th>
+                                <td class="js__taskitem js__taskitem__{{ taskitem.id }}"
+                                    data-topic="{{ topic.number }}"
+                                    data-score="">
+                                </td>
                             {% endfor %}
                         {% endfor %}
                     </tr>
-                </thead>
-                <tbody>
-                    {% for user in group.learners %}
-                        <tr id="js__member-{{ user.id }}">
-                            <td class="wide-120 js__username">{{ user.get_full_name }}</td>
-                            <td class="wide-90 js__total_solved_tasks"></td>
-                            <td class="wide-90 js__total_score"></td>
-                            {% for topic in course_data.topics %}
-                                {% for taskitem in topic.taskitems %}
-                                    <td class="js__taskitem__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
-                                {% endfor %}
-                            {% endfor %}
-                        </tr>
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr class="totals-row">
+                    <td><strong>Всего</strong></td>
+                    <td class="js__total_tasks_count">0</td>
+                    <td class="js__total_points_sum">0.0</td>
+                    {% for topic in course_data.topics %}
+                        {% for taskitem in topic.taskitems %}
+                            <td class="total-task-cell" style="display:none;"></td>
+                        {% endfor %}
                     {% endfor %}
-                </tbody>
-            </table>
-       </div>
+                </tr>
+            </tfoot>
+        </table>
 
-         <div class="loader js__loader">
-             <div class="loader__bg"></div>
-            <svg class="hourglass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 206" preserveAspectRatio="none">
-                <path class="middle" d="M120 0H0v206h120V0zM77.1 133.2C87.5 140.9 92 145 92 152.6V178H28v-25.4c0-7.6 4.5-11.7 14.9-19.4 6-4.5 13-9.6 17.1-17 4.1 7.4 11.1 12.6 17.1 17zM60 89.7c-4.1-7.3-11.1-12.5-17.1-17C32.5 65.1 28 61 28 53.4V28h64v25.4c0 7.6-4.5 11.7-14.9 19.4-6 4.4-13 9.6-17.1 16.9z"/>
-                <path class="outer" d="M93.7 95.3c10.5-7.7 26.3-19.4 26.3-41.9V0H0v53.4c0 22.5 15.8 34.2 26.3 41.9 3 2.2 7.9 5.8 9 7.7-1.1 1.9-6 5.5-9 7.7C15.8 118.4 0 130.1 0 152.6V206h120v-53.4c0-22.5-15.8-34.2-26.3-41.9-3-2.2-7.9-5.8-9-7.7 1.1-2 6-5.5 9-7.7zM70.6 103c0 18 35.4 21.8 35.4 49.6V192H14v-39.4c0-27.9 35.4-31.6 35.4-49.6S14 81.2 14 53.4V14h92v39.4C106 81.2 70.6 85 70.6 103z"/>
-            </svg>
-        </div>
-
-         <h4 class="mb-4">Обозначения:</h4>
-
-         <table class="course__table-legend">
-            <tr><td class=""></td><td>Нет попыток</td></tr>
-            <tr><td class="s-red">-</td><td>Нет решения</td></tr>
-            <tr><td class="s-yellow">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
-            <tr><td class="s-green">+</td><td>Решено на максимальный балл</td></tr>
-            <tr><td class="s-green">✔</td><td>Проверено, но оценка скрыта (для режима проверки преподавателем)</td></tr>
-            <tr><td class="awaiting-check s-cyan"></td><td>Отправлено на проверку (для режима проверки преподавателем)</td></tr>
-            <tr><td class="s-grey"></td><td>Решение отправлено позже даты сдачи</td></tr>
-         </table>
     </div>
-{% endblock %}
 
+    <h4 class="mb-4">Обозначения:</h4>
+    <table class="course__table-legend">
+        <tr><td class=""></td><td>Нет попыток</td></tr>
+        <tr><td class="s-red">-</td><td>Нет решения</td></tr>
+        <tr><td class="s-yellow">4.5</td><td>Частично решено (c указанием кол-ва баллов)</td></tr>
+        <tr><td class="s-green">+</td><td>Решено на максимальный балл</td></tr>
+        <tr><td class="s-green">✔</td><td>Проверено, но оценка скрыта (для режима проверки преподавателем)</td></tr>
+        <tr><td class="awaiting-check s-cyan"></td><td>Отправлено на проверку (для режима проверки преподавателем)</td></tr>
+        <tr><td class="s-grey"></td><td>Решение отправлено позже даты сдачи</td></tr>
+    </table>
+
+    <div class="loader js__loader">
+        <div class="loader__bg"></div>
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+</div>
+{% endblock content %}
 
 {% block js %}
     {{ block.super }}
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.js' %}"></script>
-    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
-    <script src="{% static 'js/main22.js' %}"></script>
-    <script src="{% static 'js/groups/groups1.js' %}"></script>
-    <script src="{% static 'js/groups/group_course23.js' %}"></script>
+
     <script>
         window.userIsTeacher = {% if user.is_teacher %}true{% else %}false{% endif %};
         window.authToken = '{{ request.user.auth_token }}';
-        window.groupCourseSolutionsUrl = '/api/groups/{{ group.id }}/statistics/?course_id={{course.id}}';
-        window.dispatchEvent(new Event('groupCoursePageLoaded'));
     </script>
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+
+    <script src="{% static 'js/groups/groups1.js' %}"></script>
+    <script src="{% static 'js/groups/group_course23.js' %}"></script>
 {% endblock js %}
