@@ -232,12 +232,15 @@ class Solution(Model):
 
     # TODO в зависимости от типа проверки использовать для рейтинга разные значения
 
+    @property
     def score_method_is_tests(self):
         return self.score_method == ScoreMethod.TESTS
 
+    @property
     def score_method_is_review(self):
         return self.score_method == ScoreMethod.REVIEW
 
+    @property
     def score_method_is_tests_and_review(self):
         return self.score_method == ScoreMethod.TESTS_AND_REVIEW
 

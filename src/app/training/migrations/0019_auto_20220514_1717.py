@@ -8,6 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('tasks', '0010_auto_20220420_1813'),
         ('training', '0018_auto_20220514_1047'),
     ]
 
