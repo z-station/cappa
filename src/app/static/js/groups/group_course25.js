@@ -81,10 +81,13 @@ function updateTable(resp) {
     const stats    = resp.stats           || resp;
     window.tasksMaxPoints = { ...tasksMap };
 
+    const tbody = document.querySelector('.js__course__table tbody');
+    const frag  = document.createDocumentFragment();
+
     for (const [userId, userData] of Object.entries(stats)) {
         const tr = document.getElementById(`js__member-${userId}`);
         if (!tr) continue;
-
+        frag.appendChild(tr);
         let solved = 0, scoreSum = 0;
 
         for (const [taskId, data] of Object.entries(userData)) {
@@ -171,6 +174,8 @@ function updateTable(resp) {
         tr.querySelector('.js__total_solved_tasks').textContent = solved;
         tr.querySelector('.js__total_score').textContent = scoreSum.toFixed(1);
     }
+    tbody.innerHTML = '';
+    tbody.appendChild(frag);
     $('.js__tablesorter').trigger('update');
     buildTopicFilter();
     applyTopicFilter();
