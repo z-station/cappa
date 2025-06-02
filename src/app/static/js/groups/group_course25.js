@@ -354,6 +354,19 @@ function attachScrollbarSync() {
     syncScroll(bottomScrollContainer, topScrollContainer);
 }
 
+function showLoader() {
+    document.querySelector('.js__loader').style.display = 'flex';
+    document
+      .querySelectorAll('.js__course__table-container, .js__course__fake-table-container')
+      .forEach(el => el.classList.add('hidden'));
+}
+
+function hideLoader() {
+    document.querySelector('.js__loader').style.display = 'none';
+    document
+      .querySelectorAll('.js__course__table-container, .js__course__fake-table-container')
+      .forEach(el => el.classList.remove('hidden'));
+}
 
 /*Инициализация*/
 document.addEventListener('DOMContentLoaded', () => {
