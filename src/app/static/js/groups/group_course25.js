@@ -366,12 +366,11 @@ function hideLoader() {
     document
       .querySelectorAll('.js__course__table-container, .js__course__fake-table-container')
       .forEach(el => el.classList.remove('hidden'));
+    requestAnimationFrame(syncFakeScrollbar);
 }
 
 /*Инициализация*/
 document.addEventListener('DOMContentLoaded', () => {
-    cacheElements();
-    syncFakeScrollbar();
     attachScrollbarSync();
     loadStatistics();
 
