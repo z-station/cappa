@@ -32,11 +32,11 @@
         <div id="js__topic-cols"></div>
     </div>
 
-    <div class="course__fake-table-container js__course__fake-table-container">
+    <div class="course__fake-table-container js__course__fake-table-container hidden">
         <div class="course__fake-table js__course__fake-table"></div>
     </div>
 
-    <div class="course__table-container mb-4 js__course__table-container">
+    <div class="course__table-container mb-4 js__course__table-container hidden">
         <table id="course-table"
                class="course__table js__course__table js__tablesorter"
                data-api-url="/api/groups/{{ group.id }}/statistics/?course_id={{ course.id }}">
@@ -129,5 +129,5 @@
     <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
 
     <script src="{% static 'js/groups/groups1.js' %}"></script>
-    <script src="{% static 'js/groups/group_course24.js' %}"></script>
+    <script src="{% static 'js/groups/group_course25.js' %}"></script>
 {% endblock js %}

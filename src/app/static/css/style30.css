@@ -2118,3 +2118,5 @@ li.error {
     column-count: 1;
   }
 }
+
+.hidden { display:none !important; }

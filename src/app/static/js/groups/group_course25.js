@@ -81,10 +81,15 @@ function updateTable(resp) {
     const stats    = resp.stats           || resp;
     window.tasksMaxPoints = { ...tasksMap };
 
-    for (const [userId, userData] of Object.entries(stats)) {
+    const tbody = document.querySelector('.js__course__table tbody');
+    const frag  = document.createDocumentFragment();
+
+    const sortedIds = Object.keys(stats).sort((a, b) =>
+        (stats[a].full_name || '').localeCompare(stats[b].full_name || '', 'ru'));
+
+    for (const userId of sortedIds) {const userData = stats[userId];
         const tr = document.getElementById(`js__member-${userId}`);
         if (!tr) continue;
-
         let solved = 0, scoreSum = 0;
 
         for (const [taskId, data] of Object.entries(userData)) {
@@ -170,8 +175,10 @@ function updateTable(resp) {
         }
         tr.querySelector('.js__total_solved_tasks').textContent = solved;
         tr.querySelector('.js__total_score').textContent = scoreSum.toFixed(1);
+        frag.appendChild(tr);
     }
-    $('.js__tablesorter').trigger('update');
+    tbody.replaceChildren(frag);
+    $('.js__tablesorter').trigger('destroy').tablesorter({ sortList: [[0,0]] });
     buildTopicFilter();
     applyTopicFilter();
     syncFakeScrollbar();
@@ -347,11 +354,23 @@ function attachScrollbarSync() {
     syncScroll(bottomScrollContainer, topScrollContainer);
 }
 
+function showLoader() {
+    document.querySelector('.js__loader').style.display = 'flex';
+    document
+      .querySelectorAll('.js__course__table-container, .js__course__fake-table-container')
+      .forEach(el => el.classList.add('hidden'));
+}
+
+function hideLoader() {
+    document.querySelector('.js__loader').style.display = 'none';
+    document
+      .querySelectorAll('.js__course__table-container, .js__course__fake-table-container')
+      .forEach(el => el.classList.remove('hidden'));
+    requestAnimationFrame(syncFakeScrollbar);
+}
 
 /*Инициализация*/
 document.addEventListener('DOMContentLoaded', () => {
-    cacheElements();
-    syncFakeScrollbar();
     attachScrollbarSync();
     loadStatistics();
 
