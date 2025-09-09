@@ -54,6 +54,11 @@ router.register(
     views.JavaViewSet,
     basename='taskitem-java'
 )
+router.register(
+    'taskitem/rust186',
+    views.Rust186ViewSet,
+    basename='taskitem-rust186'
+)
 
 
 urlpatterns = router.urls

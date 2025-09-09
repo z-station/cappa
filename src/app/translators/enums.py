@@ -11,6 +11,7 @@ class TranslatorType:
     PHP = 'Php'
     CSHARP = 'CSharp'
     JAVA = 'Java'
+    RUST186 = 'Rust186'
 
     CHOICES = (
         (PYTHON38, 'Python 3.8'),
@@ -18,6 +19,7 @@ class TranslatorType:
         (PROLOG_D, 'Пролог-Д'),
         (POSTGRESQL, 'PostgreSQL 13'),
         (PASCAL, 'PascalABC.NET'),
+        (RUST186, 'Rust 1.86.0'),
     )
 
     MAP = {
@@ -26,6 +28,7 @@ class TranslatorType:
         PROLOG_D: 'Пролог-Д',
         POSTGRESQL: 'PostgreSQL 13',
         PASCAL: 'PascalABC.NET',
+        RUST186: 'Rust 1.86.0',
     }
 
     ANTIPLAG_ALLOWED = {
@@ -43,4 +46,5 @@ class TranslatorType:
         PHP,
         CSHARP,
         JAVA,
+        RUST186,
     ]

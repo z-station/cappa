@@ -7,3 +7,4 @@ from app.tasks.services.taskitem.python38 import Python38Service
 from app.tasks.services.taskitem.java import JavaService
 from app.tasks.services.taskitem.postgrsql import PostgresqlService
 from app.tasks.services.taskitem.gcc74 import GCC74Service
+from app.tasks.services.taskitem.rust186 import Rust186Service

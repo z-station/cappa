@@ -39,6 +39,8 @@ class BaseViewSet(ViewSet):
             return services.CsharpService
         elif cls.translator_type == TranslatorType.JAVA:
             return services.JavaService
+        elif cls.translator_type == TranslatorType.RUST186:
+            return services.Rust186Service
 
     @action(methods=('POST',), detail=False)
     def debug(self, request, *args, **kwargs):

@@ -148,6 +148,7 @@ class Editor {
         'Php': 'ace/mode/php',
         'CSharp': 'ace/mode/csharp',
         'Java': 'ace/mode/java',
+        'Rust186': 'ace/mode/rust',
     }
     urlNames = {
         'Python3.8': 'python38',
@@ -158,6 +159,7 @@ class Editor {
         'Php': 'php',
         'CSharp': 'csharp',
         'Java': 'java',
+        'Rust186': 'rust186',
     }
     errorMessages = {
         0: 'Сайт недоступен',

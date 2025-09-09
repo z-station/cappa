@@ -248,6 +248,9 @@ SERVICES_HOSTS = {
     TranslatorType.JAVA: env.get(
         'JAVA_HOST', 'http://localhost:9008'
     ),
+    TranslatorType.RUST186: env.get(
+        'RUST186_HOST', 'http://localhost:9009'
+    ),
 }
 
 ANTIPLAG_HOST = env.get(
