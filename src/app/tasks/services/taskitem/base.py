@@ -44,6 +44,8 @@ class BaseTaskItemService:
             return services.CsharpService
         elif cls.translator_type == TranslatorType.JAVA:
             return services.JavaService
+        elif cls.translator_type == TranslatorType.RUST186:
+            return services.Rust186Service
 
     @classmethod
     def create_solution(

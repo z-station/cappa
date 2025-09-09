@@ -8,3 +8,4 @@ from app.tasks.api.views.taskitem.pascal import PascalViewSet
 from app.tasks.api.views.taskitem.postgresql import PostgresqlViewSet
 from app.tasks.api.views.taskitem.prologd import PrologDViewSet
 from app.tasks.api.views.taskitem.python38 import Python38ViewSet
+from app.tasks.api.views.taskitem.rust186 import Rust186ViewSet

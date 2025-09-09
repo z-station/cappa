@@ -7,3 +7,4 @@ from app.translators.services.pascal import PascalService
 from app.translators.services.php import PhpService
 from app.translators.services.csharp import CsharpService
 from app.translators.services.java import JavaService
+from app.translators.services.rust186 import Rust186Service

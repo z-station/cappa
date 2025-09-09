@@ -52,6 +52,8 @@ class BaseTaskItemViewSet(GenericViewSet):
             return services.CsharpService
         elif cls.translator_type == TranslatorType.JAVA:
             return services.JavaService
+        elif cls.translator_type == TranslatorType.RUST186:
+            return services.Rust186Service
 
     def get_serializer_class(self):
         if self.action == 'create_solution':

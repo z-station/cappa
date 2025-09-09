@@ -46,6 +46,7 @@ services:
       PHP_HOST: http://sandbox-php:9006
       CSHARP_HOST: http://sandbox-csharp:9007
       JAVA_HOST: http://sandbox-java:9008
+      RUST186_HOST: http://sandbox-rust186:9009
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "-h", cappa-db]
