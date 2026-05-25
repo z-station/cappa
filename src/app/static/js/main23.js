@@ -88,3 +88,20 @@ document.querySelectorAll('.js__utc-time').forEach(function(elem){
 
 window.addEventListener('initSidebar', initSidebar)
 window.addEventListener('initTablesorter', initTablesorter)
+
+/*  MathJax - библиотека для отображения математических выражений в браузере.
+    Пример:
+    <p>Формула Эйлера: \( e^{i\pi} + 1 = 0 \)</p>
+    <p>Интеграл: $$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$</p>
+ */
+window.MathJax = {
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']], // Включить $...$ как строчные формулы
+        displayMath: [['$$', '$$'], ['\\[', '\\]']], // Включить $$...$$ как блочные формулы
+        processEscapes: true // Позволить \$ как обычный символ
+    },
+    options: {
+        ignoreHtmlClass: 'tex2jax_ignore', // Исключить блоки кода/примеров из обработки
+        processHtmlClass: 'tex2jax_process' // Точечно включить обработку внутри исключённых блоков
+    }
+}
