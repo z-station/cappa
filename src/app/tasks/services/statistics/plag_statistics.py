@@ -41,6 +41,13 @@ class PlagStatisticsService(RequestMixin):
     }
 
     @classmethod
+    def _is_sql_translator(
+        cls,
+        translator: TranslatorType.LITERALS
+    ) -> bool:
+        return translator == TranslatorType.POSTGRESQL
+
+    @classmethod
     def _get_candidates_solutions(
         cls,
         reference_user_id: int,
@@ -143,12 +150,31 @@ class PlagStatisticsService(RequestMixin):
         candidates_data: List[CandidateData],
         translator: TranslatorType.LITERALS
     ) -> PlagData:
-        print(f'{settings.ANTIPLAG_HOST}/check/')
         try:
             response = cls._perform_request(
                 url=f'{settings.ANTIPLAG_HOST}/check/',
                 data={
                     "lang": cls.langs_map[translator],
+                    "ref_code": ref_code,
+                    "candidates": candidates_data
+                },
+                timeout=10
+            )
+        except (ServiceConnectionError, ServiceBadRequest) as ex:
+            raise CheckPlagException(details=ex.details)
+        else:
+            return response.json()
+
+    @classmethod
+    def _get_sql_plag_data(
+        cls,
+        ref_code: str,
+        candidates_data: List[CandidateData]
+    ) -> PlagData:
+        try:
+            response = cls._perform_request(
+                url=f'{settings.SQL_ANTIPLAG_HOST}/check/',
+                data={
                     "ref_code": ref_code,
                     "candidates": candidates_data
                 },
@@ -232,23 +258,32 @@ class PlagStatisticsService(RequestMixin):
             translator=translator,
         )
         if candidates_data:
-            plag_data = cls._get_plag_data(
-                ref_code=ref_solution.content,
-                candidates_data=candidates_data,
-                translator=translator
-            )
+            if cls._is_sql_translator(translator):
+                plag_data = cls._get_sql_plag_data(
+                    ref_code=ref_solution.content,
+                    candidates_data=candidates_data
+                )
+            else:
+                plag_data = cls._get_plag_data(
+                    ref_code=ref_solution.content,
+                    candidates_data=candidates_data,
+                    translator=translator
+                )
+
             percent = plag_data['percent']
             if percent == -1:
                 raise CheckPlagImpossible()
-            solution_type, user_id, solution_id = (
-                plag_data['uuid'].split('-')
-            )
+
             result['percent'] = percent
-            result['candidate'] = PlagCheckUser(
-                id=int(user_id),
-                solution_type=solution_type,
-                solution_id=int(solution_id)
-            )
+
+            if plag_data.get('uuid'):
+                solution_type, user_id, solution_id = plag_data['uuid'].split('-')
+                result['candidate'] = PlagCheckUser(
+                    id=int(user_id),
+                    solution_type=solution_type,
+                    solution_id=int(solution_id)
+                )
+
         cls.create_or_update_taskitem_statistics(
             user_id=reference_user_id,
             taskitem=taskitem,
