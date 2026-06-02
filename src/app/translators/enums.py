@@ -16,6 +16,7 @@ class TranslatorType:
     CHOICES = (
         (PYTHON38, 'Python 3.8'),
         (GCC74, 'С++ (GCC 7.4)'),
+        (CSHARP, 'C# (CSharp-mono 7.3)'),
         (PROLOG_D, 'Пролог-Д'),
         (POSTGRESQL, 'PostgreSQL 13'),
         (PASCAL, 'PascalABC.NET'),
@@ -25,6 +26,7 @@ class TranslatorType:
     MAP = {
         PYTHON38: 'Python 3.8',
         GCC74: 'С++ (GCC 7.4)',
+        CSHARP: 'C# (CSharp-mono 7.3)',
         PROLOG_D: 'Пролог-Д',
         POSTGRESQL: 'PostgreSQL 13',
         PASCAL: 'PascalABC.NET',
@@ -34,7 +36,8 @@ class TranslatorType:
     ANTIPLAG_ALLOWED = {
         PYTHON38,
         GCC74,
-        JAVA
+        JAVA,
+        POSTGRESQL
     }
 
     LITERALS = typing.Literal[
