@@ -59,6 +59,16 @@ router.register(
     views.Rust186ViewSet,
     basename='taskitem-rust186'
 )
+router.register(
+    'taskitem/go123',
+    views.Go123ViewSet,
+    basename='taskitem-go123'
+)
+router.register(
+    'taskitem/node20',
+    views.Node20ViewSet,
+    basename='taskitem-node20'
+)
 
 
 urlpatterns = router.urls

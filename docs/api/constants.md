@@ -10,6 +10,9 @@
 - Php
 - CSharp
 - Java
+- Rust186
+- Go123
+- Node20
 
 #### В URL запроса
 - python38  
@@ -20,6 +23,9 @@
 - php
 - csharp
 - java
+- rust186
+- go123
+- node20
 
 ### Оценочные методы  
 - tests - оценка на основании прохождения тестов

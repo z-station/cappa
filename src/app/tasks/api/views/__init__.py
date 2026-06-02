@@ -9,3 +9,5 @@ from app.tasks.api.views.taskitem.postgresql import PostgresqlViewSet
 from app.tasks.api.views.taskitem.prologd import PrologDViewSet
 from app.tasks.api.views.taskitem.python38 import Python38ViewSet
 from app.tasks.api.views.taskitem.rust186 import Rust186ViewSet
+from app.tasks.api.views.taskitem.go123 import Go123ViewSet
+from app.tasks.api.views.taskitem.node20 import Node20ViewSet

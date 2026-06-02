@@ -9,6 +9,8 @@ from app.translators.api.views import (
     CSharpViewSet,
     JavaViewSet,
     Rust186ViewSet,
+    Go123ViewSet,
+    Node20ViewSet,
 )
 
 router = DefaultRouter()
@@ -21,5 +23,7 @@ router.register('php', PhpViewSet, basename='php')
 router.register('csharp', CSharpViewSet, basename='csharp')
 router.register('java', JavaViewSet, basename='java')
 router.register('rust186', Rust186ViewSet, basename='rust186')
+router.register('go123', Go123ViewSet, basename='go123')
+router.register('node20', Node20ViewSet, basename='node20')
 
 urlpatterns = router.urls

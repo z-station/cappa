@@ -251,6 +251,12 @@ SERVICES_HOSTS = {
     TranslatorType.RUST186: env.get(
         'RUST186_HOST', 'http://localhost:9009'
     ),
+    TranslatorType.GO123: env.get(
+        'GO123_HOST', 'http://localhost:9010'
+    ),
+    TranslatorType.NODE20: env.get(
+        'NODE20_HOST', 'http://localhost:9011'
+    ),
 }
 
 ANTIPLAG_HOST = env.get(
