@@ -149,6 +149,8 @@ class Editor {
         'CSharp': 'ace/mode/csharp',
         'Java': 'ace/mode/java',
         'Rust186': 'ace/mode/rust',
+        'Go123': 'ace/mode/golang',
+        'Node20': 'ace/mode/javascript',
     }
     urlNames = {
         'Python3.8': 'python38',
@@ -160,6 +162,8 @@ class Editor {
         'CSharp': 'csharp',
         'Java': 'java',
         'Rust186': 'rust186',
+        'Go123': 'go123',
+        'Node20': 'node20',
     }
     errorMessages = {
         0: 'Сайт недоступен',

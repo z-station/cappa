@@ -41,6 +41,10 @@ class BaseViewSet(ViewSet):
             return services.JavaService
         elif cls.translator_type == TranslatorType.RUST186:
             return services.Rust186Service
+        elif cls.translator_type == TranslatorType.GO123:
+            return services.Go123Service
+        elif cls.translator_type == TranslatorType.NODE20:
+            return services.Node20Service
 
     @action(methods=('POST',), detail=False)
     def debug(self, request, *args, **kwargs):

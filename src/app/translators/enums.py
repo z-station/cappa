@@ -12,6 +12,8 @@ class TranslatorType:
     CSHARP = 'CSharp'
     JAVA = 'Java'
     RUST186 = 'Rust186'
+    GO123 = 'Go123'
+    NODE20 = 'Node20'
 
     CHOICES = (
         (PYTHON38, 'Python 3.8'),
@@ -21,6 +23,8 @@ class TranslatorType:
         (POSTGRESQL, 'PostgreSQL 13'),
         (PASCAL, 'PascalABC.NET'),
         (RUST186, 'Rust 1.86.0'),
+        (GO123, 'Go 1.23'),
+        (NODE20, 'Node.js 20'),
     )
 
     MAP = {
@@ -31,6 +35,8 @@ class TranslatorType:
         POSTGRESQL: 'PostgreSQL 13',
         PASCAL: 'PascalABC.NET',
         RUST186: 'Rust 1.86.0',
+        GO123: 'Go 1.23',
+        NODE20: 'Node.js 20',
     }
 
     ANTIPLAG_ALLOWED = {
@@ -50,4 +56,6 @@ class TranslatorType:
         CSHARP,
         JAVA,
         RUST186,
+        GO123,
+        NODE20,
     ]

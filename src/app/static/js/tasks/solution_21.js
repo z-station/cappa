@@ -7,6 +7,9 @@ var colorSchemes = {
     'Php': 'ace/mode/php',
     'CSharp': 'ace/mode/csharp',
     'Java': 'ace/mode/java',
+    'Rust186': 'ace/mode/rust',
+    'Go123': 'ace/mode/golang',
+    'Node20': 'ace/mode/javascript',
 }
 
 var solutionPage = function(e){

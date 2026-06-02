@@ -9,3 +9,5 @@ from app.tasks.services.taskitem.postgrsql import PostgresqlService
 from app.tasks.services.taskitem.gcc74 import GCC74Service
 from app.tasks.services.taskitem.rust186 import Rust186Service
 from app.tasks.services.taskitem.csharp import CsharpService
+from app.tasks.services.taskitem.go123 import Go123Service
+from app.tasks.services.taskitem.node20 import Node20Service

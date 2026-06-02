@@ -8,3 +8,5 @@ from app.translators.api.views.php import PhpViewSet
 from app.translators.api.views.csharp import CSharpViewSet
 from app.translators.api.views.java import JavaViewSet
 from app.translators.api.views.rust186 import Rust186ViewSet
+from app.translators.api.views.go123 import Go123ViewSet
+from app.translators.api.views.node20 import Node20ViewSet
