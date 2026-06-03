@@ -13,6 +13,10 @@
 - Rust186
 - Go123
 - Node20
+- Java17
+- Kotlin23
+- Ruby4
+- Python314
 
 #### В URL запроса
 - python38  
@@ -26,6 +30,10 @@
 - rust186
 - go123
 - node20
+- java17
+- kotlin23
+- ruby4
+- python314
 
 ### Оценочные методы  
 - tests - оценка на основании прохождения тестов

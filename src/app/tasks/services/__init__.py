@@ -11,3 +11,7 @@ from app.tasks.services.taskitem.rust186 import Rust186Service
 from app.tasks.services.taskitem.csharp import CsharpService
 from app.tasks.services.taskitem.go123 import Go123Service
 from app.tasks.services.taskitem.node20 import Node20Service
+from app.tasks.services.taskitem.java17 import Java17Service
+from app.tasks.services.taskitem.kotlin23 import Kotlin23Service
+from app.tasks.services.taskitem.ruby4 import Ruby4Service
+from app.tasks.services.taskitem.python314 import Python314Service

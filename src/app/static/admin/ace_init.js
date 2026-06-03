@@ -10,6 +10,10 @@ var colorSchemes = {
     'Rust186': 'ace/mode/rust',
     'Go123': 'ace/mode/golang',
     'Node20': 'ace/mode/javascript',
+    'Java17': 'ace/mode/java',
+    'Kotlin23': 'ace/mode/kotlin',
+    'Ruby4': 'ace/mode/ruby',
+    'Python314': 'ace/mode/python',
 }
 
 var aceInit = function(readonly = false){

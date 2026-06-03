@@ -257,6 +257,18 @@ SERVICES_HOSTS = {
     TranslatorType.NODE20: env.get(
         'NODE20_HOST', 'http://localhost:9011'
     ),
+    TranslatorType.JAVA17: env.get(
+        'JAVA17_HOST', 'http://localhost:9012'
+    ),
+    TranslatorType.KOTLIN23: env.get(
+        'KOTLIN23_HOST', 'http://localhost:9013'
+    ),
+    TranslatorType.RUBY4: env.get(
+        'RUBY4_HOST', 'http://localhost:9014'
+    ),
+    TranslatorType.PYTHON314: env.get(
+        'PYTHON314_HOST', 'http://localhost:9015'
+    ),
 }
 
 ANTIPLAG_HOST = env.get(

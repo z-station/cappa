@@ -58,6 +58,14 @@ class BaseTaskItemViewSet(GenericViewSet):
             return services.Go123Service
         elif cls.translator_type == TranslatorType.NODE20:
             return services.Node20Service
+        elif cls.translator_type == TranslatorType.JAVA17:
+            return services.Java17Service
+        elif cls.translator_type == TranslatorType.KOTLIN23:
+            return services.Kotlin23Service
+        elif cls.translator_type == TranslatorType.RUBY4:
+            return services.Ruby4Service
+        elif cls.translator_type == TranslatorType.PYTHON314:
+            return services.Python314Service
 
     def get_serializer_class(self):
         if self.action == 'create_solution':
