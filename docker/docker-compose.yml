@@ -49,6 +49,10 @@ services:
       RUST186_HOST: http://sandbox-rust186:9009
       GO123_HOST: http://sandbox-go123:9010
       NODE20_HOST: http://sandbox-node20:9011
+      JAVA17_HOST: http://sandbox-java17:9012
+      KOTLIN23_HOST: http://sandbox-kotlin2.3:9013
+      RUBY4_HOST: http://sandbox-ruby4:9014
+      PYTHON314_HOST: http://sandbox-python3.14:9015
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "-h", cappa-db]
