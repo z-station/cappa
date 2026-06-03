@@ -8,3 +8,9 @@ from app.translators.services.php import PhpService
 from app.translators.services.csharp import CsharpService
 from app.translators.services.java import JavaService
 from app.translators.services.rust186 import Rust186Service
+from app.translators.services.go123 import Go123Service
+from app.translators.services.node20 import Node20Service
+from app.translators.services.java17 import Java17Service
+from app.translators.services.kotlin23 import Kotlin23Service
+from app.translators.services.ruby4 import Ruby4Service
+from app.translators.services.python314 import Python314Service

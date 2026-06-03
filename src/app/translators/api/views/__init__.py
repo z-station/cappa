@@ -8,3 +8,9 @@ from app.translators.api.views.php import PhpViewSet
 from app.translators.api.views.csharp import CSharpViewSet
 from app.translators.api.views.java import JavaViewSet
 from app.translators.api.views.rust186 import Rust186ViewSet
+from app.translators.api.views.go123 import Go123ViewSet
+from app.translators.api.views.node20 import Node20ViewSet
+from app.translators.api.views.java17 import Java17ViewSet
+from app.translators.api.views.kotlin23 import Kotlin23ViewSet
+from app.translators.api.views.ruby4 import Ruby4ViewSet
+from app.translators.api.views.python314 import Python314ViewSet

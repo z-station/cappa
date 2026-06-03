@@ -59,6 +59,36 @@ router.register(
     views.Rust186ViewSet,
     basename='taskitem-rust186'
 )
+router.register(
+    'taskitem/go123',
+    views.Go123ViewSet,
+    basename='taskitem-go123'
+)
+router.register(
+    'taskitem/node20',
+    views.Node20ViewSet,
+    basename='taskitem-node20'
+)
+router.register(
+    'taskitem/java17',
+    views.Java17ViewSet,
+    basename='taskitem-java17'
+)
+router.register(
+    'taskitem/kotlin23',
+    views.Kotlin23ViewSet,
+    basename='taskitem-kotlin23'
+)
+router.register(
+    'taskitem/ruby4',
+    views.Ruby4ViewSet,
+    basename='taskitem-ruby4'
+)
+router.register(
+    'taskitem/python314',
+    views.Python314ViewSet,
+    basename='taskitem-python314'
+)
 
 
 urlpatterns = router.urls
