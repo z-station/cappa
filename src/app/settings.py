@@ -223,6 +223,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+TEST_RUNNER = 'app.test_runner.CappaDiscoverRunner'
+
 SERVICES_HOSTS = {
     TranslatorType.PYTHON38: env.get(
         'PYTHON38_HOST', 'http://localhost:9001'
