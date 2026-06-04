@@ -5,42 +5,54 @@ from rest_framework.authtoken.models import Token
 from app.auth.forms import SignInForm, SignupForm
 from app.service.models.site import SiteSettings
 from app.auth.mixins import NextPathMixin
+from app.common.mixins import PermissionMixin
+from app.auth.permissions import SignInPermission, SignUpPermission
 
 
-class SignInView(View, NextPathMixin):
+class SignInView(PermissionMixin, View, NextPathMixin):
+
+    permission_classes = ()
+    action_permissions = {
+        'post': (SignInPermission,),
+    }
+
+    def _get_signin_context(self, request, form):
+        next_path = self._get_next_path(request)
+        signup_path = '/auth/signup/'
+        if next_path != self.HOME_PATH:
+            signup_path += f'?next={next_path}'
+        return {
+            'form': form,
+            'signup_path': signup_path,
+        }
 
     def get(self, request, *args, **kwargs):
         if request.user.is_active:
             return redirect('/')
         next_path = self._get_next_path(request)
-        form = SignInForm(
-            request=request,
-            initial={'next': next_path}
-        )
-        signup_path = '/auth/signup/'
-        if next_path != self.HOME_PATH:
-            signup_path += f'?next={next_path}'
+        form = SignInForm(request=request, initial={'next': next_path})
         return render(
             request=request,
             template_name='auth/signin.html',
-            context={
-                'form': form,
-                'signup_path': signup_path
-            }
+            context=self._get_signin_context(request, form),
         )
 
     def post(self, request, *args, **kwargs):
+
         form = SignInForm(request=request, data=request.POST)
         if form.is_valid():
-            login(request, form.user)
-            Token.objects.get_or_create(user=form.user)
-            return redirect(form.cleaned_data.get('next', '/'))
-        else:
-            return render(
-                request=request,
-                template_name='auth/signin.html',
-                context={'form': form}
-            )
+            denied_permission = self.check_permissions(request, user=form.user)
+            if denied_permission:
+                form.add_error(field=None, error=denied_permission.message)
+            else:
+                login(request, form.user)
+                Token.objects.get_or_create(user=form.user)
+                return redirect(form.cleaned_data.get('next', '/'))
+        return render(
+            request=request,
+            template_name='auth/signin.html',
+            context=self._get_signin_context(request, form),
+        )
 
 
 class SignOutView(View, NextPathMixin):
@@ -54,13 +66,14 @@ class SignOutView(View, NextPathMixin):
             return redirect(self.HOME_PATH)
 
 
-class SignUpView(View, NextPathMixin):
+class SignUpView(PermissionMixin, View, NextPathMixin):
 
-    def get(self, request, *args, **kwargs):
-        if request.user.is_active:
-            return redirect(self.HOME_PATH)
+    action_permissions = {
+        'post': (SignUpPermission,),
+    }
+
+    def _get_signup_context(self, request, form):
         next_path = self._get_next_path(request)
-        form = SignupForm(initial={'next': next_path})
         signin_path = '/auth/signin/'
         if next_path != self.HOME_PATH:
             signin_path += f'?next={next_path}'
@@ -70,19 +83,29 @@ class SignUpView(View, NextPathMixin):
             if site_settings is not None
             else False
         )
+        return {
+            'form': form,
+            'signin_path': signin_path,
+            'confirm_signup': confirm_signup,
+        }
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_active:
+            return redirect(self.HOME_PATH)
+        next_path = self._get_next_path(request)
+        form = SignupForm(initial={'next': next_path})
         return render(
             request=request,
             template_name='auth/signup.html',
-            context={
-                'form': form,
-                'signin_path': signin_path,
-                'confirm_signup': confirm_signup
-            }
+            context=self._get_signup_context(request, form),
         )
 
     def post(self, request, *args, **kwargs):
         form = SignupForm(data=request.POST)
-        if form.is_valid():
+        denied_permission = self.check_permissions(request)
+        if denied_permission:
+            form.add_error(field=None, error=denied_permission.message)
+        elif form.is_valid():
             site_settings = SiteSettings.objects.last()
             confirm_signup = (
                 site_settings.confirm_signup
@@ -93,15 +116,18 @@ class SignUpView(View, NextPathMixin):
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
+                return redirect(form.cleaned_data.get('next', self.HOME_PATH))
             else:
                 user = form.save()
-                login(request, user)
-                Token.objects.create(user=user)
-            return redirect(form.cleaned_data.get('next', self.HOME_PATH))
-        else:
-            return render(
-                request=request,
-                template_name='auth/signup.html',
-                context={'form': form}
-            )
-
+                signin_permission = SignInPermission()
+                if signin_permission.has_permission(request, view=self, user=user):
+                    login(request, user)
+                    Token.objects.create(user=user)
+                    return redirect(form.cleaned_data.get('next', self.HOME_PATH))
+                else:
+                    form.add_error(field=None, error=signin_permission.message)
+        return render(
+            request=request,
+            template_name='auth/signup.html',
+            context=self._get_signup_context(request, form),
+        )
