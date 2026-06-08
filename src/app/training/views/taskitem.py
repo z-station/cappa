@@ -38,6 +38,7 @@ class TaskItemView(View):
         ).by_task(
             taskitem.task_id
         ).exists()
+        translator = taskitem.get_valid_translator(request.GET.get('translator'))
         return render(
             request=request,
             template_name='training/taskitem.html',
@@ -45,9 +46,8 @@ class TaskItemView(View):
                 'course': taskitem.topic.course,
                 'object': taskitem,
                 'solutions_exists': solutions_exists,
-                'translator': taskitem.translator[0],
-                'sql_translator': (
-                    taskitem.translator[0] == TranslatorType.POSTGRESQL
-                )
+                'translator': translator,
+                'translators': taskitem.get_translator_choices(),
+                'sql_translator': translator == TranslatorType.POSTGRESQL,
             }
         )

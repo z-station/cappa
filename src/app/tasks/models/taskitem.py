@@ -1,5 +1,5 @@
 import json
-from typing import Optional
+from typing import List, Optional, Tuple
 from django.core.cache import cache
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -88,6 +88,20 @@ class TaskItem(models.Model):
     @property
     def translator_name(self) -> str:
         return TranslatorType.MAP[self.translator]
+
+    def get_valid_translator(
+        self,
+        translator: Optional[TranslatorType] = None,
+    ) -> str:
+        if translator and translator in self.translator:
+            return translator
+        default = self.topic.course.translator if self.topic_id else None
+        if default and default in self.translator:
+            return default
+        return self.translator[0]
+
+    def get_translator_choices(self) -> List[Tuple[str, str]]:
+        return [(t, TranslatorType.MAP[t]) for t in self.translator]
 
     @property
     def title(self):

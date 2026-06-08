@@ -57,7 +57,7 @@ class UserAdmin(BaseUserAdmin):
     )
     readonly_fields = ('last_login', 'date_joined', 'is_online')
     list_display = ('full_name', 'email', 'is_online', 'is_active',)
-    list_filter = ('is_active', 'role', 'groups')
+    list_filter = ('is_active', 'role', 'groups', 'is_superuser', 'is_staff')
     search_fields = (
         'username',
         'first_name',

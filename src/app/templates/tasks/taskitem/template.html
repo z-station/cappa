@@ -27,6 +27,15 @@
 
         <div class="white page-content ">
             <h3>Редактор решения</h3>
+            {% if translators|length > 1 %}
+                <div class="mb-3">
+                    <select id="js__taskitem-translator" class="form-control">
+                        {% for value, label in translators %}
+                            <option value="{{ value }}"{% if value == translator %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
             {% show_editor object %}
         </div>
 
@@ -74,5 +83,16 @@
     <script>
         window.authToken = '{{ request.user.auth_token }}'
         new Editor(document.querySelector('.js__editor-form'))
+        ;(function () {
+            var select = document.getElementById('js__taskitem-translator');
+            if (!select) {
+                return;
+            }
+            select.addEventListener('change', function () {
+                var url = new URL(window.location.href);
+                url.searchParams.set('translator', select.value);
+                window.location.href = url.toString();
+            });
+        })();
     </script>
 {% endblock %}
