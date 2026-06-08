@@ -1,5 +1,4 @@
 var colorSchemes = {
-    'Python3.8': 'ace/mode/python',
     'GCC7.4': 'ace/mode/c_cpp',
     'Prolog-D': 'ace/mode/prolog',
     'PostgreSQL': 'ace/mode/pgsql',
