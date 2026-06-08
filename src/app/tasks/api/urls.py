@@ -15,11 +15,6 @@ router.register(
     basename='taskitem'
 )
 router.register(
-    'taskitem/python38',
-    views.Python38ViewSet,
-    basename='taskitem-python38'
-)
-router.register(
     'taskitem/gcc74',
     views.GCC74ViewSet,
     basename='taskitem-gcc74'

@@ -38,7 +38,6 @@ services:
       POSTGRES_DB: cappa
       POSTGRES_HOST: cappa-db
       APP_STATIC_ROOT: /app/public/static
-      PYTHON38_HOST: http://sandbox-python38:9001
       GCC74_HOST: http://sandbox-gcc74:9002
       PROLOGD_HOST: http://sandbox-prolog-d:9003
       POSTGRESQL_HOST: http://sandbox-postgresql:9004

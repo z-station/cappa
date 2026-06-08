@@ -2,7 +2,6 @@
 
 ### Доступные коды трансляторов
 #### В теле запроса
-- Python3.8  
 - GCC7.4   
 - Prolog-D
 - PostgreSQL
@@ -19,7 +18,6 @@
 - Python314
 
 #### В URL запроса
-- python38  
 - gcc74   
 - prolog-d
 - postgresql

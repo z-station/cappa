@@ -3,7 +3,6 @@ import typing
 
 class TranslatorType:
 
-    PYTHON38 = 'Python3.8'
     GCC74 = 'GCC7.4'
     PROLOG_D = 'Prolog-D'
     POSTGRESQL = 'PostgreSQL'
@@ -20,7 +19,6 @@ class TranslatorType:
     PYTHON314 = 'Python314'
 
     CHOICES = (
-        (PYTHON38, 'Python 3.8'),
         (GCC74, 'С++ (GCC 7.4)'),
         (CSHARP, 'C# 7.3'),
         (PROLOG_D, 'Пролог-Д'),
@@ -36,7 +34,6 @@ class TranslatorType:
     )
 
     MAP = {
-        PYTHON38: 'Python 3.8',
         GCC74: 'С++ (GCC 7.4)',
         CSHARP: 'C# 7.3',
         PROLOG_D: 'Пролог-Д',
@@ -52,14 +49,13 @@ class TranslatorType:
     }
 
     ANTIPLAG_ALLOWED = {
-        PYTHON38,
+        PYTHON314,
         GCC74,
         JAVA,
         POSTGRESQL
     }
 
     LITERALS = typing.Literal[
-        PYTHON38,
         GCC74,
         PROLOG_D,
         POSTGRESQL,
