@@ -276,9 +276,6 @@ SERVICES_HOSTS = {
 ANTIPLAG_HOST = env.get(
     'ANTIPLAG_HOST', 'http://localhost:9020'
 )
-SQL_ANTIPLAG_HOST = env.get(
-    'SQL_ANTIPLAG_HOST', 'http://localhost:9021'
-)
 
 # ~========== FILEBROWSER ===========~
 

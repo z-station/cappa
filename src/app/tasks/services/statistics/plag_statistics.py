@@ -38,14 +38,8 @@ class PlagStatisticsService(RequestMixin):
         TranslatorType.PYTHON38: 'python',
         TranslatorType.GCC74: 'cpp',
         TranslatorType.JAVA: 'java',
+        TranslatorType.POSTGRESQL: 'sql',
     }
-
-    @classmethod
-    def _is_sql_translator(
-        cls,
-        translator: TranslatorType.LITERALS
-    ) -> bool:
-        return translator == TranslatorType.POSTGRESQL
 
     @classmethod
     def _get_candidates_solutions(
@@ -166,26 +160,6 @@ class PlagStatisticsService(RequestMixin):
             return response.json()
 
     @classmethod
-    def _get_sql_plag_data(
-        cls,
-        ref_code: str,
-        candidates_data: List[CandidateData]
-    ) -> PlagData:
-        try:
-            response = cls._perform_request(
-                url=f'{settings.SQL_ANTIPLAG_HOST}/check/',
-                data={
-                    "ref_code": ref_code,
-                    "candidates": candidates_data
-                },
-                timeout=10
-            )
-        except (ServiceConnectionError, ServiceBadRequest) as ex:
-            raise CheckPlagException(details=ex.details)
-        else:
-            return response.json()
-
-    @classmethod
     def create_or_update_taskitem_statistics(
         cls,
         user_id: int,
@@ -258,17 +232,11 @@ class PlagStatisticsService(RequestMixin):
             translator=translator,
         )
         if candidates_data:
-            if cls._is_sql_translator(translator):
-                plag_data = cls._get_sql_plag_data(
-                    ref_code=ref_solution.content,
-                    candidates_data=candidates_data
-                )
-            else:
-                plag_data = cls._get_plag_data(
-                    ref_code=ref_solution.content,
-                    candidates_data=candidates_data,
-                    translator=translator
-                )
+            plag_data = cls._get_plag_data(
+                ref_code=ref_solution.content,
+                candidates_data=candidates_data,
+                translator=translator
+            )
 
             percent = plag_data['percent']
             if percent == -1:
