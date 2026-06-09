@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.views.static import serve
@@ -6,60 +6,33 @@ from django.contrib import admin
 from filebrowser.sites import site
 
 urlpatterns = [
-    url(
-        regex=r'^api/',
-        view=include('app.api_urls')
+    path('api/', include('app.api_urls')),
+    path(
+        'admin/filebrowser/',
+        include((site.get_urls(), site.app_name), namespace=site.name)
     ),
-    url(
-        regex=r'^admin/filebrowser/',
-        view=include(site.urls)
+    path('admin/', admin.site.urls),
+    path(
+        'media/<path:path>',
+        serve,
+        {'document_root': settings.MEDIA_ROOT}
     ),
-    url(
-        regex=r'^admin/',
-        view=admin.site.urls
+    path(
+        'static/<path:path>',
+        serve,
+        {'document_root': settings.STATIC_ROOT}
     ),
-    url(
-        regex=r'^media/(?P<path>.*)$',
-        view=serve,
-        kwargs={'document_root': settings.MEDIA_ROOT}
-    ),
-    url(
-        regex=r'^static/(?P<path>.*)$',
-        view=serve,
-        kwargs={'document_root': settings.STATIC_ROOT}
-    ),
-    url(
-        regex=r'^courses/',
-        view=include('app.training.urls', namespace='training')
-    ),
-    url(
-        regex=r'^solutions/',
-        view=include('app.tasks.urls.solution', namespace='solutions')
-    ),
-    url(
-        regex=r'^groups/',
-        view=include('app.groups.urls', namespace='groups')
-    ),
-    url(
-        regex=r'^taskbook/',
-        view=include('app.taskbook.urls', namespace='taskbook')
-    ),
-    url(
-        regex=r'^tinymce/',
-        view=include('tinymce.urls')
-    ),
-    url(
-        regex=r'^auth/',
-        view=include('app.auth.urls', namespace='auth')
-    ),
-    url(
-        regex=r'^$',
-        view=TemplateView.as_view(template_name='frontpage.html')
-    )
+    path('courses/', include('app.training.urls', namespace='training')),
+    path('solutions/', include('app.tasks.urls.solution', namespace='solutions')),
+    path('groups/', include('app.groups.urls', namespace='groups')),
+    path('taskbook/', include('app.taskbook.urls', namespace='taskbook')),
+    path('tinymce/', include('tinymce.urls')),
+    path('auth/', include('app.auth.urls', namespace='auth')),
+    path('', TemplateView.as_view(template_name='frontpage.html')),
 ]
 
 try:
     from app.service.models import SiteSettings
     admin.site.site_header = SiteSettings.objects.get(id=settings.SITE_ID).name
-except:
+except Exception:
     pass

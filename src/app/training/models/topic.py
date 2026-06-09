@@ -30,7 +30,12 @@ class Topic(models.Model):
         null=True
     )
 
-    course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
+    course = models.ForeignKey(
+        Course,
+        verbose_name='курс',
+        related_name='_topics',
+        on_delete=models.CASCADE,
+    )
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     database = models.ForeignKey(
@@ -116,7 +121,11 @@ class Content(models.Model):
     readonly = models.BooleanField(verbose_name='Только для чтения', default=False)
     text = HTMLField(blank=True, null=True)
     type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
-    topic = models.ForeignKey(Topic, related_name='_content')
+    topic = models.ForeignKey(
+        Topic,
+        related_name='_content',
+        on_delete=models.CASCADE,
+    )
     order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
 
     @property

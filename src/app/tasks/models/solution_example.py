@@ -22,7 +22,11 @@ class SolutionExample(models.Model):
         blank=True,
         null=True
     )
-    task = models.ForeignKey(Task, related_name='solution_examples')
+    task = models.ForeignKey(
+        Task,
+        related_name='solution_examples',
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return ''

@@ -51,7 +51,8 @@ class Database(models.Model):
     )
     author = models.ForeignKey(
         UserModel,
-        verbose_name='владелец'
+        verbose_name='владелец',
+        on_delete=models.CASCADE,
     )
 
     @property

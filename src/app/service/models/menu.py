@@ -35,7 +35,11 @@ class MenuItem(models.Model):
         ordering = ('order_key',)
 
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
-    menu = models.ForeignKey(Menu, related_name='menuitems')
+    menu = models.ForeignKey(
+        Menu,
+        related_name='menuitems',
+        on_delete=models.CASCADE,
+    )
     name = models.CharField(verbose_name='текст', max_length=255)
     url = models.CharField(verbose_name='ссылка', max_length=255)
     image = AnyExtFileBrowseField(

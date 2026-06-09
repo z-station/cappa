@@ -1,4 +1,4 @@
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from app.common.admin.actions import delete_selected
 
 
@@ -22,6 +22,6 @@ class DeleteSelectedMixin:
         """ Perform delete many records """
 
         for obj in queryset:
-            obj_display = force_text(obj)
+            obj_display = force_str(obj)
             modeladmin.log_deletion(request, obj, obj_display)
         queryset.delete()

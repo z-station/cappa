@@ -138,11 +138,13 @@ class GroupMember(models.Model):
     user = models.ForeignKey(
         UserModel,
         verbose_name='участник',
-        related_name='group_members'
+        related_name='group_members',
+        on_delete=models.CASCADE,
     )
     group = models.ForeignKey(
         Group,
-        related_name='group_members'
+        related_name='group_members',
+        on_delete=models.CASCADE,
     )
     role = models.CharField(
         verbose_name='роль',
@@ -162,8 +164,16 @@ class GroupCourse(models.Model):
         verbose_name_plural = 'учебные курсы'
         unique_together = ['group', 'course']
 
-    group = models.ForeignKey(Group, related_name='group_courses')
-    course = models.ForeignKey(Course, verbose_name='курс')
+    group = models.ForeignKey(
+        Group,
+        related_name='group_courses',
+        on_delete=models.CASCADE,
+    )
+    course = models.ForeignKey(
+        Course,
+        verbose_name='курс',
+        on_delete=models.CASCADE,
+    )
     statistics_access = models.CharField(
         verbose_name='доступ к групповой статистике',
         help_text='отвечает за видимость таблицы с итогами курса',

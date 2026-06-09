@@ -1,16 +1,10 @@
 # -*- coding:utf-8 -*-
-from django.conf.urls import url
+from django.urls import path
 from app.taskbook import views
 
+app_name = 'taskbook'
+
 urlpatterns = [
-    url(
-        regex=r'^$',
-        view=views.TaskBookView.as_view(),
-        name='taskbook'
-    ),
-    url(
-        regex='^(?P<taskitem>[-\w]+)/$',
-        view=views.TaskItemView.as_view(),
-        name='taskitem'
-    )
+    path('', views.TaskBookView.as_view(), name='taskbook'),
+    path('<slug:taskitem>/', views.TaskItemView.as_view(), name='taskitem'),
 ]

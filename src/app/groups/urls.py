@@ -1,26 +1,20 @@
 # -*- coding:utf-8 -*-
-from django.conf.urls import url
+from django.urls import path
 from app.groups import views
 
+app_name = 'groups'
+
 urlpatterns = [
-    url(
-        regex=r'^$',
-        view=views.GroupListView.as_view(),
-        name='groups'
-    ),
-    url(
-        regex=r'^(?P<group_id>[0-9]+)/$',
-        view=views.GroupView.as_view(),
-        name='group'
-        ),
-    url(
-        regex=r'^(?P<group_id>[0-9]+)/statistics/$',
-        view=views.GroupCourseStatisticsView.as_view(),
+    path('', views.GroupListView.as_view(), name='groups'),
+    path('<int:group_id>/', views.GroupView.as_view(), name='group'),
+    path(
+        '<int:group_id>/statistics/',
+        views.GroupCourseStatisticsView.as_view(),
         name='group-course-statistics'
     ),
-    url(
-        regex=r'^(?P<group_id>[0-9]+)/plag-statistics/$',
-        view=views.GroupCoursePlagStatisticsView.as_view(),
+    path(
+        '<int:group_id>/plag-statistics/',
+        views.GroupCoursePlagStatisticsView.as_view(),
         name='group-course-plag-statistics'
-    )
+    ),
 ]

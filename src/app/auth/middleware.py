@@ -10,7 +10,7 @@ class LastSeenUserMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             UserService.set_last_seen_now(request.user)
         response = self.get_response(request)
 
