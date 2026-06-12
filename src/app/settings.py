@@ -64,7 +64,6 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader',
             ],
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -124,7 +123,10 @@ DATABASES = {
         'USER': env.get('POSTGRES_USER', 'cappa'),
         'PASSWORD': env.get('PGPASSWORD', 'cappa'),
         'HOST': env.get('POSTGRES_HOST', 'localhost'),
-        'PORT': env.get('POSTGRES_PORT', 5432)
+        'PORT': env.get('POSTGRES_PORT', 5432),
+        'OPTIONS': {
+            'options': '-c timezone=UTC',
+        },
     }
 }
 
@@ -305,3 +307,22 @@ FILEBROWSER_DEFAULT_SORTING_BY = "date"
 FILEBROWSER_DEFAULT_SORTING_ORDER = "desc"
 FILEBROWSER_SEARCH_TRAVERSE = True
 FILEBROWSER_OVERWRITE_EXISTING = False
+
+# psycopg2 >= 2.9 passes datetime.timedelta(0) to utc_tzinfo_factory,
+# but Django 2.2 expects integer 0 (fixed in Django 3.0).
+import datetime
+
+from django.utils.timezone import utc as _utc
+
+
+def _utc_tzinfo_factory(offset):
+    if offset not in (0, datetime.timedelta(0)):
+        raise AssertionError("database connection isn't set to UTC")
+    return _utc
+
+
+import django.db.backends.postgresql.utils as _pg_utils
+import django.db.backends.postgresql.base as _pg_base
+
+_pg_utils.utc_tzinfo_factory = _utc_tzinfo_factory
+_pg_base.utc_tzinfo_factory = _utc_tzinfo_factory
