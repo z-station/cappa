@@ -52,7 +52,7 @@ services:
       KOTLIN23_HOST: http://sandbox-kotlin2.3:9013
       RUBY4_HOST: http://sandbox-ruby4:9014
       PYTHON314_HOST: http://sandbox-python3.14:9015
-      ANTIPLAG_HOST: http://sandbox-python3.14:9020
+      ANTIPLAG_HOST: http://antiplag:9020
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "-h", cappa-db]
