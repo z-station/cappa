@@ -36,9 +36,7 @@ class BaseTaskItemViewSet(GenericViewSet):
 
     @classmethod
     def _get_service_cls(cls) -> Type[services.BaseTaskItemService]:
-        if cls.translator_type == TranslatorType.PYTHON38:
-            return services.Python38Service
-        elif cls.translator_type == TranslatorType.GCC74:
+        if cls.translator_type == TranslatorType.GCC74:
             return services.GCC74Service
         elif cls.translator_type == TranslatorType.PROLOG_D:
             return services.PrologDService

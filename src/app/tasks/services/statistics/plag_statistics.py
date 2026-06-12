@@ -35,7 +35,7 @@ UserModel = get_user_model()
 class PlagStatisticsService(RequestMixin):
 
     langs_map = {
-        TranslatorType.PYTHON38: 'python',
+        TranslatorType.PYTHON314: 'python',
         TranslatorType.GCC74: 'cpp',
         TranslatorType.JAVA: 'java',
         TranslatorType.POSTGRESQL: 'sql',

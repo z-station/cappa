@@ -19,7 +19,7 @@ class TaskItemTranslatorTests(SimpleTestCase):
     def test_get_valid_translator_without_request_uses_first(self):
         # Arrange
         taskitem = self._taskitem([
-            TranslatorType.PYTHON38,
+            TranslatorType.PYTHON314,
             TranslatorType.GCC74,
         ])
 
@@ -27,12 +27,12 @@ class TaskItemTranslatorTests(SimpleTestCase):
         result = taskitem.get_valid_translator(None)
 
         # Assert
-        self.assertEqual(result, TranslatorType.PYTHON38)
+        self.assertEqual(result, TranslatorType.PYTHON314)
 
     def test_get_valid_translator_valid_request(self):
         # Arrange
         taskitem = self._taskitem([
-            TranslatorType.PYTHON38,
+            TranslatorType.PYTHON314,
             TranslatorType.GCC74,
         ])
 
@@ -45,7 +45,7 @@ class TaskItemTranslatorTests(SimpleTestCase):
     def test_get_valid_translator_invalid_request_uses_first(self):
         # Arrange
         taskitem = self._taskitem([
-            TranslatorType.PYTHON38,
+            TranslatorType.PYTHON314,
             TranslatorType.GCC74,
         ])
 
@@ -53,16 +53,16 @@ class TaskItemTranslatorTests(SimpleTestCase):
         result = taskitem.get_valid_translator(TranslatorType.POSTGRESQL)
 
         # Assert
-        self.assertEqual(result, TranslatorType.PYTHON38)
+        self.assertEqual(result, TranslatorType.PYTHON314)
 
     def test_get_valid_translator_request_overrides_default(self):
         # Arrange
         taskitem = self._taskitem(
             [
-                TranslatorType.PYTHON38,
+                TranslatorType.PYTHON314,
                 TranslatorType.GCC74,
             ],
-            course_translator=TranslatorType.PYTHON38,
+            course_translator=TranslatorType.PYTHON314,
         )
 
         # Act
@@ -75,7 +75,7 @@ class TaskItemTranslatorTests(SimpleTestCase):
         # Arrange
         taskitem = self._taskitem(
             [
-                TranslatorType.PYTHON38,
+                TranslatorType.PYTHON314,
                 TranslatorType.GCC74,
             ],
             course_translator=TranslatorType.GCC74,
@@ -91,7 +91,7 @@ class TaskItemTranslatorTests(SimpleTestCase):
         # Arrange
         taskitem = self._taskitem(
             [
-                TranslatorType.PYTHON38,
+                TranslatorType.PYTHON314,
                 TranslatorType.GCC74,
             ],
             course_translator=TranslatorType.POSTGRESQL,
@@ -101,13 +101,13 @@ class TaskItemTranslatorTests(SimpleTestCase):
         result = taskitem.get_valid_translator(None)
 
         # Assert
-        self.assertEqual(result, TranslatorType.PYTHON38)
+        self.assertEqual(result, TranslatorType.PYTHON314)
 
     def test_get_translator_choices(self):
         # Arrange
         taskitem = self._taskitem([
             TranslatorType.GCC74,
-            TranslatorType.PYTHON38,
+            TranslatorType.PYTHON314,
         ])
 
         # Act
@@ -118,6 +118,6 @@ class TaskItemTranslatorTests(SimpleTestCase):
             result,
             [
                 (TranslatorType.GCC74, TranslatorType.MAP[TranslatorType.GCC74]),
-                (TranslatorType.PYTHON38, TranslatorType.MAP[TranslatorType.PYTHON38]),
+                (TranslatorType.PYTHON314, TranslatorType.MAP[TranslatorType.PYTHON314]),
             ],
         )

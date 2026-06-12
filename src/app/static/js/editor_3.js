@@ -6,7 +6,7 @@
         <form
           class="js__editor-form"
           id="js__editor-form-1"
-          data-translator="Python3.8"
+          data-translator="Python314"
           data-readonly="false"
           data-taskitemid="1" // только для полной версии
         >
@@ -37,10 +37,10 @@
         </form>
     */
 /*
-    POST /api/translators/python38/debug/
+    POST /api/translators/python314/debug/
     POST /api/tasks/:id/draft/
-    POST /api/training/taskitem/python38/:id/testing/
-    POST /api/training/taskitem/python38/:id/create-solution/
+    POST /api/training/taskitem/python314/:id/testing/
+    POST /api/training/taskitem/python314/:id/create-solution/
 */
 
 var editorInitField = (editor, field) => {
@@ -140,7 +140,6 @@ var editorAutoSaveHandler = (editor) => {
 class Editor {
 
     colorSchemes = {
-        'Python3.8': 'ace/mode/python',
         'GCC7.4': 'ace/mode/c_cpp',
         'Prolog-D': 'ace/mode/prolog',
         'PostgreSQL': 'ace/mode/pgsql',
@@ -157,7 +156,6 @@ class Editor {
         'Python314': 'ace/mode/python',
     }
     urlNames = {
-        'Python3.8': 'python38',
         'GCC7.4': 'gcc74',
         'Prolog-D': 'prolog-d',
         'PostgreSQL': 'postgresql',
