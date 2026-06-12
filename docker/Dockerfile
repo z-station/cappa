@@ -20,8 +20,8 @@ RUN apt-get update && \
 RUN apt-get -y install libenchant-2-dev aspell-ru aspell-en
 
 COPY ./src/pyproject.toml ./src/poetry.lock /tmp/
-RUN cd /tmp && \
-    poetry config virtualenvs.create false && \
+WORKDIR /tmp
+RUN poetry config virtualenvs.create false && \
     poetry install --no-dev --no-root --no-interaction
 
 WORKDIR /app/src
