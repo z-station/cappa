@@ -44,7 +44,7 @@ class UserStatistics(models.Model):
         verbose_name='идентификатор источника решения',
         null=True
     )
-    user = models.ForeignKey(UserModel)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
 
 class UserPlagStatistics(models.Model):
@@ -84,4 +84,4 @@ class UserPlagStatistics(models.Model):
         verbose_name='идентификатор источника решения',
         null=True
     )
-    user = models.ForeignKey(UserModel)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)

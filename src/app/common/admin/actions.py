@@ -4,8 +4,8 @@ from django.contrib.admin.utils import get_deleted_objects, model_ngettext
 from django.core.exceptions import PermissionDenied
 from django.db import router
 from django.template.response import TemplateResponse
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.encoding import force_str
+from django.utils.translation import gettext as _, gettext_lazy
 
 
 def delete_selected(modeladmin, request, queryset):
@@ -42,9 +42,9 @@ def delete_selected(modeladmin, request, queryset):
         return None
 
     if len(queryset) == 1:
-        objects_name = force_text(opts.verbose_name)
+        objects_name = force_str(opts.verbose_name)
     else:
-        objects_name = force_text(opts.verbose_name_plural)
+        objects_name = force_str(opts.verbose_name_plural)
 
     if perms_needed or protected:
         title = _("Cannot delete %(name)s") % {"name": objects_name}
@@ -75,4 +75,4 @@ def delete_selected(modeladmin, request, queryset):
     ], context)
 
 
-delete_selected.short_description = ugettext_lazy("Delete selected %(verbose_name_plural)s")
+delete_selected.short_description = gettext_lazy("Delete selected %(verbose_name_plural)s")

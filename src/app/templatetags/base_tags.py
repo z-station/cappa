@@ -5,7 +5,7 @@ from django import template
 register = template.Library()
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_admin_sidebar_models(context):
 
     """ Получить список ссылок для сайдбара в админке """

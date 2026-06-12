@@ -42,7 +42,8 @@ class TaskItem(models.Model):
     task = models.ForeignKey(
         Task,
         verbose_name='задача',
-        related_name='taskitems'
+        related_name='taskitems',
+        on_delete=models.CASCADE,
     )
     max_score = models.PositiveIntegerField(
         verbose_name='балл за решение',

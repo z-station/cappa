@@ -4,6 +4,6 @@ from app.news.models import News
 register = template.Library()
 
 
-@register.assignment_tag
+@register.simple_tag
 def get_news():
     return News.objects.filter(show=True)

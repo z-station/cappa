@@ -1,25 +1,18 @@
-from django.conf.urls import url
+from django.urls import path
 from app.tasks.views import (
     SolutionView,
     SolutionsView,
     SolutionsDiffView,
 )
 
+app_name = 'solutions'
 
 urlpatterns = [
-    url(
-        regex='^(?P<pk>[0-9]+)/diff/(?P<pair>[0-9]+)/$',
-        view=SolutionsDiffView.as_view(),
+    path(
+        '<int:pk>/diff/<int:pair>/',
+        SolutionsDiffView.as_view(),
         name='diff'
     ),
-    url(
-        regex='^(?P<pk>[0-9]+)/$',
-        view=SolutionView.as_view(),
-        name='solution'
-    ),
-    url(
-        regex='^$',
-        view=SolutionsView.as_view(),
-        name='solutions'
-    ),
+    path('<int:pk>/', SolutionView.as_view(), name='solution'),
+    path('', SolutionsView.as_view(), name='solutions'),
 ]

@@ -64,7 +64,6 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader',
             ],
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -123,7 +122,10 @@ DATABASES = {
         'USER': env.get('POSTGRES_USER', 'cappa'),
         'PASSWORD': env.get('PGPASSWORD', 'cappa'),
         'HOST': env.get('POSTGRES_HOST', 'localhost'),
-        'PORT': env.get('POSTGRES_PORT', 5432)
+        'PORT': env.get('POSTGRES_PORT', 5432),
+        'OPTIONS': {
+            'options': '-c timezone=UTC',
+        },
     }
 }
 
@@ -271,9 +273,6 @@ SERVICES_HOSTS = {
 
 ANTIPLAG_HOST = env.get(
     'ANTIPLAG_HOST', 'http://localhost:9020'
-)
-SQL_ANTIPLAG_HOST = env.get(
-    'SQL_ANTIPLAG_HOST', 'http://localhost:9021'
 )
 
 # ~========== FILEBROWSER ===========~

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import transaction
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django_admin_listfilter_dropdown.filters import (
     RelatedDropdownFilter,
     ChoiceDropdownFilter
@@ -290,7 +290,7 @@ class SolutionAdmin(
 
         pairs = set()
         for obj in queryset:
-            obj_display = force_text(obj)
+            obj_display = force_str(obj)
             modeladmin.log_deletion(request, obj, obj_display)
             if obj.type == TaskItemType.COURSE:
                 pairs.add((obj.type_id, obj.user_id))

@@ -1,7 +1,7 @@
 import re
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
-from django.conf.urls import url
+from django.urls import path
 from django.core.exceptions import PermissionDenied
 
 from adminsortable2.admin import SortableAdminMixin
@@ -67,7 +67,7 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     def get_urls(self):
         return [
-            url(r'^(?P<course_pk>[0-9]+)/topics/add/$', self.admin_site.admin_view(self.add_topic), name='add_topic'),
-            url(r'^(?P<course_pk>[0-9]+)/topics/(?P<topic_pk>[0-9]+)/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
+            path('<int:course_pk>/topics/add/', self.admin_site.admin_view(self.add_topic), name='add_topic'),
+            path('<int:course_pk>/topics/<int:topic_pk>/change/', self.admin_site.admin_view(self.change_topic), name='change_topic'),
         ] + super().get_urls()
 

@@ -4,10 +4,10 @@ from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import format_html
 from django.utils.http import urlquote
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.admin.exceptions import DisallowedModelAdminToField
 from django.contrib.admin.utils import quote, unquote
 from django.db import router
@@ -105,8 +105,8 @@ class TopicAdmin(admin.ModelAdmin):
         if self.has_change_permission(request, obj):
             obj_repr = format_html('<a href="{}">{}</a>', urlquote(obj_url), obj)
         else:
-            obj_repr = force_text(obj)
-        msg_dict = {'name': force_text(opts.verbose_name), 'obj': obj_repr}
+            obj_repr = force_str(obj)
+        msg_dict = {'name': force_str(opts.verbose_name), 'obj': obj_repr}
 
         if "_continue" in request.POST or (
                 # Redirecting after "Save as new".
@@ -141,7 +141,7 @@ class TopicAdmin(admin.ModelAdmin):
         pk_value = obj._get_pk_val()
         preserved_filters = self.get_preserved_filters(request)
 
-        msg_dict = {'name': force_text(opts.verbose_name), 'obj': format_html('<a href="{}">{}</a>', urlquote(request.path), obj),}
+        msg_dict = {'name': force_str(opts.verbose_name), 'obj': format_html('<a href="{}">{}</a>', urlquote(request.path), obj),}
         if "_continue" in request.POST:
             msg = format_html(_('The {name} "{obj}" was changed successfully. You may edit it again below.'), **msg_dict)
             self.message_user(request, msg, messages.SUCCESS)
@@ -181,8 +181,8 @@ class TopicAdmin(admin.ModelAdmin):
         opts = self.model._meta
 
         self.message_user(request, _('The %(name)s "%(obj)s" was deleted successfully.') % {
-            'name': force_text(opts.verbose_name),
-            'obj': force_text(obj_display),
+            'name': force_str(opts.verbose_name),
+            'obj': force_str(obj_display),
         }, messages.SUCCESS,)
 
         if self.has_change_permission(request, None):
@@ -220,7 +220,7 @@ class TopicAdmin(admin.ModelAdmin):
         if request.POST and not protected:  # The user has confirmed the deletion.
             if perms_needed:
                 raise PermissionDenied
-            obj_display = force_text(obj)
+            obj_display = force_str(obj)
             attr = str(to_field) if to_field else opts.pk.attname
             course_id = obj.course.id
             obj_id = obj.serializable_value(attr)
@@ -229,7 +229,7 @@ class TopicAdmin(admin.ModelAdmin):
 
             return self.response_delete(request, obj_display, obj_id, course_id)
 
-        object_name = force_text(opts.verbose_name)
+        object_name = force_str(opts.verbose_name)
 
         if perms_needed or protected:
             title = _("Cannot delete %(name)s") % {"name": object_name}
