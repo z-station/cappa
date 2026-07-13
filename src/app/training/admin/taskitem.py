@@ -10,12 +10,19 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
     @property
     def media(self):
         return (
-            super(SortableInlineAdminMixin, self).media + widgets.Media(js=(
-                'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
-                'admin/training/inline-sortable.js',
-                'adminsortable2/js/inline-tabular.js')
+            super(SortableInlineAdminMixin, self).media + widgets.Media(
+                css={'all': ['admin/training/taskitem.css']},
+                js=(
+                    'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
+                    'admin/training/inline-sortable.js',
+                    'adminsortable2/js/inline-tabular.js',
+                )
             )
         )
+
+    @property
+    def template(self):
+        return 'admin/training/taskitem/tabular.html'
 
     model = TaskItem
     form = TaskItemAdminForm

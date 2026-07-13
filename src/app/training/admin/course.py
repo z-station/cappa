@@ -39,7 +39,12 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         self.set_instance(request)
-        return self.changeform_view(request, object_id, form_url, extra_context)
+        return self.changeform_view(
+            request,
+            object_id=str(object_id),
+            form_url=form_url,
+            extra_context=extra_context
+        )
 
     def get_object_with_change_permissions(self, request, model, obj_pk):
         obj = get_object_or_404(model, pk=obj_pk)
@@ -63,7 +68,11 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     def change_topic(self, request, course_pk, topic_pk):
         course = self.get_object_with_change_permissions(request, Course, course_pk)
         topic_admin = TopicAdmin(Topic, self.admin_site, course)
-        return topic_admin.change_view(request, object_id=topic_pk, extra_context={'course': course})
+        return topic_admin.change_view(
+            request,
+            object_id=str(topic_pk),
+            extra_context={'course': course}
+        )
 
     def get_urls(self):
         return [

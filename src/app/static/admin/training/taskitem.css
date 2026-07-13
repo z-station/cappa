@@ -1,0 +1,28 @@
+#taskitems-group td.original p {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#taskitems-group td.original a {
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 1em;
+}
+
+#taskitems-group td.field-task {
+    font-size: 16px;
+    font-weight: 800;
+    padding-top: 2em;
+    padding-left: 1em;
+
+}
+
+#taskitems-group td.field-task strong a {
+    font-size: 16px;
+    font-weight: 800;
+}
+.inline-group .tabular tr.add-row td a {
+    font-size: 14px;
+}

@@ -87,16 +87,17 @@ files = [
 
 [[package]]
 name = "django-admin-sortable2"
-version = "0.7.3"
+version = "1.0.4"
 description = "Generic drag-and-drop sorting for the List, the Stacked- and the Tabular-Inlines Views in the Django Admin"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-admin-sortable2-0.7.3.tar.gz", hash = "sha256:003f4c9e1dc28ec3435f907e9bc953a922eea7e1da28a7242644e6dbc3071f2e"},
+    {file = "django-admin-sortable2-1.0.4.tar.gz", hash = "sha256:f96044003176c6684c5f969792ca833a505d654fa0f7b24232a0a610e4332a53"},
+    {file = "django_admin_sortable2-1.0.4-py3-none-any.whl", hash = "sha256:e22956889533b48a35a7f02859ae3a939753fa9a7d7d532cefc2835b41bdcebb"},
 ]
 
 [package.dependencies]
-Django = ">=1.8,<3"
+Django = ">=2.2,<4.1"
 
 [[package]]
 name = "django-filebrowser-no-grappelli"
@@ -606,4 +607,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.8.*"
-content-hash = "d3ae80853b44dcd9e9b008ae2b67f4a2aaf4b76ea1c0c4a69d6374ad3e956cf0"
+content-hash = "eebbd080b9b2f60bb32d2d2b95b02b7290c1a00aa7aa833d157454ee6a34db43"

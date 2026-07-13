@@ -21,3 +21,27 @@
 #_content-group .field-content {
     display: none;
 }
+
+#_topics-group td.original p {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#_topics-group td.original a {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+#_topics-group td.field-title {
+    font-size: 16px;
+    font-weight: 800;
+    padding: 2em 0;
+}
+
+#_topics-group td.field-title a {
+    font-size: 16px;
+    font-weight: 800;
+    padding-left: 1em;
+}

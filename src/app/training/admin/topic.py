@@ -12,11 +12,13 @@ from django.contrib.admin.exceptions import DisallowedModelAdminToField
 from django.contrib.admin.utils import quote, unquote
 from django.db import router
 from django.contrib.admin.utils import get_deleted_objects
+from django.forms import widgets
 from adminsortable2.admin import SortableInlineAdminMixin
 from app.training.models import Topic, Content
 from app.training.admin import TaskItemInline
 from app.training.forms.topic import (
     TopicAdminForm,
+    TopicInlineForm,
     ContentAdminForm
 )
 
@@ -29,10 +31,26 @@ HORIZONTAL, VERTICAL = 1, 2
 class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
 
     model = Topic
+    form = TopicInlineForm
     extra = 0
-    fields = ('order_key', 'title', 'show')
+    fields = ('order_key', 'title', 'slug', 'show')
     show_change_link = True
-    readonly_fields = ('title',)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    @property
+    def media(self):
+        return (
+            super(SortableInlineAdminMixin, self).media + widgets.Media(
+                css={'all': ['admin/training/topic.css']},
+                js=(
+                    'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
+                    'admin/training/inline-sortable.js',
+                    'adminsortable2/js/inline-tabular.js',
+                )
+            )
+        )
 
     @property
     def template(self):
