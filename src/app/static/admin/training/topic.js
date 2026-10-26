@@ -5,15 +5,18 @@ var django = django || {
 
 
 var toggleWidgetAceInput = function(e){
-   if($(this).prop('checked')){
-        $(this).parents('fieldset').find('.field-input').show()
+   var fieldset = $(this).closest('.inline-related')
+   var isAce = fieldset.find('.field-type select').val() == 'ace'
+   if(isAce && $(this).prop('checked')){
+        fieldset.find('.field-input').show()
+        resizeAce(fieldset)
    } else {
-        $(this).parents('fieldset').find('.field-input').hide()
+        fieldset.find('.field-input').hide()
    }
 }
 
 var toggleWidget = function(e){
-    var fieldset = $(this).parents('fieldset')
+    var fieldset = $(this).closest('.inline-related')
     if($(this).val() == 'text'){
         fieldset.find('.field-show_input').hide()
         fieldset.find('.field-show_debug').hide()
@@ -32,7 +35,17 @@ var toggleWidget = function(e){
         fieldset.find('.field-show_input').show()
         fieldset.find('.field-content').show()
         fieldset.find('.field-text').hide()
+        resizeAce(fieldset)
     }
+}
+
+/* ace, созданный в скрытом блоке, имеет нулевой размер до вызова resize */
+var resizeAce = function(fieldset){
+    fieldset.find('.js__editor-ace').each(function(){
+        if(this.env){
+            this.env.editor.resize(true)
+        }
+    })
 }
 
 $(document).ready(function(){
@@ -40,13 +53,16 @@ $(document).ready(function(){
     $('#_content-group .field-type select').each(toggleWidget)
 
     /* инициализировать ace для нового блока кода */
-    $('#_content-group .add-row a').on('click', function(e){
-         aceInit()
-         $('#_content-group .field-type select').each(toggleWidget)
+    django.jQuery(document).on('formset:added', function(e, row, prefix){
+        if(prefix !== '_content'){
+            return
+        }
+        aceInit(false, row[0])
+        $(row[0]).find('.field-type select').each(toggleWidget)
     })
 
     /* Показать/скрыть блок ввода редактора */
-    $(document).on('change', '#_content-group .field-box.field-show_input input[type=checkbox]', toggleWidgetAceInput)
+    $(document).on('change', '#_content-group .field-show_input input[type=checkbox]', toggleWidgetAceInput)
 
     /* Переключть тип виджета */
     $(document).on('change', '#_content-group .field-type select', toggleWidget)
