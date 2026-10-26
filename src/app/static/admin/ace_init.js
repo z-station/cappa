@@ -15,11 +15,17 @@ var colorSchemes = {
     'Python314': 'ace/mode/python',
 }
 
-var aceInit = function(readonly = false){
+var aceInit = function(readonly = false, root = document){
 
-    document.querySelectorAll('.js__editor').forEach(function(elem, index){
+    root.querySelectorAll('.js__editor').forEach(function(elem, index){
+        var aceElem = elem.querySelector('.js__editor-ace')
+        // шаблон пустой формы inline клонируется Django без экземпляра редактора,
+        // поэтому ace в нём не создаётся
+        if (aceElem.env || elem.closest('.empty-form')) {
+            return
+        }
         var textarea = elem.querySelector('.js__editor-content'),
-            editor = ace.edit(elem.querySelector('.js__editor-ace')),
+            editor = ace.edit(aceElem),
             aceConfig = document.querySelector('.ace-config')
         aceConfig = aceConfig ? JSON.parse(aceConfig.innerHTML) : {}
 

@@ -64,7 +64,7 @@ services:
              cd /app/src &&
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn --bind 0:9000 app.wsgi:application --reload -w 1"
+             gunicorn --bind 0:9000 app.wsgi:application --reload -w 2 --worker-class gthread --threads 8"
 networks:
   localhost:
     external: true

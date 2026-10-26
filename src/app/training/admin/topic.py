@@ -64,6 +64,18 @@ class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
     extra = 0
     fields = ('order_key', 'type', ('show_input', 'show_debug', 'readonly'), 'text', 'content', 'input')
 
+    @property
+    def media(self):
+        return (
+            super(SortableInlineAdminMixin, self).media + widgets.Media(
+                js=(
+                    'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
+                    'admin/training/inline-sortable.js',
+                    'adminsortable2/js/inline-stacked.js',
+                )
+            )
+        )
+
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
