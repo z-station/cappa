@@ -98,6 +98,38 @@ class TopicAdmin(admin.ModelAdmin):
         super().__init__(model, admin_site)
         self._course = course
 
+    def add_view(self, request, form_url='', extra_context=None):
+        if self._course is None:
+            course_id = request.GET.get('course')
+            if course_id and course_id.isdigit():
+                return HttpResponseRedirect(reverse(
+                    'admin:add_topic',
+                    kwargs={'course_pk': int(course_id)},
+                    current_app=self.admin_site.name,
+                ))
+            self.message_user(
+                request,
+                'Тема добавляется со страницы курса: выберите курс и нажмите «Добавить тему».',
+                messages.INFO,
+            )
+            return HttpResponseRedirect(reverse(
+                'admin:training_course_changelist',
+                current_app=self.admin_site.name,
+            ))
+        return super().add_view(request, form_url, extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        if self._course is None:
+            obj = self.get_object(request, unquote(object_id))
+            if obj is None:
+                return self._get_obj_does_not_exist_redirect(request, self.model._meta, object_id)
+            return HttpResponseRedirect(reverse(
+                'admin:change_topic',
+                kwargs={'course_pk': obj.course_id, 'topic_pk': obj.pk},
+                current_app=self.admin_site.name,
+            ))
+        return super().change_view(request, object_id, form_url, extra_context)
+
     def save_model(self, request, obj, form, change):
         obj.course = self._course or obj.course
         obj.save()
